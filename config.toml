@@ -21,6 +21,8 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     description = "John Doe's personal website"
     keywords = "blog,developer,personal"
     avatarurl = "images/avatar.png"
+    
+    favicon_32 = "images/favicon.png"
 
     footercontent = ""
 

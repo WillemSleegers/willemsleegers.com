@@ -3,60 +3,33 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/tags/animal/</loc>
-    <lastmod>2020-03-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/categories/</loc>
-    <lastmod>2020-03-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/posts/misconception-boiling-frog/</loc>
-    <lastmod>2020-03-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/misconception/</loc>
-    <lastmod>2020-03-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/categories/misconceptions/</loc>
-    <lastmod>2020-03-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/posts/</loc>
-    <lastmod>2020-03-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
-    <lastmod>2020-03-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/</loc>
-    <lastmod>2020-03-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/about/</loc>
+    <loc>https://elastic-mahavira-1f5e2c.netlify.com/about/</loc>
     <lastmod>2016-05-05T21:48:51-07:00</lastmod>
   </url>
   
   <url>
-    <loc>/projects/eyepatch/</loc>
+    <loc>https://elastic-mahavira-1f5e2c.netlify.com/</loc>
+    <lastmod>2016-05-05T21:48:51-07:00</lastmod>
   </url>
   
   <url>
-    <loc>/projects/</loc>
+    <loc>https://elastic-mahavira-1f5e2c.netlify.com/categories/</loc>
   </url>
   
   <url>
-    <loc>/projects/tidystats/</loc>
+    <loc>https://elastic-mahavira-1f5e2c.netlify.com/projects/eyepatch/</loc>
+  </url>
+  
+  <url>
+    <loc>https://elastic-mahavira-1f5e2c.netlify.com/projects/</loc>
+  </url>
+  
+  <url>
+    <loc>https://elastic-mahavira-1f5e2c.netlify.com/tags/</loc>
+  </url>
+  
+  <url>
+    <loc>https://elastic-mahavira-1f5e2c.netlify.com/projects/tidystats/</loc>
   </url>
   
 </urlset>
