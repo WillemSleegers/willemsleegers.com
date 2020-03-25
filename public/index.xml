@@ -2,48 +2,48 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Willem Sleegers</title>
-    <link>/</link>
+    <link>/elastic-mahavira-1f5e2c.netlify.com/</link>
     <description>Recent content on Willem Sleegers</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 25 Mar 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/elastic-mahavira-1f5e2c.netlify.com/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Frogs DO jump out of gradually boiling water</title>
-      <link>/posts/misconception-boiling-frog/</link>
+      <link>/elastic-mahavira-1f5e2c.netlify.com/posts/misconception-boiling-frog/</link>
       <pubDate>Wed, 25 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>/posts/misconception-boiling-frog/</guid>
+      <guid>/elastic-mahavira-1f5e2c.netlify.com/posts/misconception-boiling-frog/</guid>
       <description>This is the first of a series of posts about common misconceptions. In these posts, I work out in detail why a particular misconception is false. The first misconception is the boiling frog misconception.</description>
     </item>
     
     <item>
       <title>About</title>
-      <link>/about/</link>
+      <link>/elastic-mahavira-1f5e2c.netlify.com/about/</link>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
-      <guid>/about/</guid>
+      <guid>/elastic-mahavira-1f5e2c.netlify.com/about/</guid>
       <description>This is a &amp;ldquo;hello world&amp;rdquo; example website for the blogdown package. The theme was forked from @jrutheiser/hugo-lithium-theme and modified by Yihui Xie.</description>
     </item>
     
     <item>
       <title>eyepatch</title>
-      <link>/projects/eyepatch/</link>
+      <link>/elastic-mahavira-1f5e2c.netlify.com/projects/eyepatch/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/projects/eyepatch/</guid>
+      <guid>/elastic-mahavira-1f5e2c.netlify.com/projects/eyepatch/</guid>
       <description>An R package for preparing pupillometry data.</description>
     </item>
     
     <item>
       <title>tidystats</title>
-      <link>/projects/tidystats/</link>
+      <link>/elastic-mahavira-1f5e2c.netlify.com/projects/tidystats/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/projects/tidystats/</guid>
+      <guid>/elastic-mahavira-1f5e2c.netlify.com/projects/tidystats/</guid>
       <description>An R-based solution for researchers to report more statistics with fewer errors.</description>
     </item>
     
