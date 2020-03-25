@@ -1,0 +1,22 @@
+<section class="container grid">
+    <h1 class="title">{{ .Title }}</h1>
+   
+    <div class="grid-wrapper">
+        {{ range .Paginator.Pages }}
+        <div class="grid-item">
+            <a href="{{ .Permalink }}">
+                {{ if .Params.image }}
+                    <img class="grid-item-img" src="/images/{{ .Params.image}}"/>
+                {{ end }}
+                <div class="grid-item-text">
+                    <span class="grid-item-title">{{ .Title }}</span>
+                    <p class="grid-item-summary">
+                        {{ .Summary }}
+                    </p>
+                </div>
+            </a>
+        </div>
+        {{ end }}
+    </div>
+    {{ partial "pagination.html" . }}
+  </section>

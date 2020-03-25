@@ -1,0 +1,6 @@
+---
+title: "tidystats"
+summary: "An R-based solution for researchers to report more statistics with fewer errors."
+author: "Willem Sleegers"
+image: "results.jpg"
+---

@@ -1,0 +1,8 @@
+---
+title: "eyepatch"
+summary: "An R package for preparing pupillometry data."
+author: "Willem Sleegers"
+image: "eye.jpg"
+---
+
+`eyepatch` is an R package based on `tidyverse` principles to make it easy to preprocess pupil data obtained with an eyetracker.

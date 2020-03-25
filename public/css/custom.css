@@ -1,0 +1,15 @@
+
+/* Make the navigation font slightly larger */
+.navigation a, .navigation span {
+  font-size: 2rem;
+}
+
+/* Do not make the title in all caps */
+.navigation .navigation-title {
+  text-transform: capitalize;
+}
+
+/* Make the subtitle less bold */
+.about h2 {
+  font-weight: 100;
+}

@@ -1,0 +1,80 @@
+baseurl = "https://www.willemsleegers.com"
+title = "Willem Sleegers"
+theme = "hugo-coder"
+languagecode = "en"
+defaultcontentlanguage = "en"
+
+paginate = 20
+canonifyurls = true
+
+pygmentsstyle = "bw"
+pygmentscodefences = true
+pygmentscodefencesguesssyntax = true
+
+disqusShortname = ""
+
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+
+[params]
+    author = "Willem Sleegers"
+    info = "Social psychologist at Tilburg University"
+    description = "John Doe's personal website"
+    keywords = "blog,developer,personal"
+    avatarurl = "images/avatar.png"
+
+    favicon_32 = "/img/favicon-32x32.png"
+    favicon_16 = "/img/favicon-16x16.png"
+
+    footercontent = ""
+
+    hidecredits = false
+    hidecopyright = false
+
+    rtl = false
+
+    math = true
+    custom_css = ["css/custom.css", "css/academicons.min.css"]
+    
+    # Specify light/dark colorscheme
+    # Supported values:
+    # "auto" (use preference set by browser)
+    # "dark" (dark background, light foreground)
+    # "light" (light background, dark foreground) (default)
+    colorscheme = "light"
+
+# Social links
+[[params.social]]
+    name = "Twitter"
+    icon = "fab fa-twitter fa-2x"
+    weight = 1
+    url = "https://twitter.com/johndoe/"
+[[params.social]]
+    name = "Github"
+    icon = "fab fa-github fa-2x"
+    weight = 2
+    url = "https://github.com/willemsleegers"
+[[params.social]]
+    name = "Google Scholar"
+    icon = "ai ai-google-scholar-square ai-2x"
+    weight = 3
+    url = "https://scholar.google.nl/citations?user=EgqxL0MAAAAJ&hl=en"
+[[params.social]]
+    name = "Tilburg University"
+    icon = "fas fa-university fa-2x"
+    weight = 4
+    url = "https://www.tilburguniversity.edu/staff/w-w-a-sleegers"
+
+
+# Menu links
+[[menu.main]]
+    name = "Projects"
+    weight = 1
+    url  = "/projects/"
+[[menu.main]]
+    name = "Blog"
+    weight = 2
+    url  = "/posts/"
+[[menu.main]]
+    name = "About"
+    weight = 3
+    url = "/about/"
