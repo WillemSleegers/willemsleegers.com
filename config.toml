@@ -1,4 +1,4 @@
-baseurl = "elastic-mahavira-1f5e2c.netlify.com"
+baseurl = "https://elastic-mahavira-1f5e2c.netlify.com"
 title = "Willem Sleegers"
 theme = "hugo-coder"
 languagecode = "en"
@@ -21,9 +21,6 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     description = "John Doe's personal website"
     keywords = "blog,developer,personal"
     avatarurl = "images/avatar.png"
-
-    favicon_32 = "/img/favicon-32x32.png"
-    favicon_16 = "/img/favicon-16x16.png"
 
     footercontent = ""
 

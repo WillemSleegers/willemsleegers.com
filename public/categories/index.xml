@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Willem Sleegers</title>
-    <link>/elastic-mahavira-1f5e2c.netlify.com/categories/</link>
+    <link>/categories/</link>
     <description>Recent content in Categories on Willem Sleegers</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 25 Mar 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/elastic-mahavira-1f5e2c.netlify.com/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>misconceptions</title>
-      <link>/elastic-mahavira-1f5e2c.netlify.com/categories/misconceptions/</link>
+      <link>/categories/misconceptions/</link>
       <pubDate>Wed, 25 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>/elastic-mahavira-1f5e2c.netlify.com/categories/misconceptions/</guid>
+      <guid>/categories/misconceptions/</guid>
       <description></description>
     </item>
     
