@@ -2,6 +2,7 @@
 title: Understanding regression
 description: "Me attempting to understand the basics of statistical regression."
 image: "https://picsum.photos/300/200"
+draft: true
 ---
 
 ```{r setup, echo = FALSE, message = FALSE}

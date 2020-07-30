@@ -1,5 +1,5 @@
     <footer>
-    	<a class="kurzgesagt-bird" href="https://kurzgesagt.org"><img src="http://127.0.0.1:4321/images/bird_small.png"></img></a>
+    	<a class="kurzgesagt-bird" href="https://kurzgesagt.org"><img src={{ "img/bird_small.png" | relURL }}></img></a>
 
         {{ with .Site.Params.footer }}
           {{ . | markdownify }}
@@ -9,10 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="{{ "/js/script.js" | relURL }}" /></script>
 
-    <script async
-		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-	</script>
-
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
   </body>
 </html>

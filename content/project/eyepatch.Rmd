@@ -1,7 +1,8 @@
 ---
 title: "eyepatch"
 description: "An R package for preparing pupillometry data."
-image: "https://picsum.photos/300/200"
+image: "eye.jpg"
+draft: true
 ---
 
 ```{r, echo = FALSE, message = FALSE}

@@ -1,13 +1,14 @@
 ---
 title: "eyepatch"
 description: "An R package for preparing pupillometry data."
-image: "https://picsum.photos/300/200"
+image: "eye.jpg"
+draft: true
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 
 
-<pre><code>## [1] &quot;Created ../../static/data/pupil-preprocessing.log&quot;</code></pre>
 <div id="description" class="section level2">
 <h2>Description</h2>
 <p><code>eyepatch</code> is an R package designed to make it easier to process pupil data acquired with an eye tracker and to log every processing step that was taken. It contains functions to center time data relative to a specific starting point, removing invalid observations and outliers, pupil size smoothing, controlling for baseline pupil sizes, and functions to log these steps. It is built on <code>tidyverse</code> principles, meaning it works well together with popular packages such as <code>dplyr</code> and <code>tidyr</code>.</p>
@@ -14447,7 +14448,7 @@ create_log(location = &quot;data/&quot;)</code></pre>
   geom_point(aes(y = pupil_left_old), color = &quot;red&quot;) +
   geom_point(aes(y = pupil_left))</code></pre>
 <pre><code>## Warning: Removed 47 rows containing missing values (geom_point).</code></pre>
-<pre><code>## Warning: Removed 76 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 77 rows containing missing values (geom_point).</code></pre>
 <p><img src="/project/eyepatch_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 </div>
