@@ -1,0 +1,27 @@
+{{ partial "header.html" . }}
+
+	<div class="column-middle">
+		<div class="container-single" >
+			<main>
+				<article>
+					<h1>
+						<span class="title">{{ .Title | markdownify }}</span>
+					</h1>
+					{{ with .Params.author }}
+						<h2 class="author">{{ . }}</h2>
+					{{ end }}
+					
+					{{ if (gt .Params.date 0) }}
+						<h2 class="date">{{ .Date.Format "January 2, 2006" }}</h2>
+					{{ end }}
+
+					{{ .Content }}
+				</article>
+			</main>
+		</div>
+	</div>
+	<div class="column-right">
+  	</div>
+</div>
+
+{{ partial "footer.html" . }}

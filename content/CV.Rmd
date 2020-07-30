@@ -1,0 +1,219 @@
+---
+title: CV
+---
+
+```{r setup, include = FALSE}
+
+#TODO: Add <P style="page-break-before: always">
+#TODO: Check page width for printing
+
+# Load packages
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(janitor)
+
+# Load cv data
+cv <- read_csv("../static/data/cv.csv")
+
+# Load custom functions
+create_header <- function(data, level = 1, css_id = NULL) {
+  
+  # Check whether the data only has 1 row of data
+  if (nrow(data) > 1) {
+    stop("The data frame should only have 1 row of data.")
+  }
+  
+  # Check whether the data has a content column
+  if (!"content" %in% names(data)) {
+    stop("The data frame does not have a 'content' column.")
+  }
+  
+  # Extract the content data
+  content <- pull(data, content)
+  
+  if (!is.null(css_id)) {
+    cat(paste0(paste(rep("#", level), collapse = ""), " ", content, 
+      " {#", css_id, "}"))  
+  } else {
+    cat(paste(paste(rep("#", level), collapse = ""), content))
+  }
+  cat("\n")
+}
+
+create_contact_section <- function(data, css_id = NULL) {
+  
+  # Extract the media and link data
+  media <- pull(data, subsection)
+  links <- pull(data, content)
+  
+  for (i in 1:nrow(data)) {
+    medium <- media[i]
+    link <- links[i]
+    
+    if (i != length(media)) {
+      cat(paste0("[", medium, "](", link, ") | "))
+    } else {
+      cat(paste0("[", medium, "](", link, ")"))
+    }
+  }
+  cat("\n")
+  cat("\n")
+}
+
+create_section <- function(data, bullet_points = FALSE, css_id = NULL) {
+  
+  # Remove empty columns
+  data <- remove_empty(data, "cols")
+  
+  # Check whether the data has a section column
+  if (!"section" %in% names(data)) {
+    stop("The data frame does not have a 'section' column.")
+  }
+  
+  # Extract the header information
+  header <- data %>%
+    pull(section) %>%
+    first()
+
+  # Create header
+  cat(paste("#", header))
+  cat("\n")
+  
+  # Check whether there is a subsection
+  if ("subsection" %in% names(data)) {
+    for (s in unique(pull(data, subsection))) {
+      
+      cat(paste("###", s))
+      cat("\n")
+      
+  
+      subdata <- data %>%
+        filter(subsection == s) %>%
+        remove_empty("cols")
+      
+      for (i in 1:nrow(subdata)) {
+        pub <- pull(subdata, content)[i]
+        if (bullet_points) {
+          cat(paste("-", pub))  
+        } else {
+          if ("year" %in% names(subdata)) {
+            subdata[i, ] %>%
+              select(year, content) %>%
+              kable(col.names = NULL) %>%
+              column_spec(1, italic = T, width = "130px", extra_css = "vertical-align:top") %>%
+              cat()
+          } else {
+            cat(pub)    
+          }
+        }
+        cat("\n")
+      }
+      cat("\n")
+      cat("\n")
+      
+    }
+  } else {
+    for (i in 1:nrow(data)) {
+      content <- pull(data, content)[i]
+      if (bullet_points) {
+        cat(paste("-", content))
+      } else {
+        cat(content)
+      }
+    }
+    cat("\n")
+  }
+}
+
+```
+
+```{r name, echo = FALSE, results = "asis"}
+cv %>%
+  filter(section == "Name") %>%
+  create_header(level = 1, css_id = "name") 
+```
+
+```{r description, echo = FALSE, results = "asis"}
+cv %>%
+  filter(section == "Brief description") %>%
+  create_header(level = 3, css_id = "description") 
+```
+
+```{r contact, echo = FALSE, results = "asis"}
+cv %>%
+  filter(section == "Contact") %>%
+  create_contact_section(css_id = "contact")
+```
+
+***
+
+```{r currently, echo = FALSE, results = "asis"}
+cv %>%
+  filter(section == "Currently") %>%
+  create_section(css_id = "currently")
+```
+
+***
+
+```{r employment, echo = FALSE, results = "asis"}
+cv %>%
+  filter(section == "Employment") %>%
+  create_section()
+```
+
+***
+
+```{r publications, echo = FALSE, results = "asis"}
+cv %>%
+  filter(section == "Publications") %>%
+  create_section(bullet_points = TRUE)
+```
+
+***
+
+```{r presentations, echo = FALSE, results = "asis"}
+cv %>%
+  filter(section == "Presentations") %>%
+  create_section(bullet_points = TRUE)
+```
+
+***
+
+```{r journals, echo = FALSE, results = "asis"}
+cv %>%
+  filter(section == "Journals") %>%
+  create_section(bullet_points = TRUE)
+```
+
+***
+
+```{r awards, echo = FALSE, results = "asis"}
+cat("# Awards")
+cat("\n")
+cat("Awards are stupid.")
+```
+
+***
+
+```{r teaching, echo = FALSE, results = "asis"}
+cv %>%
+  filter(section == "Teaching") %>%
+  create_section()
+```
+
+***
+
+```{r technical skills, echo = FALSE, results = "asis"}
+cv %>%
+  filter(section == "Technical skills") %>%
+  create_section(bullet_points = TRUE)
+```
+
+***
+
+```{r projects, echo = FALSE, results = "asis"}
+cv %>%
+  filter(section == "Projects") %>%
+  create_section()
+```

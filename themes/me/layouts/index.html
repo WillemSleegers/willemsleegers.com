@@ -1,0 +1,28 @@
+{{ partial "header.html" . }}
+
+  <div class="column-middle">
+    <div class="container-home">
+      <main>
+        <img id="image-home" src="https://www.willemsleegers.com/img/profile.png">
+       
+        <h1>{{ .Site.Params.heading }}</h1>
+      
+        <h3>{{ .Site.Params.subheading }}</h3>
+        
+        <!-- Note that the content for index.html, as a sort of list page, will pull from content/_index.md -->
+        {{.Content}}
+
+        {{ if isset .Site.Params "twitter" }}
+          <a href="{{ .Site.Params.twitter }}"><i class="fab fa-twitter"></i></a>
+        {{ end }}
+        {{ if isset .Site.Params "github" }}
+          <a href="{{ .Site.Params.github }}"><i class="fab fa-github"></i></a>
+        {{ end }}
+      </main>
+    </div>
+  </div>
+  <div class="column-right">
+  </div>
+</div>
+
+{{ partial "footer.html" . }}

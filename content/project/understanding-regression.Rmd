@@ -1,0 +1,267 @@
+---
+title: Understanding regression
+description: "Me attempting to understand the basics of statistical regression."
+image: "https://picsum.photos/300/200"
+---
+
+```{r setup, echo = FALSE, message = FALSE}
+# Load packages
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+# Set options
+options(knitr.kable.NA = "") 
+
+# Set ggplot theme
+theme_set(theme_bw(base_size=12))
+theme_update(panel.background = element_rect(fill = "transparent", colour = NA),
+             plot.background = element_rect(fill = "transparent", colour = NA))
+opts_chunk$set(dev.args=list(bg="transparent"))
+
+# Read in Pokemon data
+pokemon <- read_csv("../../static/data/pokemon.csv")
+
+# Subset the data
+pokemon25 <- filter(pokemon, generation == 1 & pokedex <= 25)
+pokemon25_50 <- filter(pokemon, generation == 1 & pokedex > 25 & pokedex <= 50)
+pokemon151 <- filter(pokemon, generation == 1)
+```
+
+Statistical regression techniques are an important concept in data analysis. As a psychologist, I use it to test hypotheses by comparing differences between groups or testing relationships between variables. While it is easy to run regression analyses in a variety of software packages, like SPSS or R, it often remains a blackbox that is not well understood. I, in fact, do not believe I actually understand regression. This is my attempt of trying to figure it out.
+
+To figure out regression, we need data. We could make up some data on the spot, but I'd rather use data that is a bit more meaningful. Since I'm a big Pokémon fan, I'll use a dataset containing Pokémon statistics. Below I show some data on 10 different Pokémon. 
+
+```{r pokemon-data, echo = FALSE}
+pokemon %>%
+  filter(pokedex <= 10) %>%
+  select(pokedex, name, type1, type2, height, weight, evolution) %>%
+  kable(table.attr = "class = my_table")
+```
+
+As you can see, Pokémon have several attributes. They have different types (e.g., grass, fire, water), a height, some weight, and they are of a particular evolutionary stage (0, 1, or 2). This last variable refers to a Pokémon's ability to evolve and when they do, they tend to become bigger and more powerful.
+
+Let's say that we are interested in understanding the weight of different Pokémon. Below I have plotted the weight of the first 25 Pokémon, from Bulbasaur to Pikachu.
+
+```{r, echo = FALSE}
+ggplot(pokemon25, aes(x = reorder(name, pokedex), y = weight)) +
+  geom_bar(stat = "identity") +
+  labs(x = "", y = "Weight (kg)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Describing these observations, we see that the lightest Pokémon is Pidgey, with a weight of `r min(pull(pokemon25, weight))` kg. The heaviest Pokémon is Venusaur, with a weight of `r max(pull(pokemon25, weight))` kg. The average weight is `r mean(pull(pokemon25, weight))` kg.
+
+## The Simplest Model {.tabset}
+
+In order to understand the weights of different Pokémon, we need to come up with a statistical model. In a way, this can be considered a description problem. How can we best describe the different weights that we have observed? The simplest description is a single number. We can say that all Pokémon have a weight of say... 6 kg. In other words:
+
+> weight = 6 kg
+
+Of course, this is just one among many possible models. Below I plot three different models, including our `weight = 6 kg` model.
+
+```{r, echo = FALSE}
+ggplot(pokemon25, aes(x = reorder(name, pokedex), y = weight)) +
+  geom_bar(stat = "identity", alpha = .4) +
+  labs(x = "", y = "Weight (kg)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  geom_abline(intercept = 6, slope = 0, size = 0.75, linetype = 2) +
+  geom_abline(intercept = 40, slope = 0, size = 0.75, linetype = 2) +
+  geom_abline(intercept = 75, slope = 0, size = 0.75, linetype = 2) +
+  annotate("text", x = 28.5, y = 6.5, label = "weight = 6 kg") +
+  annotate("text", x = 28.5, y = 40.5, label = "weight = 40 kg") +
+  annotate("text", x = 28.5, y = 75.5, label = "weight = 75 kg") +
+  coord_cartesian(xlim = c(1, 25), clip = 'off') +
+  theme(plot.margin = unit(c(1,6,1,1), "lines"))
+```
+
+
+While a model like `weight = 6 kg` is a valid model, it is not a very good model. In fact, it only perfectly describes Pikachu's weight and inaccurately describes the weight of the remaining 24 Pokémon. The other models, such as `weight = 40 kg` might be even worse; they do not even describe a single Pokémon's weight correctly, although they do get closer to some of the heavier Pokémon. How do we decide which model is the better model? In order to answer that question, we need to consider the model's error.
+
+## Error
+
+The error of a model is the degree to which the model inaccurately describes the data. There are several ways to calculate that error and we will cover three different definitions.
+
+The first definition of error is simply the sum of times that the model inaccurately describes the data. For each observation we check whether the model correctly describes it or not. We then sum the number of misses and consider that the amount of error for that model. With our `weight = 6 kg` the answer is 24; out of the 25 Pokémon only Pikachu has a weight of 6, which means the model is correct once and wrong 24 times.
+
+We can now compare different models to one another by calculating the error for a range of models. Below I plot the amount of error for 100 different models, starting with the model `weight = 1 kg`, all the way up to `weight = 100 kg`.
+
+```{r, echo = FALSE}
+crossing(
+    weight = pull(pokemon25, weight),
+    model = 1:100
+  ) %>%
+  mutate(error = if_else(abs(weight - model) == 0, 0, 1)) %>%
+  group_by(model) %>%
+  summarize(error_sum = sum(error)) %>%
+  ggplot(aes(x = model, y = error_sum)) +
+    geom_line() + 
+    coord_cartesian(ylim = c(1, 25)) +
+    labs(x = "Model", y = "Error (sum of errors)")
+```
+
+We see that almost all models perform poorly. There are several models that have an error of 24 (i.e., they estimate the weight correctly for 1 Pokémon), while the remaining models have an error of 25 (i.e., they estimate none of the Pokémon's weights correctly).
+
+There are two problems with this definition of error: a pragmatic one and a conceptual one. The pragmatic problem is that we have multiple *best* models, because there are multiple models with an error of 24, which is the lowest error any of the 100 models achieves. This is not necessarily a problem because it can simply be that multiple models describe the data equally well. It is a pragmatic problem however, because ideally we have a method that allows us to pick one so we can move on.
+
+The conceptual problem is more problematic. Defining error as counting the number of misses means we ignore the *degree* of error. Saying a weight is 6 kg, while it is in fact 10 kg, is as wrong as saying the weight is 60 kg. Instead, we can define error as the difference between the actual data point and the model's value. So, in the case of our `weight = 6 kg` model, an actual weight of 10 kg would have an error of 4. This definition of error is often referred to as the residual. 
+
+Below I plot the residuals of the first 25 Pokémon for our `weight = 6 kg` model.
+
+```{r, echo = FALSE}
+ggplot(pokemon25, aes(x = reorder(name, pokedex), y = weight)) +
+  geom_bar(stat = "identity", alpha = .4) +
+  geom_segment(aes(xend = pokedex, y = 6, yend = weight), linetype = 2) +
+  geom_point() +
+  geom_abline(intercept = 6, slope = 0, size = 0.8) +
+  labs(x = "", y = "Weight (kg)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+We can add up all of the (absolute) residuals to determine the model's error. Just like with the binary definition of error, we can then compare multiple models. This is what you can see in the graph below. For each model, the absolute residuals were calculated and added together. 
+
+```{r, echo = FALSE}
+crossing(
+    weight = pull(pokemon25, weight),
+    model = 1:100
+  ) %>%
+  mutate(error = abs(weight - model)) %>%
+  group_by(model) %>%
+  summarize(error_sum = sum(error)) %>%
+  ggplot(aes(x = model, y = error_sum)) +
+    geom_line() +
+    labs(x = "Model", y = "Error (sum of residuals)")
+```
+
+Now we see that some kind of minimum appears. Unlike the binary definition of error, it now looks like there are fewer *best* models. More importantly, though, we have defined error in a less crude manner, meaning that the better models indeed capture the data much better than before.
+
+But we might still not be entirely happy with this new definition of error either. Calculating the sum of absolute residuals for each model comes (again) with pragmatic and conceptual problems.
+
+Let's focus on the conceptual problem. When you sum the number of absolute errors, four errors of 1 are equal to a single error of 4. In other words, you could have a model that is slightly off multiple times or one that might make fewer, but larger, errors, and yet they could be counted as equally wrong. What do we think of that? Conceptually speaking, we might find it more problematic when a model is very wrong than when the model is slightly off multiple times. If we think that, we need another definition of error. 
+
+To address this issue, we can square the residuals before adding them together. That way, larger errors become relatively larger compared to smaller errors. Using our previous example, summing four residuals of 1 remains 4, but a single residual of 4 becomes 4 * 4 = 16. The model now gets punished more severely for making large mistakes.
+
+Using this new definition of error, we again plot the error for each model, from 1 to 100.
+
+```{r, echo = FALSE}
+crossing(
+    weight = pull(pokemon25, weight),
+    model = 1:100
+  ) %>%
+  mutate(error = abs(weight - model)^2) %>%
+  group_by(model) %>%
+  summarize(error_sum = sum(error)) %>%
+  ggplot(aes(x = model, y = error_sum)) +
+    geom_line() +
+    geom_vline(xintercept = mean(pull(pokemon25, weight)), linetype = 2) +
+    labs(x = "Model", y = "Error (sum of squared residuals)")
+```
+
+We see a smooth curve, with a clear minimum indicated by the vertical dashed line. This vertical line indicates the model that best describes the data. But what is the value of the best model exactly? In this case, the answer is `r mean(pull(pokemon25, weight))`. And it turns out, there is an easy way to determine this value.
+
+## Estimating the model from the data
+
+Rather than setting a specific value and seeing how it fits the data, we can also use the data to estimate the value that best fits the data. In the previous graph we saw that the best fitting model is one where the weight is equal to `r mean(pull(pokemon25, weight))`. This value turns out to be the mean of the different weights we have observed in our sample. Had we defined error as simply the sum of absolute residuals, this would be a different value. In fact, the best fitting value would then be equal to `r median(pull(pokemon25, weight))`, or the median. The table below shows an overview of which technique can be used to find the best fitting value, depending on the error definition.
+
+```{r, echo = FALSE}
+x <- pull(pokemon25, weight)
+
+tibble(
+  error_definition = c("sum of errors", "sum of absolute residuals", "sum of squared residuals"),
+  estimation_technique = c("mode", "median", "mean"),
+  best_model = c(unique(x)[which.max(tabulate(match(x, unique(x))))], median(x), mean(x))
+) %>%
+  kable(col.names = c("Error definition", "Estimation technique", "Best model"), table.attr = "class = my_table")
+```
+
+We can now update our model to refer to the estimation technique, rather than a static value:
+
+> weight = mean(weight)
+
+However, estimating the model comes with a significant problem. Our model is now completely dependent on the data we sampled. Remember that we focused our attention on the weights of only the first 25 Pokémon. In this sample, the average weight is `r mean(pull(pokemon25, weight))`. But what if we instead focused on the next 25 Pokémon, from Raichu to Diglet? The average weight of these Pokémon is `r mean(pull(pokemon25_50, weight))`. That's a difference of `r mean(pull(pokemon25, weight)) - mean(pull(pokemon25_50, weight))`. This raises the question: how stable is our mean estimate?
+
+## Sampling distribution of the mean
+
+Imagine that we are not the only ones creating a Pokémon weight model. Instead, we are one of many who are doing so, and we all exchange our model information. We can tell others about our observation that `r paste("weight =", mean(pull(pokemon25, weight)))`. In turn, others will give us their sample means. This enables us to plot the distribution of mean values. 
+
+In the following graph I plot the distribution of 10.000 means. Each of these means is an average of 25 randomly selected Pokémon.
+
+```{r, echo = FALSE, message = FALSE}
+crossing(i = 1:10000) %>%
+  rowwise() %>%
+  mutate(mean = mean(sample(pokemon$weight, 25), na.rm = TRUE)) %>%
+  ggplot(aes(x = mean)) +
+    geom_histogram() +
+    labs(x = "Sample mean", y = "Count")
+```
+
+What if we base our mean on more than just 25 Pokémon? Or even fewer Pokémon? Below I plot what the distribution of means looks like at varying sample sizes.
+
+```{r, echo = FALSE, message = FALSE}
+crossing(i = 1:10000, n = c(10, 25, 50, 100)) %>%
+  rowwise() %>%
+  mutate(mean = mean(sample(pokemon$weight, n), na.rm = TRUE)) %>%
+  ggplot(aes(x = mean, color = factor(n), fill = factor(n))) +
+    geom_density(alpha = .25) +
+    labs(x = "Sample mean", y = "Density", color = "Sample size", fill = "Sample size")
+```
+
+Two things jump out. First, as the sample size increases, the distribution of means becomes more narrow. This is fairly easy to understand; more data means we are more likely to capture the range of weight values, giving us a better estimate of the overall mean. With small sample sizes, the mean is more dependent on exactly which weights were drawn from the larger population of weights. Second, we see that as the sample size increases, so does the average weight. There appears to be a bias. This bias is caused by the fact that the weights are not normally distributed. Weights are always a positive number (you can't weight -6 kg, for instance). Since some Pokémon are very heavy (e.g., Cosmoem and Celesteela both weigh 999.9 kg), the distribution of weights is skewed towards larger weights. The heavy Pokémon have a significant impact on the average weight. Smaller samples are more likely to miss these heavy Pokémon, resulting a lower estimates. 
+
+The fact our data is non-normally distributed might actually be a reason to favor an alternative statistical technique to estimate the weight, such as the median. After all, the median is less sensitive to a few large values that skew the distribution. A downside of the median is that it is less efficient than the mean when estimating the center of a collection of values. Intuitively, this can be understood because the median simply ranks values and picks the middle option. It ignores a lot of information about the actual distance between the values, which also makes it so that it is less affected by a few large values. A downside is that this does mean we need more data points relative to methods that take into account more information, such as the mean. 
+
+We could fix this issue by log-transforming the weight values. Below I plot the same graph as before, but on log-transformed data. Log-transforming the weights makes large values less influential, and causes the distribution of weights to more closely resemble a normal distribution.
+
+```{r, echo = FALSE, message = FALSE}
+crossing(i = 1:10000, n = c(10, 25, 50, 100)) %>%
+  rowwise() %>%
+  mutate(mean = mean(sample(log(pokemon$weight), n), na.rm = TRUE)) %>%
+  ggplot(aes(x = mean, color = factor(n), fill = factor(n))) +
+    geom_density(alpha = .25) +
+    labs(x = "Sample mean", y = "Density", color = "Sample size", fill = "Sample size")
+```
+
+Now are means seem to behave appropriately. 
+
+Our next challenge is how to describe the uncertainty in the mean distributions. We see that when the average weight is based on a sample of 10 Pokémon, the distribution of means is wider than when the average weight is based on 100 Pokémon. But how much wider? 
+
+The width of the sample mean distribution is a function of two things: 1) the sample size, and 2) the distribution of the residuals. We already covered how the sample size is relevant, so let's focus on the distribution of the residuals. 
+
+Let's visualize the residuals of our `weight = mean(weight)` model, or, to be more accurate now, our `weight_log = mean(weight_log)` model.
+
+```{r, echo = FALSE}
+ggplot(pokemon25, aes(x = reorder(name, pokedex), y = log(weight))) +
+  geom_bar(stat = "identity", alpha = .4) +
+  geom_segment(aes(xend = pokedex, y = mean(log(weight)), yend = log(weight)), linetype = 2) +
+  geom_point() +
+  geom_abline(aes(intercept = mean(log(weight)), slope = 0), size = 0.8) +
+  labs(x = "", y = "Log transformed weight (kg)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+The horizontal line represents the mean of the log-transformed weights. We see that it does not perfectly describe each data point, although we know this is the value that minimizes the sum of the squared residuals. We can now also see that the weights show us just how reliable the mean estimate is. If the Pokémon would have the same weights, the mean would better capture these weights, and the residuals would be smaller. If, and this appears to be the case, Pokémon vary wildly in terms of weight, the mean is often an incorrect description of a Pokémon's weight, and as a result it is also more likely to vary from sample to sample. The mean is heavily influenced by exactly which Pokémon it has sampled from.
+
+We can describe the variation in residuals using the very definition of the error we have maintained so far: the sum of squared residuals. However, this description ignores an important piece of information, which is the sample size. Large sums of squared residuals could be due to a few very large residuals or to many small residuals. To better capture the accuracy of the model, we should divide the sum of squared residuals by the sample size. 
+
+Actually, we should divide the sum of squared residuals by the sample size *minus one*. Why? Dividing by the sample size would give us a biased estimate of the variation in residuals. We must remember that we are estimating the variation of the residuals with regards to the mean, yet the mean is itself also an estimation. When we calculate the variation in residuals, this is done with respect to the observed mean in the sample, but this mean could also be a different mean, one that might even lie outside of the sample we have observed. As a result, relying on the observed mean produces an underestimation of the variation, because it will always be the mean of the sample, and thus lie somewhere between the minimum and maximum observed weight, while another mean could lie outside of the observed values, which would increase the variation in residuals. 
+
+But why divide by the sample size minus one? The underestimation is a function of the variation in sample means. The more variation there is between the different sample means, the more likely it is that any single sample consists of non-representative values. In contrast, if there is little variation in sample means, the underestimation must be smaller. The variation in sample means is actually the variation itself divided by the sample size, which we saw earlier. We saw that there is less variation in sample means when the samples are larger. This means that the amount of underestimation in variance is the variance divided by the sample size, or itself minus itself divided by the sample size. This is the same as saying sample size minus one divided by the sample size. Note that this is the bias we expect. To undo this bias, we then multiply by the sample size divided by the sample size minus one. 
+
+We now know how to calculate the variance of the residuals, as well as the variance in the sample means. 
+
+```{r}
+
+errors <- pokemon25 %>%
+  select(weight) %>%
+  mutate(
+    weight_log = log(weight),
+    y = mean(weight_log),
+    error = y - weight_log
+  ) %>%
+  pull(error)
+
+t.test(log(pokemon25$weight))
+
+
+```
+

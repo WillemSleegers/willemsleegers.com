@@ -1,0 +1,161 @@
+---
+title: "eyepatch"
+description: "An R package for preparing pupillometry data."
+image: "https://picsum.photos/300/200"
+---
+
+```{r, echo = FALSE, message = FALSE}
+# Load packages
+library(tidyverse)
+library(eyepatch)
+library(knitr)
+library(kableExtra)
+
+# Set ggplot theme
+theme_set(theme_bw(base_size = 18))
+
+# Load example data
+pupil <- read_csv("../../static/data/pupil-trial-example.csv")
+
+# Create a pupil preprocessing log in the Data folder
+create_log(location = "../../static/data/", overwrite = TRUE)
+```
+
+## Description
+
+`eyepatch` is an R package designed to make it easier to process pupil data acquired with an eye tracker and to log every processing step that was taken. It contains functions to center time data relative to a specific starting point, removing invalid observations and outliers, pupil size smoothing, controlling for baseline pupil sizes, and functions to log these steps. It is built on `tidyverse` principles, meaning it works well together with popular packages such as `dplyr` and `tidyr`. 
+
+## Installation
+
+`eyepatch` is currently in development and so cannot yet be installed from CRAN. However, you can download the package from my Github page with the `devtools` package (make sure that the `devtools` package is installed).
+
+```{r install-package, eval = FALSE}
+# Install the package from Github
+devtools::install_github("willemsleegers/eyepatch")
+
+# Load the package
+library(eyepatch)
+```
+
+## An example
+
+To demonstrate the functions contained within `eyepatch`, we use the following data. The data is a single trial from an experiment in which participants looked at valenced pictures. The trial consists of three events: a gray picture (2000ms), a valenced picture (6000ms), and a white screen (2000ms). We are interested in the pupillary response in response to the valenced picture. The data was produced by a Tobii eye tracker.
+
+```{r example, warning = FALSE, fig.width = 10, echo = FALSE}
+kable(pupil) %>%
+  kable_styling() %>%
+  row_spec(0, background = "rgb(245, 245, 245)") %>%
+  scroll_box(height = "400px", extra_css = "border:none;")
+```
+
+Some notable observations are that there is a timestamp column, which starts at 9380031 and ends at 9391964. We have two pupil size columns, from the left and right eye, validity ratings, and an event column that specifies what was on the screen at that moment.
+
+### Creating a log
+
+As mentioned in the description, `eyepatch` serves two functions: to make it easier to perform pupil processing steps and to log these steps. You can log each processing step by setting the `log` argument to `TRUE` in each processing function you perform. However, before you can do this, you must first create the file with the `create_log()` function. This function takes three arguments:
+
+- `location`: A character string specifying where (in which folder) you want to create the log file.
+- `file_name`: A character string specifying the name of the file. If you do not specify this, it will be called 'pupil-preprocessing.log`.
+- `overwrite`: A boolean value (`TRUE`/`FALSE`) specifying whether the file should be overwritten if it already exists.
+
+Note that the file extension of the default file name is '.log'. You can name the file, including the file extension, anything you want because the file that will be created is a simple text file. However, if you use the '.log' file extension, you do not need to keep specifying the file name in each processing function. Instead, the function will be able to find the file automatically for you, based on the file extension.
+
+An example of creating the log file can be found below.
+
+```{r create-log-file, eval = FALSE}
+# Create a pupil preprocessing log in the Data folder
+create_log(location = "data/")
+```
+
+This will print the message "Created data/pupil-preprocessing.log". You can open this file with a text editor, such as Sublime Text, Atom, or simply in RStudio with File -> Open File...
+
+If you open the newly created file, you'll see it already has some content.
+
+> \# Pupil preprocessing log
+>
+> Log created on 2020-01-04 21:10:29
+
+It logged the date of its creation, together with an initial header called "Pupil preprocessing log". The text is formatted in Markdown, an easy to read and web-friendly format.
+
+
+### Centering time
+
+In the previous graph you see that the x-axis contains the timestamps. However, the timestamps seem to begin and end with a seemingly random number. What you probably want is for the time to start at 0 and increase until the end of the trial. Or perhaps you want to center the time around a specific event that happened during the trial. In this case, participants saw a picture around 2 seconds after the start of a trial. Since our interest is in observing the pupillary reaction in response to this picture, we want the onset of the picture to be t = 0. 
+
+`eyepatch` has a function called `center_time()` that can do this for us.
+
+```{r center-time}
+pupil <- mutate(pupil, 
+    time = center_time(timestamp, event == "picture")
+  )
+```
+
+```{r figure2, warning = FALSE, fig.width = 10, echo = FALSE}
+pupil %>%
+  select(time, pupil_left, pupil_right) %>%
+  gather("eye", "pupil_size", pupil_left, pupil_right) %>%
+  ggplot(aes(x = time, y = pupil_size, color = eye)) +
+    geom_point(alpha = .5) +
+    scale_color_manual(values = c("#2C3E50", "#18BC9C"))
+```
+
+Now we can zoom in on the period that is of interest to us. Let's say that is from -500 to 6000 ms. 
+
+```{r}
+pupil <- filter(pupil, time >= -500 & time < 6000)
+```
+
+```{r figure3, warning = FALSE, fig.width = 10, echo = FALSE}
+pupil %>%
+  select(time, pupil_left, pupil_right) %>%
+  gather("eye", "pupil_size", pupil_left, pupil_right) %>%
+  ggplot(aes(x = time, y = pupil_size, color = eye)) +
+    geom_point() +
+    scale_color_viridis_d()
+```
+
+### Removing invalid observations
+
+As we can see in the last figure, we have a few observations that appear to be -1. Since it is not possible for the pupil to be negative, these are invalid observations. While there are a variety of ways to set these values to NA (missing), it is recommended to use a function from the `eyepatch` package, as it also logs the result.
+
+```{r}
+pupil <- mutate(pupil, 
+    pupil_left = invalid_to_na(pupil_left, validity_left == 4),
+    pupil_right = invalid_to_na(pupil_right, validity_right == 4)
+  )
+```
+
+```{r figure4, warning = FALSE, fig.width = 10, echo = FALSE}
+pupil %>%
+  select(time, pupil_left, pupil_right) %>%
+  gather("eye", "pupil_size", pupil_left, pupil_right) %>%
+  ggplot(aes(x = time, y = pupil_size, color = eye)) +
+    geom_point(alpha = .5) +
+    scale_color_viridis_d()
+```
+
+```{r, echo = FALSE}
+pupil <- mutate(pupil, 
+    pupil_left_old = pupil_left,
+    pupil_right_old = pupil_right
+  )
+```
+
+Now we can more clearly see the pupil response, and that there are outliers.
+
+### Removing outliers
+
+```{r}
+pupil <- mutate(pupil,
+    pupil_left = dilation_speed_outliers_to_na(pupil_left, time, 
+      constant = 10),
+    pupil_right = dilation_speed_outliers_to_na(pupil_right, time, 
+      constant = 10),
+  )
+```
+
+```{r}
+ggplot(pupil, aes(x = time)) +
+  geom_point(aes(y = pupil_left_old), color = "red") +
+  geom_point(aes(y = pupil_left))
+```

@@ -1,0 +1,560 @@
+---
+title: "tidystats"
+description: "An R-based solution for researchers to report more statistics with fewer errors."
+image: "https://picsum.photos/300/200"
+---
+
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+
+
+<div id="brief-description" class="section level3">
+<h3>Brief description</h3>
+<p><code>tidystats</code> is a package to create a file containing the output of
+statistical models. The goal of this package is to help researchers accompany
+their manuscript with an organized data file of statistical results in order to
+greatly improve the reliability of meta-research and to reduce statistical
+reporting errors.</p>
+</div>
+<div id="why" class="section level3">
+<h3>Why?</h3>
+<p>Scientific hypotheses are tested using statistical tests. It is the output of
+the statistical tests that generally determine whether an hypothesis is
+supported or not. In other words, the output of statistical tests is
+<strong>important</strong>. Yet, statistical output is mostly treated like a second-class
+citizen.</p>
+<p>This leads to two problems:</p>
+<ul>
+<li>Insufficient statistics reporting</li>
+<li>Incorrect statistics reporting</li>
+</ul>
+<p>I believe that <code>tidystats</code> can address both of these issues.</p>
+</div>
+<div id="how" class="section level3">
+<h3>How?</h3>
+<p><code>tidystats</code> enables researchers to create a file that contains <em>all</em> statistics
+output. This file is a JSON file. JSON files are organized files of data that
+are easy to read for computers (but less easy to read for humans). The upside of
+storing statistics outside of a manuscript is that the researcher does not need
+to worry about which analyses to report in the space-limited manuscript. An
+additional benefit is that because JSON files are easy to read for computers,
+it is (relatively) easy to write software that does cool things with these
+files.</p>
+</div>
+<div id="installation" class="section level3">
+<h3>Installation</h3>
+<p><code>tidystats</code> can be installed from CRAN and the latest version can be installed
+from Github using devtools.</p>
+<p>Please note that the package is still under heavy development, which means that
+the package is undergoing many changes that might break older code.</p>
+<pre class="r"><code>library(devtools)
+install_github(&quot;willemsleegers/tidystats&quot;)</code></pre>
+</div>
+<div id="setup" class="section level3">
+<h3>Setup</h3>
+<p>To use <code>tidystats</code>, load the package and start by creating an empty list to
+store the results of statistical models in.</p>
+<pre class="r"><code>library(tidystats)
+
+results &lt;- list()</code></pre>
+</div>
+<div id="usage" class="section level3">
+<h3>Usage</h3>
+<p>The main function is <code>add_stats()</code>. The function has 2 necessary arguments:</p>
+<ul>
+<li><code>results</code>: The list you want to add the statistical output to.</li>
+<li><code>output</code>: The output of a statistical test you want to add to the list
+(e.g., the output of t.test() or lm())</li>
+</ul>
+<p>Optional, but useful, arguments include adding a unique identifier and
+additional notes using the <code>identifier</code> and <code>notes</code> arguments.</p>
+<p>The identifier is used to identify the model
+(e.g., ‘weight_height_correlation’). This has to be a unique value; the function
+will throw an error if a duplicate identifier is provided. If you do not provide
+an identifier, one is automatically created for you based on the name of the
+output variable.</p>
+<p>The notes argument can (and should) be used to add additional information which
+you or others may find fruitful. For example, you can specify that the test is
+a manipulation check or one of the crucial hypothesis tests. Some statistical
+tests have default notes output (e.g., t-tests), which will be overwritten when
+a notes argument is supplied to the add_stats() function.</p>
+</div>
+<div id="an-example" class="section level3">
+<h3>An example</h3>
+<p>To illustrate how to use <code>tidystats</code>, I will analyze the Many Labs replication
+of Lorge &amp; Curtiss (1936). Lorge and Curtiss (1936) examined how a quotation is
+perceived when it is attributed to a liked or disliked individual. The quotation
+of interest was:</p>
+<blockquote>
+<p>“I hold it that a little rebellion, now and then, is a good thing, and as
+necessary in the political world as storms are in the physical world.”</p>
+</blockquote>
+<p>In one condition the quotation was attributed to Thomas Jefferson and in the
+other it was attributed to Vladimir Lenin. Lorge and Curtiss (1936) found that
+people agree more with the quotation when the quotation was attributed to
+Jefferson than Lenin. In the Many Labs replication study, the quotation was
+attributed to either George Washington, the liked individual, or Osama Bin
+Laden, the disliked individual. We are again interested in testing whether the
+source of the quotation affects how it is evaluated (on a 9-point Likert scale
+ranging from 1 [disagreement] to 9 [agreement]).</p>
+<p>Before getting into how <code>tidystats</code> should be used, let’s first simply analyze
+the data. I have designed <code>tidystats</code> to be minimally invasive. In other words,
+to use <code>tidystats</code>, you do not need to substantially change your data analysis
+workflow.</p>
+<p>We start by visualizing the data and calculating several simple descriptives.</p>
+<p><img src="/project/tidystats_files/figure-html/unnamed-chunk-3-1.png" width="384" style="display: block; margin: auto;" /></p>
+<p>This looks like the effect is in the expected direction. Participates rated the
+quotation as more favorably when they believe the quote to be from George
+Washington.</p>
+<p>Regarding descriptives, <code>tidystats</code> comes with its own function to calculate
+descriptives, inspired by the <code>describe()</code> function from the <code>psych</code> package.</p>
+<pre class="r"><code>quote_source %&gt;%
+  group_by(source) %&gt;%
+  describe_data(response)</code></pre>
+<div style="overflow-x: auto !important; display: block; 
+    margin-bottom:10px">
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+variable
+</th>
+<th style="text-align:right;">
+missing
+</th>
+<th style="text-align:right;">
+N
+</th>
+<th style="text-align:left;">
+source
+</th>
+<th style="text-align:right;">
+M
+</th>
+<th style="text-align:right;">
+SD
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+min
+</th>
+<th style="text-align:right;">
+max
+</th>
+<th style="text-align:right;">
+range
+</th>
+<th style="text-align:right;">
+median
+</th>
+<th style="text-align:right;">
+mode
+</th>
+<th style="text-align:right;">
+skew
+</th>
+<th style="text-align:right;">
+kurtosis
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+response
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+3083
+</td>
+<td style="text-align:left;">
+Bin Laden
+</td>
+<td style="text-align:right;">
+5.23
+</td>
+<td style="text-align:right;">
+2.11
+</td>
+<td style="text-align:right;">
+0.04
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+-0.08
+</td>
+<td style="text-align:right;">
+2.59
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+response
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3242
+</td>
+<td style="text-align:left;">
+Washington
+</td>
+<td style="text-align:right;">
+5.93
+</td>
+<td style="text-align:right;">
+2.21
+</td>
+<td style="text-align:right;">
+0.04
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+-0.23
+</td>
+<td style="text-align:right;">
+2.18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Here we see exactly how many observations we have, per group. All the other
+information was already present in the violin plot.</p>
+<p>To test whether the differences between the two sources are statistically
+significant, we perform a <em>t</em>-test. Normally, we would just run the t-test like
+so:</p>
+<pre class="r"><code>t.test(response ~ source, quote_source)</code></pre>
+<p>However, since we want to later add this analysis to our list of analyses, we
+need to store the output of the t-test in a variable. We can then see the output
+of the t-test by simply printing the variable to the console, like so:</p>
+<pre class="r"><code>main_test &lt;- t.test(response ~ source, quote_source)
+main_test</code></pre>
+<div style="overflow-x: auto !important; display: block; 
+    margin-bottom:10px">
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+t
+</th>
+<th style="text-align:left;">
+p
+</th>
+<th style="text-align:left;">
+df
+</th>
+<th style="text-align:left;">
+difference
+</th>
+<th style="text-align:left;">
+95% CI lower
+</th>
+<th style="text-align:left;">
+95% CI upper
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+-12.80
+</td>
+<td style="text-align:left;">
+4.6e-37
+</td>
+<td style="text-align:left;">
+6322.72
+</td>
+<td style="text-align:left;">
+-0.70
+</td>
+<td style="text-align:left;">
+-0.80
+</td>
+<td style="text-align:left;">
+-0.59
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This shows us that there is a statistically significant effect of the quote
+source, consistent with the hypothesis.</p>
+<p>Next, let’s run some additional analyses. One thing we can test is whether the
+effect is stronger in the US compared to non-US countries. To test this, we
+perform a regression analysis.</p>
+<pre class="r"><code>us_moderation_test &lt;- lm(response ~ source * us_or_international, quote_source)
+summary(us_moderation_test)</code></pre>
+<div style="overflow-x: auto !important; display: block; 
+    margin-bottom:10px">
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Term
+</th>
+<th style="text-align:left;">
+b
+</th>
+<th style="text-align:left;">
+SE
+</th>
+<th style="text-align:left;">
+t
+</th>
+<th style="text-align:left;">
+p
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:left;">
+5.249
+</td>
+<td style="text-align:left;">
+0.085
+</td>
+<td style="text-align:left;">
+61.83
+</td>
+<td style="text-align:left;">
+0.00000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sourceWashington
+</td>
+<td style="text-align:left;">
+0.405
+</td>
+<td style="text-align:left;">
+0.117
+</td>
+<td style="text-align:left;">
+3.46
+</td>
+<td style="text-align:left;">
+0.00055
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+us_or_internationalUS
+</td>
+<td style="text-align:left;">
+-0.021
+</td>
+<td style="text-align:left;">
+0.095
+</td>
+<td style="text-align:left;">
+-0.22
+</td>
+<td style="text-align:left;">
+0.82589
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sourceWashington:us_or_internationalUS
+</td>
+<td style="text-align:left;">
+0.372
+</td>
+<td style="text-align:left;">
+0.132
+</td>
+<td style="text-align:left;">
+2.81
+</td>
+<td style="text-align:left;">
+0.00497
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>There appears to be a significant interaction. Since I’m terrible at
+interpretating interaction terms, let’s inspect the interaction with a graph.</p>
+<p><img src="/project/tidystats_files/figure-html/unnamed-chunk-11-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p>We see that the effect of source is larger in the US. Given that the positive
+source was George Washington, this makes sense.</p>
+<p>Next, let’s do one more analysis to see whether the effect is stronger in a lab
+setting compared to an online setting.</p>
+<pre class="r"><code>lab_moderation_test &lt;- lm(response ~ source * lab_or_online, quote_source)
+summary(lab_moderation_test)</code></pre>
+<div style="overflow-x: auto !important; display: block; 
+    margin-bottom:10px">
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Term
+</th>
+<th style="text-align:left;">
+b
+</th>
+<th style="text-align:left;">
+SE
+</th>
+<th style="text-align:left;">
+t
+</th>
+<th style="text-align:left;">
+p
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:left;">
+5.197
+</td>
+<td style="text-align:left;">
+0.057
+</td>
+<td style="text-align:left;">
+91.59
+</td>
+<td style="text-align:left;">
+0.0e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sourceWashington
+</td>
+<td style="text-align:left;">
+0.686
+</td>
+<td style="text-align:left;">
+0.079
+</td>
+<td style="text-align:left;">
+8.68
+</td>
+<td style="text-align:left;">
+5.1e-18
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lab_or_onlineonline
+</td>
+<td style="text-align:left;">
+0.066
+</td>
+<td style="text-align:left;">
+0.078
+</td>
+<td style="text-align:left;">
+0.85
+</td>
+<td style="text-align:left;">
+3.9e-01
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sourceWashington:lab_or_onlineonline
+</td>
+<td style="text-align:left;">
+0.017
+</td>
+<td style="text-align:left;">
+0.109
+</td>
+<td style="text-align:left;">
+0.16
+</td>
+<td style="text-align:left;">
+8.7e-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We see no significant interaction in this case. This means we do not find
+evidence that running the study in an online setting significantly weakens the
+effect; good to know!</p>
+<p>Now let’s get to <code>tidystats</code>. We have three analyses we want to save: a
+<em>t</em>-test and two regression analyses. We stored each of these analyses in
+separate variables, called <code>main_test</code>, <code>us_moderation_test</code>, and
+<code>lab_moderation_test</code>. But we do not just want to save the output, we also want
+to add some additional information to each analysis. For the sake of this
+example, let’s say that the <em>t</em>-test was our primary test. We also had a
+suspicion that the location (US vs. international) would matter, but it wasn’t
+our main interest. Nevertheless, we preregistered these two analyses. During
+data analysis, we figured that it might also matter whether the study was
+conducted in the lab or online, so we tested it. This means that this is an
+exploratory analysis. With <code>add_stats()</code>, we can add this information.</p>
+<p>We will add the three variables containing the analyses to the list we previously
+created, called <code>results</code>. This is done with the <code>add_stats()</code> function.
+<code>add_stats()</code> accepts a list as its first argument, followed by a variable
+containing a statistics model. In our case, this means we need to use the
+<code>add_stats()</code> function three times, as we have three different analyses we want
+to save. Since this can get pretty repetitive, we will use the piping operator
+to pipe link the three steps together and save some typing.</p>
+<pre class="r"><code>results &lt;- results %&gt;%
+  add_stats(main_test, type = &quot;primary&quot;, preregistered = TRUE) %&gt;%
+  add_stats(us_moderation_test, type = &quot;secondary&quot;, preregistered = TRUE) %&gt;%
+  add_stats(lab_moderation_test, type = &quot;secondary&quot;, preregistered = FALSE)</code></pre>
+<p>I recommend to do this at the end of the data analysis script in a section
+called ‘tidystats’. This confines most of the <code>tidystats</code> code to a single
+section, keeping it organized, and it will keep most of your script readable to
+those unfamiliar with <code>tidystats</code>.</p>
+<p>After all the analyses are added to the list, the list can be saved as a .json
+file to your computer’s disk. This is done with the <code>write_stats()</code> function.
+The function requires the list as its first argument, followed by a file path.
+I’m a big fan of using RStudio Project files so that you can define relative
+file paths. In this case, I create the .json file in the ‘Data’ folder of my
+project folder.</p>
+<pre class="r"><code>write_stats(results, &quot;Data/results.json&quot;)</code></pre>
+<p>That’s it! You can now share the output of your statistical analyses with others
+or start using the file to report the results in your manuscript. Want to see
+what this .json file looks like? You can download it <a href="data/example.json">here</a>.
+Open the file in a text editor to see how the statistics are structured. As you
+will see, it is not easy for our human eyes to quickly see the results, but
+that’s where computers come in.</p>
+</div>

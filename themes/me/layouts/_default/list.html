@@ -1,0 +1,30 @@
+{{ partial "header.html" . }}
+
+
+	<div class="column-middle">
+		<div class="container-list" >
+			<div class="posts">
+			  {{ $pages := .Pages }}
+			  {{ if .IsHome }}{{ $pages = .Site.RegularPages }}{{ end }}
+			  {{ range (where $pages "Section" "!=" "") }}
+			  <div class="post">
+			    <p class="date">{{ .Date.Format "January 2, 2006" }}</p>
+			    <a href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a>
+			  </div>
+			  {{ end }}
+			</div>
+		</div>
+	</div>
+	
+	<div class="column-right">
+		<div class="tags">
+		  {{ range $tag, $value := $.Site.Taxonomies.tags }}
+		  <div class="tag">
+		    <a href="{{ "/tags/" | relLangURL}}{{ $tag | urlize }}">#{{ $tag | urlize }} ({{ len $value }})</a>
+		  </div>
+		  {{ end }} 
+		</div>
+	</div>
+</div>
+
+{{ partial "footer.html" . }}
