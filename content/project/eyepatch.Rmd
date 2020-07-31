@@ -1,13 +1,14 @@
 ---
 title: "eyepatch"
 description: "An R package for preparing pupillometry data."
-image: "eye.jpg"
+image: "img/eyepatch.png"
 draft: true
 ---
 
 ```{r, echo = FALSE, message = FALSE}
 # Load packages
 library(tidyverse)
+library(here)
 library(eyepatch)
 library(knitr)
 library(kableExtra)
@@ -16,10 +17,10 @@ library(kableExtra)
 theme_set(theme_bw(base_size = 18))
 
 # Load example data
-pupil <- read_csv("../../static/data/pupil-trial-example.csv")
+pupil <- read_csv(here("static", "data", "pupil-trial-example.csv"))
 
 # Create a pupil preprocessing log in the Data folder
-create_log(location = "../../static/data/", overwrite = TRUE)
+create_log(location = here("static", "data"), overwrite = TRUE)
 ```
 
 ## Description

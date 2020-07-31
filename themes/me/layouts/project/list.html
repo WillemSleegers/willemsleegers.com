@@ -7,7 +7,7 @@
 				{{ range (where $pages "Section" "!=" "") }}
 				<div class="project">
 					<a href="{{ .RelPermalink }}">
-					<img class="project-img" src="{{ .Param "image" }}" alt="Card image cap">
+					<img class="project-img" src="{{ .Param "image" | relURL }}" alt="Project image">
 					<div class="project-body">
 						<h3 class="project-title">{{ .Title | markdownify }}</h3>
 					    <p class="project-text">{{ .Param "description" | markdownify }}</p>

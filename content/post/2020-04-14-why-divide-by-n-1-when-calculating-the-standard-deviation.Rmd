@@ -1,11 +1,9 @@
 ---
 title: Why divide by N - 1 when calculating the standard deviation?
-author: ''
 date: '2020-04-14'
-slug: why-divide-by-n-1-when-calculating-the-standard-deviation
-categories: []
-tags: []
-math: true
+slug: why-divide-by-n-1
+tags: [statistics]
+draft: true
 ---
 
 ```{r setup, echo = FALSE, message = FALSE}

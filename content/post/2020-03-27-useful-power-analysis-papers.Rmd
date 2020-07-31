@@ -3,13 +3,9 @@ title: Useful power analysis papers
 author: Willem Sleegers
 date: '2020-03-27'
 slug: useful-power-analysis-papers
-categories: [papers]
 tags:
   - statistics
   - power analysis
-description: ''
-externalLink: ''
-series: []
 ---
 
 In this post I list papers that are useful for understanding power analyses. A crazy thing happened in the field of social psychology. Somehow people became of the opinion that psychologists *must* do power analyses, but without knowing how to do them. I have rarely seen a correct power analysis being conducted. Hopefully the papers below will be helpful in improving the way we do them.
@@ -27,5 +23,3 @@ Most importantly, it is about the problem of multiple statistical tests. Many po
 This is a great paper on a common pitfall in power analyses for attentuated interaction tests. Attenuated interactions are interactions where you expect a predictor to have an  effect in one condition, but not another. They show that in a 2 x 2 design, you should use a fourfold of the sample size that is needed to show the interaction effect. Of course, this only applies when you predict a perfect attenuated interaction (a complete absence of the effect in the other condition, rather than a diminished one) and that you do not have any measurement error.
 
 This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.
-
-

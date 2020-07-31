@@ -1,13 +1,14 @@
 ---
 title: Understanding regression
 description: "Me attempting to understand the basics of statistical regression."
-image: "https://picsum.photos/300/200"
+image: "img/regression.png"
 draft: true
 ---
 
 ```{r setup, echo = FALSE, message = FALSE}
 # Load packages
 library(tidyverse)
+library(here)
 library(knitr)
 library(kableExtra)
 
@@ -21,7 +22,7 @@ theme_update(panel.background = element_rect(fill = "transparent", colour = NA),
 opts_chunk$set(dev.args=list(bg="transparent"))
 
 # Read in Pokemon data
-pokemon <- read_csv("../../static/data/pokemon.csv")
+pokemon <- read_csv(here("static", "data", "pokemon.csv"))
 
 # Subset the data
 pokemon25 <- filter(pokemon, generation == 1 & pokedex <= 25)
