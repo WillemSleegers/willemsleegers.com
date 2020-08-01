@@ -1,0 +1,19 @@
+---
+title: New Website (Again)
+date: '2020-07-31'
+slug: new-website-again
+tags: 
+  - website
+---
+
+Well, I did it again--I made a new website. For some reason I can never stay satisfied with the way things look or the way things work when it comes to my own personal website. I'm feeling kinda optimistic about this one though!
+
+One of the reasons I struggle with maintaining a website is because it's hard to design a website that looks nice and has useful functionality, such as support for blogging. Of course, there's the amazing [`blogdown`](https://bookdown.org/yihui/blogdown/) package in R that makes it rather trivial to setup a website, but then you have to select a theme that fits your needs. So far, I have not found that theme, despite several getting pretty close.
+
+Usually a particular theme covers 80% or perhaps even 90% of what I want. That's a decent chunk, but it does mean I always end up having to change HTML, CSS, and JavaScript code so that the website does exactly what I want. For example, I want to use code highlighting because it makes code more readable (and pretty). However, while some themes offer highlighting support, I then still need to delve into the code and add support for custom functions so that *all* functions are highlighted, and not just a limited set of functions.
+
+Then there's the responsiveness of the website and its general look. Many themes do a good job in creating a pretty and responsive website, but usually there are small hiccups or design choices that I would do differently. I then again have to delve into the code and adjust it.
+
+So I've decided to build this website by going over all the code myself and changing it to be what I want it to be, using a few starters for the code and design of the website. The code mostly comes from Yihui Xie's [extremely minimal Hugo theme](https://github.com/yihui/hugo-xmin) and the design/looks comes from Jake Wiesler's [Codex theme](https://themes.gohugo.io/hugo-theme-codex/). 
+
+Having finished most of the functionality of this website, it's time for content.

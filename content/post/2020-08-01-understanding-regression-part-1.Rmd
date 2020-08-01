@@ -1,0 +1,217 @@
+---
+title: Understanding Regression (Part 1)
+date: '2020-08-01'
+tags:
+  - statistics
+  - tutorial
+---
+
+```{r setup, echo = FALSE, message = FALSE}
+# Load packages
+library(tidyverse)
+library(here)
+library(knitr)
+library(kableExtra)
+
+# Set options
+options(
+  knitr.kable.NA = "", 
+  dplyr.summarise.inform = FALSE
+) 
+
+# Set ggplot theme
+theme_set(theme_bw(base_size=12))
+theme_update(panel.background = element_rect(fill = "transparent", colour = NA),
+             plot.background = element_rect(fill = "transparent", colour = NA))
+opts_chunk$set(
+  dev.args = list(bg = "transparent"),
+  out.width = "100%",
+  echo = FALSE
+)
+
+# Read in Pokemon data
+pokemon <- read_csv(here("static", "data", "pokemon.csv"))
+
+# Subset the data
+pokemon25 <- filter(pokemon, generation == 1 & pokedex <= 25)
+pokemon25_50 <- filter(pokemon, generation == 1 & pokedex > 25 & pokedex <= 50)
+pokemon151 <- filter(pokemon, generation == 1)
+```
+
+Statistical regression techniques are an important concept in data analysis. As a psychologist, I use it to test hypotheses by comparing differences between groups or testing relationships between variables. While it is easy to run regression analyses in a variety of software packages, like SPSS or R, it often remains a black box that is not well understood. I, in fact, do not believe I actually understand regression. This is Part 1 of a series of blog posts called 'Understanding Regression' in which I try to figure it all out.
+
+## Data
+
+To figure out regression, we need data. We could make up some data on the spot, but I'd rather use data that is a bit more meaningful. Since I'm a big Pokémon fan, I'll use a data set containing Pokémon statistics. Below I show some data on 10 different Pokémon. 
+
+```{r 10 pokemon data}
+pokemon %>%
+  filter(pokedex <= 10) %>%
+  select(pokedex, name, type1, type2, height, weight, evolution) %>%
+  kable(digits = 2) %>%
+  kable_styling("basic", full_width = F) %>%
+  scroll_box(box_css = "overflow-x: auto !important; display: block; 
+    margin-bottom:10px")
+```
+
+As you can see, Pokémon have several attributes. They have different types (e.g., grass, fire, water), a height, some weight, and they are of a particular evolutionary stage (0, 1, or 2). This last variable refers to a Pokémon's ability to evolve and when they do, they tend to become bigger and more powerful.
+
+Let's say that we are interested in understanding the weight of different Pokémon. Below I have plotted the weight of the first 25 Pokémon, from Bulbasaur to Pikachu.
+
+```{r 25 pokemon weights}
+ggplot(pokemon25, aes(x = reorder(name, pokedex), y = weight)) +
+  geom_bar(stat = "identity") +
+  labs(x = "", y = "Weight (kg)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Describing these observations, we see that the lightest Pokémon is Pidgey, with a weight of `r min(pull(pokemon25, weight))` kg. The heaviest Pokémon is Venusaur, with a weight of `r max(pull(pokemon25, weight))` kg. The average weight is `r mean(pull(pokemon25, weight))` kg.
+
+## The Simplest Model
+
+In order to understand the weights of different Pokémon, we need to come up with a statistical model. In a way, this can be considered a description problem. How can we best describe the different weights that we have observed? The simplest description is a single number. We can say that all Pokémon have a weight of say... 6 kg. In other words:
+
+> weight = 6 kg
+
+Of course, this is just one among many possible models. Below I plot three different models, including our `weight = 6 kg` model.
+
+```{r 3 weight models}
+ggplot(pokemon25, aes(x = reorder(name, pokedex), y = weight)) +
+  geom_bar(stat = "identity", alpha = .4) +
+  labs(x = "", y = "Weight (kg)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  geom_abline(intercept = 6, slope = 0, size = 0.75, linetype = 2) +
+  geom_abline(intercept = 40, slope = 0, size = 0.75, linetype = 2) +
+  geom_abline(intercept = 75, slope = 0, size = 0.75, linetype = 2) +
+  annotate("text", x = 28.5, y = 6.5, label = "weight = 6 kg") +
+  annotate("text", x = 28.5, y = 40.5, label = "weight = 40 kg") +
+  annotate("text", x = 28.5, y = 75.5, label = "weight = 75 kg") +
+  coord_cartesian(xlim = c(1, 25), clip = 'off') +
+  theme(plot.margin = unit(c(1,6,1,1), "lines"))
+```
+
+
+While a model like `weight = 6 kg` is a valid model, it is not a very good model. In fact, it only perfectly describes Pikachu's weight and inaccurately describes the weight of the remaining 24 Pokémon. The other models, such as `weight = 40 kg` might be even worse; they do not even describe a single Pokémon's weight correctly, although they do get closer to some of the heavier Pokémon. How do we decide which model is the better model? In order to answer that question, we need to consider the model's error.
+
+## Error
+
+The error of a model is the degree to which the model inaccurately describes the data. There are several ways to calculate that error and we will cover three different definitions.
+
+The first definition of error is simply the sum of times that the model inaccurately describes the data. For each observation we check whether the model correctly describes it or not. We then sum the number of misses and consider that the amount of error for that model. With our `weight = 6 kg` the answer is 24; out of the 25 Pokémon only Pikachu has a weight of 6, which means the model is correct once and wrong 24 times.
+
+We can now compare different models to one another by calculating the error for a range of models. Below I plot the number of errors for 100 different models, starting with the model `weight = 1 kg`, all the way up to `weight = 100 kg`.
+
+```{r sum of errors}
+crossing(
+    weight = pull(pokemon25, weight),
+    model = 1:100
+  ) %>%
+  mutate(error = if_else(abs(weight - model) == 0, 0, 1)) %>%
+  group_by(model) %>%
+  summarize(error_sum = sum(error)) %>%
+  ggplot(aes(x = model, y = error_sum)) +
+    geom_line() + 
+    coord_cartesian(ylim = c(1, 25)) +
+    labs(x = "Model", y = "Error (sum of errors)")
+```
+
+We see that almost all models perform poorly. There are several models that have an error of 24 (i.e., they estimate the weight correctly for 1 Pokémon), while the remaining models have an error of 25 (i.e., they estimate none of the Pokémon's weights correctly).
+
+There are two problems with this definition of error: a pragmatic one and a conceptual one. The pragmatic problem is that we have multiple *best* models, because there are multiple models with an error of 24, which is the lowest error any of the 100 models achieves. This is not necessarily a problem because it can simply be that multiple models describe the data equally well. It is a pragmatic problem however, because ideally we have a method that allows us to pick one so we can move on.
+
+The conceptual problem is more problematic. Defining error as counting the number of misses means we ignore the *degree* of error. Saying a weight is 6 kg, while it is in fact 10 kg, is as wrong as saying the weight is 60 kg. Instead, we can define error as the difference between the actual data point and the model's value. So, in the case of our `weight = 6 kg` model, an actual weight of 10 kg would have an error of 4. This definition of error is often referred to as the residual. 
+
+Below I plot the residuals of the first 25 Pokémon for our `weight = 6 kg` model.
+
+```{r residuals}
+ggplot(pokemon25, aes(x = reorder(name, pokedex), y = weight)) +
+  geom_bar(stat = "identity", alpha = .4) +
+  geom_segment(aes(xend = pokedex, y = 6, yend = weight), linetype = 2) +
+  geom_point() +
+  geom_abline(intercept = 6, slope = 0, size = 0.8) +
+  labs(x = "", y = "Weight (kg)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+We can add up all of the (absolute) residuals to determine the model's error. Just like with the binary definition of error, we can then compare multiple models. This is what you see in the graph below. For each model, the absolute residuals were calculated and added together. 
+
+```{r sum of residuals}
+crossing(
+    weight = pull(pokemon25, weight),
+    model = 1:100
+  ) %>%
+  mutate(error = abs(weight - model)) %>%
+  group_by(model) %>%
+  summarize(error_sum = sum(error)) %>%
+  ggplot(aes(x = model, y = error_sum)) +
+    geom_line() +
+    labs(x = "Model", y = "Error (sum of residuals)")
+```
+
+Now we see that some kind of minimum appears. Unlike the binary definition of error, it now looks like there are fewer *best* models. More importantly, though, we have defined error in a less crude manner, meaning that the better models indeed capture the data much better than before.
+
+But we might still not be entirely happy with this new definition of error either. Calculating the sum of absolute residuals for each model comes (again) with pragmatic and conceptual problems.
+
+The pragmatic problem is the same as with summing the number of errors: there are multiple *best* models. In our case, models ranging from `weight = 13 kg` to `weight = 18 kg` have the same amount of error (498.3). Although this is just the way it is, it's a bit annoying when we want to settle on a single model. 
+
+The conceptual problem is more interesting. When you sum the number of absolute errors, four errors of 1 are equal to a single error of 4. In other words, you could have a model that is slightly off multiple times or one that might make fewer, but larger, errors, and yet they could be counted as equally wrong. What do we think of that? Conceptually speaking, we might find it more problematic when a model is very wrong than when the model is slightly off multiple times. If we think that, we need another definition of error. 
+
+To address this issue, we can square the residuals before adding them together. That way, larger errors become relatively larger compared to smaller errors. Using our previous example, summing four residuals of 1 remains 4, but a single residual of 4 becomes 4 * 4 = 16. The model now gets punished more severely for making large mistakes.
+
+Using this new definition of error, we again plot the error for each model, from 1 to 100.
+
+```{r sum of squared residuals}
+crossing(
+    weight = pull(pokemon25, weight),
+    model = 1:100
+  ) %>%
+  mutate(error = abs(weight - model)^2) %>%
+  group_by(model) %>%
+  summarize(error_sum = sum(error)) %>%
+  ggplot(aes(x = model, y = error_sum)) +
+    geom_line() +
+    geom_vline(xintercept = mean(pull(pokemon25, weight)), linetype = 2) +
+    labs(x = "Model", y = "Error (sum of squared residuals)")
+```
+
+We see a smooth curve, with a clear minimum indicated by the vertical dashed line. This vertical line indicates the model that best describes the data. What is the value of the best model exactly? In this case, the answer is `r mean(pull(pokemon25, weight))`. And it turns out, there is an easy way to determine this value.
+
+## Estimating the model from the data
+
+Rather than setting a specific value and seeing how it fits the data, we can also use the data to determine the value that best fits the data. In the previous graph we saw that the best fitting model is one where the weight is equal to `r mean(pull(pokemon25, weight))`. This value turns out to be the mean of the different weights we have observed in our sample. Had we defined error as simply the sum of absolute residuals, this would be a different value. In fact, the best fitting value would then be equal to `r median(pull(pokemon25, weight))`, or the median. The table below shows an overview of which technique can be used to find the best fitting value, depending on the error definition.
+
+```{r error-table}
+x <- pull(pokemon25, weight)
+
+tibble(
+  error_definition = c("sum of errors", "sum of absolute residuals", "sum of squared residuals"),
+  estimation_technique = c("mode", "median", "mean"),
+  best_model = c(unique(x)[which.max(tabulate(match(x, unique(x))))], median(x), mean(x))
+) %>%
+  kable(col.names = c("Error definition", "Estimation technique", "Best model"), table.attr = "class = my_table", digits = 2) %>%
+  kable_styling("basic", full_width = F) %>%
+  scroll_box(box_css = "overflow-x: auto !important; display: block; 
+    margin-bottom:10px")
+```
+
+We can now update our model to refer to the estimation technique, rather than a static value:
+
+> weight = mean(weight)
+
+This is also the value you get when you perform a regression analysis in R. Using R's `lm()` function, we can run our model with the following code: 
+
+```{r simple regression code, echo = TRUE, eval = FALSE}
+lm(weight ~ 1, data = pokemon25)
+```
+
+By regressing weight onto 1 we are telling R to run an intercept-only model. This means that R will estimate which line will best fit all the values in the outcome variable, just like we have done ourselves earlier by testing different models such as `weight = 6 kg`. 
+
+R spits out the following result:
+
+```{r simple regression output}
+lm(weight ~ 1, data = pokemon25)
+```
+
+The result is an intercept value of `r mean(pull(pokemon25, weight))`, which matches the mean of the weights.
+
+So, we now know where the intercept comes from when we run an intercept-only model. It is the mean of the data we are trying to model. Note that it is only the mean because we defined the error as the sum of *squared* residuals. Had we defined the error differently, such as the sum of absolute residuals, the intercept would be the median of the data instead. Why did we use the sum of squared residuals? We had the pragmatic reason for wanting a single best model and a conceptual reason of punishing larger residuals relatively more than several smaller errors. It turns out there is another reason to favor squared residuals over absolute residuals, which has to do with a nice property of the mean vs. the median. This will be covered in Part 2 of 'Understanding Regression'.

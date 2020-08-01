@@ -330,3 +330,57 @@ footer {
 .math {
   
 }
+
+/* Code */
+
+pre {
+  overflow: auto;
+  word-wrap: normal;
+  margin: 0 0 1.275em;
+  padding: .85em 1em;
+  background: #f7f7f7;
+}
+
+pre code {
+  background: #f7f7f7 !important;
+}
+
+code {
+  padding: .2em;
+  margin: 0;
+  font-size: .85em;
+  background-color: #f7f7f7;
+}
+
+/* Tables */
+
+.table {
+  width: 100%;
+  border-spacing: 0;
+  color: #212529;
+}
+
+.table th,
+.table td {
+  padding: 0.5rem;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody + tbody {
+  border-top: 2px solid #dee2e6;
+}
+
+/* Blockquotes */
+
+blockquote {
+  margin: 0 0 .85em;
+  padding: 0 15px;
+  opacity: .75;
+  border-left: 4px solid #dcdcdc;
+}

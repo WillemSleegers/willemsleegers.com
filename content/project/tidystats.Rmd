@@ -123,7 +123,7 @@ workflow.
 
 We start by visualizing the data and calculating several simple descriptives.
 
-```{r, warning = FALSE, echo = FALSE, fig.align = "center", fig.height = 4, fig.width = 4}
+```{r, warning = FALSE, echo = FALSE, fig.align = "center", fig.height=4.5, fig.width = 4.5, out.width = "70%"}
 ggplot(quote_source, aes(x = source, y = response, fill = source)) +
   geom_violin(alpha = .8) +
   stat_summary(fun.y = "mean", geom = "point") +
@@ -211,7 +211,7 @@ us_moderation_test %>%
   tidy() %>%
   mutate_if(is.numeric, format, digits = 2, nsmall = 2) %>%
   kable(col.names = c("Term", "b", "SE", "t", "p")) %>%
-  kable_styling("basic", full_width = F) %>%
+  kable_styling(full_width = F) %>%
   scroll_box(box_css = "overflow-x: auto !important; display: block; 
     margin-bottom:10px")
 ```
@@ -219,7 +219,7 @@ us_moderation_test %>%
 There appears to be a significant interaction. Since I'm terrible at 
 interpretating interaction terms, let's inspect the interaction with a graph.
 
-```{r, warning = FALSE, echo = FALSE, fig.align = "center", fig.height = 4, fig.width = 9}
+```{r, warning = FALSE, echo = FALSE, fig.align = "center", out.width = "100%"}
 ggplot(quote_source, aes(x = source, y = response, 
     fill = us_or_international)) +
   geom_violin(alpha = .8) +
