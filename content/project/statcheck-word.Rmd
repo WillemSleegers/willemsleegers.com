@@ -3,3 +3,13 @@ title: "statcheck for Word"
 description: "A Microsoft Word add-in to check your statistics for errors."
 image: "img/statcheck.png"
 ---
+
+Together with [Michèle Nuijten](https://mbnuijten.com) I am working on a `statcheck` implementation for Microsoft Word. 
+
+[`statcheck`](https://cran.r-project.org/web/packages/statcheck/index.html) is an R package designed to catch statistical reporting mistakes. It works by first extracting statistics from a paper (e.g., *t* values, degrees of freedom, *p*-values). It will then use the test statistic and degrees of freedom to re-calculate the *p*-value and compare it to the reported *p*-value. If the two don't match, there is a reporting mistake. 
+
+You can use the `statcheck` package in R to check your paper or you can use the [web app](http://statcheck.io). Using the web app consists of simply uploading your paper and checking the results. You can then go back to the paper and correct the mistakes.
+
+Of course, an even easier way is to have `statcheck` available while writing your paper. That's why Michèle and I are working on a Word add-in that allows you to check potential reporting mistakes as you're working on it.
+
+Our current progress can be found on our Github page [here](https://github.com/WillemSleegers/statcheck-word), and I will update this page with more information as we continue to develop the add-in.
