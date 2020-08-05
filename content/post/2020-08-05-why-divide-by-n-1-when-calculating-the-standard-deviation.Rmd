@@ -120,11 +120,11 @@ tibble(population = population) %>%
     scale_x_continuous(breaks = 1:20)
 ```
 
-The mean is `r mu` and the variance is `r sigma`. Note that these are our population parameters (often denoted as $\mu$ for the population mean and $\sigma^2$ for the population variance). That means that these values are the true values that we want to estimate with samples drawn for our population, so let's do that; repeatedly.
+The mean is `r mu` and the variance is `r sigma`. Note that these are our population parameters (often denoted as $\mu$ for the population mean and $\sigma^2$ for the population variance). That means that these values are the true values that we want to estimate with samples drawn from our population, so let's do that.
 
 For instance, we can draw a sample of size `r length(sample)` from our population. Say we do that and get the following values: `r sample`. We can then calculate the variance in two ways, using division by n and division by n - 1. In the former case, this will result in `r var_biased(sample)` and in the latter case it results in `r var(sample)`. 
 
-Now let's do that many many times. Below I show the results of many draws from our population. I simulated drawing samples of size 2 to 10, each 10000 different times. I then plotted for each sample the average biased variance (dividing by n; left) and the average unbiased variance (dividing by n - 1; right). 
+Now let's do that many many times. Below I show the results of many draws from our population. I simulated drawing samples of size 2 to 10, each 1000 different times. I then plotted for each sample the average biased variance (dividing by n; left) and the average unbiased variance (dividing by n - 1; right). 
 
 ```{r bias, fig.height=4}
 ggplot(data_long, aes(x = n, y = var_value)) +
@@ -136,7 +136,7 @@ ggplot(data_long, aes(x = n, y = var_value)) +
   scale_x_continuous(breaks = seq(from = 2, to = 20, by = 2))
 ```
 
-We see that the biased measure of variance is indeed biased. The average variance is always lower than the true variance (indicated by the dashed line). We also see that the unbiased variance is indeed unbiased. On average, the sample variance matches that of the population variance.
+We see that the biased measure of variance is indeed biased. The average variance is lower than the true variance (indicated by the dashed line) for each sample size. We also see that the unbiased variance is indeed unbiased. On average, the sample variance matches that of the population variance.
 
 The results of using the biased measure of variance reveals several clues for understanding the solution to the bias. We see that the amount of bias is larger when the sample size of the samples is smaller. So the solution should be a function of sample size, such that the required correction will be smaller as the sample size increases. We also see that that the bias at n = 2 is half that of the true variance, 2/3rds at n = 3, 3/4ths at n = 4, and so on. Interesting.
 
@@ -144,7 +144,7 @@ But before we go into the solution, we still need to figure out what exactly cau
 
 Ideally we would estimate the variance of the sample by subtracting each value from the population mean. However, since we don't know what the population mean is, we use the next best thing--the sample mean. But this is where the bias comes in. When you use the sample mean, you're guaranteed that the mean lies somewhere within the range of your data points. In fact, the mean of a sample minimizes the sum of squared deviations from the mean. This means that the sum of deviations from the sample mean is always smaller than the sum of deviations from the population mean. The only exception to that is when the sample mean happens to be the population mean.
 
-Let's illustrate this with a few graphs. Below are two graphs. In each graph I show 10 data points that represent our population. I then draw two data points from this population, which represents our sample. In the left graph I then show the deviations from the sample mean and in the right graph the deviations from the population mean.
+Let's illustrate this with a few graphs. Below are two graphs. In each graph I show 10 data points that represent our population. I also highlight two data points from this population, which represents our sample. In the left graph I show the deviations from the sample mean and in the right graph the deviations from the population mean.
 
 ```{r samples, fig.height = 3.75}
 x <- c(2, 2, 4, 4, 4, 6, 8, 9, 10, 10)
@@ -191,7 +191,7 @@ p2 <- ggplot(s, aes(x = index, y = value, color = factor(sample))) +
 
 p1 + p2
 ```
-In the left graph the sum of squared deviations are much smaller than in the right graph . In the left graph, the sum is (8 - 9)² + (10 - 9)² = 2 and in the right graph it's (8 - `r mean(x)`)² + (10 - `r mean(x)`)² = `r (8 - mean(x))^2 + (10 - mean(x))^2`. The sum is smaller when using the sample mean compared to using the population mean.
+We see that in the left graph the sum of squared deviations are much smaller than in the right graph. The sum of is (8 - 9)² + (10 - 9)² = 2 in the left graph and in the right graph its (8 - `r mean(x)`)² + (10 - `r mean(x)`)² = `r (8 - mean(x))^2 + (10 - mean(x))^2`. The sum is smaller when using the sample mean compared to using the population mean.
 
 This is true for any sample you draw from the population (again, except when the sample mean happens to be the same as the population mean). Let's look at one more draw where the sample mean is closer to the population mean.
 
@@ -239,9 +239,9 @@ p2 <- ggplot(s, aes(x = index, y = value, color = factor(sample))) +
 p1 + p2
 ```
 
-Here the sum in the left graph is (2 - `r mean(c(2, 10))`)² + (10 - `r mean(c(2, 10))`)² = `r (2 - mean(c(2, 10)))^2 + (10 - mean(c(2, 10)))^2` and the sum in the right graph is (2 - `r mean(x)`)² + (10 - `r mean(x)`)² = `r (2 - mean(x))^2 + (10 - mean(x))^2`. The difference is small now, but using the sample mean still results in a smaller variance compared to using the population mean. 
+Here the sum in the left graph is (2 - `r mean(c(2, 10))`)² + (10 - `r mean(c(2, 10))`)² = `r (2 - mean(c(2, 10)))^2 + (10 - mean(c(2, 10)))^2` and the sum in the right graph is (2 - `r mean(x)`)² + (10 - `r mean(x)`)² = `r (2 - mean(x))^2 + (10 - mean(x))^2`. The difference is small now, but using the sample mean still results in a smaller sum compared to using the population mean. 
 
-In short, the source of the bias comes from using the sample mean instead of the population mean. The sample mean is always guaranteed to be in the middle of the observed data, thereby reducing the variance, and creating an underestimation. As the sample size increases, the sample mean gets closer to the population mean, which reduces the bias. 
+In short, the source of the bias comes from using the sample mean instead of the population mean. The sample mean is always guaranteed to be in the middle of the observed data, thereby reducing the variance, and creating an underestimation. 
 
 ## The Solution
 
@@ -252,11 +252,11 @@ Looking at the previous graphs, we can see that if the sample mean is far from t
 In other words, the variance of a population actually consists of two types of variance: variance of the data points around the sample mean *and* the variance of the sample mean around the population mean:
 
 $$\sigma^2_{sample} + \sigma^2_{mean} = \sigma^2_{population}$$
-Let's confirm that this is true. For that we need to know how to calculate the variance of the sample mean around the population mean. This is relatively simple; it's the variance of the population divided by n ($\frac{\sigma^2}n$). This makes sense because the greater the variance, the more the mean can jump around, but the more data you sample, the more likely you are to obtain the population mean. 
+Let's confirm that this is true. For that we need to know how to calculate the variance of the sample mean around the population mean. This is relatively simple; it's the variance of the population divided by n ($\frac{\sigma^2}n$). This makes sense because the greater the variance, the more the mean can jump around, but the more data you sample, the closer you get to the population mean. 
 
 Now that we can calculate both the variance of the sample and the variance of the sample mean, we can check whether adding them together results in the population variance. 
 
-Below I show a graph in which I again sampled from our population, with varying sample sizes. For each sample, I calculated the sample variance (the biased one) and the variance of the mean of that sample (using variance/n). I did this 10,000 times per sample size, took the average of each and put them on top of each other. I also added a dashed line to indicate the variance of the sample, which is the benchmark we're trying to reach.
+Below I show a graph in which I again sampled from our population, with varying sample sizes. For each sample, I calculated the sample variance (the biased one) and the variance of the mean of that sample (using variance/n). I did this 1000 times per sample size, took the average of each and put them on top of each other. I also added a dashed line to indicate the variance of the population, which is the benchmark we're trying to reach.
 
 ```{r}
 variances %>%
