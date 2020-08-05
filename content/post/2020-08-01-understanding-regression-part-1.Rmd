@@ -33,9 +33,7 @@ opts_chunk$set(
 pokemon <- read_csv(here("static", "data", "pokemon.csv"))
 
 # Subset the data
-pokemon25 <- filter(pokemon, generation == 1 & pokedex <= 25)
-pokemon25_50 <- filter(pokemon, generation == 1 & pokedex > 25 & pokedex <= 50)
-pokemon151 <- filter(pokemon, generation == 1)
+pokemon25 <- filter(pokemon, pokedex <= 25)
 ```
 
 Statistical regression techniques are an important concept in data analysis. As a psychologist, I use it to test hypotheses by comparing differences between groups or testing relationships between variables. While it is easy to run regression analyses in a variety of software packages, like SPSS or R, it often remains a black box that is not well understood. I, in fact, do not believe I actually understand regression. This is Part 1 of a series of blog posts called 'Understanding Regression' in which I try to figure it all out.
@@ -47,7 +45,8 @@ To figure out regression, we need data. We could make up some data on the spot, 
 ```{r 10 pokemon data}
 pokemon %>%
   filter(pokedex <= 10) %>%
-  select(pokedex, name, type1, type2, height, weight, evolution) %>%
+  select(pokedex, name, type_primary, type_secondary, height, weight, 
+    evolution) %>%
   kable(digits = 2) %>%
   kable_styling("basic", full_width = F) %>%
   scroll_box(box_css = "overflow-x: auto !important; display: block; 
@@ -194,7 +193,7 @@ tibble(
     margin-bottom:10px")
 ```
 
-We can now update our model to refer to the estimation technique, rather than a static value:
+We can now update our model to refer to the estimation technique, rather than a fixed value:
 
 > weight = mean(weight)
 

@@ -1,0 +1,305 @@
+---
+title: Why divide by N - 1 when calculating the variance of a sample?
+date: '2020-08-05'
+tags:
+  - statistics
+slug: why-divide-by-n-1
+---
+
+```{r setup, echo = FALSE, message = FALSE}
+# Load packages
+library(tidyverse)
+library(patchwork)
+library(knitr)
+
+# Set ggplot settings
+theme_set(theme_bw(base_size=12))
+theme_update(panel.background = element_rect(fill = "transparent", colour = NA),
+             plot.background = element_rect(fill = "transparent", colour = NA))
+opts_chunk$set(
+  dev.args = list(bg = "transparent"),
+  out.width = "100%",
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+
+options(digits = 2)
+
+viridis_purple <- "#440d54"
+viridis_green <- "#79c56e"
+
+# Set the seed for reproducibility
+set.seed(4234)
+
+# Create a biased variance function
+var_biased <- function(x) {
+  sum((x - mean(x))^2)/length(x)
+}
+
+# Create population data
+min <- 1
+max <- 10
+population <- round(runif(1000, min = min, max = max))
+
+# Get the mean and population variance
+mu <- sum(population)/length(population)
+sigma <- sum((population - mean(population))^2)/length(population)
+
+# Sample from the population
+sample <- sample(population, size = 5)
+
+data <- crossing(
+    n = 2:20,
+    i = 1:1000,
+    mean = NA,
+    var_biased = NA,
+    var_unbiased = NA
+  )
+
+for (i in 1:nrow(data)) {
+  x <- sample(population, data$n[i])
+  
+  data$mean[i] <- mean(x)
+  data$var_biased[i] <- var_biased(x)
+  data$var_unbiased[i] <- var(x)
+}
+
+# Make the data long so that each type of variance is on a separate row
+data_long <- data %>%
+  pivot_longer(cols = c(var_biased, var_unbiased), names_to = "var_type", 
+    values_to = "var_value") %>%
+  mutate(var_type = recode(var_type, "var_biased" = "Biased", 
+    "var_unbiased" = "Unbiased"))
+
+# Calculate the variances per sample size
+variances <- data %>%
+  mutate(var_mean = var_unbiased / n) %>%
+  group_by(n) %>%
+  summarize(
+    var_biased = mean(var_biased),
+    var_unbiased = mean(var_unbiased),
+    var_mean = mean(var_mean)
+  ) %>%
+  mutate(
+    proportion = var_mean / var_unbiased
+  )
+```
+
+In a recent [tweet](https://twitter.com/willemsleegers/status/1290388221394849803?s=20) I asked the question why we use $n - 1$ when calculating the variance of a sample. Many people contributed an answer (thanks!), so make sure to check out the tweet to see all the responses. In this post, I will try to describe my favorite way of looking at the issue, in part based on the responses I received. 
+
+## The Formula
+
+The formula for calculating the variance is:
+
+$$\frac{\sum(x_i - \overline{x})^2}{n}$$
+
+The variance is a measure of the dispersion around the mean, and in that sense this formula makes sense. We calculate all the deviations from the mean ($x_i - \overline{x}$), square them (for reasons I might go into in a different post) and sum them. We then divide this sum by the number of observations as a scaling factor. If we ignore this number, we could get a very high variance simply by observing a lot of data. So, to fix that problem, we divide by the total number of observations.
+
+However, this is the formula for the *population* variance. The formula for calculating the variance of a *sample* is:
+
+$$\frac{\sum(x_i - \overline{x})^2}{n - 1}$$
+
+Why do we divide by *n* - 1?
+
+If you Google this question, you will get a variety of answers. You might find a mathematical proof of why it needs to be *n* - 1 or something about degrees of freedom. These kinds of answers don't work for me. I trust them to be correct, but it doesn't produce any insight. It does not actually help me understand 1) the problem and 2) why the solution is the solution that it is. So, below I am going to try to figure it out in a way that actually makes conceptual and intuitive sense (to me). 
+
+## The Problem
+
+The problem with using the population variance formula to calculate the variance of a sample is that it is biased. It is biased in that it produces an *underestimation* of the true variance. Let's demonstrate that with some simulated data. 
+
+We simulate a population of `r length(population)` data points from a uniform distribution with a range from `r min(population)` to `r max(population)`. Below I show the histogram that represents our population.
+
+```{r population}
+tibble(population = population) %>%
+  count(population) %>%
+  ggplot(mapping = aes(x = population, y = n)) +
+    # geom_histogram(color = "black", fill = viridis_purple, alpha = .75) +
+    geom_col(color = "black", fill = viridis_purple, alpha = .75) +
+    labs(x = "x") +
+    scale_x_continuous(breaks = 1:20)
+```
+
+The mean is `r mu` and the variance is `r sigma`. Note that these are our population parameters (often denoted as $\mu$ for the population mean and $\sigma^2$ for the population variance). That means that these values are the true values that we want to estimate with samples drawn for our population, so let's do that; repeatedly.
+
+For instance, we can draw a sample of size `r length(sample)` from our population. Say we do that and get the following values: `r sample`. We can then calculate the variance in two ways, using division by n and division by n - 1. In the former case, this will result in `r var_biased(sample)` and in the latter case it results in `r var(sample)`. 
+
+Now let's do that many many times. Below I show the results of many draws from our population. I simulated drawing samples of size 2 to 10, each 10000 different times. I then plotted for each sample the average biased variance (dividing by n; left) and the average unbiased variance (dividing by n - 1; right). 
+
+```{r bias, fig.height=4}
+ggplot(data_long, aes(x = n, y = var_value)) +
+  geom_hline(yintercept = sigma, linetype = 2) +
+  stat_summary(fun = "mean", geom = "point", color = "black", size = 2) +
+  facet_wrap(~ var_type) +
+  labs(y = "Variance") +
+  coord_cartesian(ylim = c(0, sigma + 1)) +
+  scale_x_continuous(breaks = seq(from = 2, to = 20, by = 2))
+```
+
+We see that the biased measure of variance is indeed biased. The average variance is always lower than the true variance (indicated by the dashed line). We also see that the unbiased variance is indeed unbiased. On average, the sample variance matches that of the population variance.
+
+The results of using the biased measure of variance reveals several clues for understanding the solution to the bias. We see that the amount of bias is larger when the sample size of the samples is smaller. So the solution should be a function of sample size, such that the required correction will be smaller as the sample size increases. We also see that that the bias at n = 2 is half that of the true variance, 2/3rds at n = 3, 3/4ths at n = 4, and so on. Interesting.
+
+But before we go into the solution, we still need to figure out what exactly causes the bias.
+
+Ideally we would estimate the variance of the sample by subtracting each value from the population mean. However, since we don't know what the population mean is, we use the next best thing--the sample mean. But this is where the bias comes in. When you use the sample mean, you're guaranteed that the mean lies somewhere within the range of your data points. In fact, the mean of a sample minimizes the sum of squared deviations from the mean. This means that the sum of deviations from the sample mean is always smaller than the sum of deviations from the population mean. The only exception to that is when the sample mean happens to be the population mean.
+
+Let's illustrate this with a few graphs. Below are two graphs. In each graph I show 10 data points that represent our population. I then draw two data points from this population, which represents our sample. In the left graph I then show the deviations from the sample mean and in the right graph the deviations from the population mean.
+
+```{r samples, fig.height = 3.75}
+x <- c(2, 2, 4, 4, 4, 6, 8, 9, 10, 10)
+
+s <- tibble(
+    index = 1:10,
+    value = x,
+    sample = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1),
+    mean = mean(c(8, 10)),
+    mu = mean(x)
+  ) %>%
+  mutate(
+    mean = ifelse(sample == 1, mean, NA),
+    mu = ifelse(sample == 1, mu, NA)
+  )
+
+p1 <- ggplot(s, aes(x = index, y = value, color = factor(sample))) +
+  geom_hline(aes(yintercept = mu), linetype = "dashed", color = "gray") +
+  geom_point(size = 2) +
+  geom_hline(aes(yintercept = mean), linetype = "dashed", color = viridis_purple) +
+  geom_segment(aes(xend = index, y = mean, yend = value), linetype = 2) +
+  coord_flip() +
+  scale_color_manual(values = c("gray", viridis_purple)) +
+  guides(color = FALSE) +
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+
+p2 <- ggplot(s, aes(x = index, y = value, color = factor(sample))) +
+  geom_hline(aes(yintercept = mean), linetype = "dashed", color = "gray") +
+  geom_point() +
+  geom_hline(aes(yintercept = mu), linetype = "dashed", color = viridis_purple) +
+  geom_segment(aes(xend = index, y = mu, yend = value), linetype = 2) +
+  coord_flip() +
+  scale_color_manual(values = c("gray", viridis_purple)) +
+  guides(color = FALSE) +
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+
+p1 + p2
+```
+In the left graph the sum of squared deviations are much smaller than in the right graph . In the left graph, the sum is (8 - 9)² + (10 - 9)² = 2 and in the right graph it's (8 - `r mean(x)`)² + (10 - `r mean(x)`)² = `r (8 - mean(x))^2 + (10 - mean(x))^2`. The sum is smaller when using the sample mean compared to using the population mean.
+
+This is true for any sample you draw from the population (again, except when the sample mean happens to be the same as the population mean). Let's look at one more draw where the sample mean is closer to the population mean.
+
+```{r samples2, fig.height = 3.75}
+s <- tibble(
+    index = 1:10,
+    value = c(2, 2, 4, 4, 4, 6, 8, 9, 10, 10),
+    sample = c(1, 0, 0, 0, 0, 0, 0, 0, 1, 0),
+    mean = mean(c(2, 10)),
+    mu = mean(c(2, 2, 4, 4, 4, 6, 8, 9, 10, 10))
+  ) %>%
+  mutate(
+    mean = ifelse(sample == 1, mean, NA),
+    mu = ifelse(sample == 1, mu, NA)
+  )
+
+p1 <- ggplot(s, aes(x = index, y = value, color = factor(sample))) +
+  geom_hline(aes(yintercept = mu), linetype = "dashed", color = "gray") +
+  geom_point(size = 2) +
+  geom_hline(aes(yintercept = mean), linetype = "dashed", color = viridis_purple) +
+  geom_segment(aes(xend = index, y = mean, yend = value), linetype = 2) +
+  coord_flip() +
+  scale_color_manual(values = c("gray", viridis_purple)) +
+  guides(color = FALSE) +
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+
+p2 <- ggplot(s, aes(x = index, y = value, color = factor(sample))) +
+  geom_hline(aes(yintercept = mean), linetype = "dashed", color = "gray") +
+  geom_point() +
+  geom_hline(aes(yintercept = mu), linetype = "dashed", color = viridis_purple) +
+  geom_segment(aes(xend = index, y = mu, yend = value), linetype = 2) +
+  coord_flip() +
+  scale_color_manual(values = c("gray", viridis_purple)) +
+  guides(color = FALSE) +
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+
+p1 + p2
+```
+
+Here the sum in the left graph is (2 - `r mean(c(2, 10))`)² + (10 - `r mean(c(2, 10))`)² = `r (2 - mean(c(2, 10)))^2 + (10 - mean(c(2, 10)))^2` and the sum in the right graph is (2 - `r mean(x)`)² + (10 - `r mean(x)`)² = `r (2 - mean(x))^2 + (10 - mean(x))^2`. The difference is small now, but using the sample mean still results in a smaller variance compared to using the population mean. 
+
+In short, the source of the bias comes from using the sample mean instead of the population mean. The sample mean is always guaranteed to be in the middle of the observed data, thereby reducing the variance, and creating an underestimation. As the sample size increases, the sample mean gets closer to the population mean, which reduces the bias. 
+
+## The Solution
+
+Now that we know that the bias is caused by the sample mean, we can figure out how to solve the problem.
+
+Looking at the previous graphs, we can see that if the sample mean is far from the population mean, the sample variance is smaller and the bias is large. If the sample mean is close to the population mean, the sample variance is larger and the bias is small. So, the more the sample mean moves around, the greater the bias. 
+
+In other words, the variance of a population actually consists of two types of variance: variance of the data points around the sample mean *and* the variance of the sample mean around the population mean:
+
+$$\sigma^2_{sample} + \sigma^2_{mean} = \sigma^2_{population}$$
+Let's confirm that this is true. For that we need to know how to calculate the variance of the sample mean around the population mean. This is relatively simple; it's the variance of the population divided by n ($\frac{\sigma^2}n$). This makes sense because the greater the variance, the more the mean can jump around, but the more data you sample, the more likely you are to obtain the population mean. 
+
+Now that we can calculate both the variance of the sample and the variance of the sample mean, we can check whether adding them together results in the population variance. 
+
+Below I show a graph in which I again sampled from our population, with varying sample sizes. For each sample, I calculated the sample variance (the biased one) and the variance of the mean of that sample (using variance/n). I did this 10,000 times per sample size, took the average of each and put them on top of each other. I also added a dashed line to indicate the variance of the sample, which is the benchmark we're trying to reach.
+
+```{r}
+variances %>%
+  pivot_longer(cols = c(var_biased, var_mean), names_to = "variance_source", 
+    values_to = "variance") %>%
+  ggplot(aes(x = n, fill = variance_source, y = variance)) +
+    geom_col(alpha = .75) +
+    geom_hline(yintercept = sigma, linetype = "dashed") +
+    scale_fill_viridis_d()
+```
+
+Indeed, we see that together the variance of the sample and the variance of the mean of the sample form the population variance.
+
+## The Math
+
+Now that we know that the variance of the population consists of the variance of the sample and the variance of the sample mean, we can figure out the correction factor we need to apply to make the biased variance measure unbiased.
+
+We found an interesting pattern in one of the previous figures. We saw that at a sample size of 2, the (biased) sample variance appears to be half that of the (unbiased) population variance. At sample size 3, it's 2/3rds. At sample size 4, it's 3/4, and so on.
+
+This means that we can fix the biased variance measure by multiplying it with $n/(n-1)$. At sample size 2, this would mean we multiply the biased variance by 2 / 1 = 2. For sample size 3, 3 / 2 = 1.5. At sample size 4, 4 / 3 = $1 \frac13$, resulting in the unbiased variance.
+
+In other words, to unbias the biased variance measure, we multiply it by a correction factor of $n/(n-1)$. But where does this correction factor come from?
+
+Well, because we now know that the sample variance misses the variance of the sample mean, we can expect that the variance of the sample is biased by an amount equal to the variance of the population minus the variance of the sample mean. In other words:
+
+$$\sigma^2 - \frac{\sigma^2}n$$
+
+Rewriting this ^[Here are the steps to rewrite the formula: $$\sigma^2 - \frac{\sigma^2}n$$ Add an n to the numerator and denominator of the left term: $$\frac{\sigma^2n}n - \frac{\sigma^2}n$$ Combine the terms: $$\frac{\sigma^2n - \sigma^2}n$$ Simplify the numerator: $$\frac{\sigma^2(n - 1)}n$$ Move $\sigma^2$ out of the numerator: $$\sigma^2\frac{n - 1}n$$], produces:
+
+$$\sigma^2\cdot\frac{n - 1}n$$
+This means that the variance of a sample will be biased by an amount equal to $\frac{n - 1}n$. So, to correct that bias, we should multiply the sample variance by the inverse of this bias: $\frac{n}{n-1}$ ^[The inverse of $\frac{n - 1}n$ is $\frac{1}{\frac{n - 1}n}$. Multiply both the numerator and the denominator by $n$ and you get $\frac{n}{n-1}$].
+
+So, an unbiased measure of our sample variance is the biased sample variance times the correction factor:
+
+$$\frac{\sum(x_i - \overline{x})^2}{n}\cdot{\frac n{n-1}}$$
+Because the *n* in the denominator of the left term (the biased variance formula) cancels out the *n* in the numerator of the right term (the bias correction), the formula can be rewritten as:
+
+$$\frac{\sum(x_i - \overline{x})^2}{n-1}$$
+
+
+
+## Summary
+
+We calculate the variance of a sample by summing the squared deviations of each data point from the sample mean and dividing it by $n - 1$. The $n - 1$ actually comes from a correction factor $\frac n{n-1}$ that is needed to correct for a bias caused by taking the deviations from the sample mean rather than the population mean. Taking the deviations from the sample mean only constitutes the variance around the sample mean, but ignores the variation of the sample mean around the population mean, producing an underestimation equal to the size of the variance of the sample mean $\frac{\sigma^2}{n}$. The correction factor corrects for this underestimation, producing an unbiased estimate of the population variance.
+
+*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*
