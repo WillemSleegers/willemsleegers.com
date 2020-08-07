@@ -13,7 +13,9 @@ library(patchwork)
 library(knitr)
 
 # Set ggplot settings
-theme_set(theme_bw(base_size=12))
+theme_set(
+    theme_bw(base_size = 12)
+  )
 theme_update(
   panel.background = element_rect(fill = "transparent", colour = NA),
   plot.background = element_rect(fill = "transparent", colour = NA)
@@ -31,7 +33,7 @@ opts_chunk$set(
 )
 
 # Set rounding 
-options(digits = 2)
+options(digits = 2, scipen = 9999)
 
 # Set the seed for reproducibility
 set.seed(1212)
@@ -173,7 +175,7 @@ small_sample1 <- tibble(
 
 p1 <- ggplot(small_sample1, aes(x = index, y = value, color = factor(sample))) +
   geom_hline(aes(yintercept = mu), linetype = "dashed", color = "gray") +
-  geom_point(size = 2) +
+  geom_point(size = 2.5) +
   geom_hline(aes(yintercept = mean), linetype = "dashed", color = viridis_purple) +
   geom_segment(aes(xend = index, y = mean, yend = value), linetype = 2) +
   coord_flip() +
@@ -189,7 +191,7 @@ p1 <- ggplot(small_sample1, aes(x = index, y = value, color = factor(sample))) +
 
 p2 <- ggplot(small_sample1, aes(x = index, y = value, color = factor(sample))) +
   geom_hline(aes(yintercept = mean), linetype = "dashed", color = "gray") +
-  geom_point() +
+  geom_point(size = 2.5) +
   geom_hline(aes(yintercept = mu), linetype = "dashed", color = viridis_purple) +
   geom_segment(aes(xend = index, y = mu, yend = value), linetype = 2) +
   coord_flip() +
@@ -224,7 +226,7 @@ small_sample2 <- tibble(
 
 p1 <- ggplot(small_sample2, aes(x = index, y = value, color = factor(sample))) +
   geom_hline(aes(yintercept = mu), linetype = "dashed", color = "gray") +
-  geom_point(size = 2) +
+  geom_point(size = 2.5) +
   geom_hline(aes(yintercept = mean), linetype = "dashed", color = viridis_purple) +
   geom_segment(aes(xend = index, y = mean, yend = value), linetype = 2) +
   coord_flip() +
@@ -241,7 +243,7 @@ p1 <- ggplot(small_sample2, aes(x = index, y = value, color = factor(sample))) +
 
 p2 <- ggplot(small_sample2, aes(x = index, y = value, color = factor(sample))) +
   geom_hline(aes(yintercept = mean), linetype = "dashed", color = "gray") +
-  geom_point() +
+  geom_point(size = 2.5) +
   geom_hline(aes(yintercept = mu), linetype = "dashed", color = viridis_purple) +
   geom_segment(aes(xend = index, y = mu, yend = value), linetype = 2) +
   coord_flip() +
@@ -299,7 +301,7 @@ Indeed, we see that the variance of the sample and the variance of the mean of t
 
 Now that we know that the variance of the population consists of the variance of the sample and the variance of the sample mean, we can figure out the correction factor we need to apply to make the biased variance measure unbiased.
 
-We found an interesting pattern in Figure 2a, which is also visible is the previous figure. We saw that at a sample size $n=2$, the (biased) sample variance appears to be half that of the (unbiased) population variance. At sample size $n=3$, it's $\frac23$. At $n=4$, it's $\frac34$, and so on.
+We found an interesting pattern in Figure 2a, which is also visible is the previous figure. We saw that at a sample size $n=2$, the (biased) sample variance appears to be half that of the (unbiased) population variance. At sample size $n=3$, it's $\frac23$. At sample size $n=4$, it's $\frac34$, and so on.
 
 This means that we can fix the biased variance measure by multiplying it with $\frac{n}{(n-1)}$. At sample size $n = 2$, this would mean we multiply the biased variance by $\frac21 = 2$. For sample size $n=3$, $\frac32 = 1.5$. At sample size $n=4$, $\frac43 = 1 \frac13$, resulting in the unbiased variance.
 
