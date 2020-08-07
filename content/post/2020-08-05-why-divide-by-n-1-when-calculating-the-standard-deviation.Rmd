@@ -122,7 +122,7 @@ tibble(population = population) %>%
 
 The variance is `r sigma`. Note that this is our population variance (often denoted as $\sigma^2$). We want to estimate this value using samples drawn from our population, so let's do that.
 
-To start, we can draw a single sample of size `r length(sample)`. Say we do that and get the following values: `r sample`. We can then calculate the variance in two ways, using division by $n$ and division by $n - 1$. In the former case, this will result in `r my_var(sample)` and in the latter case it results in `r var(sample)`. 
+To start, we can draw a single sample of size `r length(sample)`. Say we do that and get the following values: `r sample`. We can then calculate the variance in two ways, using division by $n$ and division by $n - 1$. In the former case, this will result in `r my_var(sample, population = TRUE)` and in the latter case it results in `r my_var(sample, population = FALSE)`. 
 
 Now let's do that many many times. Below I show the results of many draws from our population. I simulated drawing samples of size 2 to 10, each `r s` different times. I then plotted for each sample size the average biased variance (dividing by $n$; left) and the average unbiased variance (dividing by $n - 1$; right). 
 
