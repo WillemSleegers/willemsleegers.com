@@ -190,12 +190,8 @@ only on the text. */
   max-width: 75ch;
 }
 
-.article-tags h2 {
-  padding: 0 ;
-}
-
-.article-tags {
-
+.article-pills {
+  display: flex;
 }
 
 .tag {
@@ -207,10 +203,6 @@ only on the text. */
   text-decoration: none;
 
   border-radius: 4px;
-}
-
-.article-buttons {
-  margin-top: 1rem;
 }
 
 #me {

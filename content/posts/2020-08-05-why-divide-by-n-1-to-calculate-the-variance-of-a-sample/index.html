@@ -22,7 +22,8 @@ green &lt;- &quot;#00B88D&quot;
 yellow &lt;- &quot;#f39c12&quot;
 off_white &lt;- &quot;#cccccc&quot;
 
-# Create our own variance function that returns the population or sample variance
+# Create our own variance function that returns the population or sample 
+# variance
 my_var &lt;- function(x, population = FALSE) {
   if (population) {
     sum((x - mean(x))^2)/length(x)
