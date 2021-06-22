@@ -430,7 +430,7 @@ Prism.languages.r = {
   ],
   keyword:
     /\b(?:if|else|repeat|while|for|in|next|break|NULL|NA|NA_integer_|NA_real_|NA_complex_|NA_character_)\b/,
-  function: /\.?\w+(?=\()/,
+  function: /\.?\w+(?=\()|t.test/,
   operator: /->?>?|<(?:=|<?-)?|[>=!]=?|::?|&&?|\|\|?|[+*\/^$@~]/,
   punctuation: /[(){}\[\],;]/,
 }

@@ -172,7 +172,8 @@ analyses because you want to apply the `summary` function to this
 variable in order to obtain the inferential statistics.
 
 ```{r, results=FALSE, class.source="active-code"}
-us_moderation_test <- lm(response ~ source * us_or_international, data = quote_source)
+us_moderation_test <- lm(response ~ source * us_or_international, 
+  data = quote_source)
 summary(us_moderation_test)
 ```
 
