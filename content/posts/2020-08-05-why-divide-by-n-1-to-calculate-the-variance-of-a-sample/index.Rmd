@@ -22,7 +22,8 @@ green <- "#00B88D"
 yellow <- "#f39c12"
 off_white <- "#cccccc"
 
-# Create our own variance function that returns the population or sample variance
+# Create our own variance function that returns the population or sample 
+# variance
 my_var <- function(x, population = FALSE) {
   if (population) {
     sum((x - mean(x))^2)/length(x)

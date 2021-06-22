@@ -88,7 +88,8 @@ options(
 
 opts_chunk$set(
   fig.align = "center",
-  fig.retina = 2
+  fig.retina = 2,
+  out.width="100%"
 )
 ```
 

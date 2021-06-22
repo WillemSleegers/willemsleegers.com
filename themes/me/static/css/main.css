@@ -369,10 +369,6 @@ only on the text. */
   text-decoration: underline;
 }
 
-.article img {
-  width: 100%;
-}
-
 /* Code */
 
 code {
@@ -396,6 +392,8 @@ pre {
   border: 1px solid #202020;
   border-radius: 6px;
   outline: none;
+  
+  overflow-x: auto;
 }
 
 pre code {
@@ -467,6 +465,7 @@ pre code {
 
 #toggle-all-code-button {
   width: 130px;
+  height: 32px;
 }
 
 /* Tables */
