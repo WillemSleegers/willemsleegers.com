@@ -1,30 +1,28 @@
 {{ partial "header.html" . }}
 
-
-	<div class="column-middle">
-		<div class="container-list" >
-			<div class="posts">
-			  {{ $pages := .Pages }}
-			  {{ if .IsHome }}{{ $pages = .Site.RegularPages }}{{ end }}
-			  {{ range (where $pages "Section" "!=" "") }}
-			  <div class="post">
-			    <p class="date">{{ .Date.Format "January 2, 2006" }}</p>
-			    <a href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a>
-			  </div>
-			  {{ end }}
-			</div>
-		</div>
-	</div>
-	
-	<div class="column-right">
-		<div class="tags">
-		  {{ range $tag, $value := $.Site.Taxonomies.tags }}
-		  <div class="tag">
-		    <a href="{{ "/tags/" | relLangURL}}{{ $tag | urlize }}">#{{ $tag | urlize }} ({{ len $value }})</a>
-		  </div>
-		  {{ end }} 
-		</div>
-	</div>
+<div class="container">
+  <div class="content blog">
+    <main>
+      <h1>Posts</h1>
+      {{ $pages := .Pages }}
+      {{ range (where $pages "Section" "!=" "").GroupByDate "2006" }}
+        <div class="blog-posts">
+          <p class="blog-year">{{ .Key }}</p>
+          <ul class="blog-year-posts">
+            {{ range .Pages }}
+              <li>
+                <h3 class="blog-post-title">
+                  <a href="{{.Permalink}}">{{.Title}}</a>
+                </h3>
+                <p class="blog-post-summary">{{.Summary}}</p>
+                <p class="blog-post-date">{{ .Date.Format "Jan 2"}}</p>
+              </li>
+            {{ end }}
+          </ul>
+        </div>
+      {{ end }}
+    </main>
+  </div>
 </div>
 
 {{ partial "footer.html" . }}

@@ -1,0 +1,21 @@
+<nav class="nav">
+  <div class="nav-logo">
+    <a href="{{ "/" | relURL }}">
+      <span>{{ .Site.Params.logo.text }}</span>
+      <span class="domain">{{ .Site.Params.logo.domain }}</span>
+    </a>
+  </div>
+  <div class="nav-menu">
+    {{ range .Site.Menus.main }}
+      <a class="nav-menu-item" href="{{ .URL }}">{{ .Name }}</a>
+    {{ end }}
+  </div>
+
+  <div class="nav-icons">
+    {{ range $item := .Site.Params.icons }}
+      <a href="{{ $item.url }}" rel="me" aria-label="{{ $item.title }}">
+        <img src="/icons{{ $item.icon | relURL }}.svg" role="img"></img>
+      </a>
+    {{ end }}
+  </div>
+</nav>

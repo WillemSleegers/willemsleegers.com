@@ -1,27 +1,24 @@
 {{ partial "header.html" . }}
 
-	<div class="column-middle">
-		<div class="container-single" >
-			<main>
-				<article>
-					<h1>
-						<span class="title">{{ .Title | markdownify }}</span>
-					</h1>
-					{{ with .Params.author }}
-						<h2 class="author">{{ . }}</h2>
-					{{ end }}
-					
-					{{ if (gt .Params.date 0) }}
-						<h2 class="date">{{ .Date.Format "January 2, 2006" }}</h2>
-					{{ end }}
+<div class="container">
+  <div class="content">
+    <main>
+      <article class="article">
+        <div class="article-main">
+          <div class="article-header">
+            {{ if eq .Section "posts" }}
+              <span class="article-date">{{ .Date.Format "2006 January 2" }}</span>
+            {{ end }}
 
-					{{ .Content }}
-				</article>
-			</main>
-		</div>
-	</div>
-	<div class="column-right">
-  	</div>
+            <h1 class="article-title">{{ .Title }}</h1>
+          </div>
+          <div class="article-content">
+            {{ .Content }}
+          </div>
+        </div>
+      </article>
+    </main>
+  </div>
 </div>
 
 {{ partial "footer.html" . }}

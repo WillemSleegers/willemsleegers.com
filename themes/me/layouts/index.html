@@ -1,28 +1,63 @@
 {{ partial "header.html" . }}
 
-  <div class="column-middle">
-    <div class="container-home">
-      <main>
-        <img id="image-home" src={{ .Site.Params.avatar | relURL }}>
-       
-        <h1>{{ .Site.Params.heading }}</h1>
-      
-        <h3>{{ .Site.Params.subheading }}</h3>
-        
-        <!-- Note that the content for index.html, as a sort of list page, will pull from content/_index.md -->
-        {{.Content}}
-
-        {{ if isset .Site.Params "twitter" }}
-          <a href="{{ .Site.Params.twitter }}"><i class="fab fa-twitter"></i></a>
-        {{ end }}
-        {{ if isset .Site.Params "github" }}
-          <a href="{{ .Site.Params.github }}"><i class="fab fa-github"></i></a>
-        {{ end }}
-      </main>
-    </div>
-  </div>
-  <div class="column-right">
+<div class="container home">
+  <div class="content" id="me">
+    <img src="images/{{ .Site.Params.home.avatar }}" alt="Avatar">
+    <h1>{{ .Site.Params.home.title }}</h1>
+    <h2>{{ .Site.Params.home.subtitle }}</h2>
   </div>
 </div>
+
+{{ range .Site.Menus.main  }}
+  {{ if eq .Params.type "page"}}
+    <div class="container home">
+      <div class="content" id="{{ .Identifier }}">
+        <h1>{{ .Name }}</h1>
+        {{ range where site.Pages "Title" .Name }}
+          <p>{{ .Summary }}</p>
+        {{ end }}
+        <a href="/about/" class="learn-more">Learn more</a>
+      </div>
+    </div>
+  {{ end }}
+
+  {{ if eq .Params.type "pills"}}
+    <div class="container home">
+      <div class="content" id="{{ .Identifier }}">
+        <h1>{{ .Name }}</h1>
+        <div class="pills">
+          {{ range where site.RegularPages "Section" .Identifier }}
+            <a class="pill" href="{{ .Permalink }}">{{ lower .Title }}</a>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  {{ end }}
+
+  {{ if eq .Params.type "blog"}}
+    <div class="container home">
+      <div class="content blog" id="{{ .Identifier }}">
+        <h1>Latest posts</h1>
+        {{ range (where site.RegularPages "Section" "posts" | first 3).GroupByDate "2006" }}
+          <div class="blog-posts">
+            <p class="blog-year">{{ .Key }}</p>
+            <ul class="blog-year-posts">
+              {{ range .Pages }}
+                <li class="blog-year-post">
+                  <h3 class="blog-post-title">
+                    <a href="{{.Permalink}}">{{ .Title }}</a>
+                  </h3>
+                  <p class="blog-post-summary">{{ .Summary }}</p>
+                  <p class="blog-post-date">{{ .Date.Format "Jan 2"}}</p>
+                </li>
+              {{ end }}
+            </ul>
+          </div>
+        {{ end }}
+        <a href="posts/" class="learn-more">More posts</a>
+      </div>
+    </div>
+  {{ end }}
+{{ end }}
 
 {{ partial "footer.html" . }}

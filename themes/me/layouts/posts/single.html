@@ -1,0 +1,30 @@
+{{ partial "header.html" . }}
+
+<div class="container">
+  <div class="content">
+    <main>
+      <article class="article">
+        <div class="article-header">
+          <span class="article-date">{{ .Date.Format "2006 January 2" }}</span>
+          <h1 class="article-title">{{ .Title }}</h1>
+          <p class="article-duration">{{ .ReadingTime }} min read</p>
+        </div>
+        <div class="article-pills">
+          {{ range (.GetTerms "tags") }}
+            <a class="tag" href="{{ .Permalink }}">{{ .LinkTitle }}</a>
+          {{ end }}
+          {{ if .Params.code_folding }}
+            <button id="toggle-all-code-button" class="code-button active-code">
+              Show All Code
+            </button>
+          {{ end }}
+        </div>
+        <div class="article-content language-r">
+          {{ .Content }}
+        </div>
+      </article>
+    </main>
+  </div>
+</div>
+
+{{ partial "footer.html" . }}

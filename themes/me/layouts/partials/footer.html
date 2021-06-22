@@ -1,18 +1,37 @@
-    <footer>
-    	<a class="kurzgesagt-bird" href="https://kurzgesagt.org"><img src={{ "img/bird_small.png" | relURL }}></img></a>
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-logo">
+          <span>{{ .Site.Params.logo.text }}</span>
+          <span class="domain">{{ .Site.Params.logo.domain }}</span>
+          <p class="copyright">© 2021. All rights reserved.</p>
+        </div>
+        <div class="footer-navigation">
+          <h1>Navigation</h1>
+          <ul>
+            {{ range .Site.Menus.main }}
+              <li><a href="{{ .URL }}">{{ .Name }}</a></li>
+            {{ end }}
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h1>Contact</h1>
+          <ul>
+            {{ range $item := .Site.Params.icons }}
+              <li>
+                <a href="{{ $item.url }}">
+                  <span>{{ $item.title }}</span>
+                </a>
+              </li>
+            {{ end }}
+          </ul>
+        </div>
+      </div>
+      <script src="{{ "/js/script.js" | relURL }}"></script>
 
-        {{ with .Site.Params.footer }}
-          {{ . | markdownify }}
-        {{ end }}
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+      <script src="{{ "/js/prism.js" | relURL }}"></script>
     </footer>
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="{{ "/js/script.js" | relURL }}" /></script>
-
-    <script src="{{ "/highlight/highlight.pack.js" | relURL }}" /></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
   </body>
 </html>

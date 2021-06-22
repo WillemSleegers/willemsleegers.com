@@ -1,0 +1,349 @@
+---
+title: "A tidystats example"
+summary: "I illustrate how to use my tidystats software to analyze and report the results of a replication study that was part of the Many Labs 1 project."
+date: 2021-04-25
+slug: a-tidystats-example
+tags:
+  - tidystats
+  - statistics
+  - tutorial
+code_folding: true
+bibliography: references.bib
+toc: true
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+
+</div>
+
+<p>In this post, I will illustrate how to use <code>tidystats</code> by analyzing data of the
+Many Labs 1 <span class="citation">(<a href="#ref-klein2014" role="doc-biblioref">Klein et al. 2014</a>)</span> replication of Lorge &amp; Curtiss (1936).</p>
+<div id="analyzing-the-data" class="section level2">
+<h2>Analyzing the data</h2>
+<p>Lorge and Curtiss (1936) examined how a quotation is perceived when it is
+attributed to a liked or disliked individual. In one condition the
+quotation was attributed to Thomas Jefferson and in the other it was
+attributed to Vladimir Lenin. They found that people agree more with the
+quotation when the quotation was attributed to Jefferson than Lenin. In
+the Many Labs replication study, the quotation was attributed to either
+George Washington, the liked individual, or Osama Bin Laden, the
+disliked individual. The also used a different quotation, which was:</p>
+<blockquote>
+<p>I have sworn to only live free, even if I find bitter the taste of
+death.</p>
+</blockquote>
+<p>We are again interested in testing whether the source of the quotation
+affects how it is evaluated. The evaluation was assessed on a 9-point
+Likert scale ranging from 1 (strongly agree) to 9 (strongly disagree). I
+reverse coded this in the data that we’ll use. You can follow along by
+copy-pasting the code from this example.</p>
+<p>Before getting into how <code>tidystats</code> should be used, let’s first simply
+analyze the data. I have designed <code>tidystats</code> to be minimally invasive.
+In other words, to use <code>tidystats</code>, you do not need to substantially
+change your data analysis workflow.</p>
+<p>We’ll start with a basic setup where we load some packages and the data.</p>
+<pre class="r active-code"><code># Load necessary packages
+library(tidyverse)
+library(tidystats)
+
+# Load example data
+data &lt;- data(quote_source)
+
+# Create color variables for the plots
+background_color &lt;- &quot;#1a1a1a&quot;
+green &lt;- &quot;#00B88D&quot;
+yellow &lt;- &quot;#f39c12&quot;</code></pre>
+<p>Our main effect of interest is the difference in responses to the quote
+between the two conditions. Here I visualize this different with a
+violin plot.</p>
+<pre class="r"><code>ggplot(quote_source, aes(x = source, y = response, fill = source)) +
+  geom_violin(alpha = 0.95, color = &quot;transparent&quot;) +
+  stat_summary(fun = &quot;mean&quot;, geom = &quot;point&quot;, color = background_color) +
+  scale_y_continuous(breaks = c(1, 3, 5, 7, 9)) +
+  labs(x = &quot;Quote source&quot;, y = &quot;Quote agreement&quot;) +
+  scale_fill_manual(values = c(green, yellow)) +
+  guides(fill = FALSE)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>This looks like the effect is in the expected direction. Participants
+agreed more with the quotation when they believed the quote to be from
+George Washington compared to Osama Bin Laden.</p>
+<p>Regarding descriptives, <code>tidystats</code> comes with its own functions to
+calculate descriptives. One of them is the <code>describe_data</code> function,
+inspired by the <code>describe</code> function from the <code>psych</code> package. You can
+use it together with <code>group_by</code> from the <code>dplyr</code> package to calculate a
+set of descriptives for multiple groups.</p>
+<pre class="r active-code"><code>quote_source %&gt;%
+  group_by(source) %&gt;%
+  describe_data(response)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">variable</th>
+<th align="right">missing</th>
+<th align="right">N</th>
+<th align="left">source</th>
+<th align="right">M</th>
+<th align="right">SD</th>
+<th align="right">SE</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">range</th>
+<th align="right">median</th>
+<th align="right">mode</th>
+<th align="right">skew</th>
+<th align="right">kurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">response</td>
+<td align="right">18</td>
+<td align="right">3083</td>
+<td align="left">Bin Laden</td>
+<td align="right">5.2</td>
+<td align="right">2.1</td>
+<td align="right">0.04</td>
+<td align="right">1</td>
+<td align="right">9</td>
+<td align="right">8</td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">-0.08</td>
+<td align="right">2.6</td>
+</tr>
+<tr class="even">
+<td align="left">response</td>
+<td align="right">0</td>
+<td align="right">3242</td>
+<td align="left">Washington</td>
+<td align="right">5.9</td>
+<td align="right">2.2</td>
+<td align="right">0.04</td>
+<td align="right">1</td>
+<td align="right">9</td>
+<td align="right">8</td>
+<td align="right">6</td>
+<td align="right">5</td>
+<td align="right">-0.23</td>
+<td align="right">2.2</td>
+</tr>
+</tbody>
+</table>
+<p>To test whether the difference in agreement between the two sources is
+statistically significant, we perform a <em>t</em>-test. Normally, we would
+just run the t-test like so:</p>
+<pre class="r active-code"><code>t.test(response ~ source, data = quote_source)</code></pre>
+<p>However, since we want to use <code>tidystats</code> to later save the statistics
+from this test, we will store the output of the <em>t</em>-test in a variable.
+This, and the final section of R code, will be the only thing you need
+to change in order to incorporate <code>tidystats</code> in your workflow.</p>
+<p>Once you’ve stored the result of the <em>t</em>-test in a variable, you can
+look at the output by sending it the console, which will print the
+output.</p>
+<pre class="r active-code"><code>main_test &lt;- t.test(response ~ source, data = quote_source)
+main_test</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">t</th>
+<th align="left">p</th>
+<th align="left">df</th>
+<th align="left">difference</th>
+<th align="left">95% CI lower</th>
+<th align="left">95% CI upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">-12.80</td>
+<td align="left">4.6e-37</td>
+<td align="left">6322.72</td>
+<td align="left">-0.70</td>
+<td align="left">-0.80</td>
+<td align="left">-0.59</td>
+</tr>
+</tbody>
+</table>
+<p>This shows us that there is a statistically significant effect of the
+quote source, consistent with the hypothesis.</p>
+<p>Next, let’s run some additional analyses. One thing we can test is
+whether the effect is stronger in the US compared to non-US countries.
+To test this, we perform a regression analysis. Here we also store the
+result in a variable, but this is actually quite common in regression
+analyses because you want to apply the <code>summary</code> function to this
+variable in order to obtain the inferential statistics.</p>
+<pre class="r active-code"><code>us_moderation_test &lt;- lm(response ~ source * us_or_international, data = quote_source)
+summary(us_moderation_test)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Term</th>
+<th align="left">b</th>
+<th align="left">SE</th>
+<th align="left">t</th>
+<th align="left">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="left">5.249</td>
+<td align="left">0.085</td>
+<td align="left">61.83</td>
+<td align="left">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">sourceWashington</td>
+<td align="left">0.405</td>
+<td align="left">0.117</td>
+<td align="left">3.46</td>
+<td align="left">0.00055</td>
+</tr>
+<tr class="odd">
+<td align="left">us_or_internationalUS</td>
+<td align="left">-0.021</td>
+<td align="left">0.095</td>
+<td align="left">-0.22</td>
+<td align="left">0.82589</td>
+</tr>
+<tr class="even">
+<td align="left">sourceWashington:us_or_internationalUS</td>
+<td align="left">0.372</td>
+<td align="left">0.132</td>
+<td align="left">2.81</td>
+<td align="left">0.00497</td>
+</tr>
+</tbody>
+</table>
+<p>There appears to be a significant interaction. Let’s inspect the
+interaction with a graph:</p>
+<pre class="r"><code>ggplot(quote_source, aes(x = us_or_international, y = response, 
+    fill = source)) +
+  geom_violin(alpha = .95, color = &quot;transparent&quot;) +
+  stat_summary(fun.data = &quot;mean_cl_boot&quot;, position = position_dodge(.9), 
+    color = background_color) +
+  scale_fill_manual(values = c(green, yellow)) +
+  scale_y_continuous(breaks = c(1, 3, 5, 7, 9)) +
+  labs(x = &quot;Region&quot;, y = &quot;Quote agreement&quot;, fill = &quot;Source&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>We see that the effect of the source appears to be larger in the US.
+Given that the positive source was George Washington, this makes sense.</p>
+<p>Let’s do one more analysis to see whether the effect is stronger in a
+lab setting compared to an online setting.</p>
+<pre class="r active-code"><code>lab_moderation_test &lt;- lm(response ~ source * lab_or_online, data = quote_source)
+summary(lab_moderation_test)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Term</th>
+<th align="left">b</th>
+<th align="left">SE</th>
+<th align="left">t</th>
+<th align="left">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="left">5.197</td>
+<td align="left">0.057</td>
+<td align="left">91.59</td>
+<td align="left">0.0e+00</td>
+</tr>
+<tr class="even">
+<td align="left">sourceWashington</td>
+<td align="left">0.686</td>
+<td align="left">0.079</td>
+<td align="left">8.68</td>
+<td align="left">5.1e-18</td>
+</tr>
+<tr class="odd">
+<td align="left">lab_or_onlineonline</td>
+<td align="left">0.066</td>
+<td align="left">0.078</td>
+<td align="left">0.85</td>
+<td align="left">3.9e-01</td>
+</tr>
+<tr class="even">
+<td align="left">sourceWashington:lab_or_onlineonline</td>
+<td align="left">0.017</td>
+<td align="left">0.109</td>
+<td align="left">0.16</td>
+<td align="left">8.7e-01</td>
+</tr>
+</tbody>
+</table>
+<p>We see no significant interaction in this case. This means we do not
+find evidence that running the study in an online setting significantly
+weakens the effect; good to know!</p>
+</div>
+<div id="applying-tidystats" class="section level2">
+<h2>Applying tidystats</h2>
+<p>Now let’s get to <code>tidystats</code>. We have three analyses we want to save: a
+<em>t</em>-test and two regression analyses. We stored each of these analyses
+in separate variables, called <code>main_test</code>, <code>us_moderation_test</code>, and
+<code>lab_moderation_test</code>.</p>
+<p>The main idea is that we will add these three three variables to a list
+and then save the list as a file on our computer. You create an empty
+list using the <code>list</code> function. Once you have an empty list, you can add
+statistics to this list using the <code>add_stats</code> function. <code>add_stats</code>
+accepts a list as its first argument, followed by a variable containing
+a statistics model. In our case, this means we need to use the
+<code>add_stats</code> function three times, as we have three different analyses we
+want to save. Since this can get pretty repetitive, we will use the
+piping operator to pipe the three steps together and save some typing.</p>
+<p>Before we do so, however, note that we can take this opportunity to add
+some meta-information to each test. For the sake of this example, let’s
+say that the <em>t</em>-test was our primary test. We also had a suspicion that
+the location (US vs. international) would matter, but it wasn’t our main
+interest. Nevertheless, we preregistered these two analyses. During data
+analysis, we figured that it might also matter whether the study was
+conducted in the lab or online, so we tested it. This means that this is
+an exploratory analysis. With <code>add_stats</code>, we can add this information
+when we add the test to our empty list.</p>
+<p>In the end, the code looks like this:</p>
+<pre class="r active-code"><code>results &lt;- list()
+
+results &lt;- results %&gt;%
+  add_stats(main_test, type = &quot;primary&quot;, preregistered = TRUE) %&gt;%
+  add_stats(us_moderation_test, type = &quot;secondary&quot;, preregistered = TRUE) %&gt;%
+  add_stats(lab_moderation_test, type = &quot;secondary&quot;, preregistered = FALSE)</code></pre>
+<p>I recommend to do this at the end of the data analysis script in a
+section called ‘tidystats.’ This confines most of the <code>tidystats</code> code
+to a single section, keeping it organized, and it will keep most of your
+script readable to those unfamiliar with <code>tidystats</code>.</p>
+<p>After all the analyses are added to the list, the list can be saved as a
+.json file to your computer’s disk. This is done with the <code>write_stats</code>
+function. The function requires the list as its first argument, followed
+by a file path. I’m a big fan of using RStudio Project files so that you
+can define relative file paths. In this case, I create the .json file in
+the ‘Data’ folder of my project folder.</p>
+<pre class="r active-code"><code>write_stats(results, &quot;Data/tidystats-example.json&quot;)</code></pre>
+<p>If you want to see what this file looks like, you can inspect it
+<a href="data/tidystats-example.json">here</a>. Open the file in a text editor to
+see how the statistics are structured. As you will see, it is not easy
+for our human eyes to quickly see the results, but it’s easy for
+computers.</p>
+<p>Once you’ve saved the file, you can share the file with others or use it
+to report report the results in your manuscript. Below I show a video of
+how you can upload the file in the <code>tidystats</code> Word add-in and report
+the results.</p>
+<video controls preload="metadata">
+<source src="tidystats-example.mp4" type="video/mp4" />
+</video>
+<p>That marks the end of this <code>tidystats</code> example. If you have any
+questions, please check out the <a href="https://tidystats.io">tidystats
+website</a> or contact me via
+<a href="https://twitter.com/tidystats">Twitter</a>.</p>
+<p><em>This post was last updated on 2021-06-22.</em></p>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-klein2014" class="csl-entry">
+Klein, Richard A., Kate A. Ratliff, Michelangelo Vianello, Reginald B. Adams, Štěpán Bahník, Michael J. Bernstein, Konrad Bocian, et al. 2014. <span>“Investigating Variation in Replicability: A <span>‘Many Labs’</span> Replication Project.”</span> <em>Social Psychology</em> 45 (3): 142–52. <a href="https://doi.org/10.1027/1864-9335/a000178">https://doi.org/10.1027/1864-9335/a000178</a>.
+</div>
+</div>
+</div>

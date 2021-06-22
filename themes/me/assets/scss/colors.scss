@@ -1,0 +1,228 @@
+$primary-dark-color: #1a1a1a;
+$secondary-dark-color: #222222;
+$tertiary-dark-color: #444;
+
+$primary-dark-text-color: #fff;
+$secondary-dark-text-color: #ccc;
+
+$primary-link-color: #00b88d;
+$primary-link-hover-color: #009D79;
+$secondary-link-color: #fff;
+
+$primary-code-color: #edebff;
+$secondary-code-color: #383343;
+
+$primary-pre-color: #fff;
+
+$primary-code-button-color: #fff;
+$secondary-code-button-color: #1a1a1a;
+
+$yellow: #f39c12;
+$yellow-hover: #d4870b;
+
+$red: #e34234;
+$red-hover: #d42c1d;
+
+$purple: #7b68ee;
+$purple-hover: #563ce9;
+
+$green: #00B88D;
+$green-hover: #009D79;
+
+html, body {
+  color: $primary-dark-text-color;
+  background-color: $primary-dark-color;
+}
+
+a {
+  color: $primary-link-color;
+}
+
+code {
+  color: $primary-code-color;
+  background: $secondary-code-color;
+}
+
+pre {
+  background: $secondary-dark-color !important;
+}
+
+pre code {
+  background: transparent !important; /* Important needed due to highlight js */
+}
+
+table tbody {
+  color: $secondary-dark-color;
+}
+
+table thead tr th {
+  background: $secondary-dark-color;
+}
+
+table tbody tr td {
+  color: $secondary-dark-text-color;
+}
+
+blockquote {
+  color: $secondary-dark-text-color;
+  border-left-color: $secondary-dark-text-color;
+}
+
+/* Scroll bars */
+
+/* Firefox */
+* {
+  scrollbar-color: $tertiary-dark-color $secondary-dark-color;
+}
+
+/* Chrome, Edge, and Safari */
+
+*::-webkit-scrollbar-track {
+  background: $secondary-dark-color;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: $tertiary-dark-color;
+  border-color: $secondary-dark-color;
+}
+
+.nav-logo span {
+  color: $secondary-link-color;
+}
+
+.nav-logo:hover span {
+  color: $primary-link-color;
+}
+
+/*
+.nav-logo .domain {
+  color: $yellow;
+}
+*/
+
+.nav-menu-item {
+  color: $secondary-link-color;
+  background: $secondary-dark-color;
+}
+
+.nav-menu-item:hover {
+  background: $primary-link-color;
+}
+
+.home:nth-child(odd) {
+  background-color: $secondary-dark-color;
+}
+
+.pill {
+  color: $primary-dark-text-color;
+}
+
+.pill:nth-child(4n+0) {
+  background: $purple;
+}
+
+.pill:nth-child(4n+0):hover {
+  background: $purple-hover;
+}
+
+.pill:nth-child(4n+1) {
+  background: $green;
+}
+
+.pill:nth-child(4n+1):hover {
+  background: $green-hover;
+}
+
+.pill:nth-child(4n+2) {
+  background: $yellow;
+}
+
+.pill:nth-child(4n+2):hover {
+  background: $yellow-hover;
+}
+
+.pill:nth-child(4n+3) {
+  background: $red;
+}
+
+.pill:nth-child(4n+3):hover {
+  background: $red-hover;
+}
+
+.blog-year {
+  color: $secondary-dark-text-color;
+}
+
+.blog-post-title a {
+  color: $secondary-link-color;
+}
+
+.blog-post-title a:hover {
+  color: $primary-link-color;
+}
+
+.blog-post-summary {
+  color: $secondary-dark-text-color;
+}
+
+.blog-post-date {
+  color: $yellow;
+}
+
+.learn-more {
+  color: $secondary-link-color;
+  background: $primary-link-color;
+}
+
+.learn-more:hover {
+  background: $primary-link-hover-color;
+}
+
+.article-date {
+  color: $secondary-dark-text-color;
+}
+
+.article-duration {
+  color: $secondary-dark-text-color;
+}
+
+.tag {
+  background: $secondary-dark-color;
+}
+
+.code-button {
+  color: $primary-dark-text-color;
+  background: $primary-dark-color;
+}
+
+#toggle-all-code-button {
+  background: $secondary-dark-color;
+}
+
+.footer {
+  background: $secondary-dark-color;
+}
+
+.footer-logo .copyright {
+  color: $secondary-dark-text-color;
+}
+
+.footer li a {
+  color: $secondary-dark-text-color;
+}
+
+.comment {
+  color: $green;
+}
+
+.function {
+  color: $yellow;
+}
+
+.string {
+  color: $purple;
+}
+
+.boolean {
+  color: $red;
+}

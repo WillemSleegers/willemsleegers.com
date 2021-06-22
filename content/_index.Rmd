@@ -1,5 +1,0 @@
----
-title: ""
----
-
-I'm an assistant professor in the Department of Social Psychology at [Tilburg University](https://www.tilburguniversity.edu). I conduct research on the topic of false beliefs, predominantly using experimental methods and physiological measures. I'm also interested in methodology of psychological research and ways to improve how we conduct science. Besides research, I also teach courses on social psychology and methodology, including the statistical programming language R.
