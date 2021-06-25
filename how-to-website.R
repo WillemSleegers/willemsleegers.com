@@ -37,6 +37,8 @@ blogdown::install_hugo(extended = TRUE)
 # CV ----------------------------------------------------------------------
 
 # Download CV data
-cv <- googlesheets4::read_sheet("1damDaFVsrPzCpR0N3b2JNUfA5Z-a08oCWoLKWQ_FsSk",
+library(googlesheets4)
+gs4_deauth()
+cv <- read_sheet("1damDaFVsrPzCpR0N3b2JNUfA5Z-a08oCWoLKWQ_FsSk",
   col_types = "ccccc")
 readr::write_csv(cv, "static/data/cv.csv")
