@@ -1,5 +1,5 @@
 ---
-title: "The Right Order of Method Sections"
+title: The right order of method sections"
 date: "2021-07-08"
 slug: the-right-order-of-method-sections
 tags:
