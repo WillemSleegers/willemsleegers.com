@@ -80,10 +80,10 @@ set of descriptives for multiple groups.</p>
 <table>
 <thead>
 <tr class="header">
-<th align="left">variable</th>
+<th align="left">var</th>
+<th align="left">source</th>
 <th align="right">missing</th>
 <th align="right">N</th>
-<th align="left">source</th>
 <th align="right">M</th>
 <th align="right">SD</th>
 <th align="right">SE</th>
@@ -99,9 +99,9 @@ set of descriptives for multiple groups.</p>
 <tbody>
 <tr class="odd">
 <td align="left">response</td>
+<td align="left">Bin Laden</td>
 <td align="right">18</td>
 <td align="right">3083</td>
-<td align="left">Bin Laden</td>
 <td align="right">5.2</td>
 <td align="right">2.1</td>
 <td align="right">0.04</td>
@@ -115,9 +115,9 @@ set of descriptives for multiple groups.</p>
 </tr>
 <tr class="even">
 <td align="left">response</td>
+<td align="left">Washington</td>
 <td align="right">0</td>
 <td align="right">3242</td>
-<td align="left">Washington</td>
 <td align="right">5.9</td>
 <td align="right">2.2</td>
 <td align="right">0.04</td>
@@ -174,7 +174,8 @@ To test this, we perform a regression analysis. Here we also store the
 result in a variable, but this is actually quite common in regression
 analyses because you want to apply the <code>summary</code> function to this
 variable in order to obtain the inferential statistics.</p>
-<pre class="r active-code"><code>us_moderation_test &lt;- lm(response ~ source * us_or_international, data = quote_source)
+<pre class="r active-code"><code>us_moderation_test &lt;- lm(response ~ source * us_or_international, 
+  data = quote_source)
 summary(us_moderation_test)</code></pre>
 <table>
 <thead>
@@ -337,7 +338,7 @@ the results.</p>
 questions, please check out the <a href="https://tidystats.io">tidystats
 website</a> or contact me via
 <a href="https://twitter.com/tidystats">Twitter</a>.</p>
-<p><em>This post was last updated on 2021-06-22.</em></p>
+<p><em>This post was last updated on 2021-07-09.</em></p>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2>References</h2>
