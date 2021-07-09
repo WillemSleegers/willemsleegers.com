@@ -161,6 +161,57 @@ function createTOC() {
   toc.appendChild(tocList);
 }
 
+function addSalutes() {
+  console.log("Adding salutes")
+  
+  // Find all p elements and loop over them
+  for (const p of document.querySelectorAll("p")) {
+    
+    // Check if the content of the p element contains a salute-related word
+    if (p.textContent.includes("general") || p.textContent.includes("major")) {
+      
+      // Extract the words
+      const words = p.innerHTML.split(' ')
+      
+      // Create an empty text array to store the words back into
+      let text = []
+      
+      // Loop over each word
+      for (let i = 0; i < words.length; i++) {
+        
+        // Create a variable to store the word into, together with HTML-elements
+        // in case the word is a salute-related words
+        let word = words[i]
+        
+        // Check which salute-related word it is
+        if (word === "general" | word === "major") {
+          
+          // Extract the next word and check if it ends with punctuation; if so,
+          // remove it
+          let nextWord = words[i + 1]
+      
+          if (!/[a-z]$/.test(nextWord)) {
+            nextWord = nextWord.slice(0, -1)
+          }
+          
+          // Create the new content consisting of HTML elements, the current
+          // word and the next word
+      	  word = '<span class="salute">' + word + '<div class="salute-text">' +
+      	    '<img src="/img/saluting-face.png"/>' + 
+      	    (word.charAt(0).toUpperCase() + word.slice(1)) + ' ' + nextWord + 
+      	    '</div></span>'
+      	}
+      	text.push(word)  
+      }
+      
+      // Combine the different words into a single value and replace the p
+      // element's HTML with this value
+      text = text.join(' ')
+      p.innerHTML = text
+    }
+  }
+}
+
 window.onload = function() {
   // Find the Show/Hide All Code button and attach the toggle function
   const toggleButton = document.getElementById("toggle-all-code-button")
@@ -171,4 +222,7 @@ window.onload = function() {
 
   // Create the TOC
   //createTOC()
+  
+  // Add salutes
+  addSalutes()
 }

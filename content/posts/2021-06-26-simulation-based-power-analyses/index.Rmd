@@ -1,0 +1,287 @@
+---
+title: Simulation-based power analyses
+date: '2021-06-26'
+slug: simulation-based-power-analyses
+tags:
+  - statistics
+  - power analysis
+draft: true
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+Doing power analyses is hard. I know this from experience, both as a researcher and as a reviewer. As a researcher, I find power analyses difficult because performing a good power analysis requires a good understanding of the data. Understanding one's data is often underestimated, I think. We're very quick to design a study and start data collection, without often knowing what our data will look like. As a reviewer, I see that power analyses are difficult because of wrong ideas about what a power analysis should look like. The most common misconception I see is that researchers think they should power their study, rather than the set of analyses they will conduct. I also see a lot of power analyses conducted with G\*Power, which sometimes looks fine, but oftentimes produces results I know to be wrong (usually involving interaction tests). So what to do?
+
+My favorite way to run power analyses is via simulation. Simulation-based power analyses are more difficult and take longer to setup and run, but they're more pedagogical. Simulations require you to understand your data because you have to define the exact parameters that define your data set (e.g., means, standard deviations, correlations). It also creates a very intuitive understanding of what power is: Power is simply counting how often you find the results you expect to find.
+
+Still, running simulation-based power analyses might be too difficult for some. So in this blog post I present code to simulate data for a range of different scenarios.
+
+## Setup
+
+Run the following code to get started. The most important package here is `MASS`. It contains a function called `mvrnorm` that enables us to simulate data from a multivariate normal distribution. This means we'll simulate data for scenarios where we have a continuous outcome. I really like this function for simulating data because it has an argument called `empirical` that you can set to `TRUE`, which causes your simulated data to have the exact properties you set. This is a great way to check out your simulated data and see if it makes sense.
+
+We will use the `tidyverse` because we need to prepare the data after simulating it. `mvrnorm` returns a matrix with each dependent variable as a column. This means we sometimes need to prepare the data so that we can perform the tests we want to run or for visualization purposes.
+
+The `tidystats` and `effectsize` packages will be used to inspect the data and check whether it looks plausible.
+
+Finally, we use the `broom` package to extract p-values from the tests we run. This will be necessary to calculate the power because power is (usually) nothing more than the number of significant p-values divided by the number of studies we simulated. In a future post I might focus on Bayesian analyses, so we won't be dealing with p-values then, although the logic remains the same.
+
+Besides loading packages, we also set the `s` variable. The value of this variable will determine how many times we'll simulate the data. The higher this number, the more accurate our power estimates will be.
+
+```{r setup, message=FALSE, class.source="active-code"}
+# Load packages
+library(MASS)
+library(tidyverse)
+library(tidystats)
+library(effectsize)
+library(broom)
+
+# Set global parameters
+s <- 1000 # Number of loops in the power simulation
+
+# Optional: Create color variables for the plots
+green <- "#00B88D"
+yellow <- "#f39c12"
+off_white <- "#cccccc"
+```
+
+```{r hidden-setup, echo=FALSE}
+library(knitr)
+
+background_color <- "#1a1a1a"
+text_color <- "#ffffff"
+gridlines_color <- "#404040"
+
+theme_update(
+  plot.background = element_rect(fill = background_color, size = 0),
+  panel.background = element_blank(),
+
+  text = element_text(color = text_color),
+  axis.text.x = element_text(color = text_color),
+  axis.text.y = element_text(color = text_color),
+  
+  legend.background = element_rect(fill = background_color),
+  legend.key = element_rect(color = background_color),
+  
+  axis.line = element_line(size = 0.5, colour = gridlines_color),
+  
+  panel.grid.major = element_line(colour = gridlines_color, size = 0.25),
+  panel.grid.minor = element_blank()
+)
+
+options(
+  knitr.kable.NA = "", 
+  dplyr.summarise.inform = FALSE,
+  digits = 2
+)
+
+opts_chunk$set(
+  fig.align = "center",
+  fig.retina = 2
+)
+```
+
+With the setup out of the way, let's cover our general approach to power analyses:
+
+1. Simulate the data with fixed properties
+2. Check the data to see if the data is plausible
+3. Run the tests we want to run on this data
+4. Repeat steps 1 to 3 many times, save the p-values, and calculate power
+
+We'll do this for various scenarios. In each scenario we start by defining the parameters. I'll focus on providing means, standard deviations, and correlations, because those are usually the parameters we report in the results section, so I'm guessing most researchers will have some intuitions about what these parameters mean and whether the results are plausible.
+
+The `mvrnorm` function requires that we pass it the sample size, the means, and a variance-covariance matrix. The first two are easy to understand, but the variance-covariane may not be. It's relatively straightforward to convert means, SDs, and correlations to a variance-covariance matrix, though. Variance is simply the standard deviation squared and the covariance is the product of the standard deviations of the two variables and their correlation. You'll see in some scenarios below that this is how I construct the variance-covariance matrix.
+
+Note that the result of each power analysis will be the power, and not the sample size needed to obtain a particular power. This is the same as calculating the post-hoc power in G*Power. If you want to figure out what the sample size is for a particular power (e.g., 80%) then you simply change the sample size parameter until you have the power you want.
+
+## 1 group - 1 DV
+
+The simplest scenario is where we want to simulate a set of normally distributed values for a single group. This requires that we set three parameters: a mean, a standard deviation, and a sample size. We give `mvrnorm` the sample size (`N`), the mean (`M`), and the variance (`SD^2`).
+
+```{r 1-group-setup, class.source="active-code"}
+# Parameters
+M <- 0.75
+SD <- 5
+N <- 90
+
+# Simulate once with empirical = TRUE
+responses <- mvrnorm(N, mu = M, Sigma = SD^2, empirical = TRUE)
+
+# Prepare data
+colnames(responses) <- "DV"
+data <- as_tibble(responses)
+```
+
+The next step is to inspect the data to see whether the parameters are plausible. This can be done by converting the parameters to a standardized effect size and by visualizing the data.
+
+```{r 1-group-inspect, message=FALSE}
+# Calculate a standardized effect size
+effect_size <- cohens_d(data$DV)
+
+# Plot the simulated data
+ggplot(data, aes(x = DV)) +
+  geom_histogram(fill = green, color = background_color) +
+  geom_vline(xintercept = M, linetype = "dashed", color = yellow)
+```
+
+The histogram roughly shows that we have a mean of `r M` and a standard deviation of `r SD`. We also calculated the Cohen's d as a measure of the size of the effect. This data is equal to a Cohen's d of `r effect_size$Cohens_d`.
+
+Next is the analysis we want to power for. In this case, a one-sample t-test can be run to see whether the mean is significantly different from 0. The function for this is `t.test`.
+
+```{r, results='hide'}
+t.test(data$DV)
+```
+
+To calculate the power, we repeat the analysis `s` times. Each time we store the *p*-value so that later we can calculate the proportion of significant results. Since we don't need to inspect the data each time, we skip the data preparation step and use the matrix returned by `mvrnorm` immediately in `t.test`. 
+
+```{r, class.source="active-code"}
+# Power analysis
+p_values <- vector(length = s)
+
+for (i in 1:s) {
+  # Simulate
+  responses <- mvrnorm(N, mu = M, Sigma = SD^2)
+  
+  # Run test
+  test <- t.test(responses[, 1])
+  
+  # Extract p-value
+  p_values[i] <- test$p.value
+}
+
+# Calculate power
+power <- sum(p_values <= .05) / s * 100
+```
+
+With the current parameters, we obtain a power of `r power`. You can adjust the sample size parameter and re-run the code until you know which sample size gives you the desired power.
+
+## 2 groups - 1 DV
+
+The next scenario is one in which we have two groups and a single DV. Even in this simple scenario there are already several variations that are important to consider. Do we assume equal variances between groups? Do we assume equal samples sizes? Is the design between or within-subjects?
+
+### Between-subjects, unequal variance, and unequal sample sizes
+
+If we are interested in a between-subjects design where we assume both unequal variances and samples sizes, we can use the code from the previous scenario and simply run it twice, once for each group separately.
+
+```{r 2-group-setup, class.source="active-code"}
+# Parameters
+M1 <- 5
+M2 <- 4
+SD1 <- 2
+SD2 <- 2
+N1 <- 50
+N2 <- 40
+
+# Simulate once with empirical = TRUE
+group1 <- mvrnorm(N1, mu = M1, Sigma = SD1^2, empirical = TRUE)
+group2 <- mvrnorm(N2, mu = M2, Sigma = SD2^2, empirical = TRUE)
+
+# Prepare data
+colnames(group1) <- "DV"
+colnames(group2) <- "DV"
+
+group1 <- group1 %>%
+  as_tibble() %>%
+  mutate(condition = "control")
+
+group2 <- group2 %>%
+  as_tibble() %>%
+  mutate(condition = "experimental")
+
+data <- bind_rows(group1, group2)
+```
+
+We can inspect the data by calculating a Cohen's d and visualizing the results.
+
+```{r, message=FALSE}
+# Calculate a standardized effect size
+effect_size <- cohens_d(DV ~ condition, data = data)
+
+# Visualize the data
+ggplot(data, aes(x = condition, y = DV)) + 
+  geom_jitter(width = .2, alpha = .5, color = green) + 
+  stat_summary(color = yellow)
+```
+
+The difference between the two groups is equal to a Cohen's d of `r effect_size$Cohens_d`.
+
+An appropriate analysis in this case is a Welch's two-sample t-test because we have different variances between groups.
+
+```{r}
+t.test(DV ~ condition, data = data)
+```
+
+The power analysis looks as followed:
+
+```{r}
+# Power analysis
+p_values <- vector(length = s)
+
+for (i in 1:s) {
+  # Simulate
+  group1 <- mvrnorm(N1, mu = M1, Sigma = SD1^2)
+  group2 <- mvrnorm(N2, mu = M2, Sigma = SD2^2)
+  
+  # Run test
+  test <- t.test(group1[, 1], group2[, 1])
+  
+  # Extract p-value
+  p_values[i] <- test$p.value
+}
+
+# Calculate power
+power <- sum(p_values <= .05) / s * 100
+```
+
+This produces a power of `r power`.
+
+### Between-subjects, equal variances, and equal sample sizes
+
+If we want to assume equal variances and equal sample sizes, we can simulate the data a bit differently. First, we'll only need 4 parameters. Second, we don't need to separately simulate the data for each group. We can instead use a single `mvrnorm` call and provide it with the correct variance-covariance matrix. The crucial bit is to only set the variances and set the covariances to 0. If we do it this way, we do need to prepare the resulting matrix a bit differently. `mvnnorm` returns a matrix that, when converted to a data frame, results in a wide data frame. That is, the DV of each group is stored in separate columns. 
+
+```{r 2-group-setup-2, class.source="active-code"}
+# Parameters
+M1 <- 5
+M2 <- 4
+SD <- 2
+N <- 40
+
+# Prepare parameters
+mus <- c(M1, M2)
+Sigma <- matrix(nrow = 2, ncol = 2, 
+    c(
+      SD^2, 0,
+      0, SD^2
+    )
+  )
+
+# Simulate once with empirical = TRUE
+responses <- mvrnorm(N, mu = mus, Sigma = Sigma, empirical = TRUE)
+
+# Prepare data
+colnames(responses) <- c("group1", "group2")
+data <- as_tibble(responses)
+
+data_long <- pivot_longer(data, cols = everything(), names_to = "condition", 
+  values_to = "DV")
+```
+
+```{r}
+# Power analysis
+p_values <- vector(length = s)
+
+for (i in 1:s) {
+  # Simulate
+  responses <- mvrnorm(N, mu = mus, Sigma = Sigma, empirical = TRUE)
+  
+  # Run test
+  test <- t.test(responses[, 1], responses[, 2], var.equal = TRUE)
+  
+  # Extract p-value
+  p_values[i] <- test$p.value
+}
+
+# Calculate power
+power <- sum(p_values <= .05) / s * 100
+```

@@ -226,3 +226,12 @@ blockquote {
 .boolean {
   color: $red;
 }
+
+.salute .salute-text {
+  background-color: $tertiary-dark-color;
+  color: $primary-dark-text-color;
+}
+
+.salute .salute-text::after {
+  border-color: $tertiary-dark-color transparent transparent transparent;
+}

@@ -59,19 +59,14 @@ ul li p {
 
 h1 {
   margin: 0 0 1rem 0;
-  padding: 1rem 0 0 0; /* Add padding so that the TOC links navigate to slight above the header */
+  padding: 1rem 0 0 0; /* Add padding so that the TOC links navigate to slighty 
+    above the header */
 }
 
 h2 {
   margin: 0 0 1rem 0;
-  padding: 1rem 0 0 0; /* Add padding so that the TOC links navigate to slight above the header */
-}
-
-#TableOfContents ul {
-  list-style-type: none;
-  line-height: 1.5;
-
-  padding-inline-start: 0
+  padding: 1rem 0 0 0; /* Add padding so that the TOC links navigate to slight 
+    above the header */
 }
 
 /* Scroll bars Firefox */
@@ -590,4 +585,85 @@ table tbody tr td:last-child {
   .header, .footer {
     display: none;
   }
+}
+
+/* Salutes */
+
+/* Tooltip container */
+.salute {
+  display: inline-block;
+  position: relative;
+}
+
+/* Tooltip text */
+.salute .salute-text {
+  visibility: hidden;
+  
+  display: flex;
+  align-items: center;
+  
+  height: 2rem;
+  width: max-content; 
+  padding: 5px;
+  border-radius: 6px;
+  
+  text-align: center;
+  
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+ 
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.salute img {
+  width: 32px;
+  height: 32px;
+  
+  margin-right: 5px;
+}
+
+/* Tooltip arrow */
+.salute .salute-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+}
+
+.salute:hover {
+  cursor: pointer;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.salute:hover .salute-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* TOC */
+
+#TOC::before {
+  content: "Contents";
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+#TOC {
+  margin-top: 1.5rem;x
+}
+
+#TOC ul {
+  list-style-type: none;
+  line-height: 1.5;
+
+  padding-inline-start: 0
 }
