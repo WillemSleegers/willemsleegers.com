@@ -97,8 +97,12 @@ cv %>%
 
 ```{r publications, echo = FALSE, results = "asis"}
 cv %>%
+  filter(section == "Publications" & subsection == "Stage-1 accepted manuscripts") %>%
+  create_cv_section(include_year = FALSE)
+
+cv %>%
   filter(section == "Publications" & subsection == "In preparation") %>%
-  create_cv_section()
+  create_cv_section(include_section = FALSE)
 
 cv %>%
   filter(section == "Publications" & subsection == "Preprints") %>%
@@ -118,6 +122,10 @@ cv %>%
 
 cv %>%
   filter(section == "Publications" & subsection == "Software") %>%
+  create_cv_section(include_section = FALSE, include_year = FALSE)
+
+cv %>%
+  filter(section == "Publications" & subsection == "Websites") %>%
   create_cv_section(include_section = FALSE, include_year = FALSE)
 ```
 
