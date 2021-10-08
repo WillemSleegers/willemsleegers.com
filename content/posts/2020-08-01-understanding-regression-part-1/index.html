@@ -22,7 +22,7 @@ toc: true
 <div id="data" class="section level2">
 <h2>Data</h2>
 <p>To figure out regression, we need data. We could make up some data on the spot, but I’d rather use data that is a bit more meaningful (to me, anyway). Since I’m a big Pokémon fan, I’ll use a data set containing Pokémon statistics.</p>
-<p>In case you’re following along, start by loading some packages and reading in the data. In the code section below I use the <code>here</code> package to read in the data, but I recommend that you simply specify the path to the file. After that, I subset the data to make the data a bit more manageable and do some more setup. I define some colors that I use in the plots on this page and I define a custom <code>mode</code> function because R does not have one (and I need it later).</p>
+<p>In case you’re following along, start by loading some packages and reading in the <a href="https://www.willemsleegers.com/data/pokemon.csv">data</a>. In the code section below I use the <code>here</code> package to read in the data, but I recommend that you simply specify the path to the file. After that, I subset the data to make the data a bit more manageable and do some more setup. I define some colors that I use in the plots on this page and I define a custom <code>mode</code> function because R does not have one (and I need it later).</p>
 <pre class="r active-code"><code># Load packages
 library(tidyverse)
 library(here)
@@ -287,5 +287,5 @@ mode &lt;- function(x) {
 ##        26.1</code></pre>
 <p>The result is an intercept value of 26.14, which matches the mean of the weights.</p>
 <p>So, we now know where the intercept comes from when we run an intercept-only model. It is the mean of the data we are trying to model. Note that it is only the mean because we defined the error as the sum of <em>squared</em> residuals. Had we defined the error differently, such as the sum of <em>absolute</em> residuals or the sum of errors, the intercept would be the median or mode of the data instead. Why did we use the sum of squared residuals? We had a conceptual reason of wanting to punish larger residuals relatively more than several smaller errors. It turns out there is another reason to favor squared residuals, which has to do with a nice property of the mean vs. the median. This will be covered in Part 2 of ‘Understanding Regression’.</p>
-<p><em>This post was last updated on 2021-06-22.</em></p>
+<p><em>This post was last updated on 2021-10-08.</em></p>
 </div>

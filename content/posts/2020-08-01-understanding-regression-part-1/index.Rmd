@@ -19,7 +19,7 @@ Feel free to follow me along by copy-pasting the code from each step. I'll add a
 
 To figure out regression, we need data. We could make up some data on the spot, but I'd rather use data that is a bit more meaningful (to me, anyway). Since I'm a big Pokémon fan, I'll use a data set containing Pokémon statistics.
 
-In case you're following along, start by loading some packages and reading in the data. In the code section below I use the `here` package to read in the data, but I recommend that you simply specify the path to the file. After that, I subset the data to make the data a bit more manageable and do some more setup. I define some colors that I use in the plots on this page and I define a custom `mode` function because R does not have one (and I need it later).
+In case you're following along, start by loading some packages and reading in the [data](https://www.willemsleegers.com/data/pokemon.csv). In the code section below I use the `here` package to read in the data, but I recommend that you simply specify the path to the file. After that, I subset the data to make the data a bit more manageable and do some more setup. I define some colors that I use in the plots on this page and I define a custom `mode` function because R does not have one (and I need it later).
 
 ```{r setup, message=FALSE, class.source="active-code"}
 # Load packages
