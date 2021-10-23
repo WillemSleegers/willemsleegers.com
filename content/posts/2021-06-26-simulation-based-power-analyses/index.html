@@ -5,7 +5,7 @@ slug: simulation-based-power-analyses
 tags:
   - statistics
   - power analysis
-draft: true
+  - simulation
 output:
   blogdown::html_page:
     toc: true
@@ -90,7 +90,7 @@ effect_size &lt;- cohens_d(data$DV)
 ggplot(data, aes(x = DV)) +
   geom_histogram(fill = green, color = background_color) +
   geom_vline(xintercept = M, linetype = &quot;dashed&quot;, color = yellow)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/1-group-inspect-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>The histogram roughly shows that we have a mean of 0.75 and a standard deviation of 5. We also calculated the Cohen’s <em>d</em> as a measure of the size of the effect. The size of this effect is equal to a Cohen’s <em>d</em> of 0.15.</p>
 <p>Next is the analysis we want to power for—the one-sample <em>t</em>-test. The function for this test is <code>t.test()</code>.</p>
 <pre class="r active-code"><code>t.test(data$DV)</code></pre>
@@ -112,7 +112,7 @@ for (i in 1:s) {
 
 # Calculate power
 power &lt;- sum(p_values &lt;= .05) / s * 100</code></pre>
-<p>With the current parameters (N = 90, Cohen’s <em>d</em> = 0.15), we obtain a power of 26.9%. The power is simply how often we find a significant result, divided by the number of times we looped, multiplied by 100 to give a percentage. You can adjust the sample size parameter and re-run the code until you know which sample size gives you the desired power. You might also want to run the loop a few times to see how consistent your results are (if the results are inconsistent, increase the number of loops by increasing the value of <code>s</code>).</p>
+<p>With the current parameters (N = 90, Cohen’s <em>d</em> = 0.15), we obtain a power of 28.6%. The power is simply how often we find a significant result, divided by the number of times we looped, multiplied by 100 to give a percentage. You can adjust the sample size parameter and re-run the code until you know which sample size gives you the desired power. You might also want to run the loop a few times to see how consistent your results are (if the results are inconsistent, increase the number of loops by increasing the value of <code>s</code>).</p>
 </div>
 <div id="welchs-two-sample-t-test" class="section level2">
 <h2>Welch’s Two Sample <em>t</em>-test</h2>
@@ -154,7 +154,7 @@ ggplot(data, aes(x = condition, y = DV)) +
   geom_jitter(width = .2, alpha = .75, color = green) + 
   stat_summary(color = yellow) +
   labs(x = &quot;Condition&quot;)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>The difference between the two groups is equal to a Cohen’s d of 0.44.</p>
 <p>To run a Welch’s two-sample <em>t</em>-test, we again use the <code>t.test()</code> function. R by default does not assume equal variances, so the default is a Welch’s two sample <em>t</em>-test.</p>
 <pre class="r active-code"><code>t.test(DV ~ condition, data = data)</code></pre>
@@ -177,7 +177,7 @@ for (i in 1:s) {
 
 # Calculate power
 power &lt;- sum(p_values &lt;= .05) / s * 100</code></pre>
-<p>This produces a power of 54.4% with the current parameters.</p>
+<p>This produces a power of 55.7% with the current parameters.</p>
 </div>
 <div id="two-sample-t-test" class="section level2">
 <h2>Two Sample <em>t</em>-test</h2>
@@ -215,7 +215,7 @@ ggplot(data_long, aes(x = condition, y = DV)) +
   geom_jitter(width = .2, alpha = .75, color = green) + 
   stat_summary(color = yellow) +
   labs(x = &quot;Condition&quot;)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>We see a difference between the two conditions with a Cohen’s <em>d</em> of 0.5.</p>
 <p>This time we run a two sample <em>t</em>-test with equal variances assumed.</p>
 <pre class="r active-code"><code>t.test(DV ~ condition, data = data_long, var.equal = TRUE)</code></pre>
@@ -237,7 +237,7 @@ for (i in 1:s) {
 
 # Calculate power
 power &lt;- sum(p_values &lt;= .05) / s * 100</code></pre>
-<p>This produces a power of 60.1% with the current parameters.</p>
+<p>This produces a power of 61.6% with the current parameters.</p>
 </div>
 <div id="paired-t-test" class="section level2">
 <h2>Paired <em>t</em>-test</h2>
@@ -278,7 +278,7 @@ ggplot(data_long, aes(x = condition, y = DV, group = 1)) +
   stat_summary(color = yellow, geom = &quot;line&quot;, linetype = 2) +
   stat_summary(color = yellow) +
   labs(x = &quot;Condition&quot;)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>The difference between the two groups is equal to a Cohen’s d of 0.71.</p>
 <p>Run the paired <em>t</em>-test with <code>t.test()</code> and set <code>paired</code> to TRUE. I generally favor long data frames, so that’s the data frame I use here to run the paired <em>t</em>-test. In the power analysis, I use the wide version to minimize the code (and speed up the power analysis).</p>
 <pre class="r active-code"><code>t.test(DV ~ condition, data = data_long, paired = TRUE)</code></pre>
@@ -331,7 +331,7 @@ data &lt;- as_tibble(samples)</code></pre>
 ggplot(data, aes(x = var1, y = var2)) + 
   geom_point(alpha = .75, color = green) + 
   geom_smooth(method = &quot;lm&quot;, color = yellow)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>To perform the statistical test, we run <code>cor.test()</code>.</p>
 <pre class="r active-code"><code>cor.test(data$var1, data$var2)</code></pre>
 <p>The power analysis:</p>
@@ -352,7 +352,7 @@ for (i in 1:s) {
 
 # Calculate power
 power &lt;- sum(p_values &lt;= .05) / s * 100</code></pre>
-<p>This produces a power of 90.3% with the current parameters.</p>
+<p>This produces a power of 93.3% with the current parameters.</p>
 </div>
 <div id="t-tests" class="section level2">
 <h2>2 <em>t</em>-tests</h2>
@@ -409,7 +409,7 @@ ggplot(data, aes(x = condition, y = DV)) +
   stat_summary(color = yellow) +
   labs(x = &quot;Condition&quot;)</code></pre>
 <pre><code>## No summary function supplied, defaulting to `mean_se()`</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>The treatment condition differs from the two control conditions with a difference equal to a Cohen’s <em>d</em> of -0.52.</p>
 <p>The statistical analysis consists of two Welch’s two sample <em>t</em>-tests:</p>
 <pre class="r active-code"><code>t.test(DV ~ condition, data = filter(data, condition != &quot;control 1&quot;))
@@ -437,7 +437,7 @@ for (i in 1:s) {
 
 # Calculate power
 power &lt;- sum(p_values1 &lt;= .05 &amp; p_values2 &lt;= .05) / s * 100</code></pre>
-<p>The resulting power is 55.2%. Note that this is very different from the power of finding a significant effect of only one of the two tests; which would be equal to a power of 78.2%. An important lesson to learn here is that with multiple tests, your power may quickly go down, depending on the power for each individual test. You can also calculate the overall power if you know the power of each individual test. If you know you have 80% power for each of two tests, then the overall power will be 80% * 80% = 64%. This only works if your analyses are completely independent, though.</p>
+<p>The resulting power is 55.5%. Note that this is very different from the power of finding a significant effect of only one of the two tests; which would be equal to a power of 78.7%. An important lesson to learn here is that with multiple tests, your power may quickly go down, depending on the power for each individual test. You can also calculate the overall power if you know the power of each individual test. If you know you have 80% power for each of two tests, then the overall power will be 80% * 80% = 64%. This only works if your analyses are completely independent, though.</p>
 </div>
 <div id="regression-2-x-2-interaction" class="section level2">
 <h2>Regression (2 x 2 interaction)</h2>
@@ -490,7 +490,7 @@ ggplot(data, aes(x = condition, y = DV)) +
   labs(x = &quot;Condition&quot;)</code></pre>
 <pre><code>## No summary function supplied, defaulting to `mean_se()`
 ## No summary function supplied, defaulting to `mean_se()`</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>The graph shows that the difference between the control and treatment condition indeed seems to be larger in Germany than in the Netherlands. In the Netherlands, the effect size is equal to a Cohen’s <em>d</em> of -0.5. In Germany, it’s -1.</p>
 <p>A regression analysis can be used to test the interaction effect and whether the effect is present in each country. We do need the run the regression twice in order to get the effect of treatment in each country. By default, Germany is the reference category (DE comes before NL). So if we switch the reference category to NL, we get the effect of treatment in the Netherlands.</p>
 <pre class="r active-code"><code># Regression with DE as the reference category
@@ -544,7 +544,7 @@ for (i in 1:s) {
 # Calculate power
 power &lt;- sum(p_values_NL &lt;= .05 &amp; p_values_DE &lt;= .05 &amp; 
     p_values_interaction &lt;= .05) / s * 100</code></pre>
-<p>The overall power for this scenario is 11.2%. If you instead only look at the power of the interaction test, you get a power of 34.6%. The difference shows that it matters whether you follow up your interaction test with the analyses that confirm the exact pattern of the interaction test. Also note that these analyses are not independent, so it’s not straightforward to calculate the overall power. Simulation makes it relatively easy.</p>
+<p>The overall power for this scenario is 11.4%. If you instead only look at the power of the interaction test, you get a power of 36.3%. The difference shows that it matters whether you follow up your interaction test with the analyses that confirm the exact pattern of the interaction test. Also note that these analyses are not independent, so it’s not straightforward to calculate the overall power. Simulation makes it relatively easy.</p>
 </div>
 </div>
 <div id="conclusion" class="section level1">

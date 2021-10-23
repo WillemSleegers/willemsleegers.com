@@ -5,6 +5,7 @@ slug: simulation-based-power-analyses
 tags:
   - statistics
   - power analysis
+  - simulation
 output:
   blogdown::html_page:
     toc: true
@@ -117,7 +118,7 @@ data <- as_tibble(samples)
 
 The next step is to inspect the data to see whether the parameters are plausible. This can be done by converting the parameters to a standardized effect size and by visualizing the data.
 
-```{r 1-group-inspect, message=FALSE}
+```{r, message=FALSE}
 # Calculate a standardized effect size
 effect_size <- cohens_d(data$DV)
 
