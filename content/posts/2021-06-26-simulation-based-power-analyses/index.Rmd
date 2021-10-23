@@ -5,7 +5,6 @@ slug: simulation-based-power-analyses
 tags:
   - statistics
   - power analysis
-draft: true
 output:
   blogdown::html_page:
     toc: true
