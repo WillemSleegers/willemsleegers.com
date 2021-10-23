@@ -1,16 +1,16 @@
 ---
 title: Most Conferences Aren't Worth It
 date: '2021-07-03'
-slug: conferences-don-t-seem-worth-it
+slug: most-conferences-arent-worth-it
 tags: [Willem Whining]
 draft: true
 ---
 
-I have just finished attending a conference and it reminded me once again that conferences seem like a giant waste of time (and money). Perhaps this is phrased a bit too negatively because there are definitely some exceptions, but I do think there are some structural issues to conferences that are worth criticizing. I'm not the first to do so, and there are people actually researching this topic (see for example [here](https://www.the-scientist.com/news-opinion/opinion--why-it-is-time-to-make-conferences-worth-it-66496)), but given that conferences are still organized in the same way, I think it might be nice to remind people.
+During the summer I attended several conferences and this reminded me once again that conferences seem like a giant waste of time (and money and resources). Perhaps this is phrased a bit too negatively because there are definitely some exceptions, but I think there are several structural issues to conferences that are worth criticizing. I'm not the first to do so, and there are people actually researching this topic (see for example [here](https://www.the-scientist.com/news-opinion/opinion--why-it-is-time-to-make-conferences-worth-it-66496)), but given that conferences are still organized in the same way, I think it might be nice to remind people.
 
 ## Conferences == Talks
 
-Conferences, at least in the field of social psychology, consist of talks. There are several different types of talks, ranging from long keynote talks to blitz presentations. Keynote talks are usually about 45 minutes long and are followed by some questions, usually 5-10 minutes long depending on whether the speaker stuck to their time limit. Blitz presentations are very short presentations and are usually less than 5 minutes, with no room for questions. In between the keynote talks and blitz presentations are submitted talks. These talks are submitted by potential attendees and selected by the organizers. The talks are put into sessions centered around are a particular topic. The talks are usually 15 minutes long with about 5 minutes for questions. 
+Conferences, at least in the field of social psychology, consist of talks. There are several different types of talks, ranging from long keynote talks to blitz presentations. Keynote talks are usually about 45 minutes long and are followed by questions, usually 5-10 minutes long depending on whether the speaker stuck to their time limit. Blitz presentations are very short presentations and are usually less than 5 minutes, with no room for questions. In between the keynote talks and blitz presentations are submitted talks. These talks are submitted by potential attendees and selected by the organizers. The talks are put into sessions centered around a particular topic. The talks are usually 15 minutes long with about 5 minutes for questions. 
 
 Besides these talks, there are also poster presentations. A poster presentation is not much of a presentation. It's just people standing in front of their poster while people walk by. Sometimes this means you get questions and sometimes not so much. Either way, you're simply standing in front of your poster and hope there will be some engagement. 
 
@@ -40,13 +40,15 @@ Then there's networking. Networking is probably the number 1 reason to attend a 
 
 Most of the time you'll be talking with people you already know. Which is not particularly bad because maintaining relationships is important too. It's just hard to say whether you're maintaining those relationships because they're professional relationships that you want to cultivate or because they're your friends and you like hanging out with them.
 
-So, I think conferences are actually pretty pointless because talks are a terrible way to convey information, there's almost no discussion, and networking is only randomly useful. Note that doesn't mean that conferences aren't useful at all. Of course it sometimes pays off, but my point is that it's too inefficient to be reliably useful, and therefore I do not consider conferences to be worth it.
+So, I think conferences are actually pretty pointless because talks are a terrible way to convey information, there's almost no discussion, and networking is only randomly useful. Note that it doesn't mean that conferences aren't useful at all. Of course it sometimes pays off, but my point is that it's too inefficient to be reliably useful, and therefore I do not consider conferences to be worth it.
 
-## Enter SIPS
+## Solutions
 
-My criticism above applies to the typical conference and does not apply to another conference I attended several years ago, and that was SIPS. What SIPS did, and still does, differently is that they do not focus on talks. Instead, their focus is on things like hackatons and workshops. Hackatons are problem-centered meetings where a problem is introduced by those who organize the hackathon. These could be issues such as how to promote replication studies or how to preregister analyses for existing data. These meeting distinguish themselves from normal talks by being problem-focused and centered around collaboration. A problem is introduced and those who find that problem interesting stick around and start to work on it. There are no slides, except to maybe introduce the problem. It's just scientists getting together and trying to solve something. That sounds like science to me.
+My criticism above applies to the typical conference and does not apply to another conference I attended several years ago, and that was SIPS. What SIPS did, and still does, differently is that they do not focus on talks. Instead, their focus is on things like hackatons and workshops. Hackatons are problem-centered meetings where a problem is introduced by those who organize the hackathon. These could be issues such as how to promote replication studies or how to preregister analyses for existing data. These meeting distinguish themselves from normal talks by being problem-focused and centered around collaboration. A problem is introduced and those who find that problem interesting stick around and start to work on it. There are no slides, except to maybe introduce the problem. It's just scientists getting together and trying to solve a problem That sounds like science to me.
 
-Workshops are also nice because they produce results, which a one-way talk may not do.
+I'm not sure if workshops are useful during a conference. Usually the workshops cannot last more than a few hours, so you can't learn anything that takes longer than that. It's probably good for some small skills, like learning a new statistical technique, but not so good for skills that take longer, like learning R. 
+
+The SIPS format 
 
 ## Scientific Sheep
 
@@ -58,3 +60,7 @@ We should reflect and we should realize that conferences in their common form ar
 
 - SIPS-like conference format
 - Small group meetings (without talks)
+
+
+
+My argument is not that conferences are always pointless. Some have value. Some good can come of some talks. But it's not generally effective.

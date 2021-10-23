@@ -662,8 +662,13 @@ table tbody tr td:last-child {
 }
 
 #TOC ul {
-  list-style-type: none;
+  margin-left: 10px;
+  
   line-height: 1.5;
 
   padding-inline-start: 0
+}
+
+#TOC ul > li {
+  margin-left: 10px;
 }

@@ -3,6 +3,7 @@
 
 # - Add BibTex citations to each publication as a button.
 # - Make setting the language a parameter for each post
+# - Find a way to add names of functions to the config.yaml to be highlighted
 
 # Maybes ------------------------------------------------------------------
 
