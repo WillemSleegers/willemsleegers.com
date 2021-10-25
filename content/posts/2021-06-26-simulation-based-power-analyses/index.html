@@ -112,7 +112,7 @@ for (i in 1:s) {
 
 # Calculate power
 power &lt;- sum(p_values &lt;= .05) / s * 100</code></pre>
-<p>With the current parameters (N = 90, Cohen’s <em>d</em> = 0.15), we obtain a power of 28.6%. The power is simply how often we find a significant result, divided by the number of times we looped, multiplied by 100 to give a percentage. You can adjust the sample size parameter and re-run the code until you know which sample size gives you the desired power. You might also want to run the loop a few times to see how consistent your results are (if the results are inconsistent, increase the number of loops by increasing the value of <code>s</code>).</p>
+<p>With the current parameters (N = 90, Cohen’s <em>d</em> = 0.15), we obtain a power of 30.3%. The power is simply how often we find a significant result, divided by the number of times we looped, multiplied by 100 to give a percentage. You can adjust the sample size parameter and re-run the code until you know which sample size gives you the desired power. You might also want to run the loop a few times to see how consistent your results are (if the results are inconsistent, increase the number of loops by increasing the value of <code>s</code>).</p>
 </div>
 <div id="welchs-two-sample-t-test" class="section level2">
 <h2>Welch’s Two Sample <em>t</em>-test</h2>
@@ -177,7 +177,7 @@ for (i in 1:s) {
 
 # Calculate power
 power &lt;- sum(p_values &lt;= .05) / s * 100</code></pre>
-<p>This produces a power of 55.7% with the current parameters.</p>
+<p>This produces a power of 53.3% with the current parameters.</p>
 </div>
 <div id="two-sample-t-test" class="section level2">
 <h2>Two Sample <em>t</em>-test</h2>
@@ -237,7 +237,7 @@ for (i in 1:s) {
 
 # Calculate power
 power &lt;- sum(p_values &lt;= .05) / s * 100</code></pre>
-<p>This produces a power of 61.6% with the current parameters.</p>
+<p>This produces a power of 58.4% with the current parameters.</p>
 </div>
 <div id="paired-t-test" class="section level2">
 <h2>Paired <em>t</em>-test</h2>
@@ -300,7 +300,7 @@ for (i in 1:s) {
 
 # Calculate power
 power &lt;- sum(p_values &lt;= .05) / s * 100</code></pre>
-<p>This produces a power of 99.3% with the current parameters.</p>
+<p>This produces a power of 99.4% with the current parameters.</p>
 </div>
 <div id="correlation" class="section level2">
 <h2>Correlation</h2>
@@ -352,7 +352,7 @@ for (i in 1:s) {
 
 # Calculate power
 power &lt;- sum(p_values &lt;= .05) / s * 100</code></pre>
-<p>This produces a power of 93.3% with the current parameters.</p>
+<p>This produces a power of 92.2% with the current parameters.</p>
 </div>
 <div id="t-tests" class="section level2">
 <h2>2 <em>t</em>-tests</h2>
@@ -437,7 +437,7 @@ for (i in 1:s) {
 
 # Calculate power
 power &lt;- sum(p_values1 &lt;= .05 &amp; p_values2 &lt;= .05) / s * 100</code></pre>
-<p>The resulting power is 55.5%. Note that this is very different from the power of finding a significant effect of only one of the two tests; which would be equal to a power of 78.7%. An important lesson to learn here is that with multiple tests, your power may quickly go down, depending on the power for each individual test. You can also calculate the overall power if you know the power of each individual test. If you know you have 80% power for each of two tests, then the overall power will be 80% * 80% = 64%. This only works if your analyses are completely independent, though.</p>
+<p>The resulting power is 56.2%. Note that this is very different from the power of finding a significant effect of only one of the two tests; which would be equal to a power of 77.8%. An important lesson to learn here is that with multiple tests, your power may quickly go down, depending on the power for each individual test. You can also calculate the overall power if you know the power of each individual test. If you know you have 80% power for each of two tests, then the overall power will be 80% * 80% = 64%. This only works if your analyses are completely independent, though.</p>
 </div>
 <div id="regression-2-x-2-interaction" class="section level2">
 <h2>Regression (2 x 2 interaction)</h2>
@@ -503,7 +503,7 @@ data &lt;- mutate(data, country = fct_relevel(country, &quot;NL&quot;))
 model_NL &lt;- lm(DV ~ condition * country, data = data)
 summary(model_NL)</code></pre>
 <p>Our interest is in the two treatment effects and the interaction effect (which is the same in both models). This means that we want to save 3 p-values in the power analysis.</p>
-<pre class="r active-code"><code># Create two empty vectors to store the p-values in
+<pre class="r active-code"><code># Create three empty vectors to store the p-values in
 p_values_NL &lt;- vector(length = s)
 p_values_DE &lt;- vector(length = s)
 p_values_interaction &lt;- vector(length = s)
@@ -544,10 +544,11 @@ for (i in 1:s) {
 # Calculate power
 power &lt;- sum(p_values_NL &lt;= .05 &amp; p_values_DE &lt;= .05 &amp; 
     p_values_interaction &lt;= .05) / s * 100</code></pre>
-<p>The overall power for this scenario is 11.4%. If you instead only look at the power of the interaction test, you get a power of 36.3%. The difference shows that it matters whether you follow up your interaction test with the analyses that confirm the exact pattern of the interaction test. Also note that these analyses are not independent, so it’s not straightforward to calculate the overall power. Simulation makes it relatively easy.</p>
+<p>The overall power for this scenario is 9.4%. If you instead only look at the power of the interaction test, you get a power of 34.7%. The difference shows that it matters whether you follow up your interaction test with the analyses that confirm the exact pattern of the interaction test. Also note that these analyses are not independent, so it’s not straightforward to calculate the overall power. Simulation makes it relatively easy.</p>
 </div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
 <p>In this post I presented code to perform a simulated-based power analysis for several scenarios. In the future I hope to expand on the scenarios, but I think the scenarios included so far already reveal a few interesting things. In some cases, it’s rather trivial to simulate the data. The <code>mvrnorm()</code> function works wonders for simulating the data by letting you set <code>empirical</code> to <code>TRUE</code>, thereby allowing you to inspect the simulated data. More importantly, though, I think that simulation-based power analyses are pedagogical. It takes the magic out of power analyses because power is nothing more than counting how often you find the significant results you expect to find. Not only that, the simulation approach also means that if you can simulate the data, you can calculate the power. Maybe that’s easier said than done, but that’s where my example code comes in. Hopefully it provides you with the code you can adapt to your own scenario so you can run the correct power analysis.</p>
+<p>This post was last updated on 2021-10-25.</p>
 </div>

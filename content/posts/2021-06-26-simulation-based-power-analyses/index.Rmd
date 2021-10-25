@@ -644,7 +644,7 @@ summary(model_NL)
 Our interest is in the two treatment effects and the interaction effect (which is the same in both models). This means that we want to save 3 p-values in the power analysis.
 
 ```{r, class.source="active-code"}
-# Create two empty vectors to store the p-values in
+# Create three empty vectors to store the p-values in
 p_values_NL <- vector(length = s)
 p_values_DE <- vector(length = s)
 p_values_interaction <- vector(length = s)
@@ -692,3 +692,5 @@ The overall power for this scenario is `r power`%. If you instead only look at t
 # Conclusion
 
 In this post I presented code to perform a simulated-based power analysis for several scenarios. In the future I hope to expand on the scenarios, but I think the scenarios included so far already reveal a few interesting things. In some cases, it's rather trivial to simulate the data. The `mvrnorm()` function works wonders for simulating the data by letting you set `empirical` to `TRUE`, thereby allowing you to inspect the simulated data. More importantly, though, I think that simulation-based power analyses are pedagogical. It takes the magic out of power analyses because power is nothing more than counting how often you find the significant results you expect to find. Not only that, the simulation approach also means that if you can simulate the data, you can calculate the power. Maybe that's easier said than done, but that's where my example code comes in. Hopefully it provides you with the code you can adapt to your own scenario so you can run the correct power analysis.
+
+This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.
