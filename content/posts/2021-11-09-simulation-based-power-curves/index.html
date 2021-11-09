@@ -1,0 +1,139 @@
+---
+title: Simulation-based power curves
+author: ''
+date: '2021-11-09'
+slug: simulation-based-power-curves
+categories: []
+tags:
+  - power analysis
+  - simulation
+  - statistics
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In a previous post I covered how to perform simulation-based power analyses. A limitation in that post is that usually the question is not what our power is, but rather which sample size gives us the desired power. With the code from my previous post you can get to the right sample size by changing the sample size parameters and then checking whether this gives you enough power. It’s fine, but it’s a little bit of a hassle.</p>
+<p>A more substantive, and related, limitation is that statistical power isn’t about a single threshold number that you’re supposed to reach. Power is a curve, after all. The difference between having obtained 79% power or 80% power is only 1% and does not strongly affect the interpretation of your obtained power. The code from my previous post doesn’t really illustrate this point, so let’s do that here.</p>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<p>If you want to follow along, run the following setup code:</p>
+<pre class="r active-code"><code># Load packages
+library(MASS)
+library(tidyverse)
+library(effectsize)
+
+# Optional: Create color variables for the plots
+green &lt;- &quot;#00B88D&quot;
+yellow &lt;- &quot;#f39c12&quot;
+off_white &lt;- &quot;#cccccc&quot;</code></pre>
+<p>Let’s look at one of the scenarios from the previous post: the two <em>t</em>-test scenario. We have one treatment condition and two control conditions. Our goal is to have enough power to find a significant difference between the treatment condition and <em>both</em> control conditions. Let’s begin with a single simulation, just to see what the data would look like.</p>
+<pre class="r active-code"><code># Parameters
+M_control1 &lt;- 5
+M_control2 &lt;- M_control1
+M_treatment &lt;- 5.5
+SD_control1 &lt;- 1
+SD_control2 &lt;- SD_control1
+SD_treatment &lt;- 1.5
+N &lt;- 50
+
+# Simulate once
+control1 &lt;- mvrnorm(N, mu = M_control1, Sigma = SD_control1^2, 
+  empirical = TRUE)
+control2 &lt;- mvrnorm(N, mu = M_control2, Sigma = SD_control2^2, 
+  empirical = TRUE)
+treatment &lt;- mvrnorm(N, mu = M_treatment, Sigma = SD_treatment^2, 
+  empirical = TRUE)
+
+# Prepare data
+colnames(control1) &lt;- &quot;DV&quot;
+colnames(control2) &lt;- &quot;DV&quot;
+colnames(treatment) &lt;- &quot;DV&quot;
+
+control1 &lt;- control1 %&gt;%
+  as_tibble() %&gt;%
+  mutate(condition = &quot;control 1&quot;)
+
+control2 &lt;- control2 %&gt;%
+  as_tibble() %&gt;%
+  mutate(condition = &quot;control 2&quot;)
+
+treatment &lt;- treatment %&gt;%
+  as_tibble() %&gt;%
+  mutate(condition = &quot;treatment&quot;)
+
+data &lt;- bind_rows(control1, control2, treatment)</code></pre>
+<p>I’ve changed the code a little bit compared to my previous post. We still assume the same parameters in both control conditions, but now I use one of the control condition variables to set the value of the variable from the other control condition. This means you only need to set the value once and this reduces mistakes due to typos. In addition, we assume the same sample size in each condition and I also changed the parameter values.</p>
+<p>We inspect the data by visualizing it and by calculating a standardized effect size that quantifies the difference between the treatment condition and each of the two control conditions.</p>
+<pre class="r active-code"><code># Calculate standardized effect size
+effect_size &lt;- cohens_d(DV ~ condition, pooled_sd = FALSE,
+  data = filter(data, condition != &quot;control 1&quot;))
+
+# Visualize the data
+ggplot(data, aes(x = condition, y = DV)) + 
+  geom_jitter(width = .2, alpha = .75, color = green) + 
+  stat_summary(fun.data = &quot;mean_cl_boot&quot;, color = yellow) +
+  labs(x = &quot;Condition&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The treatment condition differs from the two control conditions with a difference equal to a Cohen’s <em>d</em> of -0.39.</p>
+<p>As a reminder, I think we should analyze this data with two Welch’s two sample <em>t</em>-tests: one for the difference between the treatment condition and control group 1 and also one between the treatment condition and control group 2. Below is some code to run these tests with the current data frame.</p>
+<pre class="r active-code"><code>t.test(DV ~ condition, data = filter(data, condition != &quot;control 1&quot;))
+t.test(DV ~ condition, data = filter(data, condition != &quot;control 2&quot;))</code></pre>
+<p>Next we want to calculate the power. However, we don’t just want the power for a single sample size. We want to calculate the power for a range of sample sizes. So we begin by defining this range. In the example below, we create a variable called <code>Ns</code> that contains a sequence of values ranging from 50 to 250, in steps of 50. We also define <code>S</code>, which is the number of iterations in the power analysis. The higher this number, the more accurate the power analysis. Note that I’ve capitalized it this time. The final simulation parameter is <code>i</code>. I’ve defined this variable to keep track of how often we loop. This will be useful for figuring out where to store the p-values.</p>
+<p>We will store the p-values in a data frame this time. Using the <code>crossing()</code> function, we can create a data frame that contains all possible combinations of the sample sizes and the number of simulation iterations. We can also already add some empty columns to store the p-values in.</p>
+<p>After that, we begin the loop. We want to loop over each sample size and we want to loop <code>S</code> times, running the analyses each time. This means we have a nested for loop. This is not particularly difficult, as we can simply put a for loop within a for loop. The only trick bit is to make sure that you store the p-values correctly. That’s where the <code>i</code> variable comes in. We initially gave it a value of 1, so the first p-values will be stored in the first row. At the end of each loop we increment it by 1, making sure that the next p-values will be stored in the next row of our p-values data frame.</p>
+<pre class="r active-code"><code># Set simulation parameters
+Ns &lt;- seq(from = 50, to = 250, by = 50)
+S &lt;- 1000
+i &lt;- 1 
+
+# Create a data frame to store the p-values in
+p_values &lt;- crossing(
+  n = Ns,
+  s = 1:S,
+  p_value1 = NA,
+  p_value2 = NA
+)
+
+# Loop
+for (n in Ns) {
+  for (s in 1:S) {
+    # Simulate
+    control1 &lt;- mvrnorm(n, mu = M_control1, Sigma = SD_control1^2)
+    control2 &lt;- mvrnorm(n, mu = M_control2, Sigma = SD_control2^2)
+    treatment &lt;- mvrnorm(n, mu = M_treatment, Sigma = SD_treatment^2)
+    
+    # Run tests
+    test1 &lt;- t.test(control1[, 1], treatment[, 1])
+    test2 &lt;- t.test(control2[, 1], treatment[, 1])
+    
+    # Extract p-values
+    p_values$p_value1[i] &lt;- test1$p.value
+    p_values$p_value2[i] &lt;- test2$p.value
+  
+    # Increment i
+    i &lt;- i + 1
+  }
+}</code></pre>
+<p>The result is a data frame with two columns containing p-values. To calculate the power, we sum the number of times we find a significant effect in <em>both</em> columns and divide it by the number of iterations per sample size (<code>S</code>). We need to do this for each sample size. The following code does the trick:</p>
+<pre class="r active-code"><code>power &lt;- p_values %&gt;%
+  mutate(success = if_else(p_value1 &lt; .05 &amp; p_value2 &lt; .05, 1, 0)) %&gt;%
+  group_by(n) %&gt;%
+  summarize(power = sum(success) / S)</code></pre>
+<p>Now let’s visualize the simulated power for each sample size.</p>
+<pre class="r"><code>ggplot(power, aes(x = n, y = power)) +
+  geom_line(color = green, linetype = 2) +
+  geom_point(color = green, size = 2) +
+  geom_hline(yintercept = .80, color = yellow, linetype = 3) +
+  geom_hline(yintercept = .95, color = yellow, linetype = 3) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
+  labs(x = &quot;Sample size (n) per condition&quot;, y = &quot;Power&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>That’s it. Now we can see at which point we have enough power, whether that’s something like 80% or 95% power. Do note that we calculated the sample size <em>per condition</em>. In the current scenario, this means you need to multiply the sample size times three in order to obtain your total sample size.</p>
+<p>If you want a smoother graph, you can adjust the range of sample sizes that we stored in the <code>Ns</code> variable. You can, for example, lower the <code>by</code> argument in the <code>seq()</code> function to get a more fine-grained curve.</p>
+</div>
+</div>
