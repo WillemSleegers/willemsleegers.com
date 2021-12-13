@@ -81,12 +81,8 @@ cv %>%
 
 ```{r employment, echo = FALSE, results = "asis"}
 cv %>%
-  filter(section == "Employment" & subsection == "Academic") %>%
+  filter(section == "Employment") %>%
   create_cv_section()
-
-cv %>%
-  filter(section == "Employment" & subsection == "Non-academic") %>%
-  create_cv_section(include_section = FALSE)
 ```
 
 ```{r education, echo = FALSE, results = "asis"}

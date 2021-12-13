@@ -46,7 +46,7 @@ params:
   home:
     avatar: avatar.png
     title: "Willem Sleegers"
-    subtitle: "Assistant professor in social psychology"
+    subtitle: "Senior Behavioral Scientist at Rethink Priorities"
 ignoreFiles:
   - \.Rmd$
   - \.Rmarkdown$
