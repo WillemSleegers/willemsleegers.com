@@ -1,0 +1,894 @@
+pokedex,name,classification,height,weight,type_primary,type_secondary,catch_rate,evolution
+1,Bulbasaur,Seed Pokemon,0.7,6.9,Grass,Poison,45,0
+2,Ivysaur,Seed Pokemon,1,13,Grass,Poison,45,1
+3,Venusaur,Seed Pokemon,2,100,Grass,Poison,45,2
+4,Charmander,Lizard Pokemon,0.6,8.5,Fire,NA,45,0
+5,Charmeleon,Flame Pokemon,1.1,19,Fire,NA,45,1
+6,Charizard,Flame Pokemon,1.7,90.5,Fire,Flying,45,2
+7,Squirtle,Tiny Turtle Pokemon,0.5,9,Water,NA,45,0
+8,Wartortle,Turtle Pokemon,1,22.5,Water,NA,45,1
+9,Blastoise,Shellfish Pokemon,1.6,85.5,Water,NA,45,2
+10,Caterpie,Worm Pokemon,0.3,2.9,Bug,NA,255,0
+11,Metapod,Cocoon Pokemon,0.7,9.9,Bug,NA,120,1
+12,Butterfree,Butterfly Pokemon,1.1,32,Bug,Flying,45,2
+13,Weedle,Hairy Bug Pokemon,0.3,3.2,Bug,Poison,255,0
+14,Kakuna,Cocoon Pokemon,0.6,10,Bug,Poison,120,1
+15,Beedrill,Poison Bee Pokemon,1,29.5,Bug,Poison,45,2
+16,Pidgey,Tiny Bird Pokemon,0.3,1.8,Normal,Flying,255,0
+17,Pidgeotto,Bird Pokemon,1.1,30,Normal,Flying,120,1
+18,Pidgeot,Bird Pokemon,1.5,39.5,Normal,Flying,45,2
+19,Rattata,Mouse Pokemon,0.3,3.5,Normal,NA,255,0
+20,Raticate,Mouse Pokemon,0.7,18.5,Normal,NA,127,1
+21,Spearow,Tiny Bird Pokemon,0.3,2,Normal,Flying,255,0
+22,Fearow,Beak Pokemon,1.2,38,Normal,Flying,90,1
+23,Ekans,Snake Pokemon,2,6.9,Poison,NA,255,0
+24,Arbok,Cobra Pokemon,3.5,65,Poison,NA,90,1
+25,Pikachu,Mouse Pokemon,0.4,6,Electric,NA,190,2
+26,Raichu,Mouse Pokemon,0.8,30,Electric,NA,75,2
+27,Sandshrew,Mouse Pokemon,0.6,12,Ground,NA,255,0
+28,Sandslash,Mouse Pokemon,1,29.5,Ground,NA,90,1
+29,Nidoran (Female),Poison Pin Pokemon,0.4,7,Poison,NA,235,0
+30,Nidorina,Poison Pin Pokemon,0.8,20,Poison,NA,120,1
+31,Nidoqueen,Drill Pokemon,1.3,60,Poison,Ground,45,2
+32,Nidoran (Male),Poison Pin Pokemon,0.5,9,Poison,NA,235,0
+33,Nidorino,Poison Pin Pokemon,0.9,19.5,Poison,NA,120,1
+34,Nidoking,Drill Pokemon,1.4,62,Poison,Ground,45,2
+35,Clefairy,Fairy Pokemon,0.6,7.5,Fairy,NA,150,2
+36,Clefable,Fairy Pokemon,1.3,40,Fairy,NA,25,2
+37,Vulpix,Fox Pokemon,0.6,9.9,Fire,NA,190,0
+38,Ninetales,Fox Pokemon,1.1,19.9,Fire,NA,75,1
+39,Jigglypuff,Balloon Pokemon,0.5,5.5,Normal,Fairy,170,2
+40,Wigglytuff,Balloon Pokemon,1,12,Normal,Fairy,50,2
+41,Zubat,Bat Pokemon,0.8,7.5,Poison,Flying,255,0
+42,Golbat,Bat Pokemon,1.6,55,Poison,Flying,90,1
+43,Oddish,Weed Pokemon,0.5,5.4,Grass,Poison,255,0
+44,Gloom,Weed Pokemon,0.8,8.6,Grass,Poison,120,1
+45,Vileplume,Flower Pokemon,1.2,18.6,Grass,Poison,45,2
+46,Paras,Mushroom Pokemon,0.3,5.4,Bug,Grass,190,0
+47,Parasect,Mushroom Pokemon,1,29.5,Bug,Grass,75,1
+48,Venonat,Insect Pokemon,1,30,Bug,Poison,190,0
+49,Venomoth,Poison Moth Pokemon,1.5,12.5,Bug,Poison,75,1
+50,Diglett,Mole Pokemon,0.2,0.8,Ground,NA,255,0
+51,Dugtrio,Mole Pokemon,0.7,33.3,Ground,NA,50,1
+52,Meowth,Scratch Cat Pokemon,0.4,4.2,Normal,NA,255,0
+53,Persian,Classy Cat Pokemon,1,32,Normal,NA,90,1
+54,Psyduck,Duck Pokemon,0.8,19.6,Water,NA,190,0
+55,Golduck,Duck Pokemon,1.7,76.6,Water,NA,75,1
+56,Mankey,Pig Monkey Pokemon,0.5,28,Fighting,NA,190,0
+57,Primeape,Pig Monkey Pokemon,1,32,Fighting,NA,75,1
+58,Growlithe,Puppy Pokemon,0.7,19,Fire,NA,190,0
+59,Arcanine,Legendary Pokemon,1.9,155,Fire,NA,75,1
+60,Poliwag,Tadpole Pokemon,0.6,12.4,Water,NA,255,0
+61,Poliwhirl,Tadpole Pokemon,1,20,Water,NA,120,1
+62,Poliwrath,Tadpole Pokemon,1.3,54,Water,Fighting,45,2
+63,Abra,Psi Pokemon,0.9,19.5,Psychic,NA,200,0
+64,Kadabra,Psi Pokemon,1.3,56.5,Psychic,NA,100,1
+65,Alakazam,Psi Pokemon,1.5,48,Psychic,NA,50,2
+66,Machop,Superpower Pokemon,0.8,19.5,Fighting,NA,180,0
+67,Machoke,Superpower Pokemon,1.5,70.5,Fighting,NA,90,1
+68,Machamp,Superpower Pokemon,1.6,130,Fighting,NA,45,2
+69,Bellsprout,Flower Pokemon,0.7,4,Grass,Poison,255,0
+70,Weepinbell,Flycatcher Pokemon,1,6.4,Grass,Poison,120,1
+71,Victreebel,Flycatcher Pokemon,1.7,15.5,Grass,Poison,45,2
+72,Tentacool,Jellyfish Pokemon,0.9,45.5,Water,Poison,190,0
+73,Tentacruel,Jellyfish Pokemon,1.6,55,Water,Poison,60,1
+74,Geodude,Rock Pokemon,0.4,20,Rock,Ground,255,0
+75,Graveler,Rock Pokemon,1,105,Rock,Ground,120,1
+76,Golem,Megaton Pokemon,1.4,300,Rock,Ground,45,2
+77,Ponyta,Fire Horse Pokemon,1,30,Fire,NA,190,0
+78,Rapidash,Fire Horse Pokemon,1.7,95,Fire,NA,60,1
+79,Slowpoke,Dopey Pokemon,1.2,36,Water,Psychic,190,0
+80,Slowbro,Hermit Crab Pokemon,1.6,78.5,Water,Psychic,75,1
+81,Magnemite,Magnet Pokemon,0.3,6,Electric,Steel,190,0
+82,Magneton,Magnet Pokemon,1,60,Electric,Steel,60,1
+83,Farfetch'd,Wild Duck Pokemon,0.8,15,Normal,Flying,45,0
+84,Doduo,Twin Bird Pokemon,1.4,39.2,Normal,Flying,190,0
+85,Dodrio,Triple Bird Pokemon,1.8,85.2,Normal,Flying,45,1
+86,Seel,Sea Lion Pokemon,1.1,90,Water,NA,190,0
+87,Dewgong,Sea Lion Pokemon,1.7,120,Water,Ice,75,1
+88,Grimer,Sludge Pokemon,0.9,30,Poison,NA,190,0
+89,Muk,Sludge Pokemon,1.2,30,Poison,NA,75,1
+90,Shellder,Bivalve Pokemon,0.3,4,Water,NA,190,0
+91,Cloyster,Bivalve Pokemon,1.5,132.5,Water,NA,60,1
+92,Gastly,Gas Pokemon,1.3,0.1,Ghost,Poison,190,0
+93,Haunter,Gas Pokemon,1.6,0.1,Ghost,Poison,90,1
+94,Gengar,Shadow Pokemon,1.5,40.5,Ghost,Poison,45,2
+95,Onix,Rock Snake Pokemon,8.8,210,Rock,Ground,45,0
+96,Drowzee,Hypnosis Pokemon,1,32.4,Psychic,NA,190,0
+97,Hypno,Hypnosis Pokemon,1.6,75.6,Psychic,NA,75,1
+98,Krabby,River Crab Pokemon,0.4,6.5,Water,NA,225,0
+99,Kingler,Pincer Pokemon,1.3,60,Water,NA,60,1
+100,Voltorb,Ball Pokemon,0.5,10.5,Electric,NA,190,0
+101,Electrode,Ball Pokemon,1.2,66.6,Electric,NA,60,1
+102,Exeggcute,Egg Pokemon,0.4,2.5,Grass,Psychic,90,0
+103,Exeggutor,Coconut Pokemon,2,120,Grass,Psychic,45,1
+104,Cubone,Lonely Pokemon,0.4,6.5,Ground,NA,190,0
+105,Marowak,Bone Keeper Pokemon,1,45,Ground,NA,75,1
+106,Hitmonlee,Kicking Pokemon,1.5,49.8,Fighting,NA,45,2
+107,Hitmonchan,Punching Pokemon,1.4,50.2,Fighting,NA,45,2
+108,Lickitung,Licking Pokemon,1.2,65.5,Normal,NA,45,0
+109,Koffing,Poison Gas Pokemon,0.6,1,Poison,NA,190,0
+110,Weezing,Poison Gas Pokemon,1.2,9.5,Poison,NA,60,1
+111,Rhyhorn,Spikes Pokemon,1,115,Ground,Rock,120,0
+112,Rhydon,Drill Pokemon,1.9,120,Ground,Rock,60,1
+113,Chansey,Egg Pokemon,1.1,34.6,Normal,NA,30,2
+114,Tangela,Vine Pokemon,1,35,Grass,NA,45,0
+115,Kangaskhan,Parent Pokemon,2.2,80,Normal,NA,45,0
+116,Horsea,Dragon Pokemon,0.4,8,Water,NA,225,0
+117,Seadra,Dragon Pokemon,1.2,25,Water,NA,75,1
+118,Goldeen,Goldfish Pokemon,0.6,15,Water,NA,225,0
+119,Seaking,Goldfish Pokemon,1.3,39,Water,NA,60,1
+120,Staryu,Star Shape Pokemon,0.8,34.5,Water,NA,225,0
+121,Starmie,Mysterious Pokemon,1.1,80,Water,Psychic,60,1
+122,Mr. Mime,Barrier Pokemon,1.3,54.5,Psychic,Fairy,45,2
+123,Scyther,Mantis Pokemon,1.5,56,Bug,Flying,45,0
+124,Jynx,Human Shape Pokemon,1.4,40.6,Ice,Psychic,45,1
+125,Electabuzz,Electric Pokemon,1.1,30,Electric,NA,45,2
+126,Magmar,Spitfire Pokemon,1.3,44.5,Fire,NA,45,2
+127,Pinsir,Stag Beetle Pokemon,1.5,55,Bug,NA,45,0
+128,Tauros,Wild Bull Pokemon,1.4,88.4,Normal,NA,45,0
+129,Magikarp,Fish Pokemon,0.9,10,Water,NA,255,0
+130,Gyarados,Atrocious Pokemon,6.5,235,Water,Flying,45,1
+131,Lapras,Transport Pokemon,2.5,220,Water,Ice,45,0
+132,Ditto,Transform Pokemon,0.3,4,Normal,NA,35,0
+133,Eevee,Evolution Pokemon,0.3,6.5,Normal,NA,45,0
+134,Vaporeon,Bubble Jet Pokemon,1,29,Water,NA,45,1
+135,Jolteon,Lightning Pokemon,0.8,24.5,Electric,NA,45,2
+136,Flareon,Flame Pokemon,0.9,25,Fire,NA,45,2
+137,Porygon,Virtual Pokemon,0.8,36.5,Normal,NA,45,0
+138,Omanyte,Spiral Pokemon,0.4,7.5,Rock,Water,45,0
+139,Omastar,Spiral Pokemon,1,35,Rock,Water,45,1
+140,Kabuto,Shellfish Pokemon,0.5,11.5,Rock,Water,45,0
+141,Kabutops,Shellfish Pokemon,1.3,40.5,Rock,Water,45,1
+142,Aerodactyl,Fossil Pokemon,1.8,59,Rock,Flying,45,0
+143,Snorlax,Sleeping Pokemon,2.1,460,Normal,NA,25,1
+144,Articuno,Freeze Pokemon,1.7,55.4,Ice,Flying,3,0
+145,Zapdos,Electric Pokemon,1.6,52.6,Electric,Flying,3,0
+146,Moltres,Flame Pokemon,2,60,Fire,Flying,3,0
+147,Dratini,Dragon Pokemon,1.8,3.3,Dragon,NA,45,0
+148,Dragonair,Dragon Pokemon,4,16.5,Dragon,NA,45,1
+149,Dragonite,Dragon Pokemon,2.2,210,Dragon,Flying,45,2
+150,Mewtwo,Genetic Pokemon,2,122,Psychic,NA,3,0
+151,Mew,New Species Pokemon,0.4,4,Psychic,NA,45,0
+152,Chikorita,Leaf Pokemon,0.9,6.4,Grass,NA,45,0
+153,Bayleef,Leaf Pokemon,1.2,15.8,Grass,NA,45,1
+154,Meganium,Herb Pokemon,1.8,100.5,Grass,NA,45,2
+155,Cyndaquil,Fire Mouse Pokemon,0.5,7.9,Fire,NA,45,0
+156,Quilava,Volcano Pokemon,0.9,19,Fire,NA,45,1
+157,Typhlosion,Volcano Pokemon,1.7,79.5,Fire,NA,45,2
+158,Totodile,Big Jaw Pokemon,0.6,9.5,Water,NA,45,0
+159,Croconaw,Big Jaw Pokemon,1.1,25,Water,NA,45,1
+160,Feraligatr,Big Jaw Pokemon,2.3,88.8,Water,NA,45,2
+161,Sentret,Scout Pokemon,0.8,6,Normal,NA,255,0
+162,Furret,Long Body Pokemon,1.8,32.5,Normal,NA,90,1
+163,Hoothoot,Owl Pokemon,0.7,21.2,Normal,Flying,255,0
+164,Noctowl,Owl Pokemon,1.6,40.8,Normal,Flying,90,1
+165,Ledyba,Five Star Pokemon,1,10.8,Bug,Flying,255,0
+166,Ledian,Five Star Pokemon,1.4,35.6,Bug,Flying,90,1
+167,Spinarak,String Spit Pokemon,0.5,8.5,Bug,Poison,255,0
+168,Ariados,Long Leg Pokemon,1.1,33.5,Bug,Poison,90,1
+169,Crobat,Bat Pokemon,1.8,75,Poison,Flying,90,2
+170,Chinchou,Angler Pokemon,0.5,12,Water,Electric,190,0
+171,Lanturn,Light Pokemon,1.2,22.5,Water,Electric,75,1
+172,Pichu,Tiny Mouse Pokemon,0.3,2,Electric,NA,190,0
+173,Cleffa,Star Shape Pokemon,0.3,3,Fairy,NA,150,0
+174,Igglybuff,Balloon Pokemon,0.3,1,Normal,Fairy,170,0
+175,Togepi,Spike Ball Pokemon,0.3,1.5,Fairy,NA,190,0
+176,Togetic,Happiness Pokemon,0.6,3.2,Fairy,Flying,75,1
+177,Natu,Tiny Bird Pokemon,0.2,2,Psychic,Flying,190,0
+178,Xatu,Mystic Pokemon,1.5,15,Psychic,Flying,75,1
+179,Mareep,Wool Pokemon,0.6,7.8,Electric,NA,235,0
+180,Flaaffy,Wool Pokemon,0.8,13.3,Electric,NA,120,1
+181,Ampharos,Light Pokemon,1.4,61.5,Electric,NA,45,2
+182,Bellossom,Flower Pokemon,0.4,5.8,Grass,NA,45,2
+183,Marill,Aqua Mouse Pokemon,0.4,8.5,Water,Fairy,190,2
+184,Azumarill,Aqua Rabbit Pokemon,0.8,28.5,Water,Fairy,75,2
+185,Sudowoodo,Imitation Pokemon,1.2,38,Rock,NA,65,2
+186,Politoed,Frog Pokemon,1.1,33.9,Water,NA,45,2
+187,Hoppip,Cottonweed Pokemon,0.4,0.5,Grass,Flying,255,0
+188,Skiploom,Cottonweed Pokemon,0.6,1,Grass,Flying,120,1
+189,Jumpluff,Cottonweed Pokemon,0.8,3,Grass,Flying,45,2
+190,Aipom,Long Tail Pokemon,0.8,11.5,Normal,NA,45,0
+191,Sunkern,Seed Pokemon,0.3,1.8,Grass,NA,235,0
+192,Sunflora,Sun Pokemon,0.8,8.5,Grass,NA,120,1
+193,Yanma,Clear Wing Pokemon,1.2,38,Bug,Flying,75,0
+194,Wooper,Water Fish Pokemon,0.4,8.5,Water,Ground,255,0
+195,Quagsire,Water Fish Pokemon,1.4,75,Water,Ground,90,1
+196,Espeon,Sun Pokemon,0.9,26.5,Psychic,NA,45,2
+197,Umbreon,Moonlight Pokemon,1,27,Dark,NA,45,2
+198,Murkrow,Darkness Pokemon,0.5,2.1,Dark,Flying,30,0
+199,Slowking,Royal Pokemon,2,79.5,Water,Psychic,70,1
+200,Misdreavus,Screech Pokemon,0.7,1,Ghost,NA,45,0
+201,Unown,Symbol Pokemon,0.5,5,Psychic,NA,225,0
+202,Wobbuffet,Patient Pokemon,1.3,28.5,Psychic,NA,45,1
+203,Girafarig,Long Neck Pokemon,1.5,41.5,Normal,Psychic,60,0
+204,Pineco,Bagworm Pokemon,0.6,7.2,Bug,NA,190,0
+205,Forretress,Bagworm Pokemon,1.2,125.8,Bug,Steel,75,1
+206,Dunsparce,Land Snake Pokemon,1.5,14,Normal,NA,190,0
+207,Gligar,Fly Scorpion Pokemon,1.1,64.8,Ground,Flying,60,0
+208,Steelix,Iron Snake Pokemon,9.2,400,Steel,Ground,25,1
+209,Snubbull,Fairy Pokemon,0.6,7.8,Fairy,NA,190,0
+210,Granbull,Fairy Pokemon,1.4,48.7,Fairy,NA,75,1
+211,Qwilfish,Balloon Pokemon,0.5,3.9,Water,Poison,45,0
+212,Scizor,Pincer Pokemon,1.8,118,Bug,Steel,25,1
+213,Shuckle,Mold Pokemon,0.6,20.5,Bug,Rock,190,0
+214,Heracross,Single Horn Pokemon,1.5,54,Bug,Fighting,45,0
+215,Sneasel,Sharp Claw Pokemon,0.9,28,Dark,Ice,60,0
+216,Teddiursa,Little Bear Pokemon,0.6,8.8,Normal,NA,120,0
+217,Ursaring,Hibernator Pokemon,1.8,125.8,Normal,NA,60,1
+218,Slugma,Lava Pokemon,0.7,35,Fire,NA,190,0
+219,Magcargo,Lava Pokemon,0.8,55,Fire,Rock,75,1
+220,Swinub,Pig Pokemon,0.4,6.5,Ice,Ground,225,0
+221,Piloswine,Swine Pokemon,1.1,55.8,Ice,Ground,75,1
+222,Corsola,Coral Pokemon,0.6,5,Water,Rock,60,0
+223,Remoraid,Jet Pokemon,0.6,12,Water,NA,190,0
+224,Octillery,Jet Pokemon,0.9,28.5,Water,NA,75,1
+225,Delibird,Delivery Pokemon,0.9,16,Ice,Flying,45,0
+226,Mantine,Kite Pokemon,2.1,220,Water,Flying,25,1
+227,Skarmory,Armor Bird Pokemon,1.7,50.5,Steel,Flying,25,0
+228,Houndour,Dark Pokemon,0.6,10.8,Dark,Fire,120,0
+229,Houndoom,Dark Pokemon,1.4,35,Dark,Fire,45,1
+230,Kingdra,Dragon Pokemon,1.8,152,Water,Dragon,45,2
+231,Phanpy,Long Nose Pokemon,0.5,33.5,Ground,NA,120,0
+232,Donphan,Armor Pokemon,1.1,120,Ground,NA,60,1
+233,Porygon2,Virtual Pokemon,0.6,32.5,Normal,NA,45,2
+234,Stantler,Big Horn Pokemon,1.4,71.2,Normal,NA,45,0
+235,Smeargle,Painter Pokemon,1.2,58,Normal,NA,45,0
+236,Tyrogue,Scuffle Pokemon,0.7,21,Fighting,NA,75,0
+237,Hitmontop,Handstand Pokemon,1.4,48,Fighting,NA,45,1
+238,Smoochum,Kiss Pokemon,0.4,6,Ice,Psychic,45,0
+239,Elekid,Electric Pokemon,0.6,23.5,Electric,NA,45,0
+240,Magby,Live Coal Pokemon,0.7,21.4,Fire,NA,45,0
+241,Miltank,Milk Cow Pokemon,1.2,75.5,Normal,NA,45,0
+242,Blissey,Happiness Pokemon,1.5,46.8,Normal,NA,30,1
+243,Raikou,Thunder Pokemon,1.9,178,Electric,NA,3,0
+244,Entei,Volcano Pokemon,2.1,198,Fire,NA,3,0
+245,Suicune,Aurora Pokemon,2,187,Water,NA,3,0
+246,Larvitar,Rock Skin Pokemon,0.6,72,Rock,Ground,45,0
+247,Pupitar,Hard Shell Pokemon,1.2,152,Rock,Ground,45,1
+248,Tyranitar,Armor Pokemon,2,202,Rock,Dark,45,2
+249,Lugia,Diving Pokemon,5.2,216,Psychic,Flying,3,0
+250,Ho-Oh,Rainbow Pokemon,3.8,199,Fire,Flying,3,0
+251,Celebi,Time Travel Pokemon,0.6,5,Psychic,Grass,45,0
+252,Treecko,Wood Gecko Pokemon,0.5,5,Grass,NA,45,0
+253,Grovyle,Wood Gecko Pokemon,0.9,21.6,Grass,NA,45,1
+254,Sceptile,Forest Pokemon,1.7,52.2,Grass,NA,45,2
+255,Torchic,Chick Pokemon,0.4,2.5,Fire,NA,45,0
+256,Combusken,Young Fowl Pokemon,0.9,19.5,Fire,Fighting,45,1
+257,Blaziken,Blaze Pokemon,1.9,52,Fire,Fighting,45,2
+258,Mudkip,Mud Fish Pokemon,0.4,7.6,Water,NA,45,0
+259,Marshtomp,Mud Fish Pokemon,0.7,28,Water,Ground,45,1
+260,Swampert,Mud Fish Pokemon,1.5,81.9,Water,Ground,45,2
+261,Poochyena,Bite Pokemon,0.5,13.6,Dark,NA,255,0
+262,Mightyena,Bite Pokemon,1,37,Dark,NA,127,1
+263,Zigzagoon,Tiny Raccoon Pokemon,0.4,17.5,Normal,NA,255,0
+264,Linoone,Rushing Pokemon,0.5,32.5,Normal,NA,90,1
+265,Wurmple,Worm Pokemon,0.3,3.6,Bug,NA,255,0
+266,Silcoon,Cocoon Pokemon,0.6,10,Bug,NA,120,1
+267,Beautifly,Butterfly Pokemon,1,28.4,Bug,Flying,45,2
+268,Cascoon,Cocoon Pokemon,0.7,11.5,Bug,NA,120,2
+269,Dustox,Poison Moth Pokemon,1.2,31.6,Bug,Poison,45,2
+270,Lotad,Water Weed Pokemon,0.5,2.6,Water,Grass,255,0
+271,Lombre,Jolly Pokemon,1.2,32.5,Water,Grass,120,1
+272,Ludicolo,Carefree Pokemon,1.5,55,Water,Grass,45,2
+273,Seedot,Acorn Pokemon,0.5,4,Grass,NA,255,0
+274,Nuzleaf,Wily Pokemon,1,28,Grass,Dark,120,1
+275,Shiftry,Wicked Pokemon,1.3,59.6,Grass,Dark,45,2
+276,Taillow,Tiny Swallow Pokemon,0.3,2.3,Normal,Flying,200,0
+277,Swellow,Swallow Pokemon,0.7,19.8,Normal,Flying,45,1
+278,Wingull,Seagull Pokemon,0.6,9.5,Water,Flying,190,0
+279,Pelipper,Water Bird Pokemon,1.2,28,Water,Flying,45,1
+280,Ralts,Feeling Pokemon,0.4,6.6,Psychic,Fairy,235,0
+281,Kirlia,Emotion Pokemon,0.8,20.2,Psychic,Fairy,120,1
+282,Gardevoir,Embrace Pokemon,1.6,48.4,Psychic,Fairy,45,2
+283,Surskit,Pond Skater Pokemon,0.5,1.7,Bug,Water,200,0
+284,Masquerain,Eyeball Pokemon,0.8,3.6,Bug,Flying,75,1
+285,Shroomish,Mushroom Pokemon,0.4,4.5,Grass,NA,255,0
+286,Breloom,Mushroom Pokemon,1.2,39.2,Grass,Fighting,90,1
+287,Slakoth,Slacker Pokemon,0.8,24,Normal,NA,255,0
+288,Vigoroth,Wild Monkey Pokemon,1.4,46.5,Normal,NA,120,1
+289,Slaking,Lazy Pokemon,2,130.5,Normal,NA,45,2
+290,Nincada,Trainee Pokemon,0.5,5.5,Bug,Ground,255,0
+291,Ninjask,Ninja Pokemon,0.8,12,Bug,Flying,120,1
+292,Shedinja,Shed Pokemon,0.8,1.2,Bug,Ghost,45,2
+293,Whismur,Whisper Pokemon,0.6,16.3,Normal,NA,190,0
+294,Loudred,Big Voice Pokemon,1,40.5,Normal,NA,120,1
+295,Exploud,Loud Noise Pokemon,1.5,84,Normal,NA,45,2
+296,Makuhita,Guts Pokemon,1,86.4,Fighting,NA,180,0
+297,Hariyama,Arm Thrust Pokemon,2.3,253.8,Fighting,NA,200,1
+298,Azurill,Polka Dot Pokemon,0.2,2,Normal,Fairy,150,0
+299,Nosepass,Compass Pokemon,1,97,Rock,NA,255,0
+300,Skitty,Kitten Pokemon,0.6,11,Normal,NA,255,0
+301,Delcatty,Prim Pokemon,1.1,32.6,Normal,NA,60,1
+302,Sableye,Darkness Pokemon,0.5,11,Dark,Ghost,45,0
+303,Mawile,Deceiver Pokemon,0.6,11.5,Steel,Fairy,45,0
+304,Aron,Iron Armor Pokemon,0.4,60,Steel,Rock,180,0
+305,Lairon,Iron Armor Pokemon,0.9,120,Steel,Rock,90,1
+306,Aggron,Iron Armor Pokemon,2.1,360,Steel,Rock,45,2
+307,Meditite,Meditate Pokemon,0.6,11.2,Fighting,Psychic,180,0
+308,Medicham,Meditate Pokemon,1.3,31.5,Fighting,Psychic,90,1
+309,Electrike,Lightning Pokemon,0.6,15.2,Electric,NA,120,0
+310,Manectric,Discharge Pokemon,1.5,40.2,Electric,NA,45,1
+311,Plusle,Cheering Pokemon,0.4,4.2,Electric,NA,200,0
+312,Minun,Cheering Pokemon,0.4,4.2,Electric,NA,200,0
+313,Volbeat,Firefly Pokemon,0.7,17.7,Bug,NA,150,0
+314,Illumise,Firefly Pokemon,0.6,17.7,Bug,NA,150,0
+315,Roselia,Thorn Pokemon,0.3,2,Grass,Poison,150,1
+316,Gulpin,Stomach Pokemon,0.4,10.3,Poison,NA,225,0
+317,Swalot,Poison Bag Pokemon,1.7,80,Poison,NA,75,1
+318,Carvanha,Savage Pokemon,0.8,20.8,Water,Dark,225,0
+319,Sharpedo,Brutal Pokemon,1.8,88.8,Water,Dark,60,1
+320,Wailmer,Ball Whale Pokemon,2,130,Water,NA,125,0
+321,Wailord,Float Whale Pokemon,14.5,398,Water,NA,60,1
+322,Numel,Numb Pokemon,0.7,24,Fire,Ground,255,0
+323,Camerupt,Eruption Pokemon,1.9,220,Fire,Ground,150,1
+324,Torkoal,Coal Pokemon,0.5,80.4,Fire,NA,90,0
+325,Spoink,Bounce Pokemon,0.7,30.6,Psychic,NA,255,0
+326,Grumpig,Manipulate Pokemon,0.9,71.5,Psychic,NA,60,1
+327,Spinda,Spot Panda Pokemon,1.1,5,Normal,NA,255,0
+328,Trapinch,Ant Pit Pokemon,0.7,15,Ground,NA,255,0
+329,Vibrava,Vibration Pokemon,1.1,15.3,Ground,Dragon,120,1
+330,Flygon,Mystic Pokemon,2,82,Ground,Dragon,45,2
+331,Cacnea,Cactus Pokemon,0.4,51.3,Grass,NA,190,0
+332,Cacturne,Scarecrow Pokemon,1.3,77.4,Grass,Dark,60,1
+333,Swablu,Cotton Bird Pokemon,0.4,1.2,Normal,Flying,255,0
+334,Altaria,Humming Pokemon,1.1,20.6,Dragon,Flying,45,1
+335,Zangoose,Cat Ferret Pokemon,1.3,40.3,Normal,NA,90,0
+336,Seviper,Fang Snake Pokemon,2.7,52.5,Poison,NA,90,0
+337,Lunatone,Meteorite Pokemon,1,168,Rock,Psychic,45,0
+338,Solrock,Meteorite Pokemon,1.2,154,Rock,Psychic,45,0
+339,Barboach,Whiskers Pokemon,0.4,1.9,Water,Ground,190,0
+340,Whiscash,Whiskers Pokemon,0.9,23.6,Water,Ground,75,1
+341,Corphish,Ruffian Pokemon,0.6,11.5,Water,NA,205,0
+342,Crawdaunt,Rogue Pokemon,1.1,32.8,Water,Dark,155,1
+343,Baltoy,Clay Doll Pokemon,0.5,21.5,Ground,Psychic,255,0
+344,Claydol,Clay Doll Pokemon,1.5,107.9,Ground,Psychic,90,1
+345,Lileep,Sea Lily Pokemon,1,23.8,Rock,Grass,45,0
+346,Cradily,Barnacle Pokemon,1.5,60.4,Rock,Grass,45,1
+347,Anorith,Old Shrimp Pokemon,0.7,12.5,Rock,Bug,45,0
+348,Armaldo,Plate Pokemon,1.5,68.2,Rock,Bug,45,1
+349,Feebas,Fish Pokemon,0.6,7.4,Water,NA,255,0
+350,Milotic,Tender Pokemon,6.2,162,Water,NA,60,1
+351,Castform,Weather Pokemon,0.3,0.8,Normal,NA,45,0
+352,Kecleon,Color Swap Pokemon,1,22,Normal,NA,200,0
+353,Shuppet,Puppet Pokemon,0.6,2.3,Ghost,NA,225,0
+354,Banette,Marionette Pokemon,1.1,12.5,Ghost,NA,45,1
+355,Duskull,Requiem Pokemon,0.8,15,Ghost,NA,190,0
+356,Dusclops,Beckon Pokemon,1.6,30.6,Ghost,NA,90,1
+357,Tropius,Fruit Pokemon,2,100,Grass,Flying,200,0
+358,Chimecho,Wind Chime Pokemon,0.6,1,Psychic,NA,45,1
+359,Absol,Disaster Pokemon,1.2,47,Dark,NA,30,0
+360,Wynaut,Bright Pokemon,0.6,14,Psychic,NA,125,0
+361,Snorunt,Snow Hat Pokemon,0.7,16.8,Ice,NA,190,0
+362,Glalie,Face Pokemon,1.5,256.5,Ice,NA,75,1
+363,Spheal,Clap Pokemon,0.8,39.5,Ice,Water,255,0
+364,Sealeo,Ball Roll Pokemon,1.1,87.6,Ice,Water,120,1
+365,Walrein,Ice Break Pokemon,1.4,150.6,Ice,Water,45,2
+366,Clamperl,Bivalve Pokemon,0.4,52.5,Water,NA,255,0
+367,Huntail,Deep Sea Pokemon,1.7,27,Water,NA,60,1
+368,Gorebyss,South Sea Pokemon,1.8,22.6,Water,NA,60,2
+369,Relicanth,Longevity Pokemon,1,23.4,Water,Rock,25,0
+370,Luvdisc,Rendezvous Pokemon,0.6,8.7,Water,NA,225,0
+371,Bagon,Rock Head Pokemon,0.6,42.1,Dragon,NA,45,0
+372,Shelgon,Endurance Pokemon,1.1,110.5,Dragon,NA,45,1
+373,Salamence,Dragon Pokemon,1.5,102.6,Dragon,Flying,45,2
+374,Beldum,Iron Ball Pokemon,0.6,95.2,Steel,Psychic,3,0
+375,Metang,Iron Claw Pokemon,1.2,202.5,Steel,Psychic,3,1
+376,Metagross,Iron Leg Pokemon,1.6,550,Steel,Psychic,3,2
+377,Regirock,Rock Peak Pokemon,1.7,230,Rock,NA,3,0
+378,Regice,Iceberg Pokemon,1.8,175,Ice,NA,3,0
+379,Registeel,Iron Pokemon,1.9,205,Steel,NA,3,0
+380,Latias,Eon Pokemon,1.4,40,Dragon,Psychic,3,0
+381,Latios,Eon Pokemon,2,60,Dragon,Psychic,3,0
+382,Kyogre,Sea Basin Pokemon,4.5,352,Water,NA,3,0
+383,Groudon,Continent Pokemon,3.5,950,Ground,NA,3,0
+384,Rayquaza,Sky High Pokemon,7,206.5,Dragon,Flying,45,0
+385,Jirachi,Wish Pokemon,0.3,1.1,Steel,Psychic,3,0
+386,Deoxys,DNA Pokemon,1.7,60.8,Psychic,NA,3,0
+387,Turtwig,Tiny Leaf Pokemon,0.4,10.2,Grass,NA,45,0
+388,Grotle,Grove Pokemon,1.1,97,Grass,NA,45,1
+389,Torterra,Continent Pokemon,2.2,310,Grass,Ground,45,2
+390,Chimchar,Chimp Pokemon,0.5,6.2,Fire,NA,45,0
+391,Monferno,Playful Pokemon,0.9,22,Fire,Fighting,45,1
+392,Infernape,Flame Pokemon,1.2,55,Fire,Fighting,45,2
+393,Piplup,Penguin Pokemon,0.4,5.2,Water,NA,45,0
+394,Prinplup,Penguin Pokemon,0.8,23,Water,NA,45,1
+395,Empoleon,Emperor Pokemon,1.7,84.5,Water,Steel,45,2
+396,Starly,Starling Pokemon,0.3,2,Normal,Flying,255,0
+397,Staravia,Starling Pokemon,0.6,15.5,Normal,Flying,120,1
+398,Staraptor,Predator Pokemon,1.2,24.9,Normal,Flying,45,2
+399,Bidoof,Plump Mouse Pokemon,0.5,20,Normal,NA,255,0
+400,Bibarel,Beaver Pokemon,1,31.5,Normal,Water,127,1
+401,Kricketot,Cricket Pokemon,0.3,2.2,Bug,NA,255,0
+402,Kricketune,Cricket Pokemon,1,25.5,Bug,NA,45,1
+403,Shinx,Flash Pokemon,0.5,9.5,Electric,NA,235,0
+404,Luxio,Spark Pokemon,0.9,30.5,Electric,NA,120,1
+405,Luxray,Gleam Eyes Pokemon,1.4,42,Electric,NA,45,2
+406,Budew,Bud Pokemon,0.2,1.2,Grass,Poison,255,0
+407,Roserade,Bouquet Pokemon,0.9,14.5,Grass,Poison,75,1
+408,Cranidos,Head Butt Pokemon,0.9,31.5,Rock,NA,45,0
+409,Rampardos,Head Butt Pokemon,1.6,102.5,Rock,NA,45,1
+410,Shieldon,Shield Pokemon,0.5,57,Rock,Steel,45,0
+411,Bastiodon,Shield Pokemon,1.3,149.5,Rock,Steel,45,1
+412,Burmy,Bagworm Pokemon,0.2,3.4,Bug,NA,120,0
+413,Wormadam,Bagworm Pokemon,0.5,6.5,Bug,Grass,45,1
+414,Mothim,Moth Pokemon,0.9,23.3,Bug,Flying,45,2
+415,Combee,Tiny Bee Pokemon,0.3,5.5,Bug,Flying,120,0
+416,Vespiquen,Beehive Pokemon,1.2,38.5,Bug,Flying,45,1
+417,Pachirisu,EleSquirrel Pokemon,0.4,3.9,Electric,NA,200,0
+418,Buizel,Sea Weasel Pokemon,0.7,29.5,Water,NA,190,0
+419,Floatzel,Sea Weasel Pokemon,1.1,33.5,Water,NA,75,1
+420,Cherubi,Cherry Pokemon,0.4,3.3,Grass,NA,190,0
+421,Cherrim,Blossom Pokemon,0.5,9.3,Grass,NA,75,1
+422,Shellos,Sea Slug Pokemon,0.3,6.3,Water,NA,190,0
+423,Gastrodon,Sea Slug Pokemon,0.9,29.9,Water,Ground,75,1
+424,Ambipom,Long Tail Pokemon,1.2,20.3,Normal,NA,45,2
+425,Drifloon,Balloon Pokemon,0.4,1.2,Ghost,Flying,125,0
+426,Drifblim,Blimp Pokemon,1.2,15,Ghost,Flying,60,1
+427,Buneary,Rabbit Pokemon,0.4,5.5,Normal,NA,190,0
+428,Lopunny,Rabbit Pokemon,1.2,33.3,Normal,NA,60,1
+429,Mismagius,Magical Pokemon,0.9,4.4,Ghost,NA,45,2
+430,Honchkrow,Big Boss Pokemon,0.9,27.3,Dark,Flying,30,2
+431,Glameow,Catty Pokemon,0.5,3.9,Normal,NA,190,0
+432,Purugly,Tiger Cat Pokemon,1,43.8,Normal,NA,75,1
+433,Chingling,Bell Pokemon,0.2,0.6,Psychic,NA,120,0
+434,Stunky,Skunk Pokemon,0.4,19.2,Poison,Dark,225,0
+435,Skuntank,Skunk Pokemon,1,38,Poison,Dark,60,1
+436,Bronzor,Bronze Pokemon,0.5,60.5,Steel,Psychic,255,0
+437,Bronzong,Bronze Bell Pokemon,1.3,187,Steel,Psychic,90,1
+438,Bonsly,Bonsai Pokemon,0.5,15,Rock,NA,255,0
+439,Mime Jr.,Mime Pokemon,0.6,13,Psychic,Fairy,145,0
+440,Happiny,Playhouse Pokemon,0.6,24.4,Normal,NA,130,0
+441,Chatot,Music Note Pokemon,0.5,1.9,Normal,Flying,30,0
+442,Spiritomb,Forbidden Pokemon,1,108,Ghost,Dark,100,0
+443,Gible,Land Shark Pokemon,0.7,20.5,Dragon,Ground,45,0
+444,Gabite,Cave Pokemon,1.4,56,Dragon,Ground,45,1
+445,Garchomp,Mach Pokemon,1.9,95,Dragon,Ground,45,2
+446,Munchlax,Big Eater Pokemon,0.6,105,Normal,NA,50,0
+447,Riolu,Emanation Pokemon,0.7,20.2,Fighting,NA,75,0
+448,Lucario,Aura Pokemon,1.2,54,Fighting,Steel,45,1
+449,Hippopotas,Hippo Pokemon,0.8,49.5,Ground,NA,140,0
+450,Hippowdon,Heavyweight Pokemon,2,300,Ground,NA,60,1
+451,Skorupi,Scorpion Pokemon,0.8,12,Poison,Bug,120,0
+452,Drapion,Ogre Scorpion Pokemon,1.3,61.5,Poison,Dark,45,1
+453,Croagunk,Toxic Mouth Pokemon,0.7,23,Poison,Fighting,140,0
+454,Toxicroak,Toxic Mouth Pokemon,1.3,44.4,Poison,Fighting,75,1
+455,Carnivine,Bug Catcher Pokemon,1.4,27,Grass,NA,200,0
+456,Finneon,Wing Fish Pokemon,0.4,7,Water,NA,190,0
+457,Lumineon,Neon Pokemon,1.2,24,Water,NA,75,1
+458,Mantyke,Kite Pokemon,1,65,Water,Flying,25,0
+459,Snover,Frost Tree Pokemon,1,50.5,Grass,Ice,120,0
+460,Abomasnow,Frost Tree Pokemon,2.2,135.5,Grass,Ice,60,1
+461,Weavile,Sharp Claw Pokemon,1.1,34,Dark,Ice,45,2
+462,Magnezone,Magnet Area Pokemon,1.2,180,Electric,Steel,30,2
+463,Lickilicky,Licking Pokemon,1.7,140,Normal,NA,30,2
+464,Rhyperior,Drill Pokemon,2.4,282.8,Ground,Rock,30,2
+465,Tangrowth,Vine Pokemon,2,128.6,Grass,NA,30,2
+466,Electivire,Thunderbolt Pokemon,1.8,138.6,Electric,NA,30,2
+467,Magmortar,Blast Pokemon,1.6,68,Fire,NA,30,2
+468,Togekiss,Jubilee Pokemon,1.5,38,Fairy,Flying,30,2
+469,Yanmega,Ogre Darner Pokemon,1.9,51.5,Bug,Flying,30,2
+470,Leafeon,Verdant Pokemon,1,25.5,Grass,NA,45,2
+471,Glaceon,Fresh Snow Pokemon,0.8,25.9,Ice,NA,45,2
+472,Gliscor,Fang Scorpion Pokemon,2,42.5,Ground,Flying,30,2
+473,Mamoswine,Twin Tusk Pokemon,2.5,291,Ice,Ground,50,2
+474,Porygon-Z,Virtual Pokemon,0.9,34,Normal,NA,30,2
+475,Gallade,Blade Pokemon,1.6,52,Psychic,Fighting,45,2
+476,Probopass,Compass Pokemon,1.4,340,Rock,Steel,60,2
+477,Dusknoir,Gripper Pokemon,2.2,106.6,Ghost,NA,45,2
+478,Froslass,Snow Land Pokemon,1.3,26.6,Ice,Ghost,75,2
+479,Rotom,Plasma Pokemon,0.3,0.3,Electric,Ghost,45,0
+480,Uxie,Knowledge Pokemon,0.3,0.3,Psychic,NA,3,0
+481,Mesprit,Emotion Pokemon,0.3,0.3,Psychic,NA,3,0
+482,Azelf,Willpower Pokemon,0.3,0.3,Psychic,NA,3,0
+483,Dialga,Temporal Pokemon,5.4,683,Steel,Dragon,3,0
+484,Palkia,Spatial Pokemon,4.2,336,Water,Dragon,3,0
+485,Heatran,Lava Dome Pokemon,1.7,430,Fire,Steel,3,0
+486,Regigigas,Colossal Pokemon,3.7,420,Normal,NA,3,0
+487,Giratina,Renegade Pokemon,4.5,750,Ghost,Dragon,3,0
+488,Cresselia,Lunar Pokemon,1.5,85.6,Psychic,NA,3,0
+489,Phione,Sea Drifter Pokemon,0.4,3.1,Water,NA,30,0
+490,Manaphy,Seafaring Pokemon,0.3,1.4,Water,NA,3,0
+491,Darkrai,Pitch-Black Pokemon,1.5,50.5,Dark,NA,3,0
+492,Shaymin,Gratitude Pokemon,0.2,2.1,Grass,NA,45,0
+493,Arceus,Alpha Pokemon,3.2,320,Normal,NA,3,0
+494,Victini,Victory Pokemon,0.4,4,Psychic,Fire,3,0
+495,Snivy,Grass Snake Pokemon,0.6,8.1,Grass,NA,45,0
+496,Servine,Grass Snake Pokemon,0.8,16,Grass,NA,45,1
+497,Serperior,Regal Pokemon,3.3,63,Grass,NA,45,2
+498,Tepig,Fire Pig Pokemon,0.5,9.9,Fire,NA,45,0
+499,Pignite,Fire Pig Pokemon,1,55.5,Fire,Fighting,45,1
+500,Emboar,Mega Fire Pig Pokemon,1.6,150,Fire,Fighting,45,2
+501,Oshawott,Sea Otter Pokemon,0.5,5.9,Water,NA,45,0
+502,Dewott,Discipline Pokemon,0.8,24.5,Water,NA,45,1
+503,Samurott,Formidable Pokemon,1.5,94.6,Water,NA,45,2
+504,Patrat,Scout Pokemon,0.5,11.6,Normal,NA,255,0
+505,Watchog,Lookout Pokemon,1.1,27,Normal,NA,255,1
+506,Lillipup,Puppy Pokemon,0.4,4.1,Normal,NA,255,0
+507,Herdier,Loyal Dog Pokemon,0.9,14.7,Normal,NA,120,1
+508,Stoutland,Big-Hearted Pokemon,1.2,61,Normal,NA,45,2
+509,Purrloin,Devious Pokemon,0.4,10.1,Dark,NA,255,0
+510,Liepard,Cruel Pokemon,1.1,37.5,Dark,NA,90,1
+511,Pansage,Grass Monkey Pokemon,0.6,10.5,Grass,NA,190,0
+512,Simisage,Thorn Monkey Pokemon,1.1,30.5,Grass,NA,75,1
+513,Pansear,High Temp Pokemon,0.6,11,Fire,NA,190,0
+514,Simisear,Ember Pokemon,1,28,Fire,NA,75,1
+515,Panpour,Spray Pokemon,0.6,13.5,Water,NA,190,0
+516,Simipour,Geyser Pokemon,1,29,Water,NA,75,1
+517,Munna,Dream Eater Pokemon,0.6,23.3,Psychic,NA,190,0
+518,Musharna,Drowsing Pokemon,1.1,60.5,Psychic,NA,75,1
+519,Pidove,Tiny Pigeon Pokemon,0.3,2.1,Normal,Flying,255,0
+520,Tranquill,Wild Pigeon Pokemon,0.6,15,Normal,Flying,120,1
+521,Unfezant,Proud Pokemon,1.2,29,Normal,Flying,45,2
+522,Blitzle,Electrified Pokemon,0.8,29.8,Electric,NA,190,0
+523,Zebstrika,Thunderbolt Pokemon,1.6,79.5,Electric,NA,75,1
+524,Roggenrola,Mantle Pokemon,0.4,18,Rock,NA,255,0
+525,Boldore,Ore Pokemon,0.9,102,Rock,NA,120,1
+526,Gigalith,Compressed Pokemon,1.7,260,Rock,NA,45,2
+527,Woobat,Bat Pokemon,0.4,2.1,Psychic,Flying,190,0
+528,Swoobat,Courting Pokemon,0.9,10.5,Psychic,Flying,45,1
+529,Drilbur,Mole Pokemon,0.3,8.5,Ground,NA,120,0
+530,Excadrill,Subterrene Pokemon,0.7,40.4,Ground,Steel,60,1
+531,Audino,Hearing Pokemon,1.1,31,Normal,NA,255,0
+532,Timburr,Muscular Pokemon,0.6,12.5,Fighting,NA,180,0
+533,Gurdurr,Muscular Pokemon,1.2,40,Fighting,NA,90,1
+534,Conkeldurr,Muscular Pokemon,1.4,87,Fighting,NA,45,2
+535,Tympole,Tadpole Pokemon,0.5,4.5,Water,NA,255,0
+536,Palpitoad,Vibration Pokemon,0.8,17,Water,Ground,120,1
+537,Seismitoad,Vibration Pokemon,1.5,62,Water,Ground,45,2
+538,Throh,Judo Pokemon,1.3,55.5,Fighting,NA,45,0
+539,Sawk,Karate Pokemon,1.4,41,Fighting,NA,45,0
+540,Sewaddle,Sewing Pokemon,0.3,2.5,Bug,Grass,255,0
+541,Swadloon,Leaf-Wrapped Pokemon,0.5,7.3,Bug,Grass,120,1
+542,Leavanny,Nurturing Pokemon,1.2,20.5,Bug,Grass,45,2
+543,Venipede,Centipede Pokemon,0.4,5.3,Bug,Poison,255,0
+544,Whirlipede,Curlipede Pokemon,1.2,58.5,Bug,Poison,120,1
+545,Scolipede,Megapede Pokemon,2.5,200.5,Bug,Poison,45,2
+546,Cottonee,Cotton Puff Pokemon,0.3,0.6,Grass,Fairy,190,0
+547,Whimsicott,Windveiled Pokemon,0.7,6.6,Grass,Fairy,75,1
+548,Petilil,Bulb Pokemon,0.5,6.6,Grass,NA,190,0
+549,Lilligant,Flowering Pokemon,1.1,16.3,Grass,NA,75,1
+550,Basculin,Hostile Pokemon,1,18,Water,NA,25,0
+551,Sandile,Desert Croc Pokemon,0.7,15.2,Ground,Dark,180,0
+552,Krokorok,Desert Croc Pokemon,1,33.4,Ground,Dark,90,1
+553,Krookodile,Intimidation Pokemon,1.5,96.3,Ground,Dark,45,2
+554,Darumaka,Zen Charm Pokemon,0.6,37.5,Fire,NA,120,0
+555,Darmanitan,Blazing Pokemon,1.3,92.9,Fire,NA,60,1
+556,Maractus,Cactus Pokemon,1,28,Grass,NA,255,0
+557,Dwebble,Rock Inn Pokemon,0.3,14.5,Bug,Rock,190,0
+558,Crustle,Stone Home Pokemon,1.4,200,Bug,Rock,75,1
+559,Scraggy,Shedding Pokemon,0.6,11.8,Dark,Fighting,180,0
+560,Scrafty,Hoodlum Pokemon,1.1,30,Dark,Fighting,90,1
+561,Sigilyph,Avianoid Pokemon,1.4,14,Psychic,Flying,45,0
+562,Yamask,Spirit Pokemon,0.5,1.5,Ghost,NA,190,0
+563,Cofagrigus,Coffin Pokemon,1.7,76.5,Ghost,NA,90,1
+564,Tirtouga,Prototurtle Pokemon,0.7,16.5,Water,Rock,45,0
+565,Carracosta,Prototurtle Pokemon,1.2,81,Water,Rock,45,1
+566,Archen,First Bird Pokemon,0.5,9.5,Rock,Flying,45,0
+567,Archeops,First Bird Pokemon,1.4,32,Rock,Flying,45,1
+568,Trubbish,Trash Bag Pokemon,0.6,31,Poison,NA,190,0
+569,Garbodor,Trash Heap Pokemon,1.9,107.3,Poison,NA,60,1
+570,Zorua,Tricky Fox Pokemon,0.7,12.5,Dark,NA,75,0
+571,Zoroark,Illusion Fox Pokemon,1.6,81.1,Dark,NA,45,1
+572,Minccino,Chinchilla Pokemon,0.4,5.8,Normal,NA,255,0
+573,Cinccino,Scarf Pokemon,0.5,7.5,Normal,NA,60,1
+574,Gothita,Fixation Pokemon,0.4,5.8,Psychic,NA,200,0
+575,Gothorita,Manipulate Pokemon,0.7,18,Psychic,NA,100,1
+576,Gothitelle,Astral Body Pokemon,1.5,44,Psychic,NA,50,2
+577,Solosis,Cell Pokemon,0.3,1,Psychic,NA,200,0
+578,Duosion,Mitosis Pokemon,0.6,8,Psychic,NA,100,1
+579,Reuniclus,Multiplying Pokemon,1,20.1,Psychic,NA,50,2
+580,Ducklett,Water Bird Pokemon,0.5,5.5,Water,Flying,190,0
+581,Swanna,White Bird Pokemon,1.3,24.2,Water,Flying,45,1
+582,Vanillite,Fresh Snow Pokemon,0.4,5.7,Ice,NA,255,0
+583,Vanillish,Icy Snow Pokemon,1.1,41,Ice,NA,120,1
+584,Vanilluxe,Snowstorm Pokemon,1.3,57.5,Ice,NA,45,2
+585,Deerling,Season Pokemon,0.6,19.5,Normal,Grass,190,0
+586,Sawsbuck,Season Pokemon,1.9,92.5,Normal,Grass,75,1
+587,Emolga,Sky Squirrel Pokemon,0.4,5,Electric,Flying,200,0
+588,Karrablast,Clamping Pokemon,0.5,5.9,Bug,NA,200,0
+589,Escavalier,Cavalry Pokemon,1,33,Bug,Steel,75,1
+590,Foongus,Mushroom Pokemon,0.2,1,Grass,Poison,190,0
+591,Amoonguss,Mushroom Pokemon,0.6,10.5,Grass,Poison,75,1
+592,Frillish,Floating Pokemon,1.2,33,Water,Ghost,190,0
+593,Jellicent,Floating Pokemon,2.2,135,Water,Ghost,60,1
+594,Alomomola,Caring Pokemon,1.2,31.6,Water,NA,75,0
+595,Joltik,Attaching Pokemon,0.1,0.6,Bug,Electric,190,0
+596,Galvantula,EleSpider Pokemon,0.8,14.3,Bug,Electric,75,1
+597,Ferroseed,Thorn Seed Pokemon,0.6,18.8,Grass,Steel,255,0
+598,Ferrothorn,Thorn Pod Pokemon,1,110,Grass,Steel,90,1
+599,Klink,Gear Pokemon,0.3,21,Steel,NA,130,0
+600,Klang,Gear Pokemon,0.6,51,Steel,NA,60,1
+601,Klinklang,Gear Pokemon,0.6,81,Steel,NA,30,2
+602,Tynamo,EleFish Pokemon,0.2,0.3,Electric,NA,190,0
+603,Eelektrik,EleFish Pokemon,1.2,22,Electric,NA,60,1
+604,Eelektross,EleFish Pokemon,2.1,80.5,Electric,NA,30,2
+605,Elgyem,Cerebral Pokemon,0.5,9,Psychic,NA,255,0
+606,Beheeyem,Cerebral Pokemon,1,34.5,Psychic,NA,90,1
+607,Litwick,Candle Pokemon,0.3,3.1,Ghost,Fire,190,0
+608,Lampent,Lamp Pokemon,0.6,13,Ghost,Fire,90,1
+609,Chandelure,Luring Pokemon,1,34.3,Ghost,Fire,45,2
+610,Axew,Tusk Pokemon,0.6,18,Dragon,NA,75,0
+611,Fraxure,Axe Jaw Pokemon,1,36,Dragon,NA,60,1
+612,Haxorus,Axe Jaw Pokemon,1.8,105.5,Dragon,NA,45,2
+613,Cubchoo,Chill Pokemon,0.5,8.5,Ice,NA,120,0
+614,Beartic,Freezing Pokemon,2.6,260,Ice,NA,60,1
+615,Cryogonal,Crystallizing Pokemon,1.1,148,Ice,NA,25,0
+616,Shelmet,Snail Pokemon,0.4,7.7,Bug,NA,200,0
+617,Accelgor,Shell Out Pokemon,0.8,25.3,Bug,NA,75,1
+618,Stunfisk,Trap Pokemon,0.7,11,Ground,Electric,75,0
+619,Mienfoo,Martial Arts Pokemon,0.9,20,Fighting,NA,180,0
+620,Mienshao,Martial Arts Pokemon,1.4,35.5,Fighting,NA,45,1
+621,Druddigon,Cave Pokemon,1.6,139,Dragon,NA,45,0
+622,Golett,Automaton Pokemon,1,92,Ground,Ghost,190,0
+623,Golurk,Automaton Pokemon,2.8,330,Ground,Ghost,90,1
+624,Pawniard,Sharp Blade Pokemon,0.5,10.2,Dark,Steel,120,0
+625,Bisharp,Sword Blade Pokemon,1.6,70,Dark,Steel,45,1
+626,Bouffalant,Bash Buffalo Pokemon,1.6,94.5,Normal,NA,45,0
+627,Rufflet,Eaglet Pokemon,0.5,10.5,Normal,Flying,190,0
+628,Braviary,Valiant Pokemon,1.5,41,Normal,Flying,60,1
+629,Vullaby,Diapered Pokemon,0.5,9,Dark,Flying,190,0
+630,Mandibuzz,Bone Vulture Pokemon,1.2,39.5,Dark,Flying,60,1
+631,Heatmor,Anteater Pokemon,1.4,58,Fire,NA,90,0
+632,Durant,Iron Ant Pokemon,0.3,33,Bug,Steel,90,0
+633,Deino,Irate Pokemon,0.8,17.3,Dark,Dragon,45,0
+634,Zweilous,Hostile Pokemon,1.4,50,Dark,Dragon,45,1
+635,Hydreigon,Brutal Pokemon,1.8,160,Dark,Dragon,45,2
+636,Larvesta,Torch Pokemon,1.1,28.8,Bug,Fire,45,0
+637,Volcarona,Sun Pokemon,1.6,46,Bug,Fire,15,1
+638,Cobalion,Iron Will Pokemon,2.1,250,Steel,Fighting,3,0
+639,Terrakion,Cavern Pokemon,1.9,260,Rock,Fighting,3,0
+640,Virizion,Grassland Pokemon,2,200,Grass,Fighting,3,0
+641,Tornadus,Cyclone Pokemon,1.5,63,Flying,NA,3,0
+642,Thundurus,Bolt Strike Pokemon,1.5,61,Electric,Flying,3,0
+643,Reshiram,Vast White Pokemon,3.2,330,Dragon,Fire,3,0
+644,Zekrom,Deep Black Pokemon,2.9,345,Dragon,Electric,3,0
+645,Landorus,Abundance Pokemon,1.5,68,Ground,Flying,3,0
+646,Kyurem,Boundary Pokemon,3,325,Dragon,Ice,3,0
+647,Keldeo,Colt Pokemon,1.4,48.5,Water,Fighting,3,0
+648,Meloetta,Melody Pokemon,0.6,6.5,Normal,Psychic,3,0
+649,Genesect,Melody Pokemon,1.5,82.5,Bug,Steel,3,0
+650,Chespin,Spiky Nut Pokemon,0.4,9,Grass,NA,45,0
+651,Quilladin,Spiky Armor Pokemon,0.7,29,Grass,NA,45,1
+652,Chesnaught,Spiky Armor Pokemon,1.6,90,Grass,Fighting,45,2
+653,Fennekin,Fox Pokemon,0.4,9.4,Fire,NA,45,0
+654,Braixen,Fox Pokemon,1,14.5,Fire,NA,45,1
+655,Delphox,Fox Pokemon,1.5,39,Fire,Psychic,45,2
+656,Froakie,Bubble Frog Pokemon,0.3,7,Water,NA,45,0
+657,Frogadier,Bubble Frog Pokemon,0.6,10.9,Water,NA,45,1
+658,Greninja,Ninja Pokemon,1.5,40,Water,Dark,45,2
+659,Bunnelby,Digging Pokemon,0.4,5,Normal,NA,255,0
+660,Diggersby,Digging Pokemon,1,42.4,Normal,Ground,127,1
+661,Fletchling,Tiny Robin Pokemon,0.3,1.7,Normal,Flying,255,0
+662,Fletchinder,Ember Pokemon,0.7,16,Fire,Flying,120,1
+663,Talonflame,Scorching Pokemon,1.2,24.5,Fire,Flying,45,2
+664,Scatterbug,Scatterdust Pokemon,0.3,2.5,Bug,NA,255,0
+665,Spewpa,Scatterdust Pokemon,0.3,8.4,Bug,NA,120,1
+666,Vivillon,Scale Pokemon,1.2,17,Bug,Flying,45,2
+667,Litleo,Lion Cub Pokemon,0.6,13.5,Fire,Normal,220,0
+668,Pyroar,Royal Pokemon,1.5,81.5,Fire,Normal,65,1
+669,Flabébé,Single Bloom Pokemon,0.1,0.1,Fairy,NA,225,0
+670,Floette,Single Bloom Pokemon,0.2,0.9,Fairy,NA,120,1
+671,Florges,Garden Pokemon,1.1,10,Fairy,NA,45,2
+672,Skiddo,Mount Pokemon,0.9,31,Grass,NA,200,0
+673,Gogoat,Mount Pokemon,1.7,91,Grass,NA,45,1
+674,Pancham,Playful Pokemon,0.6,8,Fighting,NA,220,0
+675,Pangoro,Daunting Pokemon,2.1,136,Fighting,Dark,65,1
+676,Furfrou,Poodle Pokemon,1.2,28,Normal,NA,160,0
+677,Espurr,Restraint Pokemon,0.3,3.5,Psychic,NA,190,0
+678,Meowstic,Constraint Pokemon,0.6,8.5,Psychic,NA,75,1
+679,Honedge,Sword Pokemon,0.8,2,Steel,Ghost,180,0
+680,Doublade,Sword Pokemon,0.8,4.5,Steel,Ghost,90,1
+681,Aegislash,Royal Sword Pokemon,1.7,53,Steel,Ghost,45,2
+682,Spritzee,Perfume Pokemon,0.2,0.5,Fairy,NA,200,0
+683,Aromatisse,Fragrance Pokemon,0.8,15.5,Fairy,NA,140,1
+684,Swirlix,Cotton Candy Pokemon,0.4,3.5,Fairy,NA,200,0
+685,Slurpuff,Meringue Pokemon,0.8,5,Fairy,NA,140,1
+686,Inkay,Revolving Pokemon,0.4,3.5,Dark,Psychic,190,0
+687,Malamar,Overturning Pokemon,1.5,47,Dark,Psychic,80,1
+688,Binacle,Two-Handed Pokemon,0.5,31,Rock,Water,120,0
+689,Barbaracle,Collective Pokemon,1.3,96,Rock,Water,45,1
+690,Skrelp,Mock Kelp Pokemon,0.5,7.3,Poison,Water,225,0
+691,Dragalge,Mock Kelp Pokemon,1.8,81.5,Poison,Dragon,55,1
+692,Clauncher,Water Gun Pokemon,0.5,8.3,Water,NA,225,0
+693,Clawitzer,Howitzer Pokemon,1.3,35.3,Water,NA,55,1
+694,Helioptile,Generator Pokemon,0.5,6,Electric,Normal,190,0
+695,Heliolisk,Generator Pokemon,1,21,Electric,Normal,75,1
+696,Tyrunt,Royal Heir Pokemon,0.8,26,Rock,Dragon,45,0
+697,Tyrantrum,Despot Pokemon,2.5,270,Rock,Dragon,45,1
+698,Amaura,Tundra Pokemon,1.3,25.2,Rock,Ice,45,0
+699,Aurorus,Tundra Pokemon,2.7,225,Rock,Ice,45,1
+700,Sylveon,Interwining Pokemon,1,23.5,Fairy,NA,45,2
+701,Hawlucha,Wrestling Pokemon,0.8,21.5,Fighting,Flying,100,0
+702,Dedenne,Antenna Pokemon,0.2,2.2,Electric,Fairy,180,0
+703,Carbink,Jewel Pokemon,0.3,5.7,Rock,Fairy,60,0
+704,Goomy,Soft Tissue Pokemon,0.3,2.8,Dragon,NA,45,0
+705,Sliggoo,Soft Tissue Pokemon,0.8,17.5,Dragon,NA,45,1
+706,Goodra,Dragon Pokemon,2,150.5,Dragon,NA,45,2
+707,Klefki,Key Ring Pokemon,0.2,3,Steel,Fairy,75,0
+708,Phantump,Stump Pokemon,0.4,7,Ghost,Grass,120,0
+709,Trevenant,Elder Tree Pokemon,1.5,71,Ghost,Grass,60,1
+710,Pumpkaboo,Pumpkin Pokemon,0.4,5,Ghost,Grass,120,0
+711,Gourgeist,Pumpkin Pokemon,0.9,12.5,Ghost,Grass,60,1
+712,Bergmite,Ice Chunk Pokemon,1,99.5,Ice,NA,190,0
+713,Avalugg,Iceberg Pokemon,2,505,Ice,NA,55,1
+714,Noibat,Sound Wave Pokemon,0.5,8,Flying,Dragon,190,0
+715,Noivern,Sound Wave Pokemon,1.5,85,Flying,Dragon,45,1
+716,Xerneas,Life Pokemon,3,215,Fairy,NA,45,0
+717,Yveltal,Destruction Pokemon,5.8,203,Dark,Flying,45,0
+718,Zygarde,Order Pokemon,5,305,Dragon,Ground,3,0
+719,Diancie,Jewel Pokemon,0.7,8.8,Rock,Fairy,3,0
+720,Hoopa,Mischief Pokemon,0.5,9,Psychic,Ghost,3,0
+721,Volcanion,Steam Pokemon,1.7,195,Fire,Water,3,0
+722,Rowlet,Grass Quill Pokemon,0.3,1.5,Grass,Flying,45,0
+723,Dartrix,Blade Quill Pokemon,0.7,16,Grass,Flying,45,1
+724,Decidueye,Arrow Quill Pokemon,1.6,36.6,Grass,Ghost,45,2
+725,Litten,Fire Cat Pokemon,0.4,4.3,Fire,NA,45,0
+726,Torracat,Fire Cat Pokemon,0.7,25,Fire,NA,45,1
+727,Incineroar,Heel Pokemon,1.8,83,Fire,Dark,45,2
+728,Popplio,Sea Lion Pokemon,0.4,7.5,Water,NA,45,0
+729,Brionne,Pop Star Pokemon,0.6,17.5,Water,NA,45,1
+730,Primarina,Soloist Pokemon,1.8,44,Water,Fairy,45,2
+731,Pikipek,Woodpecker Pokemon,0.3,1.2,Normal,Flying,255,0
+732,Trumbeak,Bugle Beak Pokemon,0.6,14.8,Normal,Flying,120,1
+733,Toucannon,Cannon Pokemon,1.1,26,Normal,Flying,45,2
+734,Yungoos,Loitering Pokemon,0.4,6,Normal,NA,255,0
+735,Gumshoos,Stakeout Pokemon,0.7,14.2,Normal,NA,127,1
+736,Grubbin,Larva Pokemon,0.4,4.4,Bug,NA,255,0
+737,Charjabug,Battery Pokemon,0.5,10.5,Bug,Electric,120,1
+738,Vikavolt,Stag Beetle Pokemon,1.5,45,Bug,Electric,45,2
+739,Crabrawler,Boxing Pokemon,0.6,7,Fighting,NA,225,0
+740,Crabominable,Woolly Crab Pokemon,1.7,180,Fighting,Ice,60,1
+741,Oricorio,Dancing Pokemon,0.6,3.4,Fire,Flying,45,0
+742,Cutiefly,Bee Fly Pokemon,0.1,0.2,Bug,Fairy,190,0
+743,Ribombee,Bee Fly Pokemon,0.2,0.5,Bug,Fairy,75,1
+744,Rockruff,Puppy Pokemon,0.5,9.2,Rock,NA,190,0
+745,Lycanroc,Wolf Pokemon,0.8,25,Rock,NA,90,1
+746,Wishiwashi,Small Fry Pokemon,0.2,0.3,Water,NA,60,0
+747,Mareanie,Brutal Pokemon,0.4,8,Poison,Water,190,0
+748,Toxapex,Brutal Pokemon,0.7,14.5,Poison,Water,75,1
+749,Mudbray,Donkey Pokemon,1,110,Ground,NA,190,0
+750,Mudsdale,Draft Horse Pokemon,2.5,920,Ground,NA,60,1
+751,Dewpider,Water Bubble Pokemon,0.3,4,Water,Bug,200,0
+752,Araquanid,Water Bubble Pokemon,1.8,82,Water,Bug,100,1
+753,Fomantis,Sickle Grass Pokemon,0.3,1.5,Grass,NA,190,0
+754,Lurantis,Bloom Sickle Pokemon,0.9,18.5,Grass,NA,75,1
+755,Morelull,Illuminating Pokemon,0.2,1.5,Grass,Fairy,190,0
+756,Shiinotic,Illuminating Pokemon,1,11.5,Grass,Fairy,75,1
+757,Salandit,Toxic Lizard Pokemon,0.6,4.8,Poison,Fire,120,0
+758,Salazzle,Toxic Lizard Pokemon,1.2,22.2,Poison,Fire,45,1
+759,Stufful,Flailing Pokemon,0.5,6.8,Normal,Fighting,140,0
+760,Bewear,Strong Arm Pokemon,2.1,135,Normal,Fighting,70,1
+761,Bounsweet,Fruit Pokemon,0.3,3.2,Grass,NA,235,0
+762,Steenee,Fruit Pokemon,0.7,8.2,Grass,NA,120,1
+763,Tsareena,Fruit Pokemon,1.2,21.4,Grass,NA,45,2
+764,Comfey,Posy Picker Pokemon,0.1,0.3,Fairy,NA,60,0
+765,Oranguru,Sage Pokemon,1.5,76,Normal,Psychic,45,0
+766,Passimian,Teamwork Pokemon,2,82.8,Fighting,NA,45,0
+767,Wimpod,Turn Tail Pokemon,0.5,12,Bug,Water,90,0
+768,Golisopod,Hard Scale Pokemon,2,108,Bug,Water,45,1
+769,Sandygast,Sand Heap Pokemon,0.5,70,Ghost,Ground,140,0
+770,Palossand,Sand Castle Pokemon,1.3,250,Ghost,Ground,60,1
+771,Pyukumuku,Sea Cucumber Pokemon,0.3,1.2,Water,NA,60,0
+772,Type: Null,Synthetic Pokemon,1.9,120.5,Normal,NA,3,0
+773,Silvally,Synthetic Pokemon,2.3,100.5,Normal,NA,3,1
+774,Minior,Meteor Pokemon,0.3,40,Rock,Flying,30,0
+775,Komala,Drowsing Pokemon,0.4,19.9,Normal,NA,45,0
+776,Turtonator,Blast Turtle Pokemon,2,212,Fire,Dragon,70,0
+777,Togedemaru,Roly-Poly Pokemon,0.3,3.3,Electric,Steel,180,0
+778,Mimikyu,Disguise Pokemon,0.2,0.7,Ghost,Fairy,45,0
+779,Bruxish,Gnash Teeth Pokemon,0.9,19,Water,Psychic,80,0
+780,Drampa,Placid Pokemon,3,185,Normal,Dragon,70,0
+781,Dhelmise,Sea Creeper Pokemon,3.9,210,Ghost,Grass,25,0
+782,Jangmo-o,Scaly Pokemon,0.6,29.7,Dragon,NA,45,0
+783,Hakamo-o,Scaly Pokemon,1.2,47,Dragon,Fighting,45,1
+784,Kommo-o,Scaly Pokemon,1.6,78.2,Dragon,Fighting,45,2
+785,Tapu Koko,Land Spirit Pokemon,1.8,20.5,Electric,Fairy,3,0
+786,Tapu Lele,Land Spirit Pokemon,1.2,18.6,Psychic,Fairy,3,0
+787,Tapu Bulu,Land Spirit Pokemon,1.9,45.5,Grass,Fairy,3,0
+788,Tapu Fini,Land Spirit Pokemon,1.3,21.2,Water,Fairy,3,0
+789,Cosmog,Nebula Pokemon,0.2,0.1,Psychic,NA,45,0
+790,Cosmoem,Protostar Pokemon,0.1,999.9,Psychic,NA,45,1
+791,Solgaleo,Sunne Pokemon,3.4,230,Psychic,Steel,45,2
+792,Lunala,Moone Pokemon,4,120,Psychic,Ghost,45,2
+793,Nihilego,Parasite Pokemon,1.2,55.5,Rock,Poison,45,0
+794,Buzzwole,Swollen Pokemon,2.4,333.6,Bug,Fighting,45,0
+795,Pheromosa,Lissome Pokemon,1.8,25,Bug,Fighting,45,0
+796,Xurkitree,Glowing Pokemon,3.8,100,Electric,NA,45,0
+797,Celesteela,Launch Pokemon,9.2,999.9,Steel,Flying,45,0
+798,Kartana,Drawn Sword Pokemon,0.3,0.1,Grass,Steel,45,0
+799,Guzzlord,Junkivore Pokemon,5.5,888,Dark,Dragon,45,0
+800,Necrozma,Prism Pokemon,2.4,230,Psychic,NA,255,0
+801,Magearna,Artificial Pokemon,1,80.5,Steel,Fairy,3,0
+802,Marshadow,Gloomdweller Pokemon,0.7,22.2,Fighting,Ghost,3,0
+803,Poipole,Poison Pin Pokemon,0.6,1.8,Poison,NA,45,0
+804,Naganadel,Poison Pin Pokemon,3.6,150,Poison,Dragon,45,1
+805,Stakataka,Rampart Pokemon,5.5,820,Rock,Steel,30,0
+806,Blacephalon,Fireworks Pokemon,1.8,13,Fire,Ghost,30,0
+807,Zeraora,Thunderclap Pokemon,1.5,44.5,Electric,NA,3,0
+808,Meltan,Hex Nut Pokemon,0.2,8,Steel,NA,3,0
+809,Melmetal,Hex Nut Pokemon,2.5,800,Steel,NA,3,1
+810,Grookey,Chimp Pokemon,0.3,5,Grass,NA,45,0
+811,Thwackey,Beat Pokemon,0.7,14,Grass,NA,45,1
+812,Rillaboom,Drummer Pokemon,2.1,90,Grass,NA,45,2
+813,Scorbunny,Rabbit Pokemon,0.3,4.5,Fire,NA,45,0
+814,Raboot,Rabbit Pokemon,0.6,9,Fire,NA,45,1
+815,Cinderace,Striker Pokemon,1.4,33,Fire,NA,45,2
+816,Sobble,Water Lizard Pokemon,0.3,4,Water,NA,45,0
+817,Drizzile,Water Lizard Pokemon,0.7,11.5,Water,NA,45,1
+818,Inteleon,Secret Agent Pokemon,1.9,45.2,Water,NA,45,2
+819,Skwovet,Cheeky Pokemon,0.3,2.5,Normal,NA,255,0
+820,Greedent,Greedy Pokemon,0.6,6,Normal,NA,90,1
+821,Rookidee,Tiny Bird Pokemon,0.2,1.8,Flying,NA,255,0
+822,Corvisquire,Raven Pokemon,0.8,16,Flying,NA,120,1
+823,Corviknight,Raven Pokemon,2.2,75,Flying,Steel,45,2
+824,Blipbug,Larva Pokemon,0.4,8,Bug,NA,255,0
+825,Dottler,Radome Pokemon,0.4,19.5,Bug,Psychic,120,1
+826,Orbeetle,Seven Spot Pokemon,0.4,40.8,Bug,Psychic,45,2
+827,Nickit,Fox Pokemon,0.6,8.9,Dark,NA,255,0
+828,Thievul,Fox Pokemon,1.2,19.9,Dark,NA,127,1
+829,Gossifleur,Flowering Pokemon,0.4,2.2,Grass,NA,190,0
+830,Eldegoss,Cotton Bloom Pokemon,0.5,2.5,Grass,NA,75,1
+831,Wooloo,Sheep Pokemon,0.6,6,Normal,NA,255,0
+832,Dubwool,Sheep Pokemon,1.3,43,Normal,NA,127,1
+833,Chewtle,Snapping Pokemon,0.3,8.5,Water,NA,255,0
+834,Drednaw,Bite Pokemon,1,115.5,Water,Rock,75,1
+835,Yamper,Puppy Pokemon,0.3,13.5,Electric,NA,255,0
+836,Boltund,Dog Pokemon,1,34,Electric,NA,45,1
+837,Rolycolt,Coal Pokemon,0.3,12,Rock,NA,255,0
+838,Carkol,Coal Pokemon,1.1,78,Rock,Fire,120,1
+839,Coalossal,Coal Pokemon,2.8,310.5,Rock,Fire,45,2
+840,Applin,Apple Core Pokemon,0.2,0.5,Grass,Dragon,255,0
+841,Flapple,Apple Wing Pokemon,0.3,1,Grass,Ground,45,1
+842,Appletun,Apple Nectar Pokemon,0.4,13,Grass,Dragon,45,2
+843,Silicobra,Sand Snake Pokemon,2.2,7.6,Ground,NA,255,0
+844,Sandaconda,Sand Snake Pokemon,3.8,65.5,Ground,NA,120,1
+845,Cramorant,Gulp Pokemon,0.8,18,Flying,Water,45,0
+846,Arrokunda,Rush Pokemon,0.5,1,Water,NA,255,0
+847,Barraskewda,Skewer Pokemon,1.3,30,Water,NA,60,1
+848,Toxel,Baby Pokemon,0.4,11,Electric,Poison,75,0
+849,Toxtricity,Punk Pokemon,1.6,40,Electric,Poison,45,1
+850,Sizzlipede,Radiator Pokemon,0.7,1,Fire,Bug,190,0
+851,Centiskorch,Radiator Pokemon,3,120,Fire,Bug,75,1
+852,Clobbopus,Tantrum Pokemon,0.6,4,Fighting,NA,180,0
+853,Grapploct,Jujitsu Pokemon,1.6,39,Fighting,NA,45,1
+854,Sinistea,Black Tea Pokemon,0.1,0.2,Ghost,NA,120,0
+855,Polteageist,Black Tea Pokemon,0.2,0.4,Ghost,NA,60,1
+856,Hatenna,Calm Pokemon,0.4,3.4,Psychic,NA,235,0
+857,Hattrem,Serene Pokemon,0.6,4.8,Psychic,NA,120,1
+858,Hatterene,Silent Pokemon,2.1,5.1,Psychic,Fairy,45,2
+859,Impidimp,Wily Pokemon,0.4,5.5,Dark,Fairy,255,0
+860,Morgrem,Devious Pokemon,0.8,12.5,Dark,Fairy,120,1
+861,Grimmsnarl,Bulk Up Pokemon,1.5,61,Dark,Fairy,45,2
+862,Obstagoon,Blocking Pokemon,1.6,46,Dark,Normal,45,2
+863,Perrserker,Viking Pokemon,0.8,28,Steel,NA,90,2
+864,Cursola,Coral Pokemon,1,0.4,Ghost,NA,30,2
+865,Sirfetch'd,Wild Duck Pokemon,0.8,117,Fighting,NA,45,2
+866,Mr. Rime,Comedian Pokemon,1.5,58.2,Ice,Psychic,45,2
+867,Runerigus,Grudge Pokemon,1.6,66.6,Ground,Ghost,90,2
+868,Milcery,Cream Pokemon,0.2,0.3,Fairy,NA,200,0
+869,Alcremie,Cream Pokemon,0.3,0.5,Fairy,NA,100,1
+870,Falinks,Formation Pokemon,3,62,Fighting,NA,45,0
+871,Pincurchin,Sea Urchin Pokemon,0.3,1,Electric,NA,75,0
+872,Snom,Worm Pokemon,0.3,3.8,Ice,Bug,190,0
+873,Frosmoth,Frost Moth Pokemon,1.3,42,Ice,Bug,75,1
+874,Stonjourner,Big Rock Pokemon,2.5,520,Rock,NA,60,0
+875,Eiscue,Penguin Pokemon,1.4,89,Ice,NA,60,0
+876,Indeedee,Emotion Pokemon,0.9,28,Psychic,Normal,30,0
+877,Morpeko,Two-Sided Pokemon,0.3,3,Electric,Dark,180,0
+878,Cufant,Copperderm Pokemon,1.2,100,Steel,NA,190,0
+879,Copperajah,Copperderm Pokemon,3,650,Steel,NA,90,1
+880,Dracozolt,Fossil Pokemon,1.8,190,Electric,Dragon,45,0
+881,Arctozolt,Fossil Pokemon,2.3,150,Electric,Ice,45,0
+882,Dracovish,Fossil Pokemon,2.3,215,Water,Dragon,45,0
+883,Arctovish,Fossil Pokemon,2,175,Water,Ice,45,0
+884,Duraludon,Alloy Pokemon,1.8,40,Steel,Dragon,45,0
+885,Dreepy,Lingering Pokemon,0.5,2,Dragon,Ghost,45,0
+886,Drakloak,Caretaker Pokemon,1.4,11,Dragon,Ghost,45,1
+887,Dragapult,Stealth Pokemon,3,50,Dragon,Ghost,45,2
+888,Zacian,Warrior Pokemon,2.8,110,Fairy,NA,10,0
+889,Zamazenta,Warrior Pokemon,2.9,210,Fighting,NA,10,0
+890,Eternatus,Gigantic Pokemon,20,950,Poison,Dragon,255,0
+891,Kubfu,Wushu Pokemon,0.6,12,Fighting,NA,3,0
+892,Urshifu,Wushu Pokemon,1.9,105,Fighting,Dark,3,1
+893,Zarude,Rogue Monkey Pokemon,1.8,70,Dark,Grass,3,0

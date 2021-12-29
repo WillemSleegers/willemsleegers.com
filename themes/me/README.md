@@ -1,4 +1,3 @@
 # Me
 
-This theme was developed by Willem Sleegers (https://www.willemsleegers.com/).
-David Reinstein is adapting it.
+This is my own personal blogdown/Hugo theme. 
