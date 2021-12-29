@@ -1,7 +1,9 @@
-baseurl: https://www.willemsleegers.com/
+baseurl: https://www.davidreinstein.org/
 languageCode: en-us
-title: Willem Sleegers
+title: David Reinstein
 theme: me
+  #googleAnalytics = ""
+  #math = true # Enable Katex globally
 menu:
   main:
     - identifier: about
@@ -24,29 +26,29 @@ menu:
         type: blog
     - identifier: cv
       name: CV
-      url: /CV/
+      url: /vitae/
       weight: 4
       params:
         type: page
 permalinks:
   post: /:year/:month/:day/:slug/
 params:
-  description: "Willem Sleegers' personal website"
+  description: "David Reinstein's personal professional website"
   favicon: /images/favicon.ico
   logo:
-    text: "Willem Sleegers"
-    domain: .com
+    text: "David Reinstein"
+    domain: .org
   icons:
     - title: GitHub
-      url: https://github.com/willemsleegers
+      url: https://github.com/daaronr
       icon: github
     - title: Twitter
-      url: https://twitter.com/willemsleegers
+      url: https://twitter.com/GivingTools
       icon: twitter
   home:
     avatar: avatar.png
     title: "Willem Sleegers"
-    subtitle: "Senior Behavioral Scientist at Rethink Priorities"
+    subtitle: "Senior Economist at Rethink Priorities"
 ignoreFiles:
   - \.Rmd$
   - \.Rmarkdown$
