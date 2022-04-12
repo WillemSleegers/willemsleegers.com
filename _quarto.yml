@@ -6,7 +6,6 @@ project:
 
 website:
   title: "willemsleegers.com"
-  site-url: https://www.willemsleegers.com
   description: "The personal website of Willem Sleegers."
   reader-mode: true
   navbar:
