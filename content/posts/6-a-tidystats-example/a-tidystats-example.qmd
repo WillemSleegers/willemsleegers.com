@@ -71,6 +71,7 @@ Regarding descriptives, `tidystats` comes with its own functions to calculate de
 ```{r}
 #| label: tbl-response-descriptives
 #| tbl-cap: Response descriptives
+#| echo: true
 quote_source %>%
   group_by(source) %>%
   describe_data(response) %>%
@@ -84,6 +85,7 @@ To test whether the difference in agreement between the two sources is statistic
 ```{r}
 #| label: t-test-normal
 #| eval: false
+#| echo: true
 t.test(response ~ source, data = quote_source)
 ```
 
@@ -93,6 +95,7 @@ Once you've stored the result of the *t*-test in a variable, you can look at the
 
 ```{r}
 #| label: t-test-tidystats
+#| echo: true
 main_test <- t.test(response ~ source, data = quote_source)
 main_test
 ```
@@ -103,6 +106,7 @@ Next, let's run some additional analyses. One thing we can test is whether the e
 
 ```{r}
 #| label: lm-region
+#| echo: true
 us_moderation_test <- lm(response ~ source * us_or_international, 
   data = quote_source)
 summary(us_moderation_test)
@@ -147,6 +151,7 @@ In the end, the code looks like this:
 
 ```{r}
 #| label: applying-tidystats
+#| echo: true
 results <- list()
 
 results <- results %>%
@@ -162,6 +167,7 @@ After all the analyses are added to the list, the list can be saved as a .json f
 ```{r}
 #| label: write-stats
 #| eval: false
+#| echo: true
 write_stats(results, "tidystats-example.json")
 ```
 

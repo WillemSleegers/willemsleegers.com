@@ -48,7 +48,7 @@ theme_set(theme_minimal())
 
 # Set some options
 options(
-  knitr.kable.NA = "",
+  knitr.kable.NA = "-",
   digits = 2
 )
 ```
