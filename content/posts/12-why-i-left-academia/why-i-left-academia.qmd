@@ -1,0 +1,65 @@
+---
+title: Why I Left Academia
+date: 2022-01-23
+categories:
+  - academia
+draft: true
+---
+
+I recently left academia and it is a custom in the academic Twitterverse to write a blog post about your reasons for leaving. Of course, this is a bit of a silly thing to do because for many it is strikingly obvious that academia has its issues. In fact, very few people were surprised when I told them I was leaving. Some were surprised because they thought I was 'the academic type' but none were surprised about me leaving the circumstances behind that define academia. Regardless, I guess we want to read stories about what finally got someone to give up on academia, after sometimes years of dedication to such a noble goal as science. It's a scary thought to give up on that, so let's go over the reasons I had.
+
+## Three crises
+
+In addition to writing about leaving, it's also a bit of a meme among academics on Twitter to say that academia is undergoing various crises. The most notable of these is the replication crisis in the social sciences. At the same time there is also a discussion about whether these crises are actually crises. I don't want to enter that debate here; instead, I want to say that those developments in the social sciences sure felt like crises to *me*. I experienced several crises, but let's start with the most famous one, the replication crises, or as I prefer to call it: the crisis of confidence.
+
+### The crisis of confidence
+
+There were several events that started the crisis of confidence. First, there was the discovery of fraud committed by Stapel. This sort of hit close to home because while I was not at Tilburg University yet, I was just a few cities over completing my Research Master's. When the news hit it was quite shocking and I remember it being the most important topic of a 'hay day' that year. That people could commit fraud was not the shocking part of course, it was the fact that the fraud was on such a large scale and that he wasn't caught sooner. It seems to show a lack of concern for whether findings truly hold up (assuming that a bunch of this fraudulent findings are in fact not true). The mistake that was made during our hay day discussion was a focus on accountability. Suggestions were offered that we should make it harder for scientists to commit fraud. I remember being against that approach back then. I believed that it was silly to focus on creating more stringent rules about data collection just because of the few people that commit fraud. I still mostly believe that to be true, although I now realize that there should be more people involved in the process. Stapel could get away with fraud because no one double-checked his work. There was a recent discussion about this exact topic as well regarding the fraud of the insurance paper, see tweet. It is baffling to me that psychologists just let individuals be in charge of something as error ridden as data collection and analysis. These are the same people who claim that people are biased and that conflicts of interests are a huge problem. Yet when it comes to science, apparently it's offensive to demand that people double-check their work. I look back at this with more disbelief than what I realized at the time. It should have been clear to me that the main problem was that we simply were not taking our work seriously enough to check our work.
+
+It took a study about ESP to finally push people in the direction of thinking that maybe we're doing something wrong. The publication of Bem's paper on ESP shook the community because it *looked* like a true academic paper, but it shows something impossible. What gives? The amazing paper on *p*-hacking provided the answer and showed that it's just incredibly easy to publish false positives. Not long after, this was shown in force by failed replication after failed replication. Importantly, the findings were not just from a fraudulent researchers, but from basically anyone.
+
+The replication failures show that in addition to not double-checking the work of individuals in a project, we also failed to check our work by replicating studies.
+
+The replication failures were not just failures of state-of-the-art studies. These were studies that we taught our students in textbooks, that drove people into the field and that formed basis of Phd projects. In short, the replication failures showed us that it is possible for an entire field to be flat-out wrong about something.
+
+Incorporate this: <https://slatestarcodex.com/2019/05/07/5-httlpr-a-pointed-review/>
+
+<https://twitter.com/WiringTheBrain/status/1490317514492067844>
+
+<https://journals.sagepub.com/doi/abs/10.1177/0013164498058006003>
+
+<https://link.springer.com/article/10.1007/s11747-011-0300-3#additional-information>
+
+Selling ourselves short? How abbreviated measures of personality change the way we think about personality and politics
+
+Shocking conclusion: It's possible for an entire field to be wrong about something.
+
+### The incentive crisis
+
+Initially I wasn't too upset about some of these developments. I was young, I was optimistic. I even thought it might be a good thing that there was so much wrong because that means there's a lot to fix. Of course, I was also somewhat dismayed because I had formed beliefs and updated prior beliefs in light of the findings of social psychology and it turns out that some of these updates were a mistake. More importantly, I *liked* some of the findings in social psychology and they made me want to study it. It felt a bit like I had entered social psychology on false pretenses. That was an issue, but not one that I felt all too saliently; I had enough motivation to continue.
+
+But then I started my PhD. The main difference between my Research Master's and the PhD was that the PhD really felt like I entered the academic career path. This makes sense of course. In the Netherlands you actually get paid for doing a PhD, so it feels like a job. But that wasn't the issue. The issue was that the work felt different. In both the PhD and the Master's, I was reading papers, doing studies, and writing theses, but it wasn't the same. What was different was that during my education I could perfectly behave in line with my scientific values. I could, for example, write up a thesis and have fun in the discussion section. I could point out all the flaws and I would get credit even! During the PhD, this was different. Discussion sections became opportunities for strategically presenting some limitations but not others, or framing them slightly more favorably than I would have liked to do. Why? Because the goal was to get it published, not just to get a good grade.
+
+Analyzing data also became problematic. During my education I could run a study and not care whether the hypothesis was confirmed or not. It was what it was; which is how it is supposed to be! But finding a failed hypothesis during my PhD was a problem. All of a sudden it became more difficult to write up the paper and I knew it would not have a chance to get published. Analyzing data wasn't fun anymore; it became a lottery with stakes.
+
+What is the crisis here? If you recall, I mentioned being optimistic about the first crisis and that I could address it by doing better science. Instead, I found myself playing the academic game of writing papers that were not driven by a 100% focus on good science, but perhaps on 80% doing good science and 20% spin to get it published. And those 20% mattered a lot. It showed I wasn't strong enough to combat the incentives and that apparently I was willing to compromise what I thought were my most important values. A personal crisis I suppose, but a crisis nonetheless.
+
+I guess I played the game well enough because I obtained my PhD and I even managed to land an Assistant Professor job immediately after. The increased independence made things a bit better because I could act more in line with my scientific values, such as starting a giant multilab replication study on cognitive dissonance and running additional studies to confirm prior studies, just to make sure the findings were reliable. But I still had to play the game. I said yes to projects I would probably have said no too, but started them anyway because they looked easy enough to result in a publication. I still wasn't living up to my ideals.
+
+### The impact crisis
+
+Then the third and final crisis hit me. During the years I attended conferences, talks, and read papers. I started to notice that many of the studies that I encountered were uninteresting. Worse, I thought they were a waste of money and resources. I saw studies whether people perceive food to be bigger when there were people around, whether people's brains can predict stock exchanges (useful, but extremely unlikely, almost like ESP), and others. I noticed I just couldn't care less about the studies. Maybe it was because I was just getting more and more demotivated about academia and nothing could interest me about it anymore, but I don't think so. I think the main problem was that I think the incentives were still wrong and that much better research could be done, but simply wasn't being done. Not just better research in terms of methodology, but also in terms of topic. I rarely encountered studies about reducing poverty, improving animal welfare, improving pandemic responses, or any other topic that actually mattered. When I did encounter a study that was somewhat related to these topics, they were about the *boring* and *trivial* aspects of it. I joined research organizations to study the topic of animal welfare, for example, but most studies were uninterested correlational studies that link psychological traits together, rather than studying how we can motivate people to eat less meat. The reason was clear to me; that stuff is hard to study. It's much easier to run typical studies and get them published rather than solve the problems that we care about. So the third crisis hit me. Even if we were to do methodologically sound science, apparently we're not even able to apply it to the right topics to study.
+
+The third time was the charm and I realized I had to go. I was getting increasingly unhappy to the point where I wanted to quit without even having a backup plan. But I'm somewhat risk averse so I was hesitant to do that. Instead, I spent last summer looking for another job and I found several alternative jobs I could go for. I started applying and I then I also noticed an immediate switch in my thinking about academia. Does academia really make any sense?
+
+## Modern Academia
+
+Why do I want to spend 50% of my time on teaching students? That's not what originally drove me into science. Sure, I like teaching, but 50% of my time? That's insane. And why don't I still have a permanent contract when I'm 35 years of age? And why am I even part of a system where journals charge money for the work that academics do for free?
+
+So who do I blame? I can either blame the world ("This is simply how it works") or I can blame people. The former is not true, so that leaves the latter.
+
+Summarizing all of this, I conclude that most scientists in academia are not scientists. Their goal is not to find the truth.
+
+The problem is not that *some* people seem to commit fraud or perform bad studies. It's that it seems to be extremely common, if not the norm.
+
+Take issues like statistical power. Jacob Cohen raised issues about power IN THE SEVENTIES. It took until the 2010s for psychologists to actually start giving a shit about power. And even now people still get it enormously wrong! These are not super sophisticated issues that require sophisticated thinking and supercompters; it requires giving a shit and the audacity to not run a study if you know you can't do it well.

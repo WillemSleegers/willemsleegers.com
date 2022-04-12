@@ -1,0 +1,14 @@
+/* css styles */
+
+.figure {
+  padding-top: 1rem;
+  background-color: white;
+}
+
+summary {
+  outline: none;
+}
+
+#quarto-header {
+  border-bottom: 1px solid #dee2e6;
+}

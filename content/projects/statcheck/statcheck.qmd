@@ -1,0 +1,29 @@
+---
+title: statcheck
+bibliography: references.bib
+---
+
+Together with [Michèle Nuijten](https://mbnuijten.com) I am working on improving `statcheck`. `statcheck` is a software tool to help researchers make fewer statistics-related typos.
+
+## Why is this important?
+
+Similar to my `tidystats` project, our aim is to address a particular problem in statistics reporting: the reporting of incorrect statistics.
+
+As has been shown by Michèle and her colleagues, statistics are often reported incorrectly [@nuijten2016]. This is likely due to the fact that researchers do not have the necessary software tools to reliably take the output of statistics from their data analysis software and enter it into their text editor. Instead, researchers are likely to copy statistics from the output by hand or by copy-pasting the output. Both techniques are error-prone, resulting in many papers containing statistical typos. This is a problem because statistical output is used in meta-analyses to aggregate the evidence for particular theories, which sometimes also inform policy. In some cases, the errors may even be so large that it affects the conclusion drawn from the statistical test.
+
+## What am I working on?
+
+Admittedly, I am simply joining Michèle and her efforts to help researchers make fewer typos. She and her colleagues have already done a lot of the work---we're now just trying to make it even better. For example, Sacha Epskamp and Michèle developed `statcheck`. [`statcheck`](https://cran.r-project.org/web/packages/statcheck/index.html) is an R package designed to catch statistical reporting mistakes. It works by first extracting statistics from a paper (e.g., *t* values, degrees of freedom, *p*-values). It then uses the test statistic and degrees of freedom to re-calculate the *p*-value and compare it to the reported *p*-value. If the two don't match, there is probably a reporting mistake.
+
+You can use the `statcheck` package in R to check your paper or you can use the [web app](http://statcheck.io "statcheck web app"). Using the web app consists of simply uploading your paper and checking the results. You can then go back to the paper and correct the mistakes.
+
+With my experience creating `tidystats`, and particularly the `tidystats` Word add-in, we've started to create a Word add-in for `statcheck`. This add-in allows researchers to scan their document for statistical inconsistencies, find them, and fix them. This add-in is currently in beta and we hope to release it soon.
+
+We are also working on improving `statcheck` together with the [eScience Center](https://www.esciencecenter.nl). Together with their help we hope to expand `statcheck` so it can catch a greater variety of statistical inconsistencies. We have had some preparatory meetings with them and plan to fully begin this project soon.
+
+## Links
+
+-   The [web app](http://statcheck.io "statcheck web app")
+-   The R package on [CRAN](https://cran.r-project.org/web/packages/statcheck/index.html "statcheck on CRAN")
+-   The [GitHub page](https://github.com/MicheleNuijten/statcheck "statcheck GitHub repository") of `statcheck`
+-   The [GitHub page](https://github.com/WillemSleegers/statcheck-word "statcheck Word add-in repository") of the `statcheck` Word add-in.

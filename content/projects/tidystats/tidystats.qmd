@@ -1,0 +1,44 @@
+---
+title: tidystats
+bibliography: references.bib
+---
+
+`tidystats` is a project centered around creating software to improve how statistics are reported and shared in the field of (social) psychology.
+
+## Why is this important?
+
+With this project, I hope to address two problems in statistics reporting: Incorrect and incomplete statistics reporting.
+
+Statistics are often reported incorrectly [@nuijten2016]. I think this is because researchers do not have the necessary software tools to reliably take the output of statistics from their data analysis software and enter it into their text editor. Instead, researchers are likely to copy statistics from the output by hand or by copy-pasting the output. Both techniques are error-prone, resulting in many papers containing statistical typos. This is a problem because statistical output is used in meta-analyses to aggregate the statistical evidence for theories, which in turn may affect policy. In some cases, the errors may even be so large that it affects the conclusion drawn from the statistical test.
+
+There is also a more fundamental issue. Researchers usually only report the statistics in their manuscript and nowhere else. As a result, researchers face trade-offs between reporting all statistics, writing a legible text, and journal guidelines. Reporting all statistics makes results sections difficult (and boring) to read and it also takes up valuable space. Consequently, researchers are likely to only report the statistics that they deem to be relevant, rather than reporting all the statistics. While this is fine for someone who wants to simply read the paper and get the main takeaway, this is not desirable from a cumulative science perspective. All statistics should be easily available so they can be build on in future research.
+
+## What am I working on?
+
+I have designed an R package called `tidystats` that enables researchers to export the statistics from their analyses into a single file. It works by adding your analyses to a list (in R) and then exporting this list to a JSON file. This file will contain all the statistics from the analyses, in an organized format, ready to be used in other software.
+
+By storing the output of statistical tests into a separate file, rather than only in one's manuscript, the researcher no longer needs to worry about which analyses to report in the space-limited manuscript. They can simply share the file together with the manuscript, on OSF or as supplemental material.
+
+An additional benefit is that because JSON files are easy to read for computers, it is (relatively) easy to write software that does cool things with these files.
+
+An example of software that can read the JSON file is the `tidystats` Microsoft Word add-in. This add-in can be installed via the Add-in Store from inside Word. With this add-in, researchers can upload the JSON file to reveal a user-friendly list of their analyses. Clicking on an analysis reveals the associated statistics and clicking on a statistic inserts it into the document. This add-in also comes with several time-saving features, such as inserting multiple statistics at once (immediately in APA style) and automatic updating of statistics.
+
+Recently, I've also obtained a [grant](https://www.nwo.nl/en/news/26-projects-stimulate-open-science "tidystats NWO grant") to work on `tidystats`. Thanks to this grant, the functionality of `tidystats` will be expanded, both in terms of adding support for more analyses and by expanding to other platforms, such as Python and Google Docs.
+
+Besides working on the software itself, I also spent some time on making it accessible. I have given talks introducing `tidystats` and I've created a [website](https://tidystats.io "tidystats website") to help people become familiar with `tidystats`.
+
+## Links
+
+-   The tidystats [website](https://tidystats.io "tidystats website")
+
+-   R package on [CRAN](https://cran.r-project.org/web/packages/tidystats/index.html "tidystats on CRAN")
+
+-   R package [GitHub](https://github.com/WillemSleegers/tidystats "tidystats R package GitHub repository") repository
+
+-   The tidystats Word add-in in [AppSource](https://appsource.microsoft.com/en-us/product/office/wa200002476?tab=overview "AppSource link to the tidystats Word add-in") (the Office add-in store)
+
+-   Word add-in [GitHub](https://github.com/WillemSleegers/tidystats-Word-add-in "tidystats Word add-in GitHub repository") repository
+
+-   A [blog post](content/posts/a-tidystats-example/ "tidystats example blog post") describing an example of using tidystats
+
+## References
