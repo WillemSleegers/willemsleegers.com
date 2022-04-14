@@ -1,5 +1,5 @@
 ---
-title: "Understanding Regression (Part 2)"
+title: Understanding regression (part 2)
 description: "summary of part 2 of understanding regression"
 date: 2020-08-01
 categories:

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
   <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.9.222">
+  <meta name="generator" content="quarto-0.9.213">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="dcterms.date" content="2020-08-01">
   <meta name="description" content="This is Part 1 of a series of blog posts on how to understand regression. The goal is to develop an intuitive understanding of the different components of regression. In this first post, we figure out where the estimate of an intercept-only regression model comes from.">
-  <title>willemsleegers.com - Understanding Regression (Part 1)</title>
+  <title>willemsleegers.com - Understanding regression (part 1)</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -116,7 +116,7 @@
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <link rel="stylesheet" href="../../../css/styles.css">
+  <link rel="stylesheet" href="../../../styles/styles.css">
 </head>
 <body class="nav-fixed">
 <div id="quarto-search-results"></div>
@@ -180,9 +180,9 @@
 <h2 id="toc-title">On this page</h2>
 <ul>
 <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
-<li><a href="#the-simplest-model" id="toc-the-simplest-model" class="nav-link" data-scroll-target="#the-simplest-model">The Simplest Model</a></li>
-<li><a href="#the-error-of-models" id="toc-the-error-of-models" class="nav-link" data-scroll-target="#the-error-of-models">The Error of Models</a></li>
-<li><a href="#the-best-fitting-model" id="toc-the-best-fitting-model" class="nav-link" data-scroll-target="#the-best-fitting-model">The Best Fitting Model</a></li>
+<li><a href="#the-simplest-model" id="toc-the-simplest-model" class="nav-link" data-scroll-target="#the-simplest-model">The simplest model</a></li>
+<li><a href="#the-error-of-models" id="toc-the-error-of-models" class="nav-link" data-scroll-target="#the-error-of-models">The error of models</a></li>
+<li><a href="#the-data-driven-model" id="toc-the-data-driven-model" class="nav-link" data-scroll-target="#the-data-driven-model">The data-driven model</a></li>
 </ul>
 </nav>
     </div>
@@ -191,7 +191,7 @@
 <header id="title-block-header" class="quarto-title-block default">
 
 
-<div class="quarto-title"><div class="quarto-title-block"><div><h1 class="title">Understanding Regression (Part 1)</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div><div class="quarto-description"><p>This is Part 1 of a series of blog posts on how to understand regression. The goal is to develop an intuitive understanding of the different components of regression. In this first post, we figure out where the estimate of an intercept-only regression model comes from.</p></div></div><div class="quarto-categories"><div class="quarto-category">statistics</div><div class="quarto-category">tutorial</div><div class="quarto-category">regression</div></div><div class="quarto-title-meta"><div><div class="quarto-title-meta-heading">Published</div><div class="quarto-title-meta-contents"><p class="date">August 1, 2020</p></div></div></div></header>
+<div class="quarto-title"><div class="quarto-title-block"><div><h1 class="title">Understanding regression (part 1)</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div><div class="quarto-description"><p>This is Part 1 of a series of blog posts on how to understand regression. The goal is to develop an intuitive understanding of the different components of regression. In this first post, we figure out where the estimate of an intercept-only regression model comes from.</p></div></div><div class="quarto-categories"><div class="quarto-category">statistics</div><div class="quarto-category">tutorial</div><div class="quarto-category">regression</div></div><div class="quarto-title-meta"><div><div class="quarto-title-meta-heading">Published</div><div class="quarto-title-meta-contents"><p class="date">August 1, 2020</p></div></div></div></header>
 
 <p>Statistical regression techniques are an important tool in data analysis. As a social scientist, I use it to test hypotheses by comparing differences between groups or testing relationships between variables. While it is easy to run regression analyses in a variety of software packages, like SPSS or R, it often remains a black box that is not well understood. I, in fact, do not believe I actually understand regression. Not fully understanding the mechanics of regression could be okay, though. After all, you also don’t need to know exactly how car engines work in order to drive a car. However, I think many users of regression have isolated themselves too much from the mechanics of regression. This may be the source of some errors, such as applying regression to data that is not suitable for the regression method. If you’re using regression to try and make inferences about the world, it’s probably a good idea to feel like you know what you’re doing.</p>
 <p>So, there are some reasons to figure out regression. This post is Part 1 of a series of blog posts called ‘Understanding Regression’ in which I try to figure it out.</p>
@@ -374,7 +374,7 @@
 <p>We see that the lightest Pokémon is Pidgey, with a weight of 1.8 kg. The heaviest Pokémon is Venusaur, with a weight of 100 kg. The average weight is 26.14 kg.</p>
 </section>
 <section id="the-simplest-model" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="the-simplest-model">The Simplest Model</h2>
+<h2 class="anchored" data-anchor-id="the-simplest-model">The simplest model</h2>
 <p>In order to understand the weights of different Pokémon, we need to come up with a statistical model. In a way, this can be considered a description problem. How can we best describe the different weights that we have observed? The simplest description is a single number. We can say that all Pokémon have a weight of say… 6 kg. In other words:</p>
 <blockquote class="blockquote">
 <p>weight = 6 kg</p>
@@ -410,7 +410,7 @@
 <p>While a model like <code>weight = 6 kg</code> is a valid model, it is not a very good model. In fact, it only perfectly describes Pikachu’s weight and inaccurately describes the weight of the remaining 24 Pokémon. The other models, such as <code>weight = 40 kg</code> might be even worse; they do not even describe a single Pokémon’s weight correctly, although they do get closer to some of the heavier Pokémon. How do we decide which model is the better model? In order to answer that question, we need to consider the model’s error.</p>
 </section>
 <section id="the-error-of-models" class="level2">
-<h2 class="anchored" data-anchor-id="the-error-of-models">The Error of Models</h2>
+<h2 class="anchored" data-anchor-id="the-error-of-models">The error of models</h2>
 <p>The error of a model is the degree to which the model inaccurately describes the data. There are several ways to calculate that error, depending on how you define error. We will cover three of them.</p>
 <p>The first definition of error is simply the sum of times that the model inaccurately describes the data. For each observation we check whether the model correctly describes it or not. We then sum the number of misses and consider that the amount of error for that model. With our <code>weight = 6 kg</code> the answer is 24; out of the 25 Pokémon only Pikachu has a weight of 6, which means the model is correct once and wrong 24 times.</p>
 <p>We can now compare different models to one another by calculating the error for a range of models. Below I plot the number of errors for 100 different models, starting with the model <code>weight = 1 kg</code>, up to <code>weight = 10 kg</code>, in steps of 0.1. Ideally we would test more models (up to the heaviest Pokémon we know of), but for the sake of visualizing the result, I decided to only plot a small subset of models.</p>
@@ -522,8 +522,8 @@
 </div>
 <p>We see a smooth curve, with a clear minimum indicated by the vertical dashed line. This vertical line indicates the model that best describes the data. What is the value of the best model exactly? In this case, the answer is 26.14. And it turns out, there is an easy way to determine this value.</p>
 </section>
-<section id="the-best-fitting-model" class="level2">
-<h2 class="anchored" data-anchor-id="the-best-fitting-model">The Best Fitting Model</h2>
+<section id="the-data-driven-model" class="level2">
+<h2 class="anchored" data-anchor-id="the-data-driven-model">The data-driven model</h2>
 <p>Rather than setting a specific value and seeing how it fits the data, we can also use the data to determine the value that best fits the data. In the previous graph we saw that the best fitting model is one where the weight is equal to 26.14. This value turns out to be the mean of the different weights we have observed in our sample. Had we defined error as simply the sum of absolute residuals, this would be a different value. In fact, the best fitting value would then be equal to 13, or the median. And had we used the binary definition of error, the best fitting value would be the mode, which in our case is: 6.9.</p>
 <p>Note that there is not always a unique answer to which model is the best fitting model, depending on the error definition. For example, it is possible that there are multiple modes. If you use the binary definition of error, that would mean there are multiple equally plausible models. This can be another argument to not define a model’s error in such a crude way.</p>
 <p>The table below shows an overview of which technique can be used to find the best fitting value, depending on the error definition.</p>
@@ -585,7 +585,7 @@ Coefficients:
 <p>By regressing weight onto 1 we are telling R to run an intercept-only model. This means that R will estimate which line will best fit all the values in the outcome variable, just like we have done ourselves earlier by testing different models such as <code>weight = 6 kg</code>.</p>
 <p>The result is an intercept value of 26.14, which matches the mean of the weights.</p>
 <p>So, we now know where the intercept comes from when we run an intercept-only model. It is the mean of the data we are trying to model. Note that it is the mean because we defined the model’s error as the sum of <em>squared</em> residuals. Had we defined the error differently, such as the sum of <em>absolute</em> residuals or the sum of errors, the intercept would be the median or mode of the data instead. Why did we use the sum of squared residuals? We had a conceptual reason of wanting to punish larger residuals relatively more than several smaller errors. It turns out there is another reason to favor squared residuals, which has to do with a nice property of the mean vs.&nbsp;the median. This will be covered in Part 2 of ‘Understanding Regression’.</p>
-<p><em>This post was last updated on 2022-04-12.</em></p>
+<p><em>This post was last updated on 2022-04-14.</em></p>
 
 
 
@@ -721,7 +721,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb12" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Understanding Regression (Part 1)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Understanding regression (part 1)</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> This is Part 1 of a series of blog posts on how to understand regression. The goal is to develop an intuitive understanding of the different components of regression. In this first post, we figure out where the estimate of an intercept-only regression model comes from.</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2020-08-01</span></span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
@@ -806,7 +806,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>We see that the lightest Pokémon is Pidgey, with a weight of <span class="in">`r min(pull(pokemon25, weight))`</span> kg. The heaviest Pokémon is Venusaur, with a weight of <span class="in">`r max(pull(pokemon25, weight))`</span> kg. The average weight is <span class="in">`r mean(pull(pokemon25, weight))`</span> kg.</span>
 <span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Simplest Model</span></span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## The simplest model</span></span>
 <span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>In order to understand the weights of different Pokémon, we need to come up with a statistical model. In a way, this can be considered a description problem. How can we best describe the different weights that we have observed? The simplest description is a single number. We can say that all Pokémon have a weight of say... 6 kg. In other words:</span>
 <span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a></span>
@@ -837,7 +837,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a>While a model like <span class="in">`weight = 6 kg`</span> is a valid model, it is not a very good model. In fact, it only perfectly describes Pikachu's weight and inaccurately describes the weight of the remaining 24 Pokémon. The other models, such as <span class="in">`weight = 40 kg`</span> might be even worse; they do not even describe a single Pokémon's weight correctly, although they do get closer to some of the heavier Pokémon. How do we decide which model is the better model? In order to answer that question, we need to consider the model's error.</span>
 <span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Error of Models</span></span>
+<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a><span class="fu">## The error of models</span></span>
 <span id="cb12-127"><a href="#cb12-127" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-128"><a href="#cb12-128" aria-hidden="true" tabindex="-1"></a>The error of a model is the degree to which the model inaccurately describes the data. There are several ways to calculate that error, depending on how you define error. We will cover three of them.</span>
 <span id="cb12-129"><a href="#cb12-129" aria-hidden="true" tabindex="-1"></a></span>
@@ -931,7 +931,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-225"><a href="#cb12-225" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-226"><a href="#cb12-226" aria-hidden="true" tabindex="-1"></a>We see a smooth curve, with a clear minimum indicated by the vertical dashed line. This vertical line indicates the model that best describes the data. What is the value of the best model exactly? In this case, the answer is <span class="in">`r mean(pull(pokemon25, weight))`</span>. And it turns out, there is an easy way to determine this value.</span>
 <span id="cb12-227"><a href="#cb12-227" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-228"><a href="#cb12-228" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Best Fitting Model</span></span>
+<span id="cb12-228"><a href="#cb12-228" aria-hidden="true" tabindex="-1"></a><span class="fu">## The data-driven model</span></span>
 <span id="cb12-229"><a href="#cb12-229" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-230"><a href="#cb12-230" aria-hidden="true" tabindex="-1"></a>Rather than setting a specific value and seeing how it fits the data, we can also use the data to determine the value that best fits the data. In the previous graph we saw that the best fitting model is one where the weight is equal to <span class="in">`r mean(pull(pokemon25, weight))`</span>. This value turns out to be the mean of the different weights we have observed in our sample. Had we defined error as simply the sum of absolute residuals, this would be a different value. In fact, the best fitting value would then be equal to <span class="in">`r median(pull(pokemon25, weight))`</span>, or the median. And had we used the binary definition of error, the best fitting value would be the mode, which in our case is: <span class="in">`r mode(pull(pokemon25, weight))`</span>.</span>
 <span id="cb12-231"><a href="#cb12-231" aria-hidden="true" tabindex="-1"></a></span>

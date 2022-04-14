@@ -1,5 +1,5 @@
 ---
-title: The Right Order of Method Sections
+title: The right order of method sections
 description: "Method sections in academic (psychology) papers usually consist of the following sections: Participants, Design, Procedure, and Materials. They also tend to be presented in this order. But is this, generally speaking, the right order? I don't think so."
 date: 2021-07-08
 categories:

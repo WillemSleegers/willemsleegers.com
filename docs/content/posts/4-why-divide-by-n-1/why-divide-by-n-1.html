@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
   <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.9.222">
+  <meta name="generator" content="quarto-0.9.213">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="dcterms.date" content="2020-08-05">
   <meta name="description" content="In a recent tweet I asked the question why we use n - 1 to calculate the variance of a sample. Many people contributed an answer, but many of them were of the type I feared. Most consisted of some statistical jargon that confuses me more, rather than less. Other responses were very useful, though, so I recommend checking out the replies to the tweet. In this post, I will try to describe my favorite way of looking at the issue.">
-  <title>willemsleegers.com - Why Divide By N - 1 to Calculate the Variance of a Sample?</title>
+  <title>willemsleegers.com - Why divide by \(n - 1\) to calculate the variance of a sample?”</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -117,7 +117,7 @@
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <link rel="stylesheet" href="../../../css/styles.css">
+  <link rel="stylesheet" href="../../../styles/styles.css">
 </head>
 <body class="nav-fixed">
 <div id="quarto-search-results"></div>
@@ -180,10 +180,10 @@
         <nav id="TOC" role="doc-toc">
 <h2 id="toc-title">On this page</h2>
 <ul>
-<li><a href="#the-formula" id="toc-the-formula" class="nav-link active" data-scroll-target="#the-formula">The Formula</a></li>
-<li><a href="#the-problem" id="toc-the-problem" class="nav-link" data-scroll-target="#the-problem">The Problem</a></li>
-<li><a href="#the-solution" id="toc-the-solution" class="nav-link" data-scroll-target="#the-solution">The Solution</a></li>
-<li><a href="#the-math" id="toc-the-math" class="nav-link" data-scroll-target="#the-math">The Math</a></li>
+<li><a href="#the-formula" id="toc-the-formula" class="nav-link active" data-scroll-target="#the-formula">The formula</a></li>
+<li><a href="#the-problem" id="toc-the-problem" class="nav-link" data-scroll-target="#the-problem">The problem</a></li>
+<li><a href="#the-solution" id="toc-the-solution" class="nav-link" data-scroll-target="#the-solution">The solution</a></li>
+<li><a href="#the-math" id="toc-the-math" class="nav-link" data-scroll-target="#the-math">The math</a></li>
 <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
 </ul>
 </nav>
@@ -193,7 +193,7 @@
 <header id="title-block-header" class="quarto-title-block default">
 
 
-<div class="quarto-title"><div class="quarto-title-block"><div><h1 class="title">Why Divide By N - 1 to Calculate the Variance of a Sample?</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div><div class="quarto-description"><p>In a recent tweet I asked the question why we use $n - 1$ to calculate the variance of a sample. Many people contributed an answer, but many of them were of the type I feared. Most consisted of some statistical jargon that confuses me more, rather than less. Other responses were very useful, though, so I recommend checking out the replies to the tweet. In this post, I will try to describe my favorite way of looking at the issue.</p></div></div><div class="quarto-categories"><div class="quarto-category">statistics</div></div><div class="quarto-title-meta"><div><div class="quarto-title-meta-heading">Published</div><div class="quarto-title-meta-contents"><p class="date">August 5, 2020</p></div></div></div></header>
+<div class="quarto-title"><div class="quarto-title-block"><div><h1 class="title">Why divide by <span class="math inline">\(n - 1\)</span> to calculate the variance of a sample?”</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div><div class="quarto-description"><p>In a recent tweet I asked the question why we use $n - 1$ to calculate the variance of a sample. Many people contributed an answer, but many of them were of the type I feared. Most consisted of some statistical jargon that confuses me more, rather than less. Other responses were very useful, though, so I recommend checking out the replies to the tweet. In this post, I will try to describe my favorite way of looking at the issue.</p></div></div><div class="quarto-categories"><div class="quarto-category">statistics</div></div><div class="quarto-title-meta"><div><div class="quarto-title-meta-heading">Published</div><div class="quarto-title-meta-contents"><p class="date">August 5, 2020</p></div></div></div></header>
 
 <p>Many thanks to the people who replied to my <a href="https://twitter.com/willemsleegers/status/1290388221394849803?s=20" title="tweet about n-1">tweet</a> about why you should divide by <span class="math inline">\(n - 1\)</span>. Below I try to show the intuition behind why this is necessary. If you want to follow along in R, you can copy the code from each code section; beginning with some setup code.</p>
 <div class="cell">
@@ -224,7 +224,7 @@
 </details>
 </div>
 <section id="the-formula" class="level2">
-<h2 class="anchored" data-anchor-id="the-formula">The Formula</h2>
+<h2 class="anchored" data-anchor-id="the-formula">The formula</h2>
 <p>The formula for calculating the variance is:</p>
 <p><span class="math display">\[\frac{\sum(x_i - \overline{x})^2}{n}\]</span></p>
 <p>The variance is a measure of the dispersion around the mean, and in that sense this formula makes sense. We calculate all the deviations from the mean (<span class="math inline">\(x_i - \overline{x}\)</span>), square them (for reasons I might go into in a different post) and sum them. We then divide this sum by the number of observations as a scaling factor. If we ignore this number, we could get a very high variance simply by observing a lot of data. So, to fix that problem, we divide by the total number of observations.</p>
@@ -234,7 +234,7 @@
 <p>If you Google this question, you will get a variety of answers. You might find a mathematical proof of why it needs to be <span class="math inline">\(n - 1\)</span> or something about degrees of freedom. These kinds of answers don’t work for me. I trust them to be correct, but it doesn’t produce any insight. It does not actually help me understand 1) the problem and 2) why the solution is the solution that it is. So, below I am going to try to figure it out in a way that actually makes conceptual and intuitive sense (to me).</p>
 </section>
 <section id="the-problem" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="the-problem">The Problem</h2>
+<h2 class="anchored" data-anchor-id="the-problem">The problem</h2>
 <p>The problem with using the population variance formula to calculate the variance of a sample is that it is biased. It is biased in that it produces an <em>underestimation</em> of the true variance. Let’s demonstrate that with some simulated data.</p>
 <p>We simulate a population of 1000 data points from a uniform distribution with a range from 1 to 10. Below I show the histogram that represents our population.</p>
 <div class="cell">
@@ -515,7 +515,7 @@
 <p>In short, the source of the bias comes from using the sample mean instead of the population mean. The sample mean is always guaranteed to be in the middle of the observed data, thereby reducing the variance, and creating an underestimation.</p>
 </section>
 <section id="the-solution" class="level2">
-<h2 class="anchored" data-anchor-id="the-solution">The Solution</h2>
+<h2 class="anchored" data-anchor-id="the-solution">The solution</h2>
 <p>Now that we know that the bias is caused by using the sample mean, we can figure out how to solve the problem.</p>
 <p>Looking at the previous graphs, we see that if the sample mean is far from the population mean, the sample variance is smaller and the bias is large. If the sample mean is close to the population mean, the sample variance is larger and the bias is small. So, the more the sample mean moves around the population mean, the greater the bias.</p>
 <p>In other words, besides the variance of the data points around the sample mean, there is also the variance of the sample mean around the population mean. We need both variances in order to accurately estimate the population variance.</p>
@@ -559,7 +559,7 @@
 <p>Indeed, we see that the variance of the sample and the variance of the mean of the sample together form the population variance.</p>
 </section>
 <section id="the-math" class="level2">
-<h2 class="anchored" data-anchor-id="the-math">The Math</h2>
+<h2 class="anchored" data-anchor-id="the-math">The math</h2>
 <p>Now that we know that the variance of the population consists of the variance of the sample and the variance of the sample mean, we can figure out the correction factor we need to apply to make the biased variance measure unbiased.</p>
 <p>Previously, we found an interesting pattern in the simulated samples, which is also visible in the previous figure. We saw that at sample size <span class="math inline">\(n=2\)</span>, the (biased) sample variance appears to be half that of the (unbiased) population variance. At sample size <span class="math inline">\(n=3\)</span>, it’s <span class="math inline">\(\frac23\)</span>. At sample size <span class="math inline">\(n=4\)</span>, it’s <span class="math inline">\(\frac34\)</span>, and so on.</p>
 <p>This means that we can fix the biased variance measure by multiplying it with <span class="math inline">\(\frac{n}{(n-1)}\)</span>. At <span class="math inline">\(n = 2\)</span>, we multiply the biased variance by <span class="math inline">\(\frac21 = 2\)</span>. For sample size <span class="math inline">\(n=3\)</span>, we multiply by <span class="math inline">\(\frac32 = 1.5\)</span>. At sample size <span class="math inline">\(n=4\)</span>, it’s <span class="math inline">\(\frac43 = 1 \frac13\)</span>.</p>
@@ -575,7 +575,7 @@
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
 <p>We calculate the variance of a sample by summing the squared deviations of each data point from the sample mean and dividing it by <span class="math inline">\(n - 1\)</span>. The <span class="math inline">\(n - 1\)</span> actually comes from a correction factor <span class="math inline">\(\frac n{n-1}\)</span> that is needed to correct for a bias caused by taking the deviations from the sample mean rather than the population mean. Taking the deviations from the sample mean only constitutes the variance around the sample mean, but ignores the variation of the sample mean around the population mean, producing an underestimation equal to the size of the variance of the sample mean: <span class="math inline">\(\frac{\sigma^2}{n}\)</span>. The correction factor corrects for this underestimation, producing an unbiased estimate of the population variance.</p>
-<p><em>This post was last updated on 2022-04-12.</em></p>
+<p><em>This post was last updated on 2022-04-14.</em></p>
 
 
 
@@ -719,7 +719,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Why Divide By N - 1 to Calculate the Variance of a Sample?"</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Why divide by $n - 1$ to calculate the variance of a sample?"</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "In a recent tweet I asked the question why we use $n - 1$ to calculate the variance of a sample. Many people contributed an answer, but many of them were of the type I feared. Most consisted of some statistical jargon that confuses me more, rather than less. Other responses were very useful, though, so I recommend checking out the replies to the tweet. In this post, I will try to describe my favorite way of looking at the issue."</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2020-08-05</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
@@ -758,7 +758,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Formula</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="fu">## The formula</span></span>
 <span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>The formula for calculating the variance is:</span>
 <span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a></span>
@@ -774,7 +774,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>If you Google this question, you will get a variety of answers. You might find a mathematical proof of why it needs to be $n - 1$ or something about degrees of freedom. These kinds of answers don't work for me. I trust them to be correct, but it doesn't produce any insight. It does not actually help me understand 1) the problem and 2) why the solution is the solution that it is. So, below I am going to try to figure it out in a way that actually makes conceptual and intuitive sense (to me).</span>
 <span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Problem</span></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## The problem</span></span>
 <span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>The problem with using the population variance formula to calculate the variance of a sample is that it is biased. It is biased in that it produces an *underestimation* of the true variance. Let's demonstrate that with some simulated data.</span>
 <span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a></span>
@@ -1010,7 +1010,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-302"><a href="#cb8-302" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-303"><a href="#cb8-303" aria-hidden="true" tabindex="-1"></a>In short, the source of the bias comes from using the sample mean instead of the population mean. The sample mean is always guaranteed to be in the middle of the observed data, thereby reducing the variance, and creating an underestimation.</span>
 <span id="cb8-304"><a href="#cb8-304" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-305"><a href="#cb8-305" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Solution</span></span>
+<span id="cb8-305"><a href="#cb8-305" aria-hidden="true" tabindex="-1"></a><span class="fu">## The solution</span></span>
 <span id="cb8-306"><a href="#cb8-306" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-307"><a href="#cb8-307" aria-hidden="true" tabindex="-1"></a>Now that we know that the bias is caused by using the sample mean, we can figure out how to solve the problem.</span>
 <span id="cb8-308"><a href="#cb8-308" aria-hidden="true" tabindex="-1"></a></span>
@@ -1026,69 +1026,69 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-318"><a href="#cb8-318" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-319"><a href="#cb8-319" aria-hidden="true" tabindex="-1"></a>Below I show a graph in which I again sampled from our population with varying sample sizes. For each sample, I calculated the sample variance (the biased one) and the variance of the mean of that sample ($\frac{\sigma^2}n$)<span class="ot">[^1]</span>. I did this 1000 times per sample size, took the average of each and put them on top of each other. I also added a dashed line to indicate the variance of the population, which is the benchmark we're trying to reach.</span>
 <span id="cb8-320"><a href="#cb8-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-323"><a href="#cb8-323" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-324"><a href="#cb8-324" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-sources-of-variance</span></span>
-<span id="cb8-325"><a href="#cb8-325" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Sources of variance</span></span>
-<span id="cb8-326"><a href="#cb8-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-327"><a href="#cb8-327" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the variance sources per sample size</span></span>
-<span id="cb8-328"><a href="#cb8-328" aria-hidden="true" tabindex="-1"></a>variance_sources <span class="ot">&lt;-</span> samples <span class="sc">%&gt;%</span></span>
-<span id="cb8-329"><a href="#cb8-329" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">var_mean =</span> var_unbiased <span class="sc">/</span> n) <span class="sc">%&gt;%</span></span>
-<span id="cb8-330"><a href="#cb8-330" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(n) <span class="sc">%&gt;%</span></span>
-<span id="cb8-331"><a href="#cb8-331" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb8-332"><a href="#cb8-332" aria-hidden="true" tabindex="-1"></a>    <span class="at">var_biased =</span> <span class="fu">mean</span>(var_biased),</span>
-<span id="cb8-333"><a href="#cb8-333" aria-hidden="true" tabindex="-1"></a>    <span class="at">var_unbiased =</span> <span class="fu">mean</span>(var_unbiased),</span>
-<span id="cb8-334"><a href="#cb8-334" aria-hidden="true" tabindex="-1"></a>    <span class="at">var_mean =</span> <span class="fu">mean</span>(var_mean)</span>
-<span id="cb8-335"><a href="#cb8-335" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb8-336"><a href="#cb8-336" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(var_biased, var_mean), <span class="at">names_to =</span> <span class="st">"variance_source"</span>, </span>
-<span id="cb8-337"><a href="#cb8-337" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"variance"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-338"><a href="#cb8-338" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">variance_source =</span> <span class="fu">recode</span>(variance_source, <span class="st">"var_biased"</span> <span class="ot">=</span> </span>
-<span id="cb8-339"><a href="#cb8-339" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sample"</span>, <span class="st">"var_mean"</span> <span class="ot">=</span> <span class="st">"sample mean"</span>))</span>
-<span id="cb8-340"><a href="#cb8-340" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-341"><a href="#cb8-341" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
-<span id="cb8-342"><a href="#cb8-342" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(variance_sources, <span class="fu">aes</span>(<span class="at">x =</span> n, <span class="at">fill =</span> variance_source, <span class="at">y =</span> variance)) <span class="sc">+</span></span>
-<span id="cb8-343"><a href="#cb8-343" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
-<span id="cb8-344"><a href="#cb8-344" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> sigma, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb8-345"><a href="#cb8-345" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sample size (n)"</span>, <span class="at">y =</span> <span class="st">"Variance"</span>, <span class="at">fill =</span> <span class="st">"Variance source:"</span>) <span class="sc">+</span></span>
-<span id="cb8-346"><a href="#cb8-346" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
-<span id="cb8-347"><a href="#cb8-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-348"><a href="#cb8-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-349"><a href="#cb8-349" aria-hidden="true" tabindex="-1"></a>Indeed, we see that the variance of the sample and the variance of the mean of the sample together form the population variance.</span>
+<span id="cb8-321"><a href="#cb8-321" aria-hidden="true" tabindex="-1"></a><span class="ot">[^1]: </span>Here I cheat a little because in order to calculate the variance of the sample mean, I need to use the unbiased variance formula.</span>
+<span id="cb8-322"><a href="#cb8-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-325"><a href="#cb8-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-326"><a href="#cb8-326" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-sources-of-variance</span></span>
+<span id="cb8-327"><a href="#cb8-327" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Sources of variance</span></span>
+<span id="cb8-328"><a href="#cb8-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-329"><a href="#cb8-329" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the variance sources per sample size</span></span>
+<span id="cb8-330"><a href="#cb8-330" aria-hidden="true" tabindex="-1"></a>variance_sources <span class="ot">&lt;-</span> samples <span class="sc">%&gt;%</span></span>
+<span id="cb8-331"><a href="#cb8-331" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">var_mean =</span> var_unbiased <span class="sc">/</span> n) <span class="sc">%&gt;%</span></span>
+<span id="cb8-332"><a href="#cb8-332" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(n) <span class="sc">%&gt;%</span></span>
+<span id="cb8-333"><a href="#cb8-333" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb8-334"><a href="#cb8-334" aria-hidden="true" tabindex="-1"></a>    <span class="at">var_biased =</span> <span class="fu">mean</span>(var_biased),</span>
+<span id="cb8-335"><a href="#cb8-335" aria-hidden="true" tabindex="-1"></a>    <span class="at">var_unbiased =</span> <span class="fu">mean</span>(var_unbiased),</span>
+<span id="cb8-336"><a href="#cb8-336" aria-hidden="true" tabindex="-1"></a>    <span class="at">var_mean =</span> <span class="fu">mean</span>(var_mean)</span>
+<span id="cb8-337"><a href="#cb8-337" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-338"><a href="#cb8-338" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(var_biased, var_mean), <span class="at">names_to =</span> <span class="st">"variance_source"</span>, </span>
+<span id="cb8-339"><a href="#cb8-339" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"variance"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-340"><a href="#cb8-340" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">variance_source =</span> <span class="fu">recode</span>(variance_source, <span class="st">"var_biased"</span> <span class="ot">=</span> </span>
+<span id="cb8-341"><a href="#cb8-341" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sample"</span>, <span class="st">"var_mean"</span> <span class="ot">=</span> <span class="st">"sample mean"</span>))</span>
+<span id="cb8-342"><a href="#cb8-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-343"><a href="#cb8-343" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
+<span id="cb8-344"><a href="#cb8-344" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(variance_sources, <span class="fu">aes</span>(<span class="at">x =</span> n, <span class="at">fill =</span> variance_source, <span class="at">y =</span> variance)) <span class="sc">+</span></span>
+<span id="cb8-345"><a href="#cb8-345" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
+<span id="cb8-346"><a href="#cb8-346" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> sigma, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb8-347"><a href="#cb8-347" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sample size (n)"</span>, <span class="at">y =</span> <span class="st">"Variance"</span>, <span class="at">fill =</span> <span class="st">"Variance source:"</span>) <span class="sc">+</span></span>
+<span id="cb8-348"><a href="#cb8-348" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
+<span id="cb8-349"><a href="#cb8-349" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb8-350"><a href="#cb8-350" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-351"><a href="#cb8-351" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Math</span></span>
+<span id="cb8-351"><a href="#cb8-351" aria-hidden="true" tabindex="-1"></a>Indeed, we see that the variance of the sample and the variance of the mean of the sample together form the population variance.</span>
 <span id="cb8-352"><a href="#cb8-352" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-353"><a href="#cb8-353" aria-hidden="true" tabindex="-1"></a>Now that we know that the variance of the population consists of the variance of the sample and the variance of the sample mean, we can figure out the correction factor we need to apply to make the biased variance measure unbiased.</span>
+<span id="cb8-353"><a href="#cb8-353" aria-hidden="true" tabindex="-1"></a><span class="fu">## The math</span></span>
 <span id="cb8-354"><a href="#cb8-354" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-355"><a href="#cb8-355" aria-hidden="true" tabindex="-1"></a>Previously, we found an interesting pattern in the simulated samples, which is also visible in the previous figure. We saw that at sample size $n=2$, the (biased) sample variance appears to be half that of the (unbiased) population variance. At sample size $n=3$, it's $\frac23$. At sample size $n=4$, it's $\frac34$, and so on.</span>
+<span id="cb8-355"><a href="#cb8-355" aria-hidden="true" tabindex="-1"></a>Now that we know that the variance of the population consists of the variance of the sample and the variance of the sample mean, we can figure out the correction factor we need to apply to make the biased variance measure unbiased.</span>
 <span id="cb8-356"><a href="#cb8-356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-357"><a href="#cb8-357" aria-hidden="true" tabindex="-1"></a>This means that we can fix the biased variance measure by multiplying it with $\frac{n}{(n-1)}$. At $n = 2$, we multiply the biased variance by $\frac21 = 2$. For sample size $n=3$, we multiply by $\frac32 = 1.5$. At sample size $n=4$, it's $\frac43 = 1 \frac13$.</span>
+<span id="cb8-357"><a href="#cb8-357" aria-hidden="true" tabindex="-1"></a>Previously, we found an interesting pattern in the simulated samples, which is also visible in the previous figure. We saw that at sample size $n=2$, the (biased) sample variance appears to be half that of the (unbiased) population variance. At sample size $n=3$, it's $\frac23$. At sample size $n=4$, it's $\frac34$, and so on.</span>
 <span id="cb8-358"><a href="#cb8-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-359"><a href="#cb8-359" aria-hidden="true" tabindex="-1"></a>In other words, to unbias the biased variance measure, we multiply it by a correction factor of $\frac{n}{(n-1)}$. But where does this correction factor come from?</span>
+<span id="cb8-359"><a href="#cb8-359" aria-hidden="true" tabindex="-1"></a>This means that we can fix the biased variance measure by multiplying it with $\frac{n}{(n-1)}$. At $n = 2$, we multiply the biased variance by $\frac21 = 2$. For sample size $n=3$, we multiply by $\frac32 = 1.5$. At sample size $n=4$, it's $\frac43 = 1 \frac13$.</span>
 <span id="cb8-360"><a href="#cb8-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-361"><a href="#cb8-361" aria-hidden="true" tabindex="-1"></a>Well, because the sample variance misses the variance of the sample mean, we can expect that the variance of the sample is biased by an amount equal to the variance of the population minus the variance of the sample mean. In other words:</span>
+<span id="cb8-361"><a href="#cb8-361" aria-hidden="true" tabindex="-1"></a>In other words, to unbias the biased variance measure, we multiply it by a correction factor of $\frac{n}{(n-1)}$. But where does this correction factor come from?</span>
 <span id="cb8-362"><a href="#cb8-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-363"><a href="#cb8-363" aria-hidden="true" tabindex="-1"></a>$$\sigma^2 - \frac{\sigma^2}n$$</span>
+<span id="cb8-363"><a href="#cb8-363" aria-hidden="true" tabindex="-1"></a>Well, because the sample variance misses the variance of the sample mean, we can expect that the variance of the sample is biased by an amount equal to the variance of the population minus the variance of the sample mean. In other words:</span>
 <span id="cb8-364"><a href="#cb8-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-365"><a href="#cb8-365" aria-hidden="true" tabindex="-1"></a>Rewriting this <span class="ot">[^2]</span>, produces:</span>
+<span id="cb8-365"><a href="#cb8-365" aria-hidden="true" tabindex="-1"></a>$$\sigma^2 - \frac{\sigma^2}n$$</span>
 <span id="cb8-366"><a href="#cb8-366" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-367"><a href="#cb8-367" aria-hidden="true" tabindex="-1"></a>$$\sigma^2\cdot\frac{n - 1}n$$ The variance of a sample will be biased by an amount equal to $\frac{n - 1}n$. To correct that bias we should multiply the sample variance by the inverse of this bias: $\frac{n}{n-1}$ <span class="ot">[^3]</span>. This is also called <span class="co">[</span><span class="ot">Bessel's correction</span><span class="co">](https://en.wikipedia.org/wiki/Bessel%27s_correction)</span>.</span>
+<span id="cb8-367"><a href="#cb8-367" aria-hidden="true" tabindex="-1"></a>Rewriting this <span class="ot">[^2]</span>, produces:</span>
 <span id="cb8-368"><a href="#cb8-368" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-369"><a href="#cb8-369" aria-hidden="true" tabindex="-1"></a>So, an unbiased measure of our sample variance is the biased sample variance times the correction factor:</span>
+<span id="cb8-369"><a href="#cb8-369" aria-hidden="true" tabindex="-1"></a><span class="ot">[^2]: </span>Here are the steps to rewrite the formula: $$\sigma^2 - \frac{\sigma^2}n$$ Add an n to the numerator and denominator of the left term: $$\frac{\sigma^2n}n - \frac{\sigma^2}n$$ Combine the terms: $$\frac{\sigma^2n - \sigma^2}n$$ Simplify the numerator: $$\frac{\sigma^2(n - 1)}n$$ Move $\sigma^2$ out of the numerator: $$\sigma^2\cdot\frac{n - 1}n$$</span>
 <span id="cb8-370"><a href="#cb8-370" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-371"><a href="#cb8-371" aria-hidden="true" tabindex="-1"></a>$$\frac{\sum(x_i - \overline{x})^2}{n}\cdot{\frac n{n-1}}$$ Because the *n* in the denominator of the left term (the biased variance formula) cancels out the *n* in the numerator of the right term (the bias correction), the formula can be rewritten as:</span>
+<span id="cb8-371"><a href="#cb8-371" aria-hidden="true" tabindex="-1"></a>$$\sigma^2\cdot\frac{n - 1}n$$ The variance of a sample will be biased by an amount equal to $\frac{n - 1}n$. To correct that bias we should multiply the sample variance by the inverse of this bias: $\frac{n}{n-1}$ <span class="ot">[^3]</span>. This is also called <span class="co">[</span><span class="ot">Bessel's correction</span><span class="co">](https://en.wikipedia.org/wiki/Bessel%27s_correction)</span>.</span>
 <span id="cb8-372"><a href="#cb8-372" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-373"><a href="#cb8-373" aria-hidden="true" tabindex="-1"></a>$$\frac{\sum(x_i - \overline{x})^2}{n-1}$$</span>
+<span id="cb8-373"><a href="#cb8-373" aria-hidden="true" tabindex="-1"></a><span class="ot">[^3]: </span>The inverse of $\frac{n - 1}n$ is $\frac{1}{\frac{n - 1}n}$. Multiply both the numerator and the denominator by $n$ and you get $\frac{n}{n-1}$.</span>
 <span id="cb8-374"><a href="#cb8-374" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-375"><a href="#cb8-375" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb8-375"><a href="#cb8-375" aria-hidden="true" tabindex="-1"></a>So, an unbiased measure of our sample variance is the biased sample variance times the correction factor:</span>
 <span id="cb8-376"><a href="#cb8-376" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-377"><a href="#cb8-377" aria-hidden="true" tabindex="-1"></a>We calculate the variance of a sample by summing the squared deviations of each data point from the sample mean and dividing it by $n - 1$. The $n - 1$ actually comes from a correction factor $\frac n{n-1}$ that is needed to correct for a bias caused by taking the deviations from the sample mean rather than the population mean. Taking the deviations from the sample mean only constitutes the variance around the sample mean, but ignores the variation of the sample mean around the population mean, producing an underestimation equal to the size of the variance of the sample mean: $\frac{\sigma^2}{n}$. The correction factor corrects for this underestimation, producing an unbiased estimate of the population variance.</span>
+<span id="cb8-377"><a href="#cb8-377" aria-hidden="true" tabindex="-1"></a>$$\frac{\sum(x_i - \overline{x})^2}{n}\cdot{\frac n{n-1}}$$ Because the *n* in the denominator of the left term (the biased variance formula) cancels out the *n* in the numerator of the right term (the bias correction), the formula can be rewritten as:</span>
 <span id="cb8-378"><a href="#cb8-378" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-379"><a href="#cb8-379" aria-hidden="true" tabindex="-1"></a>*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*</span>
+<span id="cb8-379"><a href="#cb8-379" aria-hidden="true" tabindex="-1"></a>$$\frac{\sum(x_i - \overline{x})^2}{n-1}$$</span>
 <span id="cb8-380"><a href="#cb8-380" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-381"><a href="#cb8-381" aria-hidden="true" tabindex="-1"></a><span class="ot">[^1]: </span>Here I cheat a little because in order to calculate the variance of the sample mean, I need to use the unbiased variance formula.</span>
+<span id="cb8-381"><a href="#cb8-381" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
 <span id="cb8-382"><a href="#cb8-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-383"><a href="#cb8-383" aria-hidden="true" tabindex="-1"></a><span class="ot">[^2]: </span>Here are the steps to rewrite the formula: $$\sigma^2 - \frac{\sigma^2}n$$ Add an n to the numerator and denominator of the left term: $$\frac{\sigma^2n}n - \frac{\sigma^2}n$$ Combine the terms: $$\frac{\sigma^2n - \sigma^2}n$$ Simplify the numerator: $$\frac{\sigma^2(n - 1)}n$$ Move $\sigma^2$ out of the numerator: $$\sigma^2\cdot\frac{n - 1}n$$</span>
+<span id="cb8-383"><a href="#cb8-383" aria-hidden="true" tabindex="-1"></a>We calculate the variance of a sample by summing the squared deviations of each data point from the sample mean and dividing it by $n - 1$. The $n - 1$ actually comes from a correction factor $\frac n{n-1}$ that is needed to correct for a bias caused by taking the deviations from the sample mean rather than the population mean. Taking the deviations from the sample mean only constitutes the variance around the sample mean, but ignores the variation of the sample mean around the population mean, producing an underestimation equal to the size of the variance of the sample mean: $\frac{\sigma^2}{n}$. The correction factor corrects for this underestimation, producing an unbiased estimate of the population variance.</span>
 <span id="cb8-384"><a href="#cb8-384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-385"><a href="#cb8-385" aria-hidden="true" tabindex="-1"></a><span class="ot">[^3]: </span>The inverse of $\frac{n - 1}n$ is $\frac{1}{\frac{n - 1}n}$. Multiply both the numerator and the denominator by $n$ and you get $\frac{n}{n-1}$.</span>
+<span id="cb8-385"><a href="#cb8-385" aria-hidden="true" tabindex="-1"></a>*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

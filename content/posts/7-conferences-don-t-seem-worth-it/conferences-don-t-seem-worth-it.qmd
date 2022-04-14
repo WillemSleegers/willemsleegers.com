@@ -1,5 +1,5 @@
 ---
-title: Conferences Don't Seem Worth It
+title: Conferences don't seem worth it
 date: 2021-07-03
 categories: 
   - academia
@@ -9,7 +9,7 @@ draft: true
 
 During the summer I attended several conferences and this reminded me once again that conferences seem like a giant waste of time (and money and resources). Perhaps this is phrased a bit too negatively because there are definitely some exceptions, but I think there are several structural issues to conferences that are worth criticizing. I'm not the first to do so, and there are people actually researching this topic (see for example [here](https://www.the-scientist.com/news-opinion/opinion--why-it-is-time-to-make-conferences-worth-it-66496)), but given that conferences are still organized in the same way, I think it might be nice to remind people.
 
-## Conferences == Talks
+## Conferences == talks
 
 Conferences, at least in the field of social psychology, consist of talks. There are several different types of talks, ranging from long keynote talks to blitz presentations. Keynote talks are usually about 45 minutes long and are followed by questions, usually 5-10 minutes long depending on whether the speaker stuck to their time limit. Blitz presentations are very short presentations and are usually less than 5 minutes, with no room for questions. In between the keynote talks and blitz presentations are submitted talks. These talks are submitted by potential attendees and selected by the organizers. The talks are put into sessions centered around a particular topic. The talks are usually 15 minutes long with about 5 minutes for questions.
 
@@ -17,7 +17,7 @@ Besides these talks, there are also poster presentations. A poster presentation 
 
 This is mostly it. Sometimes there are networking events at a conference, like a dinner or drinks, but it's mostly just talks.
 
-## The Function of Talks
+## The function of talks
 
 Talks at conferences should somehow be advancing science. After all, it's a scientific conference, so stuff should be happening that's good for science. I can see that a talk serves three functions that might be useful:
 
@@ -51,7 +51,7 @@ I'm not sure if workshops are useful during a conference. Usually the workshops 
 
 The SIPS format
 
-## Scientific Sheep
+## Scientific sheep
 
 Perhaps what I like the most about SIPS is that they show you can actually do things differently. Scientists are, unfortunately, human and show the exact same traits that they were supposed to unlearn as part of their training. They should not do things just because others do them, yet that often explains a lot of their behavior (particularly when it comes to statistical analyses). In this case, it's the conference format. We simply hold conferences like we've held them for so long, without reflecting on whether it actually makes sense in an age where we can have easy access to publications and it's easy to network (just e-mail people).
 

@@ -12,6 +12,7 @@ website:
   navbar:
     pinned: false
     collapse-below: md
+    background: light
     left:
       - href: index.qmd
         text: Home
@@ -36,8 +37,9 @@ website:
 format:
   html:
     toc: true
-    theme: [cosmo, css/light.scss]
-    css: css/styles.css
+    theme: cosmo
+    css: styles/styles.css
+    csl: styles/apa.csl
 
 freeze: auto
 

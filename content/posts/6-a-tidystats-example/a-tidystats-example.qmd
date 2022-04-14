@@ -1,5 +1,5 @@
 ---
-title: A tidystats Example
+title: A tidystats example
 description: "I illustrate how to use my tidystats software to analyze and report the results of a replication study that was part of the Many Labs 1 project."
 date: 2021-04-25
 categories:
@@ -14,7 +14,7 @@ resources:
   - tidystats-example.mp4
 ---
 
-## Analyzing the Data
+## Analyzing the data
 
 Lorge and Curtiss (1936) examined how a quotation is perceived when it is attributed to a liked or disliked individual. In one condition the quotation was attributed to Thomas Jefferson and in the other it was attributed to Vladimir Lenin. They found that people agree more with the quotation when the quotation was attributed to Jefferson than Lenin. In the Many Labs replication study [@klein2014], the quotation was attributed to either George Washington, the liked individual, or Osama Bin Laden, the disliked individual. The also used a different quotation, which was:
 

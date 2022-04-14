@@ -1,12 +1,12 @@
 ---
-title: Simulation-based Power Curves
+title: Simulation-based power curves
 description-meta: "In this post I show how to do simulated-based power analyses that produce a power curve: the obtained power for a range of sample sizes."
 date: 2021-11-09
 categories:
   - power analysis
   - simulation
   - statistics
-code-fold: false
+code-fold: show
 code-tools: true
 ---
 
@@ -38,7 +38,7 @@ options(
 )
 ```
 
-## The Scenario
+## The scenario
 
 Let's look at one of the scenarios from the previous post: the two *t*-test scenario. We have one treatment condition and two control conditions. Our goal is to have enough power to find a significant difference between the treatment condition and *both* control conditions. Let's begin with a single simulation, just to see what the data would look like.
 
@@ -112,7 +112,7 @@ t.test(DV ~ condition, data = filter(data, condition != "control 1"))
 t.test(DV ~ condition, data = filter(data, condition != "control 2"))
 ```
 
-## The Power Analysis
+## The power analysis
 
 Next we want to calculate the power. However, we don't just want the power for a single sample size. We want to calculate the power for a range of sample sizes. So we begin by defining this range. In the example below, we create a variable called `Ns` that contains a sequence of values ranging from 50 to 250, in steps of 50. We also define `S`, which is the number of iterations in the power analysis. The higher this number, the more accurate the power analysis. Note that I've capitalized it this time. The final simulation parameter is `i`. I've defined this variable to keep track of how often we loop. This will be useful for figuring out where to store the p-values.
 
@@ -168,7 +168,7 @@ power <- p_values %>%
   summarize(power = sum(success) / S)
 ```
 
-## The Power Curve
+## The power curve
 
 With the power for each sample size calculated, we can visualize the power curve.
 
