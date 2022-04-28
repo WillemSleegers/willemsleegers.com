@@ -17,7 +17,6 @@ draft: true
 # Load packages
 library(tidyverse)
 library(viridis)
-library(ggrepel)
 library(here)
 
 # Load a custom function to calculate the mode
@@ -48,15 +47,13 @@ options(
 theme_set(theme_minimal())
 ```
 
-In Part 1 of 'Understanding Regression' we figured out where the estimate of an intercept-only regression model came from. It turned out to be the mean of the data. However, this was only the case if we defined our model's error as the sum of squared residuals. If we don't square the residuals, the best fitting value is the median of the data. This raises several questions: Why square the residuals? Why choose the mean over the median?
+In Part 1 of 'Understanding Regression' we figured out where the estimate of an intercept-only regression model came from. It turned out to be the mean of the data. However, this was only the case if we defined our model's error as the sum of squared residuals. If we don't square the residuals, the best fitting value turned out to be the median of the data.
 
-We briefly touched on one answer to that question. By squaring the residuals we're punishing models that make larger mistakes. A residual of size 4 gets amplified to being an error of size 16, a residual of size 2 gets doubled to an error of 2 and a residual of 1 is an error of 1. This may simply be a property we like. We may prefer models that make many small errors over models that make large errors. This is a bit of a value judgement though, so is there another reason to favor means over medians?
-
-The answer is probably, but for us to understand that we should first talk about the population and samples.
+We also briefly discussed why one could favor squaring the residuals over not squaring them. By squaring the residuals we're punishing models that make larger mistakes. A residual of size 4 gets amplified to being an error of size 16, a residual of size 2 gets doubled to an error of 2 and a residual of 1 is an error of 1. This may simply be a property we like. We may prefer models that make many small errors over models that make large errors. If we do, we could square the residuals and use the mean as our best fitting model. But we can also approach this issue from the other way around. We can think about whether we prefer means over medians. It could be that the mean has certain properties different from that of the median and that may also be better. Part 2 of Understanding Regression is about whether this is the case.
 
 ## Population vs. Sample
 
-Remember that our Pokémon weight model was based on the weights of the first 25 Pokémon. This is only a small sample of all Pokémon out there (our total is 893). In the sample we observed, the average weight is `r mean(pull(pokemon25, weight))`. But what if we had instead focused on the next 25 Pokémon, from Raichu to Diglet? The average weight of these Pokémon is `r mean(pull(pokemon25_50, weight))`. That's a difference of `r mean(pull(pokemon25, weight)) - mean(pull(pokemon25_50, weight))`.
+Remember that our Pokémon weight model was based on the weights of the first 25 Pokémon. This is only a small sample of all Pokémon out there (our data has a total of 893). In the sample we observed, the average weight is `r mean(pull(pokemon25, weight))`. But what if we had instead focused on the next 25 Pokémon, from Raichu to Diglet? The average weight of these Pokémon is `r mean(pull(pokemon25_50, weight))`. That's a difference of `r mean(pull(pokemon25, weight)) - mean(pull(pokemon25_50, weight))`.
 
 Let's actually take a look at the weights of all 893 Pokemon.
 
@@ -88,7 +85,7 @@ samples <- crossing(
   )
 ```
 
-Let's begin by simply looking at the distribution of mean values. The following graph contains 10,000 means obtained from 25 different Pokémon.
+Let's begin by simply looking at the distribution of mean values. The following graph contains 10,000 means, each based on 25 different Pokémon.
 
 ```{r}
 #| label: fig-pokemon25-mean-weights
@@ -102,7 +99,7 @@ ggplot(means25, aes(x = estimate)) +
   labs(x = "Sample mean", y = "Count")
 ```
 
-This is a sampling distribution of mean estimates.
+This distribution of means is also called a sampling distribution of means. In our case, we see that
 
 ```{r}
 estimators25 <- filter(samples, n == 25)
@@ -114,19 +111,19 @@ ggplot(estimators25, aes(x = estimate, fill = estimator)) +
   annotate(
     geom = "text", 
     x = mean(weights), 
-    y = 0.046, 
+    y = 0.0465, 
     label = "population mean"
   ) +
   annotate(
     geom = "text", 
     x = median(weights), 
-    y = 0.048, 
+    y = 0.049, 
     label = "population median",
   ) +
   labs(x = "Sample mean", y = "Count") +
   scale_fill_viridis(option = "mako", discrete = TRUE, begin = .25, end = .75) +
   coord_cartesian(ylim = c(0, 0.0425), clip = "off") +
   theme(
-    plot.margin = unit(c(3, 1, 1, 1), "lines")
+    plot.margin = unit(c(2, 1, 1, 1), "lines")
   )
 ```
