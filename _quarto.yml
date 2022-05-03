@@ -5,9 +5,10 @@ project:
     port: 4200
 
 website:
-  title: "willemsleegers.com"
+  title: willemsleegers.com
   site-url: https://www.willemsleegers.com/
-  description: "The personal website of Willem Sleegers."
+  description: The personal website of Willem Sleegers.
+  favicon: images/favicon.ico
   reader-mode: true
   navbar:
     pinned: false
@@ -27,7 +28,7 @@ website:
       - href: https://www.github.com/willemsleegers
         icon: github
   page-footer: 
-    left: "Copyright 2022 - Willem Sleegers" 
+    left: "Copyright 2022 - Willem Sleegers"
     right: 
       - icon: github
         href: https://github.com/
@@ -37,6 +38,7 @@ website:
 format:
   html:
     toc: true
+    smooth-scroll: true
     theme: cosmo
     css: styles/styles.css
     csl: styles/apa.csl
