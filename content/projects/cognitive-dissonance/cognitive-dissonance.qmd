@@ -1,5 +1,9 @@
 ---
 title: Cognitive dissonance
+description: In this project I aim to assess the evidence for cognitive dissonance theory using a large-scaled replication study of a seminal cognitive dissonance study.
+categories:
+- cognitive dissonance
+- replication
 ---
 
 Cognitive dissonance refers to a state of aversive arousal that is experienced when people realize they possess mutually inconsistent cognitions. This state is the foundation of cognitive dissonance theory (CDT)---a theory developed by Leon Festinger in 1957. Several of my projects are aimed at assessing the evidence for this theory and at applying this theory to other issues (although now that I've left academia, these projects have been deprioritized).
