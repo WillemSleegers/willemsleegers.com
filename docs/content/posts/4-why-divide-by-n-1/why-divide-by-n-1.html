@@ -314,7 +314,7 @@
 <div id="fig-variance-bias-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="why-divide-by-n-1_files/figure-html/fig-variance-bias-1.png" class="img-fluid figure-img" data-ref-parent="fig-variance-bias" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">(a) Variance with division by 1</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(a) Variance with division by n</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -575,7 +575,7 @@
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
 <p>We calculate the variance of a sample by summing the squared deviations of each data point from the sample mean and dividing it by <span class="math inline">\(n - 1\)</span>. The <span class="math inline">\(n - 1\)</span> actually comes from a correction factor <span class="math inline">\(\frac n{n-1}\)</span> that is needed to correct for a bias caused by taking the deviations from the sample mean rather than the population mean. Taking the deviations from the sample mean only constitutes the variance around the sample mean, but ignores the variation of the sample mean around the population mean, producing an underestimation equal to the size of the variance of the sample mean: <span class="math inline">\(\frac{\sigma^2}{n}\)</span>. The correction factor corrects for this underestimation, producing an unbiased estimate of the population variance.</p>
-<p><em>This post was last updated on 2022-04-12.</em></p>
+<p><em>This post was last updated on 2022-05-30.</em></p>
 
 
 
@@ -815,8 +815,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-103"><a href="#cb8-103" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-variance-bias</span></span>
 <span id="cb8-104"><a href="#cb8-104" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: A demonstration that dividing by 1 causes a bias</span></span>
 <span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-subcap: </span></span>
-<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - Variance with division by 1</span></span>
-<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - Variance with division by  n - 1</span></span>
+<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - Variance with division by n</span></span>
+<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - Variance with division by n - 1</span></span>
 <span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: page</span></span>
 <span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span>
 <span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a></span>

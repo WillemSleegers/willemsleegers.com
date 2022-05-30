@@ -95,8 +95,8 @@ Now let's do that many many times. Below I show the results of draws from our po
 #| label: fig-variance-bias
 #| fig-cap: A demonstration that dividing by 1 causes a bias
 #| fig-subcap: 
-#|   - Variance with division by 1
-#|   - Variance with division by  n - 1
+#|   - Variance with division by n
+#|   - Variance with division by n - 1
 #| column: page
 #| layout-ncol: 2
 
