@@ -1,5 +1,10 @@
 ---
 title: statcheck
+description: Together with Michèle Nuijten I am working on improving statcheck. statcheck is a software tool to help researchers make fewer statistics-related typos.
+categories:
+- statcheck
+- software
+- statistics
 bibliography: references.bib
 ---
 

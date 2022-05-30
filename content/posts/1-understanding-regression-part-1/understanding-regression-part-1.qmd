@@ -1,5 +1,5 @@
 ---
-title: Understanding Regression (Part 1)
+title: Understanding regression (part 1)
 description: This is Part 1 of a series of blog posts on how to understand regression. The goal is to develop an intuitive understanding of the different components of regression. In this first post, we figure out where the estimate of an intercept-only regression model comes from.
 date: 2020-08-01
 categories:
@@ -84,7 +84,7 @@ ggplot(pokemon25, aes(x = reorder(name, pokedex), y = weight)) +
 
 We see that the lightest Pokémon is Pidgey, with a weight of `r min(pull(pokemon25, weight))` kg. The heaviest Pokémon is Venusaur, with a weight of `r max(pull(pokemon25, weight))` kg. The average weight is `r mean(pull(pokemon25, weight))` kg.
 
-## The Simplest Model
+## The simplest model
 
 In order to understand the weights of different Pokémon, we need to come up with a statistical model. In a way, this can be considered a description problem. How can we best describe the different weights that we have observed? The simplest description is a single number. We can say that all Pokémon have a weight of say... 6 kg. In other words:
 
@@ -115,7 +115,7 @@ ggplot(pokemon25, aes(x = reorder(name, pokedex), y = weight)) +
 
 While a model like `weight = 6 kg` is a valid model, it is not a very good model. In fact, it only perfectly describes Pikachu's weight and inaccurately describes the weight of the remaining 24 Pokémon. The other models, such as `weight = 40 kg` might be even worse; they do not even describe a single Pokémon's weight correctly, although they do get closer to some of the heavier Pokémon. How do we decide which model is the better model? In order to answer that question, we need to consider the model's error.
 
-## The Error of Models
+## The error of models
 
 The error of a model is the degree to which the model inaccurately describes the data. There are several ways to calculate that error, depending on how you define error. We will cover three of them.
 
@@ -209,7 +209,7 @@ ggplot(errors_squared_residuals, aes(x = model, y = error_sum)) +
 
 We see a smooth curve, with a clear minimum indicated by the vertical dashed line. This vertical line indicates the model that best describes the data. What is the value of the best model exactly? In this case, the answer is `r mean(pull(pokemon25, weight))`. And it turns out, there is an easy way to determine this value.
 
-## The Best Fitting Model
+## The data-driven model
 
 Rather than setting a specific value and seeing how it fits the data, we can also use the data to determine the value that best fits the data. In the previous graph we saw that the best fitting model is one where the weight is equal to `r mean(pull(pokemon25, weight))`. This value turns out to be the mean of the different weights we have observed in our sample. Had we defined error as simply the sum of absolute residuals, this would be a different value. In fact, the best fitting value would then be equal to `r median(pull(pokemon25, weight))`, or the median. And had we used the binary definition of error, the best fitting value would be the mode, which in our case is: `r mode(pull(pokemon25, weight))`.
 

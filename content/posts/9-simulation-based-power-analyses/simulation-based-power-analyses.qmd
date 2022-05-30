@@ -1,18 +1,19 @@
 ---
-title: Simulation-based Power Analyses
+title: Simulation-based power analyses
 description: "Simulation-based power analyses make it easy to understand what power is: Power is simply counting how often you find the results you expect to find. Running simulation-based power analyses might be new for some, so in this blog post I present code to simulate data for a range of different scenarios."
 date: 2021-10-23
 categories:
   - statistics
   - power analysis
   - simulation
-code-fold: false
+code-fold: show
 code-tools: true
+bibliography: references.bib
 ---
 
 # Introduction
 
-Doing power analyses is hard. I know this from experience, both as a researcher and as a reviewer. As a researcher, I have found power analyses to be difficult because performing a good power analysis requires a thorough understanding of the (hypothesized) data. Understanding one's data is often underestimated, I think. We're very quick to design a study and start data collection, without often knowing what various aspects of our data will look like (e.g., likely correlations between measures, likely standard deviations). As a reviewer, I see that power analyses are difficult because of wrong ideas about what a power analysis actually means. The most common misconception I see is that researchers think they should power their study, rather than the set of analyses they will conduct. I also see a lot of power analyses conducted with G\*Power, which sometimes looks fine, but oftentimes produces results I know to be wrong (usually involving interaction tests). So what to do?
+Doing power analyses is hard. I know this from experience, both as a researcher and as a reviewer. As a researcher, I have found power analyses to be difficult because performing a good power analysis requires a thorough understanding of the (hypothesized) data. Understanding one's data is often underestimated, I think. We're very quick to design a study and start data collection, without often knowing what various aspects of our data will look like (e.g., likely correlations between measures, likely standard deviations). As a reviewer, I see that power analyses are difficult because of wrong ideas about what a power analysis actually means. The most common misconception I see is that researchers think they should power their study, rather than the set of analyses they will conduct (see @maxwell2004 for more on this). I also see a lot of power analyses conducted with G\*Power, which sometimes looks fine, but oftentimes produces results I know to be wrong (usually involving interaction tests). So what to do?
 
 My favorite way to run power analyses is via simulation. Simulation-based power analyses are more difficult and take longer to setup and run, but they're more pedagogical. Simulations require you to understand your data because you have to define the exact parameters that define your data set (e.g., means, standard deviations, correlations). It also creates a very intuitive understanding of what power is: Power is simply counting how often you find the results you expect to find.
 
@@ -67,7 +68,7 @@ The `mvrnorm()` function requires that we pass it the sample size, the means, an
 
 Note that the result of each power analysis will be the power, and not the sample size needed to obtain a particular power. This is the same as calculating the post-hoc power in G\*Power. If you want to figure out what the sample size is for a particular power (e.g., 80%) then you simply change the sample size parameter until you have the power you want.
 
-## One Sample *t*-test
+## One sample *t*-test
 
 The simplest scenario is where we want to simulate a set of normally distributed values and perform a one sample *t*-test. This requires that we set three parameters: a mean, a standard deviation, and a sample size. We give `mvrnorm()` the sample size (`N`), the mean (`M`), and the variance (`SD^2`). After simulating the data, we give the simulated data a column name and convert the matrix returned by `mvrnorm()` to a data frame.
 
@@ -137,7 +138,7 @@ power <- sum(p_values <= .05) / s * 100
 
 With the current parameters (N = `r N`, Cohen's *d* = `r effect_size$Cohens_d`), we obtain a power of `r power`%. The power is simply how often we find a significant result, divided by the number of times we looped, multiplied by 100 to give a percentage. You can adjust the sample size parameter and re-run the code until you know which sample size gives you the desired power. You might also want to run the loop a few times to see how consistent your results are (if the results are inconsistent, increase the number of loops by increasing the value of `s`).
 
-## Welch's Two Sample *t*-test
+## Welch's two sample *t*-test
 
 The next scenario is one in which there are two groups (e.g., a control condition and a treatment condition) and a single DV. Even in this simple scenario there are already several variations that are important to consider. Do we assume equal variances between groups? Do we assume equal samples sizes? Is the design between or within-subjects? We'll start with assuming unequal variances between the two groups. This means we'll run a Welch's two sample *t*-test. To make it extra fun, we'll also simulate unequal sample sizes.
 
@@ -228,7 +229,7 @@ power <- sum(p_values <= .05) / s * 100
 
 This produces a power of `r power`% with the current parameters.
 
-## Two Sample *t*-test
+## Two sample *t*-test
 
 Instead of assuming unequal variances, we can also assume equal variances and perform a two sample *t*-test. You could adapt the previous scenario by setting the parameters such that the variance in each group is identical, but let's do something different in this scenario. In addition, let's assume that the sample sizes in each group are equal. This means we can simulate the data using a slightly different approach. First, we'll only need 4 parameters. Second, we don't need to separately simulate the data for each group. We can instead use a single `mvrnorm()` call and provide it with the correct variance-covariance matrix. The crucial bit is to only set the variances and set the covariances to 0. If we do it this way, we do need to adjust how we prepare the data. `mvnnorm()` returns a matrix that, when converted to a data frame, results in a wide data frame. That is, the DV of each group is stored in separate columns. This is not [tidy](https://vita.had.co.nz/papers/tidy-data.html "tidy data"). We therefore restructure the data to make it long.
 

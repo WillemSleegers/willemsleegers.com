@@ -1,143 +1,150 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-  <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.9.222">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="dcterms.date" content="2021-04-25">
-  <meta name="description" content="I illustrate how to use my tidystats software to analyze and report the results of a replication study that was part of the Many Labs 1 project.">
-  <title>willemsleegers.com - A tidystats Example</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-    div.csl-bib-body { }
-    div.csl-entry {
-      clear: both;
-    }
-    .hanging div.csl-entry {
-      margin-left:2em;
-      text-indent:-2em;
-    }
-    div.csl-left-margin {
-      min-width:2em;
-      float:left;
-    }
-    div.csl-right-inline {
-      margin-left:2em;
-      padding-left:1em;
-    }
-    div.csl-indent {
-      margin-left: 2em;
-    }
-  </style>
 
-  <script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
-  <script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
-  <script src="../../../site_libs/clipboard/clipboard.min.js"></script>
-  <meta name="quarto:offset" content="../../../">
-  <script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
-  <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
-  <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
-  <script src="../../../site_libs/quarto-html/quarto.js"></script>
-  <script src="../../../site_libs/quarto-html/popper.min.js"></script>
-  <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
-  <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
-  <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link id="quarto-text-highlighting-styles" href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
-  <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
-  <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <script id="quarto-search-options" type="application/json">{
-    "location": "navbar",
-    "copy-button": false,
-    "collapse-after": 3,
-    "panel-placement": "end",
-    "type": "overlay",
-    "limit": 20,
-    "language": {
-      "search-no-results-text": "No results",
-      "search-matching-documents-text": "matching documents",
-      "search-copy-link-title": "Copy link to search",
-      "search-hide-matches-text": "Hide additional matches",
-      "search-more-match-text": "more match in this document",
-      "search-more-matches-text": "more matches in this document",
-      "search-clear-button-title": "Clear",
-      "search-detached-cancel-button-title": "Cancel",
-      "search-submit-button-title": "Submit"
-    }
-  }</script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
-  <link rel="stylesheet" href="../../../css/styles.css">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.345">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-04-25">
+<meta name="description" content="I illustrate how to use my tidystats software to analyze and report the results of a replication study that was part of the Many Labs 1 project.">
+
+<title>willemsleegers.com - A tidystats example</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<link href="../../../images/favicon.ico" rel="icon">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../../styles/styles.css">
 </head>
+
 <body class="nav-fixed">
+
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-md navbar-dark ">
@@ -196,24 +203,55 @@
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc">
-<h2 id="toc-title">On this page</h2>
-<ul>
-<li><a href="#analyzing-the-data" id="toc-analyzing-the-data" class="nav-link active" data-scroll-target="#analyzing-the-data">Analyzing the Data</a></li>
-<li><a href="#applying-tidystats" id="toc-applying-tidystats" class="nav-link" data-scroll-target="#applying-tidystats">Applying tidystats</a></li>
-<li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
-</ul>
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#analyzing-the-data" id="toc-analyzing-the-data" class="nav-link active" data-scroll-target="#analyzing-the-data">Analyzing the data</a></li>
+  <li><a href="#applying-tidystats" id="toc-applying-tidystats" class="nav-link" data-scroll-target="#applying-tidystats">Applying tidystats</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
+
 <header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">A tidystats example</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">tidystats</div>
+    <div class="quarto-category">statistics</div>
+    <div class="quarto-category">tutorial</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    I illustrate how to use my tidystats software to analyze and report the results of a replication study that was part of the Many Labs 1 project.
+  </div>
+</div>
 
 
-<div class="quarto-title"><h1 class="title display-7">A tidystats Example</h1><div class="quarto-description"><p>I illustrate how to use my tidystats software to analyze and report the results of a replication study that was part of the Many Labs 1 project.</p></div></div><div class="quarto-categories"><div class="quarto-category">tidystats</div><div class="quarto-category">statistics</div><div class="quarto-category">tutorial</div></div><div class="quarto-title-meta"><div><div class="quarto-title-meta-heading">Published</div><div class="quarto-title-meta-contents"><p class="date">April 25, 2021</p></div></div></div></header>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 25, 2021</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
 
 <section id="analyzing-the-data" class="level2">
-<h2 class="anchored" data-anchor-id="analyzing-the-data">Analyzing the Data</h2>
-<p>Lorge and Curtiss (1936) examined how a quotation is perceived when it is attributed to a liked or disliked individual. In one condition the quotation was attributed to Thomas Jefferson and in the other it was attributed to Vladimir Lenin. They found that people agree more with the quotation when the quotation was attributed to Jefferson than Lenin. In the Many Labs replication study <span class="citation" data-cites="klein2014">(<a href="#ref-klein2014" role="doc-biblioref">Klein et al. 2014</a>)</span>, the quotation was attributed to either George Washington, the liked individual, or Osama Bin Laden, the disliked individual. The also used a different quotation, which was:</p>
+<h2 class="anchored" data-anchor-id="analyzing-the-data">Analyzing the data</h2>
+<p>Lorge and Curtiss (1936) examined how a quotation is perceived when it is attributed to a liked or disliked individual. In one condition the quotation was attributed to Thomas Jefferson and in the other it was attributed to Vladimir Lenin. They found that people agree more with the quotation when the quotation was attributed to Jefferson than Lenin. In the Many Labs replication study <span class="citation" data-cites="klein2014">(<a href="#ref-klein2014" role="doc-biblioref">Klein et al., 2014</a>)</span>, the quotation was attributed to either George Washington, the liked individual, or Osama Bin Laden, the disliked individual. The also used a different quotation, which was:</p>
 <blockquote class="blockquote">
 <p>I have sworn to only live free, even if I find bitter the taste of death.</p>
 </blockquote>
@@ -223,7 +261,7 @@
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load necessary packages</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load necessary packages</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidystats)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis)</span>
@@ -246,7 +284,7 @@
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(quote_source, <span class="fu">aes</span>(<span class="at">x =</span> source, <span class="at">y =</span> response, <span class="at">fill =</span> source)) <span class="sc">+</span></span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(quote_source, <span class="fu">aes</span>(<span class="at">x =</span> source, <span class="at">y =</span> response, <span class="at">fill =</span> source)) <span class="sc">+</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">width =</span> .<span class="dv">5</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> <span class="st">"mean"</span>, <span class="at">geom =</span> <span class="st">"point"</span>) <span class="sc">+</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Quote source"</span>, <span class="at">y =</span> <span class="st">"Quote agreement"</span>) <span class="sc">+</span></span>
@@ -268,7 +306,7 @@
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>quote_source <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>quote_source <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(source) <span class="sc">%&gt;%</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">describe_data</span>(response) <span class="sc">%&gt;%</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>var) <span class="sc">%&gt;%</span></span>
@@ -351,7 +389,7 @@
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(response <span class="sc">~</span> source, <span class="at">data =</span> quote_source)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(response <span class="sc">~</span> source, <span class="at">data =</span> quote_source)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>However, since we want to use <code>tidystats</code> to later save the statistics from this test, we will store the output of the <em>t</em>-test in a variable. This, and the final section of R code, will be the only thing you need to change in order to incorporate <code>tidystats</code> in your workflow.</p>
@@ -359,10 +397,10 @@
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>main_test <span class="ot">&lt;-</span> <span class="fu">t.test</span>(response <span class="sc">~</span> source, <span class="at">data =</span> quote_source)</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>main_test <span class="ot">&lt;-</span> <span class="fu">t.test</span>(response <span class="sc">~</span> source, <span class="at">data =</span> quote_source)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>main_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>
     Welch Two Sample t-test
 
@@ -381,11 +419,11 @@ sample estimates:
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>us_moderation_test <span class="ot">&lt;-</span> <span class="fu">lm</span>(response <span class="sc">~</span> source <span class="sc">*</span> us_or_international, </span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>us_moderation_test <span class="ot">&lt;-</span> <span class="fu">lm</span>(response <span class="sc">~</span> source <span class="sc">*</span> us_or_international, </span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> quote_source)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(us_moderation_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = response ~ source * us_or_international, data = quote_source)
@@ -413,7 +451,7 @@ F-statistic: 59.5 on 3 and 6321 DF,  p-value: &lt;2e-16</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(quote_source, <span class="fu">aes</span>(<span class="at">x =</span> us_or_international, <span class="at">y =</span> response, </span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(quote_source, <span class="fu">aes</span>(<span class="at">x =</span> us_or_international, <span class="at">y =</span> response, </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> source)) <span class="sc">+</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> <span class="st">"mean_cl_boot"</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(.<span class="dv">9</span>)) <span class="sc">+</span></span>
@@ -435,10 +473,10 @@ F-statistic: 59.5 on 3 and 6321 DF,  p-value: &lt;2e-16</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>lab_moderation_test <span class="ot">&lt;-</span> <span class="fu">lm</span>(response <span class="sc">~</span> source <span class="sc">*</span> lab_or_online, <span class="at">data =</span> quote_source)</span>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>lab_moderation_test <span class="ot">&lt;-</span> <span class="fu">lm</span>(response <span class="sc">~</span> source <span class="sc">*</span> lab_or_online, <span class="at">data =</span> quote_source)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lab_moderation_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = response ~ source * lab_or_online, data = quote_source)
@@ -473,7 +511,7 @@ F-statistic: 55.1 on 3 and 6321 DF,  p-value: &lt;2e-16</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_stats</span>(main_test, <span class="at">type =</span> <span class="st">"primary"</span>, <span class="at">preregistered =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
@@ -486,27 +524,28 @@ F-statistic: 55.1 on 3 and 6321 DF,  p-value: &lt;2e-16</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_stats</span>(results, <span class="st">"tidystats-example.json"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_stats</span>(results, <span class="st">"tidystats-example.json"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>If you want to see what this file looks like, you can inspect it <a href="tidystats-example.json" title="tidystats JSON file example">here</a>. Open the file in a text editor to see how the statistics are structured. As you will see, it is not easy for our human eyes to quickly see the results, but it’s easy for computers.</p>
 <p>Once you’ve saved the file, you can share the file with others or use it to report report the results in your manuscript using the <a href="https://www.tidystats.io/word-add-in.html" title="tidystats Word add-in">Word add-in</a>.</p>
 <p>That marks the end of this <code>tidystats</code> example. If you have any questions, please check out the <a href="https://tidystats.io">tidystats website</a> or contact me via <a href="https://twitter.com/tidystats">Twitter</a>.</p>
-<p><em>This post was last updated on 2022-04-12.</em></p>
+<p><em>This post was last updated on 2022-04-29.</em></p>
 </section>
 <section id="references" class="level2">
 
 
 
 
-
 </section>
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2" role="doc-bibliography">
 <div id="ref-klein2014" class="csl-entry" role="doc-biblioentry">
-Klein, Richard A., Kate A. Ratliff, Michelangelo Vianello, Reginald B. Adams, Štěpán Bahník, Michael J. Bernstein, Konrad Bocian, et al. 2014. <span>“Investigating Variation in Replicability: A <span>‘Many Labs’</span> Replication Project.”</span> <em>Social Psychology</em> 45 (3): 142–52. <a href="https://doi.org/10.1027/1864-9335/a000178">https://doi.org/10.1027/1864-9335/a000178</a>.
+Klein, R. A., Ratliff, K. A., Vianello, M., Adams, R. B., Bahník, Š., Bernstein, M. J., Bocian, K., Brandt, M. J., Brooks, B., Brumbaugh, C. C., &amp; al., et. (2014). Investigating variation in replicability: A <span>“many labs”</span> replication project. <em>Social Psychology</em>, <em>45</em>(3), 142–152. <a href="https://doi.org/10.1027/1864-9335/a000178">https://doi.org/10.1027/1864-9335/a000178</a>
 </div>
 </div></section></div></main> <!-- /main -->
-<script type="application/javascript">
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const icon = "";
   const anchorJS = new window.AnchorJS();
@@ -527,7 +566,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.blur();
     // flash "checked"
     button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
     setTimeout(function() {
+      button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
@@ -604,6 +646,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
 
 
 </body></html>

@@ -1,5 +1,5 @@
 ---
-title: Useful Power Analysis Papers
+title: Useful power analysis papers
 description: "A curious thing happened in the field of social psychology: Social psychologists finally realized that statistical power is important. Unfortunately, they then skipped the step of figuring out how to do them correctly. Here I list some papers on power analyses that I hope help in improving the way we do them."
 date: 2020-08-01
 categories:

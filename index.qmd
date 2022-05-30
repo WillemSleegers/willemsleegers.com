@@ -30,6 +30,7 @@ listing:
   - id: posts
     contents: content/posts
     sort: "date desc"
+    max-items: 3
     type: default
     categories: false
     sort-ui: false

@@ -1,78 +1,86 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-  <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.9.222">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>willemsleegers.com - statcheck</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    div.csl-bib-body { }
-    div.csl-entry {
-      clear: both;
-    }
-    .hanging div.csl-entry {
-      margin-left:2em;
-      text-indent:-2em;
-    }
-    div.csl-left-margin {
-      min-width:2em;
-      float:left;
-    }
-    div.csl-right-inline {
-      margin-left:2em;
-      padding-left:1em;
-    }
-    div.csl-indent {
-      margin-left: 2em;
-    }
-  </style>
 
-  <script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
-  <script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
-  <script src="../../../site_libs/clipboard/clipboard.min.js"></script>
-  <meta name="quarto:offset" content="../../../">
-  <script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
-  <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
-  <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
-  <script src="../../../site_libs/quarto-html/quarto.js"></script>
-  <script src="../../../site_libs/quarto-html/popper.min.js"></script>
-  <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
-  <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
-  <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link id="quarto-text-highlighting-styles" href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
-  <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
-  <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <script id="quarto-search-options" type="application/json">{
-    "location": "navbar",
-    "copy-button": false,
-    "collapse-after": 3,
-    "panel-placement": "end",
-    "type": "overlay",
-    "limit": 20,
-    "language": {
-      "search-no-results-text": "No results",
-      "search-matching-documents-text": "matching documents",
-      "search-copy-link-title": "Copy link to search",
-      "search-hide-matches-text": "Hide additional matches",
-      "search-more-match-text": "more match in this document",
-      "search-more-matches-text": "more matches in this document",
-      "search-clear-button-title": "Clear",
-      "search-detached-cancel-button-title": "Cancel",
-      "search-submit-button-title": "Submit"
-    }
-  }</script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
-  <link rel="stylesheet" href="../../../css/styles.css">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.345">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Together with Michèle Nuijten I am working on improving statcheck. statcheck is a software tool to help researchers make fewer statistics-related typos.">
+
+<title>willemsleegers.com - statcheck</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<link href="../../../images/favicon.ico" rel="icon">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../../styles/styles.css">
 </head>
+
 <body class="nav-fixed">
+
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-md navbar-dark ">
@@ -131,25 +139,51 @@
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc">
-<h2 id="toc-title">On this page</h2>
-<ul>
-<li><a href="#why-is-this-important" id="toc-why-is-this-important" class="nav-link active" data-scroll-target="#why-is-this-important">Why is this important?</a></li>
-<li><a href="#what-am-i-working-on" id="toc-what-am-i-working-on" class="nav-link" data-scroll-target="#what-am-i-working-on">What am I working on?</a></li>
-<li><a href="#links" id="toc-links" class="nav-link" data-scroll-target="#links">Links</a></li>
-</ul>
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#why-is-this-important" id="toc-why-is-this-important" class="nav-link active" data-scroll-target="#why-is-this-important">Why is this important?</a></li>
+  <li><a href="#what-am-i-working-on" id="toc-what-am-i-working-on" class="nav-link" data-scroll-target="#what-am-i-working-on">What am I working on?</a></li>
+  <li><a href="#links" id="toc-links" class="nav-link" data-scroll-target="#links">Links</a></li>
+  </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
-<header id="title-block-header" class="quarto-title-block default">
 
-<div class="quarto-title"><h1 class="title display-7">statcheck</h1></div></header>
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">statcheck</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">statcheck</div>
+    <div class="quarto-category">software</div>
+    <div class="quarto-category">statistics</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Together with Michèle Nuijten I am working on improving statcheck. statcheck is a software tool to help researchers make fewer statistics-related typos.
+  </div>
+</div>
+
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
 
 <p>Together with <a href="https://mbnuijten.com">Michèle Nuijten</a> I am working on improving <code>statcheck</code>. <code>statcheck</code> is a software tool to help researchers make fewer statistics-related typos.</p>
 <section id="why-is-this-important" class="level2">
 <h2 class="anchored" data-anchor-id="why-is-this-important">Why is this important?</h2>
 <p>Similar to my <code>tidystats</code> project, our aim is to address a particular problem in statistics reporting: the reporting of incorrect statistics.</p>
-<p>As has been shown by Michèle and her colleagues, statistics are often reported incorrectly <span class="citation" data-cites="nuijten2016">(<a href="#ref-nuijten2016" role="doc-biblioref">Nuijten et al. 2016</a>)</span>. This is likely due to the fact that researchers do not have the necessary software tools to reliably take the output of statistics from their data analysis software and enter it into their text editor. Instead, researchers are likely to copy statistics from the output by hand or by copy-pasting the output. Both techniques are error-prone, resulting in many papers containing statistical typos. This is a problem because statistical output is used in meta-analyses to aggregate the evidence for particular theories, which sometimes also inform policy. In some cases, the errors may even be so large that it affects the conclusion drawn from the statistical test.</p>
+<p>As has been shown by Michèle and her colleagues, statistics are often reported incorrectly <span class="citation" data-cites="nuijten2016">(<a href="#ref-nuijten2016" role="doc-biblioref">Nuijten et al., 2016</a>)</span>. This is likely due to the fact that researchers do not have the necessary software tools to reliably take the output of statistics from their data analysis software and enter it into their text editor. Instead, researchers are likely to copy statistics from the output by hand or by copy-pasting the output. Both techniques are error-prone, resulting in many papers containing statistical typos. This is a problem because statistical output is used in meta-analyses to aggregate the evidence for particular theories, which sometimes also inform policy. In some cases, the errors may even be so large that it affects the conclusion drawn from the statistical test.</p>
 </section>
 <section id="what-am-i-working-on" class="level2">
 <h2 class="anchored" data-anchor-id="what-am-i-working-on">What am I working on?</h2>
@@ -169,14 +203,15 @@
 
 
 
-
 </section>
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2" role="doc-bibliography">
 <div id="ref-nuijten2016" class="csl-entry" role="doc-biblioentry">
-Nuijten, Michèle B., Chris H. J. Hartgerink, Marcel A. L. M. van Assen, Sacha Epskamp, and Jelte M. Wicherts. 2016. <span>“The Prevalence of Statistical Reporting Errors in Psychology (1985 - 2013).”</span> <em>Behavior Research Methods</em> 48 (4): 1205–26. <a href="https://doi.org/10.3758/s13428-015-0664-2">https://doi.org/10.3758/s13428-015-0664-2</a>.
+Nuijten, M. B., Hartgerink, C. H. J., Assen, M. A. L. M. van, Epskamp, S., &amp; Wicherts, J. M. (2016). The prevalence of statistical reporting errors in psychology (1985 - 2013). <em>Behavior Research Methods</em>, <em>48</em>(4), 1205–1226. <a href="https://doi.org/10.3758/s13428-015-0664-2">https://doi.org/10.3758/s13428-015-0664-2</a>
 </div>
 </div></section></div></main> <!-- /main -->
-<script type="application/javascript">
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const icon = "";
   const anchorJS = new window.AnchorJS();
@@ -197,7 +232,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.blur();
     // flash "checked"
     button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
     setTimeout(function() {
+      button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
@@ -274,6 +312,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
 
 
 </body></html>

@@ -1,6 +1,11 @@
 ---
 title: tidystats
+description: tidystats refers to a collection of software solutions to improve how statistics are reported and shared in the field of (social) psychology.
 bibliography: references.bib
+categories:
+- tidystats
+- software
+- statistics
 ---
 
 `tidystats` is a project centered around creating software to improve how statistics are reported and shared in the field of (social) psychology.

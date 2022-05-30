@@ -1,5 +1,5 @@
 ---
-title: Why I Left Academia
+title: Why I left academia
 date: 2022-01-23
 categories:
   - academia
@@ -52,7 +52,7 @@ Then the third and final crisis hit me. During the years I attended conferences,
 
 The third time was the charm and I realized I had to go. I was getting increasingly unhappy to the point where I wanted to quit without even having a backup plan. But I'm somewhat risk averse so I was hesitant to do that. Instead, I spent last summer looking for another job and I found several alternative jobs I could go for. I started applying and I then I also noticed an immediate switch in my thinking about academia. Does academia really make any sense?
 
-## Modern Academia
+## Modern academia
 
 Why do I want to spend 50% of my time on teaching students? That's not what originally drove me into science. Sure, I like teaching, but 50% of my time? That's insane. And why don't I still have a permanent contract when I'm 35 years of age? And why am I even part of a system where journals charge money for the work that academics do for free?
 
@@ -62,4 +62,4 @@ Summarizing all of this, I conclude that most scientists in academia are not sci
 
 The problem is not that *some* people seem to commit fraud or perform bad studies. It's that it seems to be extremely common, if not the norm.
 
-Take issues like statistical power. Jacob Cohen raised issues about power IN THE SEVENTIES. It took until the 2010s for psychologists to actually start giving a shit about power. And even now people still get it enormously wrong! These are not super sophisticated issues that require sophisticated thinking and supercompters; it requires giving a shit and the audacity to not run a study if you know you can't do it well.
+Take issues like statistical power. Jacob Cohen raised issues about power IN THE SEVENTIES. It took until the 2010s for psychologists to actually start giving a shit about power. And even now people still get it enormously wrong! These are not super sophisticated issues that require sophisticated thinking and supercomputers; it requires giving a shit and the audacity to not run a study if you know you can't do it well.

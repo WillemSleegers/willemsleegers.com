@@ -1,5 +1,6 @@
 ---
 title: Animal welfare
+description: Farm animals and wild animals suffer in horrible ways in great numbers. At Rethink Priorities, I contribute to various projects aimed at addressing this important problem.
 categories: 
   - animal welfare
   - wild animal suffering
