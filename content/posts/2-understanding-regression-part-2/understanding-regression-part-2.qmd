@@ -127,3 +127,80 @@ ggplot(estimators25, aes(x = estimate, fill = estimator)) +
     plot.margin = unit(c(2, 1, 1, 1), "lines")
   )
 ```
+
+## Mean vs. Median
+
+### Normal distribution
+
+```{r}
+mean <- 0
+sd <- 1
+population <- tibble(population = rnorm(10000, mean = mean, sd = sd))
+
+df <- crossing(
+    n = c(5, 10, 25, 50, 100, 250),
+    i = 1:10000
+  ) %>%
+  rowwise() %>%
+  mutate(
+    median = median(rnorm(n = n, mean = mean, sd = sd)),
+    mean = mean(rnorm(n = n, mean = mean, sd = sd))
+  ) %>%
+  pivot_longer(cols = c(median, mean), names_to = "statistic")
+
+ggplot(df, aes(x = value)) +
+  #geom_density(mapping = aes(x = population), data = population, alpha = .4) +
+  geom_density(mapping = aes(fill = statistic), alpha = .5) +
+  facet_wrap(~n, scales = "free_y") +
+  scale_fill_viridis(option = "mako", discrete = TRUE, begin = .25, end = .75) +
+  theme_minimal()
+```
+
+### T-distribution
+
+```{r}
+df <- 30
+population <- tibble(population = rt(10000, df = df, ncp = 1))
+
+ggplot(population, aes(x = population)) + geom_density()
+
+df <- crossing(
+    n = c(5, 10, 25, 50, 100, 250),
+    i = 1:10000
+  ) %>%
+  rowwise() %>%
+  mutate(
+    median = median(rt(n = n, df = df)),
+    mean = mean(rt(n = n, df = df))
+  ) %>%
+  pivot_longer(cols = c(median, mean), names_to = "statistic")
+
+ggplot(df, aes(x = value)) +
+  #geom_density(mapping = aes(x = population), data = population, alpha = .4) +
+  geom_density(mapping = aes(fill = statistic), alpha = .5) +
+  facet_wrap(~n, scales = "free") +
+  scale_fill_viridis(option = "mako", discrete = TRUE, begin = .25, end = .75) +
+  theme_minimal()
+```
+
+```{r}
+library(sn)
+population <- rsn(1000, 5, 2, 5)
+
+df <- crossing(
+    n = c(5, 10, 25, 50, 100, 250),
+    i = 1:1000
+  ) %>%
+  rowwise() %>%
+  mutate(
+    median = median(rnorm(n = n, mean = 0, sd = 1)),
+    mean = mean(rnorm(n = n, mean = 0, sd = 1))
+  ) %>%
+  pivot_longer(cols = c(median, mean), names_to = "statistic")
+
+ggplot(df, aes(x = value, fill = statistic)) +
+  geom_histogram(binwidth = .05, alpha = .9) +
+  facet_wrap(~n, scales = "free") +
+  scale_fill_viridis(option = "mako", discrete = TRUE, begin = .25, end = .75) +
+  theme_minimal()
+```
