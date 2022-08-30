@@ -1,39 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.willemsleegers.com/content/posts/9-simulation-based-power-analyses/simulation-based-power-analyses.html</loc>
+    <lastmod>2022-08-30T10:46:43.934Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/6-a-tidystats-example/a-tidystats-example.html</loc>
+    <lastmod>2022-08-30T10:47:07.764Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/3-useful-power-analysis-papers/useful-power-analysis-papers.html</loc>
+    <lastmod>2022-08-30T10:47:08.832Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/10-simulation-based-power-curves/simulation-based-power-curves.html</loc>
+    <lastmod>2022-08-30T10:47:09.951Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/8-the-right-order-of-method-sections/the-right-order-of-method-sections.html</loc>
+    <lastmod>2022-08-30T10:47:10.274Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/4-why-divide-by-n-1/why-divide-by-n-1.html</loc>
+    <lastmod>2022-08-30T10:47:11.923Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/1-understanding-regression-part-1/understanding-regression-part-1.html</loc>
+    <lastmod>2022-08-30T10:47:13.452Z</lastmod>
+  </url>
+  <url>
     <loc>https://www.willemsleegers.com/content/projects/animal-welfare/animal-welfare.html</loc>
-    <lastmod>2022-06-30T07:54:48.447Z</lastmod>
+    <lastmod>2022-08-30T10:47:15.947Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/statcheck/statcheck.html</loc>
-    <lastmod>2022-06-30T07:54:48.739Z</lastmod>
+    <lastmod>2022-08-30T10:47:16.311Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/tidystats/tidystats.html</loc>
-    <lastmod>2022-06-30T07:54:49.032Z</lastmod>
+    <lastmod>2022-08-30T10:47:16.689Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/cognitive-dissonance/cognitive-dissonance.html</loc>
-    <lastmod>2022-06-30T07:54:49.276Z</lastmod>
+    <lastmod>2022-08-30T10:47:16.984Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects.html</loc>
-    <lastmod>2022-06-30T07:54:49.530Z</lastmod>
+    <lastmod>2022-08-30T10:47:17.345Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/about.html</loc>
-    <lastmod>2022-06-30T07:54:49.752Z</lastmod>
+    <lastmod>2022-08-30T10:47:17.658Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/cv/cv.html</loc>
-    <lastmod>2022-06-30T07:54:50.219Z</lastmod>
+    <lastmod>2022-08-30T10:47:18.231Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/blog.html</loc>
-    <lastmod>2022-06-30T07:56:02.035Z</lastmod>
+    <lastmod>2022-08-30T10:47:18.658Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/index.html</loc>
-    <lastmod>2022-06-30T07:56:02.377Z</lastmod>
+    <lastmod>2022-08-30T10:47:19.090Z</lastmod>
   </url>
 </urlset>
