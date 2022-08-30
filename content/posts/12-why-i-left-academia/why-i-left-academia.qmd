@@ -6,7 +6,7 @@ categories:
 draft: true
 ---
 
-I recently left academia and it is a custom in the academic Twitterverse to write a blog post about your reasons for leaving. Of course, this is a bit of a silly thing to do because for many it is strikingly obvious that academia has its issues. In fact, very few people were surprised when I told them I was leaving. Some were surprised because they thought I was 'the academic type' but none were surprised about me leaving the circumstances behind that define academia. Regardless, I guess we want to read stories about what finally got someone to give up on academia, after sometimes years of dedication to such a noble goal as science. It's a scary thought to give up on that, so let's go over the reasons I had.
+Several months ago I left academia and it is a custom in the academic Twitterverse to write a blog post about your reasons for leaving. Of course, this is a bit of a silly thing to do because for many it is strikingly obvious that academia has its issues. In fact, very few people were surprised when I told them I was leaving. Some were surprised because they thought I was 'the academic type' but none were surprised about me leaving the circumstances behind that currently pretty much define academia. Regardless, I guess we want to read stories about what finally got someone to give up on academia, after sometimes years of dedication to the noble goal that is science. It's a scary thought to give up on that, so let's go over the reasons I had.
 
 ## Three crises
 
@@ -20,27 +20,21 @@ It took a study about ESP to finally push people in the direction of thinking th
 
 The replication failures show that in addition to not double-checking the work of individuals in a project, we also failed to check our work by replicating studies.
 
-The replication failures were not just failures of state-of-the-art studies. These were studies that we taught our students in textbooks, that drove people into the field and that formed basis of Phd projects. In short, the replication failures showed us that it is possible for an entire field to be flat-out wrong about something.
+The replication failures were not just failures of state-of-the-art studies. These were studies that we taught our students in textbooks, that drove people into the field and that formed basis of PhD projects. In short, the replication failures showed us that it is possible for an entire field to be flat-out wrong about something.
 
-Incorporate this: <https://slatestarcodex.com/2019/05/07/5-httlpr-a-pointed-review/>
+The crisis of confidence wasn't limited to just social psychology. Other fields also had to admit that there were findings, believed by many, were just flat out mistaken. For example, there was some work showing that the 5-HTTLPR gene played a crucial role in depression. It has all the hallmarks of being an amazing finding. There were replications and meta-analyses to show that the effect must be real. But it wasn't. A giant with a sample size of over 600,000 participants showed that there simply isn't a link like that. This whole ordeal, including the sentiment I experience upon reading about it, is well expressed [here](https://slatestarcodex.com/2019/05/07/5-httlpr-a-pointed-review/).
 
-<https://twitter.com/WiringTheBrain/status/1490317514492067844>
+The main take away from that story is that a large number of researchers in the field can fool themselves. A whole group of researchers can be flat out wrong. They and their PhD students were simply investigating noise, and managed to publish papers and maintain or even create careers out of it.
 
-<https://journals.sagepub.com/doi/abs/10.1177/0013164498058006003>
-
-<https://link.springer.com/article/10.1007/s11747-011-0300-3#additional-information>
-
-Selling ourselves short? How abbreviated measures of personality change the way we think about personality and politics
-
-Shocking conclusion: It's possible for an entire field to be wrong about something.
+**Intermediate conclusion**: It's possible for a large portion of a field to be absolutely wrong about ostensibly established findings.
 
 ### The incentive crisis
 
-Initially I wasn't too upset about some of these developments. I was young, I was optimistic. I even thought it might be a good thing that there was so much wrong because that means there's a lot to fix. Of course, I was also somewhat dismayed because I had formed beliefs and updated prior beliefs in light of the findings of social psychology and it turns out that some of these updates were a mistake. More importantly, I *liked* some of the findings in social psychology and they made me want to study it. It felt a bit like I had entered social psychology on false pretenses. That was an issue, but not one that I felt all too saliently; I had enough motivation to continue.
+Initially I wasn't too upset about the fraud and failed replications. I was young, I was optimistic. I even thought it might be a good thing that there was so much wrong because that means there's a lot to fix. Of course, I was also somewhat dismayed because I had formed beliefs and updated prior beliefs in light of the findings of social psychology and it turns out that some of these updates were a mistake. More importantly, I *liked* some of the findings in social psychology and they made me want to study it. It felt a bit like I had entered social psychology on false pretenses. That was an issue, but not one that I felt all too saliently; I had enough motivation to continue.
 
 But then I started my PhD. The main difference between my Research Master's and the PhD was that the PhD really felt like I entered the academic career path. This makes sense of course. In the Netherlands you actually get paid for doing a PhD, so it feels like a job. But that wasn't the issue. The issue was that the work felt different. In both the PhD and the Master's, I was reading papers, doing studies, and writing theses, but it wasn't the same. What was different was that during my education I could perfectly behave in line with my scientific values. I could, for example, write up a thesis and have fun in the discussion section. I could point out all the flaws and I would get credit even! During the PhD, this was different. Discussion sections became opportunities for strategically presenting some limitations but not others, or framing them slightly more favorably than I would have liked to do. Why? Because the goal was to get it published, not just to get a good grade.
 
-Analyzing data also became problematic. During my education I could run a study and not care whether the hypothesis was confirmed or not. It was what it was; which is how it is supposed to be! But finding a failed hypothesis during my PhD was a problem. All of a sudden it became more difficult to write up the paper and I knew it would not have a chance to get published. Analyzing data wasn't fun anymore; it became a lottery with stakes.
+Analyzing data also became problematic. During my education I could run a study and not care whether the hypothesis was confirmed or not. It was what it was; which is how it is supposed to be! But finding a failed hypothesis during my PhD was a problem. It makes it more difficult to write up the paper in a way to get it published. Analyzing data wasn't fun anymore; it became a lottery with stakes.
 
 What is the crisis here? If you recall, I mentioned being optimistic about the first crisis and that I could address it by doing better science. Instead, I found myself playing the academic game of writing papers that were not driven by a 100% focus on good science, but perhaps on 80% doing good science and 20% spin to get it published. And those 20% mattered a lot. It showed I wasn't strong enough to combat the incentives and that apparently I was willing to compromise what I thought were my most important values. A personal crisis I suppose, but a crisis nonetheless.
 
