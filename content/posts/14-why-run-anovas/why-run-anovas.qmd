@@ -1,0 +1,95 @@
+---
+title: Why run ANOVAs?
+description: "I often see researchers analyze group differences by first running an ANOVA and then looking at contrasts. Given that the interest is in the group differences, I don't understand why we don't run those contrasts right from the start."
+date: 2022-06-02
+categories:
+  - statistics
+code-fold: true
+code-tools: true
+toc: true
+draft: true
+---
+
+In the field of social psychology I often see researchers analyze group differences by first running an ANOVA and then following up the ANOVA with contrast analyses to inspect specific group differences.
+
+```{r}
+#| message: false
+
+# Load packages
+library(MASS)
+library(tidyverse)
+library(viridis)
+
+# Set the default ggplot theme
+theme_set(theme_minimal())
+
+# Set options
+options(
+  knitr.kable.NA = "",
+  digits = 2
+)
+```
+
+## The data
+
+Say we ran a study with five different conditions. I'll simulate some data below so we have something concrete to think about.
+
+```{r}
+#| label: setting
+
+# Set the simulation parameters
+Ms <- c(0, 0, 0, 0.2, 0.2)
+SDs <- 1
+n <- 195
+
+# Produce the variance-covariance matrix
+Sigma <- matrix(nrow = 5, ncol = 5, data = c(
+    SDs, 0, 0, 0, 0,
+    0, SDs, 0, 0, 0,
+    0, 0, SDs, 0, 0,
+    0, 0, 0, SDs, 0,
+    0, 0, 0, 0, SDs
+  )
+)
+
+# Simulate the values
+m <- mvrnorm(n = n, mu = Ms, Sigma = Sigma, empirical = TRUE)
+
+# Prepare the data by converting it to a data frame and making it tidy
+colnames(m) <- c("group1", "group2", "group3", "group4", "group5")
+
+data <- as_tibble(m)
+
+data <- pivot_longer(
+  data = data, 
+  cols = everything(), 
+  names_to = "condition", 
+  values_to = "DV"
+)
+
+# Plot the simulated data
+ggplot(data, aes(x = condition, y = DV)) +
+  geom_jitter(width = .2, alpha = .25) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "pointrange") +
+  labs(x = "Condition")
+```
+
+## The goals
+
+With this kind of data I can imagine at least two different goals that a researcher may have. You could have a clear a priori prediction of which groups differ or you can go on a fishing expedition and simply see which conditions differ from each other.
+
+It looks like that worked out, so now let's analyze the data.
+
+```{r}
+anova <- aov(DV ~ condition, data = data)
+summary(anova)
+
+lm <- lm(DV ~ condition, data = data)
+summary(lm)
+
+pairwise.t.test(data$DV, data$condition)
+
+library(emmeans)
+emmeans <- emmeans(lm, specs = pairwise ~ condition)
+emmeans
+```
