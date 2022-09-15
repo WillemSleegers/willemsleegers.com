@@ -1,0 +1,235 @@
+---
+title: "Animals slaughtered in the Netherlands"
+editor: visual
+format: 
+  html:
+    include-in-header: counter.html
+draft: true
+---
+
+In this post I take a look at how many animals are slaughtered in the Netherlands. The goal is to find and clean the data to answer this question and feel horrible about what we'll find. I'll go through the entire process of getting the data, trying to understand it, and thinking of ways to visualize the data.
+
+## Data
+
+The data on number of animals slaughtered in the Netherlands can be found on StatLine, a database managed by CBS. Specifically, we're going to take a look at the meat production. The data of that can be found in a table [here](https://opendata.cbs.nl/#/CBS/nl/dataset/7123slac/table?ts=1663151766192). The table shows both the number of animals as well as their weight. I'm only interested in the number of animals, so I deselect all the weight-related rows. I also see that they offer data on more dates than it shown by default, so I select all of the dates. I then download the data as a .csv file using a button in the top right corner. Now we can start.
+
+## Setup
+
+Run the following setup code if you want to follow along. You can download the data yourself or use my [file](meat-production-netherlands.csv).
+
+```{r}
+#| message: false
+
+# Load packages
+library(tidyverse)
+
+# Load data
+data <- read_csv2("meat-production-netherlands.csv")
+
+# Set default ggplot
+theme_set(theme_minimal())
+```
+
+Note that we have to use `read_csv2()` because the data values are separated by a semi-colon. This is an annoying default in the Netherlands (and probably elsewhere in Europe).
+
+## Data cleaning
+
+Let's begin by inspecting the first few rows of the data.
+
+```{r}
+#| tbl-cap: First 6 rows of the data.
+head(data)
+```
+
+It should be no surprise, but the data is in Dutch. I don't like that, so let's translate the data, starting with the columns. One of the columns is called 'Aantal slachtingen (x 1 000)', which means number of slaughtered animals in units of 1000. Instead of translating this directly, I will simply rename it to `count` and multiply the values by 1000.
+
+```{r}
+data <- data %>%
+  rename(
+    animal = Slachtdieren,
+    period = Perioden,
+    count = `Aantal slachtingen (x 1 000)`
+  ) %>%
+  mutate(count = count * 1000)
+```
+
+Let's clean up the `period` column next. It seems like it contains the year and the month (in Dutch). I can translate the month names to Dutch, but I first want to make sure that all data values are structured the same way. `count()` is a great function to inspect that.
+
+```{r}
+data %>%
+  count(period) %>%
+  head()
+```
+
+Curiously, not all rows in the data contain both the year *and* the month. Some only have the year. This is important because that means we can't just sum the number of slaughtered animals per year because that means we'll actually get *twice* the number of animals because we'll sum both the animals slaughtered in that year and each month of that year.
+
+What I want to do next is create a new column that only contains the year and another column that contains the month. Creating the year column is easy because we can use `parse_number()` to extract the year from the data. The month is a bit trickier, but we can use a regular expression to remove the year, leaving us with the month. We use `str_remove()` and tell it to remove a string pattern that consists of 4 numbers and a space. In addition to that, we need to remove an asterisk from some of the months because the most recent months have an asterisk because these are not yet the final numbers. In fact, we can add a column to say whether the numbers are final or not based on this asterisk. After doing that, we can recode the month values that need to be translated and also convert the empty string to a missing value. Finally, we remove the `period` column because we don't need it anymore.
+
+```{r}
+data <- data %>%
+  mutate(
+    year = parse_number(period),
+    month = str_remove(period, "[0-9]{4} ?"),
+    final = if_else(str_detect(period, "\\*"), "no", "yes"),
+    month = str_remove(month, "\\*"),
+    month = recode(month,
+      "augustus" = "august",
+      "februari" = "february",
+      "januari" = "january",
+      "juli" = "july",
+      "juni" = "june",
+      "maart" = "march",
+      "mei" = "may",
+      "oktober" = "october",
+    ),
+    month = na_if(month, "")
+  ) %>%
+  select(-period)
+```
+
+Next are the animals. Let's take a look at the unique values we have.
+
+```{r}
+count(data, animal)
+```
+
+Hmm... it looks like there are a few challenges here. First, we seem to have both total values and non-total values, so we should take care to separate these, probably by removing them and only keeping the data that adds up to form the total. Second, we need to figure out what each word means. Even my Dutch is not helping me in understanding each type of animal.
+
+Let's first simply translate the values so we get a better grasp of what we are dealing with. The translations won't be direct translations. Instead, I already think about what kind of categories make sense and how I want to later plot the data, so I translate the values into names that will also be useful later.
+
+```{r}
+data <- mutate(data, 
+  animal = recode(animal, 
+    "Eenhoevigen" = "ungulates (mostly horses)",
+    "Geiten (totaal)" = "goats",
+    "Kalkoenen" = "turkeys",
+    "Kalveren jonger dan 9 maanden" = "calves (< 9 months)",
+    "Kalveren van 9 tot en met 12 maanden" = "calves (9-12 months)",
+    "Koeien" = "cows",
+    "Overig pluimvee" = "poultry (misc)",
+    "Overige kippen" = "chicken (mostly layers)",
+    "Rundvee (totaal)" = "cattle",
+    "Schapen incl. lammeren" = "sheep",
+    "Schapenlammeren" = "lambs",
+    "Stieren" = "bulls",
+    "Totaal kalveren" = "calves",
+    "Totaal volwassen runderen" = "adult cattle (total)",
+    "Vaarzen" = "heifers",
+    "Varkens (totaal)" = "pigs",
+    "Vleeskuikens" = "broilers"
+  )
+)
+```
+
+Translating the words was very helpful to better understand the data. One thing that's clear is that some of the values are totals of other values. Below I list which values in the data are actually sums of other values:
+
+-   adult cattle: Total of cows, heifers, and bulls
+
+-   cattle: Total of adult cattle and calves
+
+-   calves: Total of calves (\< 9 months) and calves (9-12 months)
+
+If we are interested in what the totals are made of, we can remove the total columns and reconstruct them later if we want to. This works for the first two total columns, but not calves because they only started making the distinction between young and older calves in 2009. So let's instead remove the values that the total values are made of.
+
+```{r}
+data <- filter(data, !animal %in% c("adult cattle (total)", "cows", 
+  "heifers", "bulls", "calves","calves (< 9 months)", "calves (9-12 months)",
+  "lambs")
+)
+```
+
+This leaves us with the following animals.
+
+```{r}
+count(data, animal)
+```
+
+We are almost done with the data cleaning. At this point I want to create two separate data frames: one that only contains the annual data and one that contains the monthly data. This is easy to do because we can take all the annual data by simply selecting the rows with a missing value in the month column.
+
+```{r}
+data_annual <- data %>%
+  filter(is.na(month)) %>%
+  select(-month)
+
+data <- filter(data, !is.na(month))
+```
+
+As a final step we can combine the year and month into a single column, which will be useful for plotting the data later. This requires a special function from the `zoo` package.
+
+```{r}
+data <- mutate(data,
+  month = str_to_sentence(month),
+  month = match(month, month.name),
+  year_month = paste(year, month, "1", sep = "-"),
+  year_month = lubridate::as_date(year_month),
+  year_month = zoo::as.yearmon(year_month)
+) 
+```
+
+## Data analysis
+
+With the data cleaned up we can start to ask some questions. Let's begin with a graph that shows as much data as possible.
+
+```{r}
+ggplot(data, aes(x = year_month, y = count)) +
+  geom_point(size = 1) +
+  geom_line(alpha = .25) +
+  facet_wrap(~ animal, scales = "free") 
+```
+
+A few interesting observations:
+
+-   High numbers :(
+
+-   None to few turkeys were slaughtered since around 2005
+
+-   The number of misc. poultry that was slaughtered started to decrease and is around 0 now
+
+-   Relatively few horses are slaughtered (although too many of course)
+
+-   The data fluctuates a bit from month to month
+
+Given these observations, let's create a subset focusing on the six categories of animals that are still being slaughtered in large numbers and plot the annual data.
+
+```{r}
+data_annual <- data_annual %>%
+  filter(animal %in% c("broilers", "goats", "sheep", "cattle", "pigs", 
+    "chicken (mostly layers)")
+  ) %>%
+  filter(final == "yes")
+
+ggplot(data_annual, aes(x = year, y = count)) +
+  geom_point(size = 1) +
+  geom_line(alpha = .25) +
+  facet_wrap(~ animal, scales = "free")
+```
+
+Okay, parsing this graph I note that a lot of chicken are slaughtered every year. I also see that some animals are slaughtered more and more over the years, although I'm also surprised to see that for some animals we've had worse years, particularly for cattle and pigs.
+
+Let's create a table of the numbers for the last full year.
+
+```{r}
+data_annual %>%
+  filter(year == 2021) %>%
+  arrange(desc(count)) %>%
+  select(animal, count)
+```
+
+How many animals is that in total?
+
+```{r}
+count_total_2021 <- data_annual %>%
+  filter(year == 2021) %>%
+  summarize(count_total = sum(count))
+```
+
+Apparently that's `r count_total_2021` animals killed in 2021. That's `r round(count_total_2021 / 365 / 24 / 60 / 60, 2)` animals per second.
+
+## Conclusion
+
+That means that about...
+
+::: {#counter}
+:::
+
+...have died since you started reading this blog post.
