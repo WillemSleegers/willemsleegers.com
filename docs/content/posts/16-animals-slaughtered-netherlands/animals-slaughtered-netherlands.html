@@ -515,18 +515,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <script>
+  let count = 0; 
+  const counter = document.getElementById("counter")
   
-  window.onload = function () {
-    let count = 0; 
-    const counter = document.getElementById("counter")
+  function start_counter () {
+    count = count + 0.01715604
+    counter.innerHTML = Math.round(count);
+  }
   
-    function start_counter () {
-      count = count + 0.01715604
-      counter.innerHTML = Math.round(count);
-    }
-  
-    setInterval(start_counter, 1);
-}
+  setInterval(start_counter, 1);
 </script>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

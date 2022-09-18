@@ -1,13 +1,4 @@
-<style>
-  #counter {
-    display: flex;
-    justify-content: center;
-    font-size: 3rem;
-    font-weight: bold;
-  }
-</style>
-
-<script>
+window.onload = function () {
   let count = 0; 
   const counter = document.getElementById("counter")
   
@@ -17,4 +8,4 @@
   }
   
   setInterval(start_counter, 1);
-</script>
+}
