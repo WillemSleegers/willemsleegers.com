@@ -2,16 +2,18 @@
 title: "Animals slaughtered in the Netherlands"
 editor: visual
 format: 
-  html:
-    include-in-header: counter.html
-    df-print: paged
+   html:
+     df-print: paged
+     code-tools: true
+     code-fold: show
+     include-after-body: counter.html
 ---
 
 In this post I take a look at how many animals are slaughtered in the Netherlands. The goal is to find and clean the data to answer this question and to get a better grasp of exactly how many animals are killed here every hear. It's both an exercise in data cleaning and calibrating one's beliefs about this topic, as this is something that's too easy to avoid thinking about, while probably being one of the most important things you *should* think about.
 
 ## Data
 
-The data on the number of animals slaughtered in the Netherlands can be found on [StatLine](https://opendata.cbs.nl/statline#/CBS/nl/ "StatLine"). This is a database managed by CBS, the national statistical office of the Netherlands. Specifically, we're going to take a look at the meat production numbers (vleesproductie). These numbers can be found in a table [here](https://opendata.cbs.nl/#/CBS/nl/dataset/7123slac/table?ts=1663151766192). The table shows both the number of animals as well as their weight. We can adapt what is in the table by changing various filters. By default it shows both the number of animals and the weight of the animals. I'm only interested in the number of animals, so I deselect all the weight-related rows. I also see that they offer data on more dates than is shown by default, so I select all of the dates. I download the data as a .csv file using the button in the top right corner. Now we can start.
+The data on the number of animals slaughtered in the Netherlands can be found on [StatLine](https://opendata.cbs.nl/statline#/CBS/nl/ "StatLine"). This is a database managed by CBS, the national statistical office of the Netherlands. Specifically, we're going to take a look at the meat production numbers (vleesproductie). These numbers can be found in a table [here](https://opendata.cbs.nl/#/CBS/nl/dataset/7123slac/table?ts=1663151766192). We can adapt what is in the table by changing various filters. By default it shows both the number of animals and the weight of the animals. I'm only interested in the number of animals, so I deselect the weight-related rows. I also see that they offer data on more dates than is shown by default, so I select all of the dates. I then download the data as a .csv file using the button in the top right corner. Now we can start cleaning the data for our purposes.
 
 ## Setup
 
@@ -60,7 +62,6 @@ Let's clean up the `period` column next. It seems like it contains the year and 
 
 ```{r}
 #| label: inspect-count
-#| 
 data %>%
   count(period)
 ```
@@ -181,7 +182,7 @@ With the data cleaned up we can start to ask some questions. Let's begin with a 
 ```{r}
 #| label: plot-monthly-data
 #| fig-cap: Number of slaughtered animals per month and animal
-#| message: false
+#| warning: false
 ggplot(data, aes(x = year_month, y = count)) +
   geom_point(size = 1) +
   geom_line(alpha = .25) +
@@ -201,7 +202,7 @@ Given these observations, let's create a subset focusing only on six categories 
 ```{r}
 #| label: plot-annual-data
 #| fig-cap: Number of slaughtered animals per year and animal
-#| message: false
+#| warning: false
 data_annual <- data_annual %>%
   filter(animal %in% c("broilers", "goats", "sheep", "cattle", "pigs", 
     "chicken (mostly layers)")
@@ -242,8 +243,9 @@ count_total_2021 <- data_annual %>%
 Apparently a total of `r format(count_total_2021)`, or `r round(count_total_2021 / 365 / 24 / 60 / 60, 2)` animals per second. That means that about:
 
 ::: {#counter}
+0
 :::
 
 ...have died since you started reading this blog post. That's a bit of a bummer to end on, but then, this post was never going to have a happy ending.
 
-*This post was last updated on r format(Sys.Date(), "%Y-%m-%d").*
+*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*
