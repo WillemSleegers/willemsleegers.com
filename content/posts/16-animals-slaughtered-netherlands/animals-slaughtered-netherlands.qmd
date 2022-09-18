@@ -1,12 +1,15 @@
 ---
 title: "Animals slaughtered in the Netherlands"
-editor: visual
-format: 
-   html:
-     df-print: paged
-     code-tools: true
-     code-fold: show
-     include-after-body: counter.html
+date: 2022-09-18
+categories:
+  - animal welfare
+  - data cleaning
+  - data visualization
+  - R
+df-print: paged
+code-tools: true
+code-fold: show
+include-after-body: counter.html
 ---
 
 In this post I take a look at how many animals are slaughtered in the Netherlands. The goal is to find and clean the data to answer this question and to get a better grasp of exactly how many animals are killed here every hear. It's both an exercise in data cleaning and calibrating one's beliefs about this topic, as this is something that's too easy to avoid thinking about, while probably being one of the most important things you *should* think about.
