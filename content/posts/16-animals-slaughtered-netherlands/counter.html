@@ -10,15 +10,14 @@
 <script>
   console.log("this works.")
   window.onload = function () {
-  let count = 0; 
-  const counter = document.getElementById("counter")
+    let count = 0; 
+    const counter = document.getElementById("counter")
   
-  function start_counter () {
-    count++;
-    
-    counter.innerHTML = count;
-  }
+    function start_counter () {
+      count = count + 0.01715604
+      counter.innerHTML = count;
+    }
   
-  setInterval(start_counter, 10);
+    setInterval(start_counter, 1);
 }
 </script>
