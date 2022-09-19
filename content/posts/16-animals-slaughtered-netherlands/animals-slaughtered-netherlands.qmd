@@ -206,13 +206,13 @@ Given these observations, let's create a subset focusing only on six categories 
 #| label: plot-annual-data
 #| fig-cap: Number of slaughtered animals per year and animal
 #| warning: false
-data_annual <- data_annual %>%
+data_annual_subset <- data_annual %>%
   filter(animal %in% c("broilers", "goats", "sheep", "cattle", "pigs", 
     "chicken (mostly layers)")
   ) %>%
   filter(final == "yes")
 
-ggplot(data_annual, aes(x = year, y = count)) +
+ggplot(data_annual_subset, aes(x = year, y = count)) +
   geom_point(size = 1) +
   geom_line(alpha = .25) +
   facet_wrap(~ animal, scales = "free")
