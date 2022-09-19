@@ -243,9 +243,9 @@ count_total_2021 <- data_annual %>%
   pull(count_total)
 ```
 
-Apparently a total of `r format(count_total_2021)`, or `r round(count_total_2021 / 365 / 24 / 60 / 60, 2)` animals per second. That means that about:
+Apparently a total of `r format(count_total_2021)`, or `r round(count_total_2021 / 365 / 24 / 60 / 60, 2)` animals per second. That means that about...
 
-::: {#counter}
+::: {#counter style="margin-bottom: 1rem;"}
 0
 :::
 
