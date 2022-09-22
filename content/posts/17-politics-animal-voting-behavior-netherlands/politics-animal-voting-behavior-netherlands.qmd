@@ -11,49 +11,109 @@ code-fold: show
 draft: true
 ---
 
+Not too long ago the House of Representatives of The Netherlands released a public [portal](https://opendata.tweedekamer.nl "Open Data Portal House of Representatives") to a lot of their data. The portal contains data on law proposals, motions, rapports, etc. I've been interested in this data for a while now (including before it was publicly available) because I want to know more about the voting behavior of political parties. Specifically, I want to know which parties consistently vote in favor of improving animal rights. It's relatively easy for a political party to *say* that they care about animal rights, but that doesn't always mean they vote to in favor of motions that improve animal rights. So let's figure out how the open data portal works and which party to vote for.
+
+Run the following setup code if you want to follow along.
+
 ```{r}
 #| label: setup
+#| message: false
 
 # Load packages
 library(tidyverse)
 library(lubridate)
 library(jsonlite)
+```
 
+## Getting the data
+
+We will use the [OData API](https://opendata.tweedekamer.nl/documentatie/odata-api "OData API") to obtain the data. Using this API is pretty easy in theory; it's nothing more than constructing a URL and then call in the data using that URL. The only trick bit is how to set up the URL. In order to know how to set it up, we need to understand the API. The OData API links to an [information model](https://opendata.tweedekamer.nl/documentatie/informatiemodel "OData API information model") that shows what kind of data we can request. We can request cases (Zaak), documents (Document), activities (Activiteit), and so on. Going through the documentation I figured out we want to request cases because they have decisions (Besluit), which contain the votes (Stemming). Now what we sort of know what we want, we need to figure out how to actually get it.
+
+The documentation of the API is pretty good. They explain how to setup the URL (also called the query) and even provide several examples.
+
+Each query starts with the base url: [`https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/`](https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0). We need to append additional functions to hone in on the exact data we want.
+
+The first thing we'll specify is that we want a case (Zaak), so we will append `Zaak` to the end of the base URL.
+
+Next, we will apply some filter functions. In the documentation they recommend that we always filter on entities that have not been removed. They keep removed entities in the database so they can track changes. In one of the examples we can see how this is done. We have to append the following to the URL: [`?$filter=Verwijderd eq false`](https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/Persoon?$filter=Verwijderd%20eq%20false%20and%20(Functie%20eq%20%27Eerste%20Kamerlid%27%20or%20Functie%20eq%20%27Tweede%20Kamerlid%27)). We need to start with a question mark and a dollar sign, followed by the function name (`filter`), an equal sign, and a condition. The condition in this case is `Verwijderd eq false`, in other words: Removed equals false.
+
+Additional filters can be added using logical operators such as `and`, `or`, or `not`. We want to request only cases, so we'll add `and Soort eq 'Motie'`. Translated that means Type equals 'Case'. If we were to stop here, we would a bunch of different cases, many of which have nothing to do with animal welfare. So let's add another filter: `and contains(Titel, 'Dierenwelzijn')`. This means we want to select only the cases where the title contains the word 'Animal welfare' (Dierenwelzijn). We could run this, but then we will get a total of 250 cases. It turns out that this is the maximum number of entities you can retrieve. That's not ideal because it's then not clear whether we got all cases, so let's add another filter so we get fewer than 250 cases. We can do that by filtering on year: `and year(GestartOp) eq 2021`. This means we only want cases when they've started (GestartOp) in 2021.
+
+The final function we need to add is an expand function. Right now we're only request the data of cases, but not the data of the decision that was made in the case, or the voting data. To also include that in the request we need to use the expand function. It's a bit tricky because we need to run the expand function twice, once to expand on the decision and once on the voting. The part we need to append to the URL is`&$expand=Besluit($expand=Stemming)`.
+
+Now our URL is pretty much done. We have to paste all the parts together and request the data. The data will be returned in the JSON format, so we can use the `jsonlite` package to work with it. The following code sets up the URL and retrieves the data.
+
+```{r}
+#| label: get-data
+#| eval: false
+
+# Set url components
 base_url <- "https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/"
 entity <- "Zaak"
 filter1 <- "?$filter=Verwijderd eq false"
 filter2 <- " and Soort eq 'Motie'"
 filter3 <- " and contains(Titel, 'Dierenwelzijn')"
-filter4 <- " and year(GestartOp) eq 2021" # Deal with the 250 limit
+filter4 <- " and year(GestartOp) eq 2021"
 expand <- "&$expand=Besluit($expand=Stemming)"
 
-url <- paste0(base_url, entity, filter1, filter2, filter3, filter4, expand)
+# Construct url
+url <- paste0(base_url, entity, filter1, filter2, filter3, 
+  filter4, expand)
+
+# Escape all spaces by replacing them with %20
 url <- str_replace_all(url, " ", "%20")
 
-result <- read_json(url)
+# Get data
+data <- read_json(url)
+```
 
-result$value
+You can inspect the retrieved data [here](cases-votes-2021.json "2021 cases and votes data"). The data is structured as a list of lists of lists of lists. I personally don't like working with lists at all in R so I want to convert it to a data frame as soon as possible. My favorite way of converting lists to a data frame is by using `map_df()`. It's a function that accepts a list as its first argument and a function as its second argument. The function will be applied to each element in the list and the results of that will automatically be merged into a data frame. So let's create that function.
 
-write_json(result$value, "animal-motion-decisions-2021.json")
+In the code below we create a function that accepts a case (zaak) and creates a data frame with only some of the case attributes: the number, title, subject, and start date. We then run `map_df()`
 
-zaak <- result$value[[1]]
-besluit <- example_zaak$Besluit[[2]]
-stemming <- example_besluit$Stemming[[1]]
+```{r}
+#| echo: false
+data <- read_json("cases-votes-2021.json")
+```
 
+```{r}
+#| label: cases-to-df
+
+# Create a custom function to extract data from each case
 clean_zaak <- function(zaak) {
   df <- tibble(
     number = zaak$Nummer,
+    start_date = as_date(zaak$GestartOp),
     title = zaak$Titel,
-    subject = zaak$Onderwerp,
-    start_date = as_date(zaak$GestartOp)
+    subject = zaak$Onderwerp
   )
 }
 
+# Run the clean_zaak function on each case
+cases <- map_df(data$value, clean_zaak)
+```
+
+Note that the first argument to `map_df()` is `data$value`, not just `data`. That's because the actual data is stored in the `value` attribute.
+
+The result is the following data frame:
+
+```{r}
+#| label: cases-df
+#| tbl-cap: Subset of cases data
+cases
+```
+
+We can see that all the dates are from 2021 and that the titles contain the word 'Dierenwelzijn', just like we filtered on. The `subject` column is more interesting. It shows us what the case was about. We should carefully inspect each subject and figure out whether voting in favor of it would support animal rights. We cannot assume that voting in favor of a motion regarding animal welfare is actually in favor of animals.
+
+I rated the cases from 2021 and stored my ratings in a separate file. I can read in those ratings and merge them, but before we do that, we should update our function and add a few more functions to also add the actual votes to our data frame.
+
+```{r}
 clean_zaak <- function(zaak) {
   df <- tibble(
-    title = zaak$Titel,
-    subject = zaak$Onderwerp,
-    start_date = zaak$GestartOp
+    number = zaak$Nummer,
+    #title = zaak$Titel,
+    #subject = zaak$Onderwerp,
+    #start_date = zaak$GestartOp
   )
   
   df <- tibble(
@@ -65,7 +125,6 @@ clean_zaak <- function(zaak) {
 
 clean_besluit <- function(besluit) {
   df <- tibble(
-    decision_type = besluit$StemmingsSoort,
     decision_outcome = besluit$BesluitTekst
   )
   
@@ -89,7 +148,53 @@ clean_stemming <- function(stemming) {
   return(df)
 }
 
-df <- map_df(result$value, clean_zaak)
+df <- map_df(data$value, clean_zaak)
 
-write_csv(df, "cases-2021-unrated.csv")
+ratings <- read_csv("cases-2021-rated.csv", na = "-")
+
+df <- left_join(df, ratings, by = "number")
+```
+
+This produces the following data frame:
+
+```{r}
+df
+```
+
+Let's clean up this data frame some more because we kept in more information than we actually need. For example, there are different types of decision outcomes, but we only care about the ones where a voting took place. Let's also translate the votes to English and exclude mistaken votes.
+
+```{r}
+df <- df %>%
+  filter(decision_outcome %in% c("Verworpen.", "Aangenomen.")) %>%
+  filter(!mistake) %>%
+  mutate(vote = recode(vote, "Tegen" = "nay", "Voor" = "aye")) %>%
+  mutate(
+    pro_animal_vote = case_when(
+      pro_animals == 1 & vote == "aye" ~ 1,
+      pro_animals == 0 & vote == "nay" ~ 1,
+      TRUE ~ 0
+    )
+  )
+```
+
+Now we are ready to inspect the voting behavior of the political parties.
+
+```{r}
+voting <- df %>%
+  group_by(party, pro_animal_vote) %>%
+  summarize(n = n()) %>%
+  mutate(
+    pct = n / sum(n), 
+    votes = sum(n)
+  ) %>%
+  filter(pro_animal_vote == 1)
+
+ggplot(voting, aes(x = pct, y = reorder(party, pct))) +
+  geom_col(aes(alpha = votes)) +
+  labs(
+    x = "Times voted in favor of animal welfare (in %)", 
+    y = "",
+    alpha = "Times voted") +
+  scale_x_continuous(limits = c(0, 1), labels = scales::percent) +
+  theme_minimal()
 ```
