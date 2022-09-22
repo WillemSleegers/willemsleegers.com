@@ -98,7 +98,7 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-date','listing-title','listing-categories','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
       searchColumns: ["listing-date","listing-title","listing-author","listing-description"],
     };
@@ -205,7 +205,7 @@ ul.task-list li input[type="checkbox"] {
   <hr class="about-sep">
    <div class="about-links">
   <a href="mailto:w.sleegers@me.com" class="about-link">
-    <i class="bi bi-email"></i>
+    <i class="bi bi-envelope-fill"></i>
      <span class="about-link-text">E-mail</span>
   </a>
   <a href="https://twitter.com/willemsleegers" class="about-link">
@@ -213,12 +213,12 @@ ul.task-list li input[type="checkbox"] {
      <span class="about-link-text">Twitter</span>
   </a>
   <a href="https://scholar.google.com/citations?user=EgqxL0MAAAAJ" class="about-link">
-    <i class="bi bi-google-scholar"></i>
+    <i class="bi bi-mortarboard-fill"></i>
      <span class="about-link-text">Google Scholar</span>
   </a>
   <a href="https://github.com/willemsleegers" class="about-link">
     <i class="bi bi-github"></i>
-     <span class="about-link-text">Github</span>
+     <span class="about-link-text">GitHub</span>
   </a>
 </div>
 </div>
@@ -298,7 +298,7 @@ No matching items
 <h2 data-anchor-id="blog-posts">Blog posts</h2>
 <div id="listing-posts" class="quarto-listing quarto-listing-container-default">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="animal welfare,data cleaning,data visualization,R" data-listing-date-sort="1663452000000" data-listing-file-modified-sort="1663591060334" data-listing-reading-time-sort="9.77">
+<div class="quarto-post image-right" data-index="0" data-categories="animal welfare,data cleaning,data visualization" data-listing-date-sort="1663452000000" data-listing-file-modified-sort="1663839680450" data-listing-reading-time-sort="9.77">
 <div class="body">
 <a href="./content/posts/16-animals-slaughtered-netherlands/animals-slaughtered-netherlands.html">
 <h3 class="no-anchor listing-title">
@@ -307,6 +307,19 @@ Animals slaughtered in the Netherlands
 <div class="listing-subtitle">
 
 </div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('animal welfare'); return false;">
+animal welfare
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('data cleaning'); return false;">
+data cleaning
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('data visualization'); return false;">
+data visualization
+</div>
+</div>
+<a href="./content/posts/16-animals-slaughtered-netherlands/animals-slaughtered-netherlands.html">
 <div class="listing-description">
 In this post I take a look at how many animals are slaughtered in the Netherlands. The goal is to find and clean the data to answer this question and to get a better grasp of exactly how many animals are killed here every hear. It’s both an exercise in data cleaning and calibrating one’s beliefs about this topic, as this is something that’s too easy to avoid thinking about, while probably being one of the most important things you <em>should</em> think about.
 </div>
@@ -329,6 +342,19 @@ Simulation-based power curves
 <div class="listing-subtitle">
 
 </div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('power analysis'); return false;">
+power analysis
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('simulation'); return false;">
+simulation
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('statistics'); return false;">
+statistics
+</div>
+</div>
+<a href="./content/posts/10-simulation-based-power-curves/simulation-based-power-curves.html">
 <div class="listing-description">
 In a previous post I covered how to perform simulation-based power analyses. A limitation in that post is that usually the question is not what our power is, but rather which sample size gives us the desired power. With the code from my previous post you can get to the right sample size by changing the sample size parameters and then checking whether this gives you enough power. It’s fine, but it’s a little bit of a hassle.
 </div>
@@ -351,6 +377,19 @@ Simulation-based power analyses
 <div class="listing-subtitle">
 
 </div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('statistics'); return false;">
+statistics
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('power analysis'); return false;">
+power analysis
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('simulation'); return false;">
+simulation
+</div>
+</div>
+<a href="./content/posts/9-simulation-based-power-analyses/simulation-based-power-analyses.html">
 <div class="listing-description">
 <p>Simulation-based power analyses make it easy to understand what power is: Power is simply counting how often you find the results you expect to find. Running simulation-based power analyses might be new for some, so in this blog post I present code to simulate data for a range of different scenarios.</p>
 </div>

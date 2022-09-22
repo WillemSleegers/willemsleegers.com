@@ -13,7 +13,7 @@ website:
   navbar:
     pinned: false
     collapse-below: md
-    background: light
+    background: white
     left:
       - href: index.qmd
         text: Home

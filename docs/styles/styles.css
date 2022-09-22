@@ -11,7 +11,22 @@ summary {
   outline: none;
 }
 
-/* Add border to the bottom of the navigation bar */
+/* Add border to the bottom of the navigation bar 
 #quarto-header {
   border-bottom: 1px solid #dee2e6;
+}
+*/
+
+/* Grid cards */
+#listing-projects .card-body {
+  padding: 0;
+}
+
+#listing-projects .quarto-grid-item .card-title {
+  background-color: rgba(0,0,0,.125);
+  padding: 1rem;
+}
+
+#listing-projects .quarto-grid-item .card-text {
+  padding: 1rem;
 }

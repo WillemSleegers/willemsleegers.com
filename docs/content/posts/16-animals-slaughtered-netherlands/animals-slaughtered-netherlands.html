@@ -214,7 +214,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div class="quarto-category">animal welfare</div>
     <div class="quarto-category">data cleaning</div>
     <div class="quarto-category">data visualization</div>
-    <div class="quarto-category">R</div>
   </div>
   </div>
 
@@ -517,7 +516,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>0</p>
 </div>
 <p>…have died since you started reading this blog post. That’s a bit of a bummer to end on, but then, this post was never going to have a happy ending.</p>
-<p><em>This post was last updated on 2022-09-19.</em></p>
+<p><em>This post was last updated on 2022-09-22.</em></p>
 
 
 <!-- -->
@@ -701,253 +700,252 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - animal welfare</span></span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">  - data cleaning</span></span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">  - data visualization</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">  - R</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="an">df-print:</span><span class="co"> paged</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="an">code-tools:</span><span class="co"> true</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="an">code-fold:</span><span class="co"> show</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="an">include-after-body:</span><span class="co"> counter.html</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>In this post I take a look at how many animals are slaughtered in the Netherlands. The goal is to find and clean the data to answer this question and to get a better grasp of exactly how many animals are killed here every hear. It's both an exercise in data cleaning and calibrating one's beliefs about this topic, as this is something that's too easy to avoid thinking about, while probably being one of the most important things you *should* think about.</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>The data on the number of animals slaughtered in the Netherlands can be found on <span class="co">[</span><span class="ot">StatLine</span><span class="co">](https://opendata.cbs.nl/statline#/CBS/nl/ "StatLine")</span>. This is a database managed by CBS, the national statistical office of the Netherlands. Specifically, we're going to take a look at the meat production numbers (vleesproductie). These numbers can be found in a table <span class="co">[</span><span class="ot">here</span><span class="co">](https://opendata.cbs.nl/#/CBS/nl/dataset/7123slac/table?ts=1663151766192)</span>. We can adapt what is in the table by changing various filters. By default it shows both the number of animals and the weight of the animals. I'm only interested in the number of animals, so I deselect the weight-related rows. I also see that they offer data on more dates than is shown by default, so I select all of the dates. I then download the data as a .csv file using the button in the top right corner. Now we can start cleaning the data for our purposes.</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>Run the following setup code if you want to follow along. You can download the data yourself or use my <span class="co">[</span><span class="ot">file</span><span class="co">](meat-production-netherlands.csv)</span>.</span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
-<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv2</span>(<span class="st">"meat-production-netherlands.csv"</span>)</span>
-<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Set default ggplot</span></span>
-<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_minimal</span>())</span>
-<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>Note that we have to use <span class="in">`read_csv2()`</span> because the data values are separated by a semi-colon. This is an annoying default in the Netherlands (and probably elsewhere in Europe).</span>
-<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data cleaning</span></span>
-<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>Let's begin by inspecting the first few rows of the data.</span>
-<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-inspection</span></span>
-<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: First 6 rows of the data.</span></span>
-<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span>
-<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>It should be no surprise, but the data is in Dutch. Let's translate the data, starting with the columns. One of the columns is called <span class="in">`Aantal slachtingen (x 1 000)`</span>, which means number of slaughtered animals in units of 1000. Instead of translating this directly, I will simply rename it to <span class="in">`count`</span> and multiply the values by 1000.</span>
-<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rename-columns</span></span>
-<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">animal =</span> Slachtdieren,</span>
-<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">period =</span> Perioden,</span>
-<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">count =</span> <span class="st">`</span><span class="at">Aantal slachtingen (x 1 000)</span><span class="st">`</span></span>
-<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">count =</span> count <span class="sc">*</span> <span class="dv">1000</span>)</span>
-<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>Let's clean up the <span class="in">`period`</span> column next. It seems like it contains the year and the month (in Dutch). I can translate the month names to Dutch, but I first want to make sure that all data values are structured the same way. <span class="in">`count()`</span> is a great function to inspect that.</span>
-<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: inspect-count</span></span>
-<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(period)</span>
-<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a>Curiously, not all rows in the data contain both the year *and* the month. Some only have the year. This is important because that means we can't just sum the number of slaughtered animals per year because that means we'll actually get *twice* the number of animals because we'll sum both the animals slaughtered in that year and each month of that year. The last several months also have an asterisk in the month name. This asterisk indicates that the data for these months has not yet been finalized.</span>
-<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a>What I want to do next is create a new column that only contains the year and another column that contains the month. Creating the year column is easy because we can use <span class="in">`parse_number()`</span> to extract the year from the data. The month is a bit trickier, but we can use a regular expression to remove the year, leaving us with the month. We use <span class="in">`str_remove()`</span> and tell it to remove a string pattern that consists of 4 numbers and a space. We can also use it to remove the asterisk from the more recent months, but first we add a column to say whether the numbers are final or not based on this asterisk. After doing that, we recode the month values that need to be translated and also convert the empty string to a missing value. Finally, we remove the <span class="in">`period`</span> column because we don't need it anymore.</span>
-<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: clean-period</span></span>
-<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">mutate</span>(data,</span>
-<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">parse_number</span>(period),</span>
-<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">str_remove</span>(period, <span class="st">"[0-9]{4} ?"</span>),</span>
-<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">final =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(period, <span class="st">"</span><span class="sc">\\</span><span class="st">*"</span>), <span class="st">"no"</span>, <span class="st">"yes"</span>),</span>
-<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">str_remove</span>(month, <span class="st">"</span><span class="sc">\\</span><span class="st">*"</span>),</span>
-<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">recode</span>(month,</span>
-<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a>      <span class="st">"augustus"</span> <span class="ot">=</span> <span class="st">"august"</span>,</span>
-<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a>      <span class="st">"februari"</span> <span class="ot">=</span> <span class="st">"february"</span>,</span>
-<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a>      <span class="st">"januari"</span> <span class="ot">=</span> <span class="st">"january"</span>,</span>
-<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a>      <span class="st">"juli"</span> <span class="ot">=</span> <span class="st">"july"</span>,</span>
-<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a>      <span class="st">"juni"</span> <span class="ot">=</span> <span class="st">"june"</span>,</span>
-<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a>      <span class="st">"maart"</span> <span class="ot">=</span> <span class="st">"march"</span>,</span>
-<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a>      <span class="st">"mei"</span> <span class="ot">=</span> <span class="st">"may"</span>,</span>
-<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a>      <span class="st">"oktober"</span> <span class="ot">=</span> <span class="st">"october"</span>,</span>
-<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">na_if</span>(month, <span class="st">""</span>),</span>
-<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a>    <span class="at">period =</span> <span class="cn">NULL</span></span>
-<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb16-106"><a href="#cb16-106" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a>Next are the animals. Let's take a look at the unique values we have.</span>
-<span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: inspect-animals</span></span>
-<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(data, animal)</span>
-<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a>Hmm... it looks like there are a few challenges here. First, we seem to have both total values and non-total values, so we should take care to separate these. Second, we need to figure out what each word means. Even my Dutch is not helping me in understanding each type of animal.</span>
-<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a>Let's first simply translate the values so we get a better grasp of what we are dealing with. The translations won't be direct translations. Instead, I already think about what kind of categories make sense and how I want to plot the data later, so I translate the values into names that will also be useful later.</span>
-<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: clean-animals</span></span>
-<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">mutate</span>(data, </span>
-<span id="cb16-126"><a href="#cb16-126" aria-hidden="true" tabindex="-1"></a>  <span class="at">animal =</span> <span class="fu">recode</span>(animal, </span>
-<span id="cb16-127"><a href="#cb16-127" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Eenhoevigen"</span> <span class="ot">=</span> <span class="st">"ungulates (mostly horses)"</span>,</span>
-<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Geiten (totaal)"</span> <span class="ot">=</span> <span class="st">"goats"</span>,</span>
-<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Kalkoenen"</span> <span class="ot">=</span> <span class="st">"turkeys"</span>,</span>
-<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Kalveren jonger dan 9 maanden"</span> <span class="ot">=</span> <span class="st">"calves (&lt; 9 months)"</span>,</span>
-<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Kalveren van 9 tot en met 12 maanden"</span> <span class="ot">=</span> <span class="st">"calves (9-12 months)"</span>,</span>
-<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Koeien"</span> <span class="ot">=</span> <span class="st">"cows"</span>,</span>
-<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Overig pluimvee"</span> <span class="ot">=</span> <span class="st">"poultry (misc)"</span>,</span>
-<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Overige kippen"</span> <span class="ot">=</span> <span class="st">"chicken (mostly layers)"</span>,</span>
-<span id="cb16-135"><a href="#cb16-135" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Rundvee (totaal)"</span> <span class="ot">=</span> <span class="st">"cattle"</span>,</span>
-<span id="cb16-136"><a href="#cb16-136" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Schapen incl. lammeren"</span> <span class="ot">=</span> <span class="st">"sheep"</span>,</span>
-<span id="cb16-137"><a href="#cb16-137" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Schapenlammeren"</span> <span class="ot">=</span> <span class="st">"lambs"</span>,</span>
-<span id="cb16-138"><a href="#cb16-138" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Stieren"</span> <span class="ot">=</span> <span class="st">"bulls"</span>,</span>
-<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Totaal kalveren"</span> <span class="ot">=</span> <span class="st">"calves"</span>,</span>
-<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Totaal volwassen runderen"</span> <span class="ot">=</span> <span class="st">"adult cattle (total)"</span>,</span>
-<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Vaarzen"</span> <span class="ot">=</span> <span class="st">"heifers"</span>,</span>
-<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Varkens (totaal)"</span> <span class="ot">=</span> <span class="st">"pigs"</span>,</span>
-<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Vleeskuikens"</span> <span class="ot">=</span> <span class="st">"broilers"</span></span>
-<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a>Translating the words was very helpful to better understand the data. One thing that's clear is that some of the values are totals of other values. Below I list which values in the data are actually sums of other values:</span>
-<span id="cb16-149"><a href="#cb16-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-150"><a href="#cb16-150" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>adult cattle: Total of cows, heifers, and bulls</span>
-<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>cattle: Total of adult cattle and calves</span>
-<span id="cb16-152"><a href="#cb16-152" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>calves: Total of calves (<span class="sc">\&lt;</span> 9 months) and calves (9-12 months)</span>
-<span id="cb16-153"><a href="#cb16-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a>If we are interested in what the totals are made of, we can remove the total columns and reconstruct them later if we want to. This works for the first two total columns, but not calves because they only started making the distinction between young and older calves in 2009. So let's instead remove the values that the total values are made of and only keep the total values.</span>
-<span id="cb16-155"><a href="#cb16-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-158"><a href="#cb16-158" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-159"><a href="#cb16-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: remove-non-total-animals</span></span>
-<span id="cb16-160"><a href="#cb16-160" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">filter</span>(data, <span class="sc">!</span>animal <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"adult cattle (total)"</span>, <span class="st">"cows"</span>, </span>
-<span id="cb16-161"><a href="#cb16-161" aria-hidden="true" tabindex="-1"></a>  <span class="st">"heifers"</span>, <span class="st">"bulls"</span>, <span class="st">"calves"</span>,<span class="st">"calves (&lt; 9 months)"</span>, </span>
-<span id="cb16-162"><a href="#cb16-162" aria-hidden="true" tabindex="-1"></a>  <span class="st">"calves (9-12 months)"</span>, <span class="st">"lambs"</span>)</span>
-<span id="cb16-163"><a href="#cb16-163" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-164"><a href="#cb16-164" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-165"><a href="#cb16-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-166"><a href="#cb16-166" aria-hidden="true" tabindex="-1"></a>This leaves us with the following animals.</span>
-<span id="cb16-167"><a href="#cb16-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-170"><a href="#cb16-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-171"><a href="#cb16-171" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: inspect-animals-again</span></span>
-<span id="cb16-172"><a href="#cb16-172" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(data, animal)</span>
-<span id="cb16-173"><a href="#cb16-173" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-174"><a href="#cb16-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-175"><a href="#cb16-175" aria-hidden="true" tabindex="-1"></a>This looks fine to me, which means we are almost done with the data cleaning. At this point I want to create two separate data frames: one that only contains the annual data and one that contains the monthly data. This is easy to do because we can take all the annual data by simply selecting the rows with a missing value in the <span class="in">`month`</span> column. Since the <span class="in">`month`</span> column is useless in that data frame, we remove it.</span>
-<span id="cb16-176"><a href="#cb16-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-179"><a href="#cb16-179" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-180"><a href="#cb16-180" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: separate-data-frames</span></span>
-<span id="cb16-181"><a href="#cb16-181" aria-hidden="true" tabindex="-1"></a>data_annual <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb16-182"><a href="#cb16-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(month)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-183"><a href="#cb16-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>month)</span>
-<span id="cb16-184"><a href="#cb16-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-185"><a href="#cb16-185" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">filter</span>(data, <span class="sc">!</span><span class="fu">is.na</span>(month))</span>
-<span id="cb16-186"><a href="#cb16-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-187"><a href="#cb16-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-188"><a href="#cb16-188" aria-hidden="true" tabindex="-1"></a>As a final step we can combine the <span class="in">`year`</span> and <span class="in">`month`</span> columns from the monthly data frame into a single column, which will be useful for plotting the data later. This requires a special function from the <span class="in">`zoo`</span> package.</span>
-<span id="cb16-189"><a href="#cb16-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-192"><a href="#cb16-192" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-193"><a href="#cb16-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: add-year-month-column</span></span>
-<span id="cb16-194"><a href="#cb16-194" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">mutate</span>(data,</span>
-<span id="cb16-195"><a href="#cb16-195" aria-hidden="true" tabindex="-1"></a>  <span class="at">month =</span> <span class="fu">str_to_sentence</span>(month),</span>
-<span id="cb16-196"><a href="#cb16-196" aria-hidden="true" tabindex="-1"></a>  <span class="at">month =</span> <span class="fu">match</span>(month, month.name),</span>
-<span id="cb16-197"><a href="#cb16-197" aria-hidden="true" tabindex="-1"></a>  <span class="at">year_month =</span> <span class="fu">paste</span>(year, month, <span class="st">"1"</span>, <span class="at">sep =</span> <span class="st">"-"</span>),</span>
-<span id="cb16-198"><a href="#cb16-198" aria-hidden="true" tabindex="-1"></a>  <span class="at">year_month =</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(year_month),</span>
-<span id="cb16-199"><a href="#cb16-199" aria-hidden="true" tabindex="-1"></a>  <span class="at">year_month =</span> zoo<span class="sc">::</span><span class="fu">as.yearmon</span>(year_month)</span>
-<span id="cb16-200"><a href="#cb16-200" aria-hidden="true" tabindex="-1"></a>) </span>
-<span id="cb16-201"><a href="#cb16-201" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-202"><a href="#cb16-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-203"><a href="#cb16-203" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data analysis</span></span>
-<span id="cb16-204"><a href="#cb16-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-205"><a href="#cb16-205" aria-hidden="true" tabindex="-1"></a>With the data cleaned up we can start to ask some questions. Let's begin with a graph that shows as much of the data as possible. That means plotting the monthly data for each animal.</span>
-<span id="cb16-206"><a href="#cb16-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-209"><a href="#cb16-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-210"><a href="#cb16-210" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot-monthly-data</span></span>
-<span id="cb16-211"><a href="#cb16-211" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Number of slaughtered animals per month and animal</span></span>
-<span id="cb16-212"><a href="#cb16-212" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb16-213"><a href="#cb16-213" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> year_month, <span class="at">y =</span> count)) <span class="sc">+</span></span>
-<span id="cb16-214"><a href="#cb16-214" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb16-215"><a href="#cb16-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> .<span class="dv">25</span>) <span class="sc">+</span></span>
-<span id="cb16-216"><a href="#cb16-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> animal, <span class="at">scales =</span> <span class="st">"free"</span>) </span>
-<span id="cb16-217"><a href="#cb16-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-218"><a href="#cb16-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-219"><a href="#cb16-219" aria-hidden="true" tabindex="-1"></a>A few observations:</span>
-<span id="cb16-220"><a href="#cb16-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-221"><a href="#cb16-221" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The numbers are very high, particularly for some animals (e.g., broilers)</span>
-<span id="cb16-222"><a href="#cb16-222" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Some animals used to be slaughtered in larger numbers than now</span>
-<span id="cb16-223"><a href="#cb16-223" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>This is clearly the case for turkeys and poulty (misc), but also other other animals such as cattle and pigs</span>
-<span id="cb16-224"><a href="#cb16-224" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Some numbers are relatively low (e.g., for horses)</span>
-<span id="cb16-225"><a href="#cb16-225" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The data sometimes fluctuates quite a bit from month to month, so annual view might show clearer patterns</span>
-<span id="cb16-226"><a href="#cb16-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-227"><a href="#cb16-227" aria-hidden="true" tabindex="-1"></a>Given these observations, let's create a subset focusing only on six categories of animals that are still being slaughtered in large numbers and let's also plot the annual data.</span>
-<span id="cb16-228"><a href="#cb16-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-231"><a href="#cb16-231" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-232"><a href="#cb16-232" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot-annual-data</span></span>
-<span id="cb16-233"><a href="#cb16-233" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Number of slaughtered animals per year and animal</span></span>
-<span id="cb16-234"><a href="#cb16-234" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb16-235"><a href="#cb16-235" aria-hidden="true" tabindex="-1"></a>data_annual_subset <span class="ot">&lt;-</span> data_annual <span class="sc">%&gt;%</span></span>
-<span id="cb16-236"><a href="#cb16-236" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(animal <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"broilers"</span>, <span class="st">"goats"</span>, <span class="st">"sheep"</span>, <span class="st">"cattle"</span>, <span class="st">"pigs"</span>, </span>
-<span id="cb16-237"><a href="#cb16-237" aria-hidden="true" tabindex="-1"></a>    <span class="st">"chicken (mostly layers)"</span>)</span>
-<span id="cb16-238"><a href="#cb16-238" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb16-239"><a href="#cb16-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(final <span class="sc">==</span> <span class="st">"yes"</span>)</span>
-<span id="cb16-240"><a href="#cb16-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-241"><a href="#cb16-241" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_annual_subset, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> count)) <span class="sc">+</span></span>
-<span id="cb16-242"><a href="#cb16-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb16-243"><a href="#cb16-243" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> .<span class="dv">25</span>) <span class="sc">+</span></span>
-<span id="cb16-244"><a href="#cb16-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> animal, <span class="at">scales =</span> <span class="st">"free"</span>)</span>
-<span id="cb16-245"><a href="#cb16-245" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-246"><a href="#cb16-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-247"><a href="#cb16-247" aria-hidden="true" tabindex="-1"></a>Okay, parsing this graph I see that a lot of chicken are slaughtered every year, particularly broiler chicken. The numbers are so high that <span class="in">`ggplot`</span> has switched to the scientific notation to represent the numbers. Interestingly, though, the number of slaughtered broiler chickens has decreased somewhat in the last two years. I don't know why that is. I also see that some animals are slaughtered more and more over the years (e.g., cattle, non-broiler chicken, goats, and pigs), although I'm also surprised to see that for some animals we've had worse years, particularly for cattle and pigs. For those animals we see a huge drop around the year 2000. The reason for that drop was the outbreak of foot-and-mouth disease and subsequent regulation. I thought thinks were getting worse and worse, but apparently it was already worse a while ago.</span>
-<span id="cb16-248"><a href="#cb16-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-249"><a href="#cb16-249" aria-hidden="true" tabindex="-1"></a>Let's hone in on some exact numbers. Below we create a table to show the number of slaughtered animals in 2021, per animal.</span>
-<span id="cb16-250"><a href="#cb16-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-253"><a href="#cb16-253" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-254"><a href="#cb16-254" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: table-count-2021</span></span>
-<span id="cb16-255"><a href="#cb16-255" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Number of slaughtered animals in 2021</span></span>
-<span id="cb16-256"><a href="#cb16-256" aria-hidden="true" tabindex="-1"></a>data_annual <span class="sc">%&gt;%</span></span>
-<span id="cb16-257"><a href="#cb16-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2021</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb16-258"><a href="#cb16-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(count)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-259"><a href="#cb16-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(animal, count)</span>
-<span id="cb16-260"><a href="#cb16-260" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-261"><a href="#cb16-261" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-262"><a href="#cb16-262" aria-hidden="true" tabindex="-1"></a>Oof. That's over 500 million chicken! For reference, the Netherlands had a population of 17.17 million in 2021.</span>
-<span id="cb16-263"><a href="#cb16-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-264"><a href="#cb16-264" aria-hidden="true" tabindex="-1"></a>How many animals were slaughtered in total, in 2021?</span>
-<span id="cb16-265"><a href="#cb16-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-268"><a href="#cb16-268" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-269"><a href="#cb16-269" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: total-count-2021</span></span>
-<span id="cb16-270"><a href="#cb16-270" aria-hidden="true" tabindex="-1"></a>count_total_2021 <span class="ot">&lt;-</span> data_annual <span class="sc">%&gt;%</span></span>
-<span id="cb16-271"><a href="#cb16-271" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2021</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb16-272"><a href="#cb16-272" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count_total =</span> <span class="fu">sum</span>(count)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-273"><a href="#cb16-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(count_total)</span>
-<span id="cb16-274"><a href="#cb16-274" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-275"><a href="#cb16-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-276"><a href="#cb16-276" aria-hidden="true" tabindex="-1"></a>Apparently a total of <span class="in">`r format(count_total_2021)`</span>, or <span class="in">`r round(count_total_2021 / 365 / 24 / 60 / 60, 2)`</span> animals per second. That means that about...</span>
-<span id="cb16-277"><a href="#cb16-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-278"><a href="#cb16-278" aria-hidden="true" tabindex="-1"></a>::: {#counter style="margin-bottom: 1rem;"}</span>
-<span id="cb16-279"><a href="#cb16-279" aria-hidden="true" tabindex="-1"></a>0</span>
-<span id="cb16-280"><a href="#cb16-280" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb16-281"><a href="#cb16-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-282"><a href="#cb16-282" aria-hidden="true" tabindex="-1"></a>...have died since you started reading this blog post. That's a bit of a bummer to end on, but then, this post was never going to have a happy ending.</span>
-<span id="cb16-283"><a href="#cb16-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-284"><a href="#cb16-284" aria-hidden="true" tabindex="-1"></a>*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="an">df-print:</span><span class="co"> paged</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="an">code-tools:</span><span class="co"> true</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="an">code-fold:</span><span class="co"> show</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="an">include-after-body:</span><span class="co"> counter.html</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>In this post I take a look at how many animals are slaughtered in the Netherlands. The goal is to find and clean the data to answer this question and to get a better grasp of exactly how many animals are killed here every hear. It's both an exercise in data cleaning and calibrating one's beliefs about this topic, as this is something that's too easy to avoid thinking about, while probably being one of the most important things you *should* think about.</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>The data on the number of animals slaughtered in the Netherlands can be found on <span class="co">[</span><span class="ot">StatLine</span><span class="co">](https://opendata.cbs.nl/statline#/CBS/nl/ "StatLine")</span>. This is a database managed by CBS, the national statistical office of the Netherlands. Specifically, we're going to take a look at the meat production numbers (vleesproductie). These numbers can be found in a table <span class="co">[</span><span class="ot">here</span><span class="co">](https://opendata.cbs.nl/#/CBS/nl/dataset/7123slac/table?ts=1663151766192)</span>. We can adapt what is in the table by changing various filters. By default it shows both the number of animals and the weight of the animals. I'm only interested in the number of animals, so I deselect the weight-related rows. I also see that they offer data on more dates than is shown by default, so I select all of the dates. I then download the data as a .csv file using the button in the top right corner. Now we can start cleaning the data for our purposes.</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>Run the following setup code if you want to follow along. You can download the data yourself or use my <span class="co">[</span><span class="ot">file</span><span class="co">](meat-production-netherlands.csv)</span>.</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv2</span>(<span class="st">"meat-production-netherlands.csv"</span>)</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Set default ggplot</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_minimal</span>())</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>Note that we have to use <span class="in">`read_csv2()`</span> because the data values are separated by a semi-colon. This is an annoying default in the Netherlands (and probably elsewhere in Europe).</span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data cleaning</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>Let's begin by inspecting the first few rows of the data.</span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-inspection</span></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: First 6 rows of the data.</span></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>It should be no surprise, but the data is in Dutch. Let's translate the data, starting with the columns. One of the columns is called <span class="in">`Aantal slachtingen (x 1 000)`</span>, which means number of slaughtered animals in units of 1000. Instead of translating this directly, I will simply rename it to <span class="in">`count`</span> and multiply the values by 1000.</span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rename-columns</span></span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">animal =</span> Slachtdieren,</span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">period =</span> Perioden,</span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">count =</span> <span class="st">`</span><span class="at">Aantal slachtingen (x 1 000)</span><span class="st">`</span></span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">count =</span> count <span class="sc">*</span> <span class="dv">1000</span>)</span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>Let's clean up the <span class="in">`period`</span> column next. It seems like it contains the year and the month (in Dutch). I can translate the month names to Dutch, but I first want to make sure that all data values are structured the same way. <span class="in">`count()`</span> is a great function to inspect that.</span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: inspect-count</span></span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(period)</span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a>Curiously, not all rows in the data contain both the year *and* the month. Some only have the year. This is important because that means we can't just sum the number of slaughtered animals per year because that means we'll actually get *twice* the number of animals because we'll sum both the animals slaughtered in that year and each month of that year. The last several months also have an asterisk in the month name. This asterisk indicates that the data for these months has not yet been finalized.</span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a>What I want to do next is create a new column that only contains the year and another column that contains the month. Creating the year column is easy because we can use <span class="in">`parse_number()`</span> to extract the year from the data. The month is a bit trickier, but we can use a regular expression to remove the year, leaving us with the month. We use <span class="in">`str_remove()`</span> and tell it to remove a string pattern that consists of 4 numbers and a space. We can also use it to remove the asterisk from the more recent months, but first we add a column to say whether the numbers are final or not based on this asterisk. After doing that, we recode the month values that need to be translated and also convert the empty string to a missing value. Finally, we remove the <span class="in">`period`</span> column because we don't need it anymore.</span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: clean-period</span></span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">mutate</span>(data,</span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">parse_number</span>(period),</span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">str_remove</span>(period, <span class="st">"[0-9]{4} ?"</span>),</span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">final =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(period, <span class="st">"</span><span class="sc">\\</span><span class="st">*"</span>), <span class="st">"no"</span>, <span class="st">"yes"</span>),</span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">str_remove</span>(month, <span class="st">"</span><span class="sc">\\</span><span class="st">*"</span>),</span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">recode</span>(month,</span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a>      <span class="st">"augustus"</span> <span class="ot">=</span> <span class="st">"august"</span>,</span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a>      <span class="st">"februari"</span> <span class="ot">=</span> <span class="st">"february"</span>,</span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a>      <span class="st">"januari"</span> <span class="ot">=</span> <span class="st">"january"</span>,</span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a>      <span class="st">"juli"</span> <span class="ot">=</span> <span class="st">"july"</span>,</span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a>      <span class="st">"juni"</span> <span class="ot">=</span> <span class="st">"june"</span>,</span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a>      <span class="st">"maart"</span> <span class="ot">=</span> <span class="st">"march"</span>,</span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a>      <span class="st">"mei"</span> <span class="ot">=</span> <span class="st">"may"</span>,</span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a>      <span class="st">"oktober"</span> <span class="ot">=</span> <span class="st">"october"</span>,</span>
+<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> <span class="fu">na_if</span>(month, <span class="st">""</span>),</span>
+<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">period =</span> <span class="cn">NULL</span></span>
+<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-106"><a href="#cb16-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a>Next are the animals. Let's take a look at the unique values we have.</span>
+<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: inspect-animals</span></span>
+<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(data, animal)</span>
+<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a>Hmm... it looks like there are a few challenges here. First, we seem to have both total values and non-total values, so we should take care to separate these. Second, we need to figure out what each word means. Even my Dutch is not helping me in understanding each type of animal.</span>
+<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a>Let's first simply translate the values so we get a better grasp of what we are dealing with. The translations won't be direct translations. Instead, I already think about what kind of categories make sense and how I want to plot the data later, so I translate the values into names that will also be useful later.</span>
+<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: clean-animals</span></span>
+<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">mutate</span>(data, </span>
+<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a>  <span class="at">animal =</span> <span class="fu">recode</span>(animal, </span>
+<span id="cb16-126"><a href="#cb16-126" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Eenhoevigen"</span> <span class="ot">=</span> <span class="st">"ungulates (mostly horses)"</span>,</span>
+<span id="cb16-127"><a href="#cb16-127" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Geiten (totaal)"</span> <span class="ot">=</span> <span class="st">"goats"</span>,</span>
+<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Kalkoenen"</span> <span class="ot">=</span> <span class="st">"turkeys"</span>,</span>
+<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Kalveren jonger dan 9 maanden"</span> <span class="ot">=</span> <span class="st">"calves (&lt; 9 months)"</span>,</span>
+<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Kalveren van 9 tot en met 12 maanden"</span> <span class="ot">=</span> <span class="st">"calves (9-12 months)"</span>,</span>
+<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Koeien"</span> <span class="ot">=</span> <span class="st">"cows"</span>,</span>
+<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Overig pluimvee"</span> <span class="ot">=</span> <span class="st">"poultry (misc)"</span>,</span>
+<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Overige kippen"</span> <span class="ot">=</span> <span class="st">"chicken (mostly layers)"</span>,</span>
+<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Rundvee (totaal)"</span> <span class="ot">=</span> <span class="st">"cattle"</span>,</span>
+<span id="cb16-135"><a href="#cb16-135" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Schapen incl. lammeren"</span> <span class="ot">=</span> <span class="st">"sheep"</span>,</span>
+<span id="cb16-136"><a href="#cb16-136" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Schapenlammeren"</span> <span class="ot">=</span> <span class="st">"lambs"</span>,</span>
+<span id="cb16-137"><a href="#cb16-137" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Stieren"</span> <span class="ot">=</span> <span class="st">"bulls"</span>,</span>
+<span id="cb16-138"><a href="#cb16-138" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Totaal kalveren"</span> <span class="ot">=</span> <span class="st">"calves"</span>,</span>
+<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Totaal volwassen runderen"</span> <span class="ot">=</span> <span class="st">"adult cattle (total)"</span>,</span>
+<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Vaarzen"</span> <span class="ot">=</span> <span class="st">"heifers"</span>,</span>
+<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Varkens (totaal)"</span> <span class="ot">=</span> <span class="st">"pigs"</span>,</span>
+<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Vleeskuikens"</span> <span class="ot">=</span> <span class="st">"broilers"</span></span>
+<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a>Translating the words was very helpful to better understand the data. One thing that's clear is that some of the values are totals of other values. Below I list which values in the data are actually sums of other values:</span>
+<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-149"><a href="#cb16-149" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>adult cattle: Total of cows, heifers, and bulls</span>
+<span id="cb16-150"><a href="#cb16-150" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>cattle: Total of adult cattle and calves</span>
+<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>calves: Total of calves (<span class="sc">\&lt;</span> 9 months) and calves (9-12 months)</span>
+<span id="cb16-152"><a href="#cb16-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-153"><a href="#cb16-153" aria-hidden="true" tabindex="-1"></a>If we are interested in what the totals are made of, we can remove the total columns and reconstruct them later if we want to. This works for the first two total columns, but not calves because they only started making the distinction between young and older calves in 2009. So let's instead remove the values that the total values are made of and only keep the total values.</span>
+<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-157"><a href="#cb16-157" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-158"><a href="#cb16-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: remove-non-total-animals</span></span>
+<span id="cb16-159"><a href="#cb16-159" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">filter</span>(data, <span class="sc">!</span>animal <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"adult cattle (total)"</span>, <span class="st">"cows"</span>, </span>
+<span id="cb16-160"><a href="#cb16-160" aria-hidden="true" tabindex="-1"></a>  <span class="st">"heifers"</span>, <span class="st">"bulls"</span>, <span class="st">"calves"</span>,<span class="st">"calves (&lt; 9 months)"</span>, </span>
+<span id="cb16-161"><a href="#cb16-161" aria-hidden="true" tabindex="-1"></a>  <span class="st">"calves (9-12 months)"</span>, <span class="st">"lambs"</span>)</span>
+<span id="cb16-162"><a href="#cb16-162" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-163"><a href="#cb16-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-164"><a href="#cb16-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-165"><a href="#cb16-165" aria-hidden="true" tabindex="-1"></a>This leaves us with the following animals.</span>
+<span id="cb16-166"><a href="#cb16-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-169"><a href="#cb16-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-170"><a href="#cb16-170" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: inspect-animals-again</span></span>
+<span id="cb16-171"><a href="#cb16-171" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(data, animal)</span>
+<span id="cb16-172"><a href="#cb16-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-173"><a href="#cb16-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-174"><a href="#cb16-174" aria-hidden="true" tabindex="-1"></a>This looks fine to me, which means we are almost done with the data cleaning. At this point I want to create two separate data frames: one that only contains the annual data and one that contains the monthly data. This is easy to do because we can take all the annual data by simply selecting the rows with a missing value in the <span class="in">`month`</span> column. Since the <span class="in">`month`</span> column is useless in that data frame, we remove it.</span>
+<span id="cb16-175"><a href="#cb16-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-178"><a href="#cb16-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-179"><a href="#cb16-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: separate-data-frames</span></span>
+<span id="cb16-180"><a href="#cb16-180" aria-hidden="true" tabindex="-1"></a>data_annual <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb16-181"><a href="#cb16-181" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(month)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-182"><a href="#cb16-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>month)</span>
+<span id="cb16-183"><a href="#cb16-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-184"><a href="#cb16-184" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">filter</span>(data, <span class="sc">!</span><span class="fu">is.na</span>(month))</span>
+<span id="cb16-185"><a href="#cb16-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-186"><a href="#cb16-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-187"><a href="#cb16-187" aria-hidden="true" tabindex="-1"></a>As a final step we can combine the <span class="in">`year`</span> and <span class="in">`month`</span> columns from the monthly data frame into a single column, which will be useful for plotting the data later. This requires a special function from the <span class="in">`zoo`</span> package.</span>
+<span id="cb16-188"><a href="#cb16-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-191"><a href="#cb16-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-192"><a href="#cb16-192" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: add-year-month-column</span></span>
+<span id="cb16-193"><a href="#cb16-193" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">mutate</span>(data,</span>
+<span id="cb16-194"><a href="#cb16-194" aria-hidden="true" tabindex="-1"></a>  <span class="at">month =</span> <span class="fu">str_to_sentence</span>(month),</span>
+<span id="cb16-195"><a href="#cb16-195" aria-hidden="true" tabindex="-1"></a>  <span class="at">month =</span> <span class="fu">match</span>(month, month.name),</span>
+<span id="cb16-196"><a href="#cb16-196" aria-hidden="true" tabindex="-1"></a>  <span class="at">year_month =</span> <span class="fu">paste</span>(year, month, <span class="st">"1"</span>, <span class="at">sep =</span> <span class="st">"-"</span>),</span>
+<span id="cb16-197"><a href="#cb16-197" aria-hidden="true" tabindex="-1"></a>  <span class="at">year_month =</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(year_month),</span>
+<span id="cb16-198"><a href="#cb16-198" aria-hidden="true" tabindex="-1"></a>  <span class="at">year_month =</span> zoo<span class="sc">::</span><span class="fu">as.yearmon</span>(year_month)</span>
+<span id="cb16-199"><a href="#cb16-199" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb16-200"><a href="#cb16-200" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-201"><a href="#cb16-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-202"><a href="#cb16-202" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data analysis</span></span>
+<span id="cb16-203"><a href="#cb16-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-204"><a href="#cb16-204" aria-hidden="true" tabindex="-1"></a>With the data cleaned up we can start to ask some questions. Let's begin with a graph that shows as much of the data as possible. That means plotting the monthly data for each animal.</span>
+<span id="cb16-205"><a href="#cb16-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-208"><a href="#cb16-208" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-209"><a href="#cb16-209" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot-monthly-data</span></span>
+<span id="cb16-210"><a href="#cb16-210" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Number of slaughtered animals per month and animal</span></span>
+<span id="cb16-211"><a href="#cb16-211" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-212"><a href="#cb16-212" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> year_month, <span class="at">y =</span> count)) <span class="sc">+</span></span>
+<span id="cb16-213"><a href="#cb16-213" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb16-214"><a href="#cb16-214" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> .<span class="dv">25</span>) <span class="sc">+</span></span>
+<span id="cb16-215"><a href="#cb16-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> animal, <span class="at">scales =</span> <span class="st">"free"</span>) </span>
+<span id="cb16-216"><a href="#cb16-216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-217"><a href="#cb16-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-218"><a href="#cb16-218" aria-hidden="true" tabindex="-1"></a>A few observations:</span>
+<span id="cb16-219"><a href="#cb16-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-220"><a href="#cb16-220" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The numbers are very high, particularly for some animals (e.g., broilers)</span>
+<span id="cb16-221"><a href="#cb16-221" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Some animals used to be slaughtered in larger numbers than now</span>
+<span id="cb16-222"><a href="#cb16-222" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>This is clearly the case for turkeys and poulty (misc), but also other other animals such as cattle and pigs</span>
+<span id="cb16-223"><a href="#cb16-223" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Some numbers are relatively low (e.g., for horses)</span>
+<span id="cb16-224"><a href="#cb16-224" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The data sometimes fluctuates quite a bit from month to month, so annual view might show clearer patterns</span>
+<span id="cb16-225"><a href="#cb16-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-226"><a href="#cb16-226" aria-hidden="true" tabindex="-1"></a>Given these observations, let's create a subset focusing only on six categories of animals that are still being slaughtered in large numbers and let's also plot the annual data.</span>
+<span id="cb16-227"><a href="#cb16-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-230"><a href="#cb16-230" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-231"><a href="#cb16-231" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot-annual-data</span></span>
+<span id="cb16-232"><a href="#cb16-232" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Number of slaughtered animals per year and animal</span></span>
+<span id="cb16-233"><a href="#cb16-233" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-234"><a href="#cb16-234" aria-hidden="true" tabindex="-1"></a>data_annual_subset <span class="ot">&lt;-</span> data_annual <span class="sc">%&gt;%</span></span>
+<span id="cb16-235"><a href="#cb16-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(animal <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"broilers"</span>, <span class="st">"goats"</span>, <span class="st">"sheep"</span>, <span class="st">"cattle"</span>, <span class="st">"pigs"</span>, </span>
+<span id="cb16-236"><a href="#cb16-236" aria-hidden="true" tabindex="-1"></a>    <span class="st">"chicken (mostly layers)"</span>)</span>
+<span id="cb16-237"><a href="#cb16-237" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-238"><a href="#cb16-238" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(final <span class="sc">==</span> <span class="st">"yes"</span>)</span>
+<span id="cb16-239"><a href="#cb16-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-240"><a href="#cb16-240" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_annual_subset, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> count)) <span class="sc">+</span></span>
+<span id="cb16-241"><a href="#cb16-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb16-242"><a href="#cb16-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> .<span class="dv">25</span>) <span class="sc">+</span></span>
+<span id="cb16-243"><a href="#cb16-243" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> animal, <span class="at">scales =</span> <span class="st">"free"</span>)</span>
+<span id="cb16-244"><a href="#cb16-244" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-245"><a href="#cb16-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-246"><a href="#cb16-246" aria-hidden="true" tabindex="-1"></a>Okay, parsing this graph I see that a lot of chicken are slaughtered every year, particularly broiler chicken. The numbers are so high that <span class="in">`ggplot`</span> has switched to the scientific notation to represent the numbers. Interestingly, though, the number of slaughtered broiler chickens has decreased somewhat in the last two years. I don't know why that is. I also see that some animals are slaughtered more and more over the years (e.g., cattle, non-broiler chicken, goats, and pigs), although I'm also surprised to see that for some animals we've had worse years, particularly for cattle and pigs. For those animals we see a huge drop around the year 2000. The reason for that drop was the outbreak of foot-and-mouth disease and subsequent regulation. I thought thinks were getting worse and worse, but apparently it was already worse a while ago.</span>
+<span id="cb16-247"><a href="#cb16-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-248"><a href="#cb16-248" aria-hidden="true" tabindex="-1"></a>Let's hone in on some exact numbers. Below we create a table to show the number of slaughtered animals in 2021, per animal.</span>
+<span id="cb16-249"><a href="#cb16-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-252"><a href="#cb16-252" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-253"><a href="#cb16-253" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: table-count-2021</span></span>
+<span id="cb16-254"><a href="#cb16-254" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Number of slaughtered animals in 2021</span></span>
+<span id="cb16-255"><a href="#cb16-255" aria-hidden="true" tabindex="-1"></a>data_annual <span class="sc">%&gt;%</span></span>
+<span id="cb16-256"><a href="#cb16-256" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2021</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-257"><a href="#cb16-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(count)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-258"><a href="#cb16-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(animal, count)</span>
+<span id="cb16-259"><a href="#cb16-259" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-260"><a href="#cb16-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-261"><a href="#cb16-261" aria-hidden="true" tabindex="-1"></a>Oof. That's over 500 million chicken! For reference, the Netherlands had a population of 17.17 million in 2021.</span>
+<span id="cb16-262"><a href="#cb16-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-263"><a href="#cb16-263" aria-hidden="true" tabindex="-1"></a>How many animals were slaughtered in total, in 2021?</span>
+<span id="cb16-264"><a href="#cb16-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-267"><a href="#cb16-267" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-268"><a href="#cb16-268" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: total-count-2021</span></span>
+<span id="cb16-269"><a href="#cb16-269" aria-hidden="true" tabindex="-1"></a>count_total_2021 <span class="ot">&lt;-</span> data_annual <span class="sc">%&gt;%</span></span>
+<span id="cb16-270"><a href="#cb16-270" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2021</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-271"><a href="#cb16-271" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count_total =</span> <span class="fu">sum</span>(count)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-272"><a href="#cb16-272" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(count_total)</span>
+<span id="cb16-273"><a href="#cb16-273" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-274"><a href="#cb16-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-275"><a href="#cb16-275" aria-hidden="true" tabindex="-1"></a>Apparently a total of <span class="in">`r format(count_total_2021)`</span>, or <span class="in">`r round(count_total_2021 / 365 / 24 / 60 / 60, 2)`</span> animals per second. That means that about...</span>
+<span id="cb16-276"><a href="#cb16-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-277"><a href="#cb16-277" aria-hidden="true" tabindex="-1"></a>::: {#counter style="margin-bottom: 1rem;"}</span>
+<span id="cb16-278"><a href="#cb16-278" aria-hidden="true" tabindex="-1"></a>0</span>
+<span id="cb16-279"><a href="#cb16-279" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb16-280"><a href="#cb16-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-281"><a href="#cb16-281" aria-hidden="true" tabindex="-1"></a>...have died since you started reading this blog post. That's a bit of a bummer to end on, but then, this post was never going to have a happy ending.</span>
+<span id="cb16-282"><a href="#cb16-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-283"><a href="#cb16-283" aria-hidden="true" tabindex="-1"></a>*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -6,18 +6,22 @@ about:
   image: images/avatar.png
   image-width: 200px
   links:
-    - icon: email
+    - icon: envelope-fill
       text: E-mail
       href: mailto:w.sleegers@me.com
+      aria-label: E-mail
     - icon: twitter
       text: Twitter
       href: https://twitter.com/willemsleegers
-    - icon: google-scholar
+      aria-label: Twitter
+    - icon: mortarboard-fill
       text: Google Scholar
       href: https://scholar.google.com/citations?user=EgqxL0MAAAAJ
+      aria-label: Google Scholar
     - icon: github
-      text: Github
+      text: GitHub
       href: https://github.com/willemsleegers
+      aria-label: GitHub
 
 listing:
   - id: projects
@@ -29,6 +33,7 @@ listing:
     filter-ui: false
   - id: posts
     contents: content/posts
+    fields: [date, title, categories, description]
     sort: "date desc"
     max-items: 3
     type: default

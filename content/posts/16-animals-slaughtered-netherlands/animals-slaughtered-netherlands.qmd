@@ -5,7 +5,6 @@ categories:
   - animal welfare
   - data cleaning
   - data visualization
-  - R
 df-print: paged
 code-tools: true
 code-fold: show
