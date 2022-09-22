@@ -1,0 +1,95 @@
+---
+title: "Voting behavior of Dutch political parties on animal welfare matters"
+date: 2022-09-18
+categories:
+  - animal welfare
+  - data cleaning
+  - APIs
+df-print: paged
+code-tools: true
+code-fold: show
+draft: true
+---
+
+```{r}
+#| label: setup
+
+# Load packages
+library(tidyverse)
+library(lubridate)
+library(jsonlite)
+
+base_url <- "https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/"
+entity <- "Zaak"
+filter1 <- "?$filter=Verwijderd eq false"
+filter2 <- " and Soort eq 'Motie'"
+filter3 <- " and contains(Titel, 'Dierenwelzijn')"
+filter4 <- " and year(GestartOp) eq 2021" # Deal with the 250 limit
+expand <- "&$expand=Besluit($expand=Stemming)"
+
+url <- paste0(base_url, entity, filter1, filter2, filter3, filter4, expand)
+url <- str_replace_all(url, " ", "%20")
+
+result <- read_json(url)
+
+result$value
+
+write_json(result$value, "animal-motion-decisions-2021.json")
+
+zaak <- result$value[[1]]
+besluit <- example_zaak$Besluit[[2]]
+stemming <- example_besluit$Stemming[[1]]
+
+clean_zaak <- function(zaak) {
+  df <- tibble(
+    number = zaak$Nummer,
+    title = zaak$Titel,
+    subject = zaak$Onderwerp,
+    start_date = as_date(zaak$GestartOp)
+  )
+}
+
+clean_zaak <- function(zaak) {
+  df <- tibble(
+    title = zaak$Titel,
+    subject = zaak$Onderwerp,
+    start_date = zaak$GestartOp
+  )
+  
+  df <- tibble(
+    df,
+    map_df(zaak$Besluit, clean_besluit)
+  )
+  
+}
+
+clean_besluit <- function(besluit) {
+  df <- tibble(
+    decision_type = besluit$StemmingsSoort,
+    decision_outcome = besluit$BesluitTekst
+  )
+  
+  if (length(besluit$Stemming) != 0) {
+    df <- tibble(
+      df,
+      map_df(besluit$Stemming, clean_stemming)
+    )
+  }
+  
+  return(df)
+}
+
+clean_stemming <- function(stemming) {
+  df <- tibble(
+    party = stemming$ActorFractie,
+    vote = stemming$Soort,
+    mistake = stemming$Vergissing
+  )
+  
+  return(df)
+}
+
+df <- map_df(result$value, clean_zaak)
+
+write_csv(df, "cases-2021-unrated.csv")
+```
