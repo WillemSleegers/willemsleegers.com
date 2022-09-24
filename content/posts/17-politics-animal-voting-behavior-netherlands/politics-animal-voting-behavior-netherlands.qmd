@@ -230,7 +230,8 @@ df <- df %>%
     ),
     start_date = year(start_date),
     vote = recode(vote, "Tegen" = "nay", "Voor" = "aye"),
-    vote = factor(vote)
+    vote = factor(vote),
+    mistake = NULL
   )
 ```
 
