@@ -1,7 +1,7 @@
 ---
-title: My Bayesian Workflow + Tutorial
+title: "Figuring out Bayesian statistics (Part 1)""
 description: "Bayesian statistics seems pretty cool, but I don't really know how to apply it yet. In this blog post, I try to setup a Bayesian workflow that teaches both you and me how to do it."
-date: 2020-12-08
+date: 2022-11-24
 categories:
   - statistics
   - tutorial
@@ -10,6 +10,9 @@ categories:
 code-fold: true
 code-tools: true
 toc: true
+format: 
+   html:
+     df-print: kable
 draft: true
 ---
 
@@ -25,57 +28,71 @@ library(tidybayes)
 
 # Load data
 data <- read_csv("Howell1.csv")
+
+# Set seed
+set.seed(4)
+
+# Set options
+theme_set(theme_minimal())
 ```
 
-In this post, I am going to work out a workflow that I think makes sense for analyzing data using Bayesian statistics.
+This post is about developing a workflow that I think makes sense for analyzing data using Bayesian statistics.
 
-The data we will use to play with is the same data Richard McElreath uses in Chapter 4 of his amazing book called [Statistical Rethinking](https://xcelab.net/rm/statistical-rethinking/ "Statistical Rethinking website"). It is a dataset containing people's height, weight, age, and sex. Just like in the book, we will focus only on people 18 years or older.
+The data we will use to play with is the same data Richard McElreath uses in Chapter 4 of his amazing book called [Statistical Rethinking](https://xcelab.net/rm/statistical-rethinking/ "Statistical Rethinking website"). The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, we will focus only on people 18 years or older, so in the code below we create a subset of the data and store the result in a data frame called `data`.
 
 ```{r}
 #| label: data
-#| tbl-cap: First 10 rows of the data
+#| tbl-cap: Partial census data for the Dobe area !Kung San compiled by Nancy Howell in the late 1960s.
 
 # Only select people older than 18
 data <- filter(data, age >= 18)
 
 # Show the first rows
-data %>%
-  head() %>%
-  kable(col.names = str_to_title(names(.)))
+head(data)
 ```
 
-The general idea behind Bayesian statistics is that you start with some beliefs about the topic of interest and then update those beliefs with the data. This means that when we want to analyze this data, we should actually start with our beliefs, rather than immediately jumping into running an analysis. In our particular case, we should construct a model that describes the different heights based on our a priori knowledge of people's heights. In other words, we have to describe what we believe the heights to be. This is unlike what you have to do with frequentist statistics, so this part might be a bit tricky.
+The general idea behind Bayesian statistics is that you start with some prior beliefs about the parameters of interest and then update those beliefs with the data. Note that this doesn't mean that you have to personally accept those beliefs. You could simply postulate a belief to serve a particular purpose, such as assuming that a null effect is most likely even though you personally believe that there should be an effect. It does mean that when we want to analyze the data, we should start with defining our beliefs, rather than immediately jumping into running an analysis.
 
-We will use the amazing `brms` package to both define and analyze our beliefs, as well as use the data to update those beliefs.
+Let's focus our first question on the heights in the data. We should begin by defining a belief that describes the different heights, which is based on our a priori knowledge of the heights of the Dobe area !Kung San. In other words, we have to describe what we believe their heights to be. This is unlike what you have to do with frequentist statistics, so this part might be a bit tricky.
+
+To make it easier, we will use the amazing `brms` package to both define and inspect our beliefs, as well as use the data to update those beliefs.
 
 ## An intercept-only model
 
-Let's start with a simple intercept-only model to model people's heights. The formula for this model is: `height ~ 1`.
+If we start with analyzing only the heights data then we'll be constructing an intercept-only model. You may be familiar with the R formula for this type of model: `height ~ 1`.
 
-With this formula and the data we can use `brms` to figure out which priors (i.e., beliefs) we need to set by running the `get_prior()` function.
+With this formula and the data we can use `brms` to figure out which priors we need to set by running the `get_prior()` function. This is probably the easiest way to figure which priors you need when you're just starting out using `brms`.
 
 ```{r}
 #| label: get-prior
 get_prior(height ~ 1, data = data)
 ```
 
-This shows us that we need to set two priors, one for the Intercept and one for sigma. `brms` determined these priors automatically, but let's take a look at them and see if they make sense to us.
+The output shows us that we need to set two priors, one for the Intercept and one for sigma.
 
-### The Intercept prior
+However, this is not the best way to think about the model. Using the function will give you the answer, but it doesn't really improve our understanding of why we need these two priors. In this case we also omitted an important specification of the heights, which is that we think they are normally distributed (the default). So let's instead write down our model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:
 
-The prior for the intercept indicates what we believe the *average* height to be.
+> $heights_i ∼ Normal(\mu, \sigma)$
 
-`brms` has set the default Intercept prior as a Student *t* distribution with 3 degrees of freedom, a $\mu$ of 154.3 and a $\sigma$ of 8.5. That means `brms` starts off with a 'belief' that the average height is roughly normally distributed, with the most common average height being 154.3, but with quite some uncertainty. In fact, a Student *t* distribution has thick tails, especially compared to a normal distribution. This means that although you think the average height is most likely to be 154.3, you also think quite some other values are possible, even much smaller or much taller average heights.
+We explicitly note that the heights come from a normal distribution, which is determined by two parameters: $\mu$ and $\sigma$. This then also immediately tells us that we need to set two priors, one on $\mu$ and one on $\sigma$.
+
+In our intercept-only model, the $\mu$ parameter refers to our intercept and the $\sigma$ parameter refers to, well, sigma. It's not often discussed in the literature I'm familiar with, but we'll figure it out below. In fact, let's discuss each of these parameters in turn and figure out what kind of prior makes sense.
+
+## The Intercept prior ($\mu$)
+
+The prior for the intercept indicates what we believe the *average* height of the !Kung San to be.
+
+`brms` has set the default Intercept prior as a Student *t*-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means `brms` starts off with a 'belief' that the *average* of the heights is roughly normally distributed, with the most common average height being 154.3, but with quite some uncertainty. In fact, a Student *t*-distribution has thicker tails compared to a normal distribution, which means more uncertainty, at least at low sample sizes. With these values you think the average height is most likely to be 154.3, but you also think that quite some other values are possible, even much smaller or much taller average heights.
 
 But this is the default prior. `brms` determines this automatic prior by peeking at the data, which is not what we want to do. Instead, we should create our own.
 
-So what do I believe the average height to be? As a Dutch person, I might be under the impression that the average height is around 175 centimeters. This is probably too tall for an average, as we're known for being quite tall. So I think the average should be a bit lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people's heights; I am only using my layman knowledge here. As a result, an average of 165 seems possible to me too. So let's describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We could use different types of distributions for this purpose. We could use a Student *t* distribution, but we can also use a normal distribution. We should use a Student *t* distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it covers a wider range of average heights). We're not super uncertain about people's heights, though, so let's use a normal distribution.
+So what do I believe the average height to be? As a Dutch person, I might be under the impression that the average height is around 175 centimeters. This is probably too tall to use as an average for the !Kung San because we're known for being quite tall. So I think the average should be lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people's heights; I am only using my layman knowledge here. As a result, an average of 165 seems possible to me too. So let's describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We could use different types of distributions for this purpose. We could use a Student *t*-distribution, but we can also use a normal distribution. We should use a Student *t*-distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it covers a wider range of average heights). We're not super uncertain about people's heights, though, so let's use a normal distribution.
 
-Defining a normal distribution requires that we set the $\mu$ and the $\sigma$. The $\mu$ we already covered (i.e., 170), so that leaves $\sigma$. Let's set this to 10 and see what happens by visualizing this prior. Below I plot both the default `brms` prior and our own.
+As we saw in defining our height model, a normal distribution requires that we set the $\mu$ and the $\sigma$. The $\mu$ we already covered (i.e., 170), so that leaves $\sigma$. Let's set this to 10 and see what happens by visualizing this prior. Below I plot both the default `brms` prior and our own.
 
 ```{r}
 #| label: height-mu-prior
-#| fig-cap: Two priors for $\mu$\ - brms' default and my own
+#| fig-cap: Two priors for $\mu$\: brms' default and my own
 height_prior_intercept <- tibble(
   height_mean = seq(from = 100, to = 250, by = 0.1),
   ours = dnorm(height_mean, mean = 170, sd = 10),
@@ -88,29 +105,26 @@ height_prior_intercept <- pivot_longer(
   names_to = "prior"
 ) 
 
-ggplot(height_prior_intercept, aes(x = height_mean, y = value, color = prior)) +
-  geom_line(size = 1) +
-  labs(x = "Average height", y = "", color = "Prior") +
-  scale_color_viridis(
-    option = "mako", 
-    discrete = TRUE, 
-    begin = .25, 
-    end = .75
+ggplot(
+    height_prior_intercept, 
+    aes(x = height_mean, y = value, linetype = fct_rev(prior))
   ) +
+  geom_line() +
+  labs(x = "Average height", y = "", linetype = "Prior") +
   scale_x_continuous(breaks = seq(100, 250, 20))
 ```
 
-Our prior indicates that we believe the average height to be higher than the default prior. In terms of the standard deviation, we both seem to be about equally uncertain about this average. To be fair, I think this prior of ours is not very plausible. Apparently we assign quite a chunk of plausibility to an average of 180 cm, or even 190 cm, which is unlikely. An average of 160 cm is more plausible to me than an average of 180, so I should probably lower the mu, or use more of a skewed distribution. Regardless, we can keep it like this. We'll see later that our data easily overshadows our prior.
+Our prior indicates that we believe the average height to be higher than the default prior. In terms of the standard deviation, we both seem to be about equally uncertain about this average. To be fair, I think this prior of ours is not very plausible. Apparently we assign quite a chunk of plausibility to an average of 180 cm, or even 190 cm, which is very unlikely. An average of 160 cm is more plausible to me than an average of 180, so I should probably lower the mu, or use more of a skewed distribution. This is one of the benefits of visualizing the prior, it lets you think again about your prior so that you may improve on it. Regardless, we can keep the prior like this for now. We'll see later that our data easily overshadows our prior.
 
 ### The sigma prior
 
 What about the standard deviation? I find setting the standard deviation of the distribution of heights (not the mean of the heights) quite difficult. There are parts that are easy, such as the fact that the standard deviation has to be 0 or larger (it can't be negative), but exactly how large it should be, I don't know.
 
-I do know it is unlikely to be close to 0, and unlikely to be very large. That's because I know people's heights do vary, so it's not likely close to be 0. I also know it's not super large because we don't see people who are taller than 2 meters very often. This means the peak should be somewhere above 0, with a tail to allow higher values but not too high. We can use a normal distribution for this with a mean above 0 and a particular standard deviation, and ignore everything that's smaller than 0.
+I do know it is unlikely to be close to 0, and unlikely to be very large. That's because I know people's heights do vary, so I know the sigma can't be 0. I also know it's not super large because we don't see people who are taller than 2 meters very often. This means the peak should be somewhere above 0, with a tail to allow higher values but not too high. We can use a normal distribution for this with a mean above 0 and a particular standard deviation, and ignore everything that's smaller than 0.
 
-As I mentioned before, there is a downside of using a normal distribution, though. Normal distributions have long tails, but there is actually very little density in those tails. If we are quite uncertain about our belief about sigma, we should have thicker tails to indicate we believe those values are more plausible. One way to do this is by using a cauchy distribution. Cauchy distributions are like normal distributions, but with thicker tails. In fact, the cauchy distribution is a special case of the Student *t* distribution; they are equivalent if the degree of freedom is 1.
+As I mentioned before, there is a downside of using a normal distribution, though. Normal distributions have long tails, but there is actually very little density in those tails. If we are quite uncertain about our belief about sigma, we should have thicker tails to indicate we believe those values are more plausible. One way to do this is by using a Student *t*-distribution, perhaps even a cauchy distribution. Actually, the cauchy distribution is a special case of the Student *t* distribution; they are equivalent if the degree of freedom is 1. By increasing the degrees of freedom, you make the *t*-distribution more similar to a normal distribution.
 
-The cauchy distribution also requires two parameters: $\mu$ and $\sigma$. I set $\mu$ to 5 and $\sigma$ to 5 as well. Below I plot this prior and `brms`'s default prior.
+So, a *t*-distribution requires three parameters: $\mu$, $\sigma$, and the degrees of freedom. I set $\mu$ to 5,$\sigma$ to 5, and the degrees of freedom to 1. Below I plot this prior and `brms`'s default prior.
 
 ```{r}
 #| label: height-sigma-prior
@@ -118,7 +132,7 @@ The cauchy distribution also requires two parameters: $\mu$ and $\sigma$. I set 
 height_prior_sigma <- tibble(
   height_sigma = seq(from = 0, to = 50, by = .1),
   default = dstudent_t(height_sigma, df = 3, mu = 0, sigma = 8.5) * 2,
-  ours = dstudent_t(height_sigma, df = 1, mu = 5, sigma = 1) * 2
+  ours = dstudent_t(height_sigma, df = 1, mu = 5, sigma = 5) * 2
 )
 
 height_prior_sigma <- pivot_longer(
@@ -127,18 +141,15 @@ height_prior_sigma <- pivot_longer(
   names_to = "prior"
 )
 
-ggplot(height_prior_sigma, aes(x = height_sigma, y = value, color = prior)) +
-  geom_line(size = 1) +
-  labs(x = "Standard deviation of heights", y = "", color = "Prior") +
-  scale_color_viridis(
-    option = "mako", 
-    discrete = TRUE, 
-    begin = .25, 
-    end = .75
-  ) 
+ggplot(
+    height_prior_sigma, 
+    aes(x = height_sigma, y = value, linetype = fct_rev(prior))
+  ) +
+  geom_line() +
+  labs(x = "Standard deviation of heights", y = "", linetype = "Prior")
 ```
 
-As you can see, both distributions have long tails, allowing for the possibility of high standard deviations. There are some notable differences between the two priors. Our prior puts more weight on a standard deviation larger than 0, while the default prior believes a standard deviation of 0 is most likely. However, both priors are quite weak. We'll see that the data easily overshadows these priors.
+As you can see, both distributions have long tails, allowing for the possibility of high standard deviations. There are some notable differences between the two priors. Our prior puts more weight on a standard deviation larger than 0, while the default prior reflects a belief in which a standard deviation of 0 is most likely. However, both priors are quite weak. We'll see that the data easily overshadows these priors.
 
 Before we run the analysis, we can also check the results of both our priors on the distribution of heights.
 
@@ -163,6 +174,22 @@ model_height_prior <- brm(
   sample_prior = "only",
   file = "models/model_height_prior.rds"
 )
+
+data <- mutate(data, height_z = (height - mean(height)) / sd(height))
+
+model_height_prior <- brm(
+  height ~ 1,  
+  data = data, 
+  family = gaussian,
+  prior = c(
+      prior(normal(170, 10), class = "Intercept"),
+      prior(cauchy(5, 5), class = "sigma")
+    ), 
+  cores = 4,
+  seed = 4, 
+  sample_prior = "only",
+  file = "models/model_height_prior.rds"
+)
 ```
 
 We then use the `tidybayes` package to draw samples from the prior and plot these draws.
@@ -170,19 +197,21 @@ We then use the `tidybayes` package to draw samples from the prior and plot thes
 ```{r}
 #| label: prior-predictive
 #| fig-cap: Prior predictive check
-ppc_prior <- add_predicted_draws(
-  newdata = tibble(.rows = 1), 
+predictions_prior <- tibble(distribution = "prior")
+
+predictions_prior <- add_predicted_draws(
+  newdata = predictions_prior, 
   object = model_height_prior, 
   value = "predicted_height"
 )
 
-ggplot(ppc_prior, aes(x = predicted_height)) +
+ggplot(predictions_prior, aes(x = predicted_height)) +
   geom_histogram(binwidth = 1, alpha = .85) +
-  coord_cartesian(xlim = c(100, 250)) +
+  xlim(100, 250) +
   labs(x = "Height", y = "")
 ```
 
-So, our priors result in a normal distribution of heights ranging from about 125 cm to 225 cm. This looks pretty reasonable to me, so let's run the model for real now.
+So, our priors result in a normal distribution of heights ranging from about 125 cm to 225 cm. That is probably a bit too wide, but let's go with this. Let's run the model for real now.
 
 ```{r}
 #| label: intercept-model
@@ -191,7 +220,7 @@ model_height <- brm(data = data,
   height ~ 1,
   prior = c(
     prior(normal(170, 10), class = "Intercept"),
-    prior(cauchy(5, 1), class = "sigma")
+    prior(cauchy(5, 5), class = "sigma")
   ),
   cores = 4,
   seed = 4,
@@ -213,22 +242,19 @@ It seems like they do. The distributions look normal and the chains look like ca
 #| label: prior-posterior-mu
 #| fig-cap-: Prior vs. posterior for $\mu$
 results <- model_height %>%
-  as_draws_df() %>%
-  select(-lp__) %>%
-  pivot_longer(cols = everything()) %>%
+  gather_draws(b_Intercept, sigma, prior_Intercept, prior_sigma) %>%
+  ungroup() %>%
   mutate(
-    parameter = if_else(str_detect(name, "sigma"), "sigma", "intercept"),
-    distribution = if_else(str_detect(name, "prior"), "prior", "posterior"),
-    distribution = fct_relevel(distribution, "prior")
-  ) %>%
-  select(-name)
+    parameter = if_else(str_detect(.variable, "sigma"), "sigma", "intercept"),
+    distribution = if_else(str_detect(.variable, "prior"), "prior", "posterior")
+  )
 
 results_intercept <- filter(results, parameter == "intercept")
 results_sigma <- filter(results, parameter == "sigma")
 
-ggplot(results_intercept, aes(x = value, fill = distribution)) +
-  geom_histogram(binwidth = 0.5, position = "identity", alpha = .85) +
-  coord_cartesian(xlim = c(145, 195)) +
+ggplot(results_intercept, aes(x = .value, fill = fct_rev(distribution))) +
+  geom_histogram(binwidth = 1, position = "identity", alpha = .85) +
+  xlim(145, 195) +
   labs(x = "Average height", y = "", fill = "Distribution") +
   scale_fill_viridis(option = "mako", discrete = TRUE, begin = .25, end = .75)
 ```
@@ -238,9 +264,9 @@ Here we see that the posterior distribution of average heights is now much more 
 ```{r}
 #| label: prior-posterior-sigma
 #| fig-cap-: Prior vs. posterior for $\sigma$
-ggplot(results_sigma, aes(x = value, fill = distribution)) +
+ggplot(results_sigma, aes(x = .value, fill = fct_rev(distribution))) +
   geom_histogram(binwidth = 0.25, position = "identity", alpha = .85) + 
-  coord_cartesian(xlim = c(0, 25)) +
+  xlim(0, 25) +
   labs(x = "Height standard deviation", y = "", fill = "Distribution") +
   scale_fill_viridis(option = "mako", discrete = TRUE, begin = .25, end = .75)
 ```
@@ -259,22 +285,19 @@ Our final step is to visualize the posterior distribution of all heights and com
 ```{r}
 #| label: prior-posterior-predictive-check
 #| fig-cap: Prior and posterior predictive check
-ppc_posterior <- predicted_draws(
+predictions_posterior <- tibble(distribution = "posterior")
+
+predictions_posterior <- add_predicted_draws(
+  newdata = predictions_posterior,
   object = model_height, 
-  newdata = tibble(.rows = 1), 
   value = "predicted_height"
 )
 
-ppc_prior <- mutate(ppc_prior, distribution = "prior")
-ppc_posterior <- mutate(ppc_posterior, distribution = "posterior")
+predictions <- bind_rows(predictions_prior, predictions_posterior)
 
-
-
-ppc_height <- bind_rows(ppc_prior, ppc_posterior)
-
-ggplot(ppc_height, aes(x = predicted_height, fill = distribution)) +
+ggplot(predictions, aes(x = predicted_height, fill = distribution)) +
   geom_histogram(binwidth = 1, alpha = .85) +
-  coord_cartesian(xlim = c(100, 250)) +
+  xlim(100, 250) +
   labs(x = "Height", y = "", fill = "Distribution") +
   scale_fill_viridis(option = "mako", discrete = TRUE, begin = .25, end = .75)
 ```
@@ -418,8 +441,8 @@ Weight is positively related with height (0.90), with a 95% CI ranging from 0.82
 
 The workflow consists of the following steps:
 
-1.  Determine the model you want to run
-2.  Check which priors are necessary with the `get_priors()` function
+1.  Specify your model
+2.  Check which priors are necessary by looking at the parameters in your model
 3.  Set priors
 4.  Run `brms()` and sample from the prior only
 5.  Perform prior predictive checks to see whether the priors produce plausible values
