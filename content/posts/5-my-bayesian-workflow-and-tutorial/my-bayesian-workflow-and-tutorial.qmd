@@ -20,24 +20,11 @@ draft: true
 # Load packages
 library(tidyverse)
 library(viridis)
-library(knitr)
 library(brms)
 library(tidybayes)
-library(here)
 
 # Load data
-data <- read_csv(here("data", "Howell1.csv"))
-
-# Set seed
-set.seed(4)
-
-# Set options
-options(
-  knitr.kable.NA = "-", 
-  digits = 2
-)
-
-theme_set(theme_minimal())
+data <- read_csv("Howell1.csv")
 ```
 
 In this post, I am going to work out a workflow that I think makes sense for analyzing data using Bayesian statistics.
