@@ -201,6 +201,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#the-intercept-prior-mu" id="toc-the-intercept-prior-mu" class="nav-link" data-scroll-target="#the-intercept-prior-mu">The Intercept prior (<span class="math inline">\(\mu\)</span>)</a></li>
   <li><a href="#the-sigma-prior" id="toc-the-sigma-prior" class="nav-link" data-scroll-target="#the-sigma-prior">The sigma prior</a></li>
   <li><a href="#a-prior-predictive-check" id="toc-a-prior-predictive-check" class="nav-link" data-scroll-target="#a-prior-predictive-check">A prior predictive check</a></li>
+  <li><a href="#running-the-model" id="toc-running-the-model" class="nav-link" data-scroll-target="#running-the-model">Running the model</a></li>
+  <li><a href="#comparing-the-prior-and-posterior-distributions" id="toc-comparing-the-prior-and-posterior-distributions" class="nav-link" data-scroll-target="#comparing-the-prior-and-posterior-distributions">Comparing the prior and posterior distributions</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -397,18 +399,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<p>The output shows us that we need to set two priors, one for the Intercept and one for sigma.</p>
-<p>However, this is not the best way to think about the model. Using the function will give you the answer, but it doesn’t really improve our understanding of why we need these two priors. In this case we also omitted an important specification of the heights, which is that we think they are normally distributed (which is the default assumption in <code>get_prior()</code>). So let’s instead write down our model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:</p>
+<p>The output shows us that we need to set two priors, one for the Intercept and one for sigma. <code>brms</code> also already determined a default prior for each, but we’ll ignore that for now.</p>
+<p>This is not the best way to think about which priors we need, though. Using the function will give you the answer, but it doesn’t really improve our understanding of why we need these two priors. In this case we also omitted an important specification of the heights, which is that we think they are normally distributed (the default assumption in <code>get_prior()</code>). So let’s instead write down our model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:</p>
 <p><span class="math display">\[heights_i ∼ Normal(\mu, \sigma)\]</span></p>
 <p>We explicitly note that the heights come from a normal distribution, which is determined by the parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. This then also immediately tells us that we need to set two priors, one on <span class="math inline">\(\mu\)</span> and one on <span class="math inline">\(\sigma\)</span>.</p>
 <p>In our intercept-only model, the <span class="math inline">\(\mu\)</span> parameter refers to our intercept and the <span class="math inline">\(\sigma\)</span> parameter refers to, well, sigma. It’s not often discussed in the literature I’m familiar with, but we’ll figure it out below. In fact, let’s discuss each of these parameters in turn and figure out what kind of prior makes sense.</p>
 <section id="the-intercept-prior-mu" class="level3">
 <h3 class="anchored" data-anchor-id="the-intercept-prior-mu">The Intercept prior (<span class="math inline">\(\mu\)</span>)</h3>
 <p>The prior for the intercept indicates what we believe the <em>average</em> height of the !Kung San to be.</p>
-<p><code>brms</code> has set the default Intercept prior as a Student <em>t</em>-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means <code>brms</code> starts off with a ‘belief’ that the <em>average</em> of the heights is roughly normally distributed, with the most common average height being 154.3, but with quite some uncertainty. In fact, a Student <em>t</em>-distribution has thicker tails compared to a normal distribution, which means more uncertainty, at least at low sample sizes. With these values you think the average height is most likely to be 154.3, but you also think that quite some other values are possible, even much smaller or much taller average heights.</p>
+<p><code>brms</code> has set the default Intercept prior as a Student <em>t</em>-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means <code>brms</code> starts off with a ‘belief’ that the <em>average</em> of the heights is 154.3, but with quite some uncertainty reflected in the standard deviation of 8.5 and the fact that the distribution is a Student <em>t</em>-distribution. A Student <em>t</em>-distribution has thicker tails compared to a normal distribution, meaning that lower and higher numbers are considered more likely compared to a normal distribution, at least when the degrees of freedom are low. At higher degrees of freedom, the <em>t</em>-distribution becomes more and more like the normal distribution. So, the thicker tails of the <em>t</em>-distributions means smaller and taller average heights are relatively more plausible.</p>
 <p>But this is the default prior. <code>brms</code> determines this automatic prior by peeking at the data, which is not what we want to do. Instead, we should create our own.</p>
-<p>So what do I believe the average height to be? As a Dutch person, I might be under the impression that the average height is around 175 centimeters. This is probably too tall to use as an average for the !Kung San because we’re known for being quite tall. So I think the average should be lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people’s heights; I am only using my layman knowledge here. As a result, an average of 165 seems possible to me too. So let’s describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We could use different types of distributions for this purpose. We could use a Student <em>t</em>-distribution, but we can also use a normal distribution. We should use a Student <em>t</em>-distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it covers a wider range of average heights). We’re not super uncertain about people’s heights, though, so let’s use a normal distribution.</p>
-<p>As we saw in defining our height model, a normal distribution requires that we set the <span class="math inline">\(\mu\)</span> and the <span class="math inline">\(\sigma\)</span>. The <span class="math inline">\(\mu\)</span> we already covered (i.e., 170), so that leaves <span class="math inline">\(\sigma\)</span>. Let’s set this to 10 and see what happens by visualizing this prior. Below I plot both the default <code>brms</code> prior and our own.</p>
+<p>So what do I believe the average height to be? As a Dutch person, I might be under the impression that the average height is around 175 centimeters. This is probably too tall to use as an average for the !Kung San because we’re known for being quite tall. So I think the average should be lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people’s heights; I am only using my layman knowledge here. An average of 165 seems possible to me too. So let’s describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We should use a Student <em>t</em>-distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it assigns more probability to a wider range of average heights). We’re not super uncertain about people’s heights, though, so let’s use a normal distribution.</p>
+<p>As we saw in defining our height model, a normal distribution requires that we set the <span class="math inline">\(\mu\)</span> and the <span class="math inline">\(\sigma\)</span>. The <span class="math inline">\(\mu\)</span> we already covered (i.e., 170), so that leaves <span class="math inline">\(\sigma\)</span>. Let’s set this to 10 and see what happens by visualizing this prior. Below I plot both the default <code>brms</code> prior and our own with <span class="math inline">\(\mu\)</span> = 170 and <span class="math inline">\(\sigma\)</span> = 10.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -446,9 +448,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="the-sigma-prior" class="level3">
 <h3 class="anchored" data-anchor-id="the-sigma-prior">The sigma prior</h3>
 <p>What about the standard deviation? I find setting the standard deviation of the distribution of heights (not the mean of the heights) quite difficult. There are parts that are easy, such as the fact that the standard deviation has to be 0 or larger (it can’t be negative), but exactly how large it should be, I don’t know.</p>
-<p>I do know it is unlikely to be close to 0, and unlikely to be very large. That’s because I know people’s heights do vary, so I know the sigma can’t be 0. I also know it’s not super large because we don’t see people who are taller than 2 meters very often. This means the peak should be somewhere above 0, with a tail to allow higher values but not too high. We can use a normal distribution for this with a mean above 0 and a particular standard deviation, and ignore everything that’s smaller than 0.</p>
-<p>As I mentioned before, there is a downside of using a normal distribution, though. Normal distributions have long tails, but there is actually very little density in those tails. If we are quite uncertain about our belief about sigma, we should have thicker tails to indicate we believe those values are more plausible. One way to do this is by using a Student <em>t</em>-distribution, perhaps even a cauchy distribution. Actually, the cauchy distribution is a special case of the Student <em>t</em> distribution; they are equivalent if the degree of freedom is 1. By increasing the degrees of freedom, you make the <em>t</em>-distribution more similar to a normal distribution.</p>
-<p>So, a <em>t</em>-distribution requires three parameters: <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, and the degrees of freedom. I set <span class="math inline">\(\mu\)</span> to 5,<span class="math inline">\(\sigma\)</span> to 5, and the degrees of freedom to 1. Below I plot this prior and <code>brms</code>’s default prior.</p>
+<p>I do know it is unlikely to be close to 0, and unlikely to be very large. That’s because I know people’s heights do vary, so I know the sigma can’t be 0. I also know it’s not super large because we don’t see people who are taller than 2 meters very often. This means the peak should be somewhere above 0, with a tail to allow higher values but not too high. We can use a normal distribution for this with a mean above 0 and a particular standard deviation, and ignore everything that’s smaller than 0 (<code>brms</code> automatically ignores negative values for <span class="math inline">\(\sigma\)</span>).</p>
+<p>As I mentioned before, there is a downside of using a normal distribution, though. Normal distributions have long tails, but there is actually very little density in those tails. If we are quite uncertain about our belief about sigma, we should use a <em>t</em>-distribution, or perhaps even a cauchy distribution (actually, the cauchy distribution is a special case of the Student <em>t</em>-distribution; they are equivalent if the degree of freedom is 1). The lower the degrees of freedom, the more probability we assign to higher and lower values.</p>
+<p>So, a <em>t</em>-distribution requires three parameters: <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, and the degrees of freedom. I set <span class="math inline">\(\mu\)</span> to 5, <span class="math inline">\(\sigma\)</span> to 5, and the degrees of freedom to 1. Below I plot this prior and <code>brms</code>’s default prior.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -539,10 +541,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height"</span>, <span class="at">y =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 85 rows containing non-finite values (stat_bin).</code></pre>
+<pre><code>Warning: Removed 85 rows containing non-finite values (`stat_bin()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2 rows containing missing values (geom_bar).</code></pre>
+<pre><code>Warning: Removed 2 rows containing missing values (`geom_bar()`).</code></pre>
 </div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -553,7 +555,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<p>So, our priors result in a normal distribution of heights ranging from about 125 cm to 225 cm. That is probably a bit too wide, but let’s go with this. Let’s run the model for real now.</p>
+<p>So, our priors result in a normal distribution of heights ranging from about 125 cm to 225 cm. That is too wide, but let’s run the model to see what happens.</p>
+</section>
+<section id="running-the-model" class="level3">
+<h3 class="anchored" data-anchor-id="running-the-model">Running the model</h3>
+<p>We run the model with the code below. Notice that we sample from the prior so we can not only visualize our posterior later, but also the priors we have just defined.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -571,7 +577,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Before we check the results, let’s first check whether the chains look good.</p>
+<p>After running the model, we first check whether the chains look good.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -581,64 +587,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="my-bayesian-workflow-and-tutorial_files/figure-html/chains-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>It seems like they do. The distributions look normal and the chains look like caterpillars, which means they’re sampling from the distribution space and that’s what we want. This also shows us the posterior distributions of the two parameters, but let’s create our own graphs that compare both the prior and posterior distributions.</p>
-<div class="cell" data-fig.cap-="Prior vs. posterior for $\mu$">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> model_height <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather_draws</span>(b_Intercept, sigma, prior_Intercept, prior_sigma) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">parameter =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"sigma"</span>), <span class="st">"sigma"</span>, <span class="st">"intercept"</span>),</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"prior"</span>), <span class="st">"prior"</span>, <span class="st">"posterior"</span>)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>results_intercept <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"intercept"</span>)</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>results_sigma <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"sigma"</span>)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_intercept, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">145</span>, <span class="dv">195</span>) <span class="sc">+</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Average height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 49 rows containing non-finite values (stat_bin).</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 4 rows containing missing values (geom_bar).</code></pre>
-</div>
-<div class="cell-output-display">
-<p><img src="my-bayesian-workflow-and-tutorial_files/figure-html/prior-posterior-mu-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Here we see that the posterior distribution of average heights is now much more narrow and centered around 156 cm. So not only should we switch from thinking the average is a lot lower than 170, we can also be much more confident about the mean.</p>
-<p>How about sigma?</p>
-<div class="cell" data-fig.cap-="Prior vs. posterior for $\sigma$">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_sigma, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span> </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">25</span>) <span class="sc">+</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height standard deviation"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 372 rows containing non-finite values (stat_bin).</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 4 rows containing missing values (geom_bar).</code></pre>
-</div>
-<div class="cell-output-display">
-<p><img src="my-bayesian-workflow-and-tutorial_files/figure-html/prior-posterior-sigma-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Similarly, we see that the posterior for sigma is also much more narrow and around 7.75.</p>
+<p>It seems like they do. The distributions look normal and the chains look like caterpillars, which means they’re sampling from the distribution space and that’s what we want.</p>
 <p>We can call up the estimates and the 95% confidence intervals by printing the model object.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>model_height</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_height)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> Family: gaussian 
@@ -661,7 +615,63 @@ and Tail_ESS are effective sample size measures, and Rhat is the potential
 scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
-<p>Here we see the Intercept and sigma estimates, as well as their 95% CIs to summarize their posterior distribution.</p>
+<p>Here we see the Intercept and sigma estimates, as well as their 95% CIs to summarize their posterior distribution. Apparently our posterior estimate for the Intercept is 154.63 and the estimate for <span class="math inline">\(\sigma\)</span> is 7.77. We also see the 95% CIs, but let’s visualize these results instead.</p>
+</section>
+<section id="comparing-the-prior-and-posterior-distributions" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-the-prior-and-posterior-distributions">Comparing the prior and posterior distributions</h3>
+<p>Inspecting the chains also showed us the posterior distributions of the two parameters, but let’s create our own graphs that compare both the prior and posterior distributions.</p>
+<div class="cell" data-fig.cap-="Prior vs. posterior for $\mu$">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> model_height <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather_draws</span>(b_Intercept, sigma, prior_Intercept, prior_sigma) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">parameter =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"sigma"</span>), <span class="st">"sigma"</span>, <span class="st">"intercept"</span>),</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"prior"</span>), <span class="st">"prior"</span>, <span class="st">"posterior"</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>results_intercept <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"intercept"</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>results_sigma <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"sigma"</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_intercept, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">145</span>, <span class="dv">195</span>) <span class="sc">+</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Average height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 49 rows containing non-finite values (`stat_bin()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 4 rows containing missing values (`geom_bar()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="my-bayesian-workflow-and-tutorial_files/figure-html/prior-posterior-mu-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Here we see that the posterior distribution of average heights is now much more narrow and centered around 155 cm. So not only should we switch from thinking the average is a lot lower than 170, we can also be much more confident about the mean.</p>
+<p>How about sigma?</p>
+<div class="cell" data-fig.cap-="Prior vs. posterior for $\sigma$">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_sigma, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">25</span>) <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height standard deviation"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 372 rows containing non-finite values (`stat_bin()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 4 rows containing missing values (`geom_bar()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="my-bayesian-workflow-and-tutorial_files/figure-html/prior-posterior-sigma-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Similarly, we see that the posterior for sigma is also much more narrow and around 8.</p>
 <p>A final step is to visualize the posterior distribution of all heights (posterior predictive check) and compare it the distribution of heights based on our priors (the prior predictive check).</p>
 <div class="cell">
 <details>
@@ -683,10 +693,10 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 85 rows containing non-finite values (stat_bin).</code></pre>
+<pre><code>Warning: Removed 85 rows containing non-finite values (`stat_bin()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 4 rows containing missing values (geom_bar).</code></pre>
+<pre><code>Warning: Removed 4 rows containing missing values (`geom_bar()`).</code></pre>
 </div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -697,7 +707,6 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 </div>
-<p>Based on the data, we should believe, after seeing the data, that people’s heights are lower than expected and that there is less variation.</p>
 
 
 <!-- -->
@@ -926,9 +935,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a><span class="fu">get_prior</span>(height <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> data)</span>
 <span id="cb23-76"><a href="#cb23-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-77"><a href="#cb23-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a>The output shows us that we need to set two priors, one for the Intercept and one for sigma.</span>
+<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a>The output shows us that we need to set two priors, one for the Intercept and one for sigma. <span class="in">`brms`</span> also already determined a default prior for each, but we'll ignore that for now.</span>
 <span id="cb23-79"><a href="#cb23-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-80"><a href="#cb23-80" aria-hidden="true" tabindex="-1"></a>However, this is not the best way to think about the model. Using the function will give you the answer, but it doesn't really improve our understanding of why we need these two priors. In this case we also omitted an important specification of the heights, which is that we think they are normally distributed (which is the default assumption in <span class="in">`get_prior()`</span>). So let's instead write down our model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:</span>
+<span id="cb23-80"><a href="#cb23-80" aria-hidden="true" tabindex="-1"></a>This is not the best way to think about which priors we need, though. Using the function will give you the answer, but it doesn't really improve our understanding of why we need these two priors. In this case we also omitted an important specification of the heights, which is that we think they are normally distributed (the default assumption in <span class="in">`get_prior()`</span>). So let's instead write down our model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:</span>
 <span id="cb23-81"><a href="#cb23-81" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-82"><a href="#cb23-82" aria-hidden="true" tabindex="-1"></a>$$heights_i ∼ Normal(\mu, \sigma)$$</span>
 <span id="cb23-83"><a href="#cb23-83" aria-hidden="true" tabindex="-1"></a></span>
@@ -940,13 +949,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-89"><a href="#cb23-89" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-90"><a href="#cb23-90" aria-hidden="true" tabindex="-1"></a>The prior for the intercept indicates what we believe the *average* height of the !Kung San to be.</span>
 <span id="cb23-91"><a href="#cb23-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-92"><a href="#cb23-92" aria-hidden="true" tabindex="-1"></a><span class="in">`brms`</span> has set the default Intercept prior as a Student *t*-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means `brms` starts off with a 'belief' that the *average* of the heights is roughly normally distributed, with the most common average height being 154.3, but with quite some uncertainty. In fact, a Student *t*-distribution has thicker tails compared to a normal distribution, which means more uncertainty, at least at low sample sizes. With these values you think the average height is most likely to be 154.3, but you also think that quite some other values are possible, even much smaller or much taller average heights.</span>
+<span id="cb23-92"><a href="#cb23-92" aria-hidden="true" tabindex="-1"></a><span class="in">`brms`</span> has set the default Intercept prior as a Student *t*-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means `brms` starts off with a 'belief' that the *average* of the heights is 154.3, but with quite some uncertainty reflected in the standard deviation of 8.5 and the fact that the distribution is a Student *t*-distribution. A Student *t*-distribution has thicker tails compared to a normal distribution, meaning that lower and higher numbers are considered more likely compared to a normal distribution, at least when the degrees of freedom are low. At higher degrees of freedom, the *t*-distribution becomes more and more like the normal distribution. So, the thicker tails of the *t*-distributions means smaller and taller average heights are relatively more plausible.</span>
 <span id="cb23-93"><a href="#cb23-93" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-94"><a href="#cb23-94" aria-hidden="true" tabindex="-1"></a>But this is the default prior. <span class="in">`brms`</span> determines this automatic prior by peeking at the data, which is not what we want to do. Instead, we should create our own.</span>
 <span id="cb23-95"><a href="#cb23-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-96"><a href="#cb23-96" aria-hidden="true" tabindex="-1"></a>So what do I believe the average height to be? As a Dutch person, I might be under the impression that the average height is around 175 centimeters. This is probably too tall to use as an average for the !Kung San because we're known for being quite tall. So I think the average should be lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people's heights; I am only using my layman knowledge here. As a result, an average of 165 seems possible to me too. So let's describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We could use different types of distributions for this purpose. We could use a Student *t*-distribution, but we can also use a normal distribution. We should use a Student *t*-distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it covers a wider range of average heights). We're not super uncertain about people's heights, though, so let's use a normal distribution.</span>
+<span id="cb23-96"><a href="#cb23-96" aria-hidden="true" tabindex="-1"></a>So what do I believe the average height to be? As a Dutch person, I might be under the impression that the average height is around 175 centimeters. This is probably too tall to use as an average for the !Kung San because we're known for being quite tall. So I think the average should be lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people's heights; I am only using my layman knowledge here. An average of 165 seems possible to me too. So let's describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We should use a Student *t*-distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it assigns more probability to a wider range of average heights). We're not super uncertain about people's heights, though, so let's use a normal distribution.</span>
 <span id="cb23-97"><a href="#cb23-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-98"><a href="#cb23-98" aria-hidden="true" tabindex="-1"></a>As we saw in defining our height model, a normal distribution requires that we set the $\mu$ and the $\sigma$. The $\mu$ we already covered (i.e., 170), so that leaves $\sigma$. Let's set this to 10 and see what happens by visualizing this prior. Below I plot both the default <span class="in">`brms`</span> prior and our own.</span>
+<span id="cb23-98"><a href="#cb23-98" aria-hidden="true" tabindex="-1"></a>As we saw in defining our height model, a normal distribution requires that we set the $\mu$ and the $\sigma$. The $\mu$ we already covered (i.e., 170), so that leaves $\sigma$. Let's set this to 10 and see what happens by visualizing this prior. Below I plot both the default <span class="in">`brms`</span> prior and our own with $\mu$ = 170 and $\sigma$ = 10.</span>
 <span id="cb23-99"><a href="#cb23-99" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-102"><a href="#cb23-102" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb23-103"><a href="#cb23-103" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: height-mu-prior</span></span>
@@ -978,11 +987,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-129"><a href="#cb23-129" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-130"><a href="#cb23-130" aria-hidden="true" tabindex="-1"></a>What about the standard deviation? I find setting the standard deviation of the distribution of heights (not the mean of the heights) quite difficult. There are parts that are easy, such as the fact that the standard deviation has to be 0 or larger (it can't be negative), but exactly how large it should be, I don't know.</span>
 <span id="cb23-131"><a href="#cb23-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-132"><a href="#cb23-132" aria-hidden="true" tabindex="-1"></a>I do know it is unlikely to be close to 0, and unlikely to be very large. That's because I know people's heights do vary, so I know the sigma can't be 0. I also know it's not super large because we don't see people who are taller than 2 meters very often. This means the peak should be somewhere above 0, with a tail to allow higher values but not too high. We can use a normal distribution for this with a mean above 0 and a particular standard deviation, and ignore everything that's smaller than 0.</span>
+<span id="cb23-132"><a href="#cb23-132" aria-hidden="true" tabindex="-1"></a>I do know it is unlikely to be close to 0, and unlikely to be very large. That's because I know people's heights do vary, so I know the sigma can't be 0. I also know it's not super large because we don't see people who are taller than 2 meters very often. This means the peak should be somewhere above 0, with a tail to allow higher values but not too high. We can use a normal distribution for this with a mean above 0 and a particular standard deviation, and ignore everything that's smaller than 0 (<span class="in">`brms`</span> automatically ignores negative values for $\sigma$).</span>
 <span id="cb23-133"><a href="#cb23-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-134"><a href="#cb23-134" aria-hidden="true" tabindex="-1"></a>As I mentioned before, there is a downside of using a normal distribution, though. Normal distributions have long tails, but there is actually very little density in those tails. If we are quite uncertain about our belief about sigma, we should have thicker tails to indicate we believe those values are more plausible. One way to do this is by using a Student *t*-distribution, perhaps even a cauchy distribution. Actually, the cauchy distribution is a special case of the Student *t* distribution; they are equivalent if the degree of freedom is 1. By increasing the degrees of freedom, you make the *t*-distribution more similar to a normal distribution.</span>
+<span id="cb23-134"><a href="#cb23-134" aria-hidden="true" tabindex="-1"></a>As I mentioned before, there is a downside of using a normal distribution, though. Normal distributions have long tails, but there is actually very little density in those tails. If we are quite uncertain about our belief about sigma, we should use a *t*-distribution, or perhaps even a cauchy distribution (actually, the cauchy distribution is a special case of the Student *t*-distribution; they are equivalent if the degree of freedom is 1). The lower the degrees of freedom, the more probability we assign to higher and lower values.</span>
 <span id="cb23-135"><a href="#cb23-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-136"><a href="#cb23-136" aria-hidden="true" tabindex="-1"></a>So, a *t*-distribution requires three parameters: $\mu$, $\sigma$, and the degrees of freedom. I set $\mu$ to 5,$\sigma$ to 5, and the degrees of freedom to 1. Below I plot this prior and <span class="in">`brms`</span>'s default prior.</span>
+<span id="cb23-136"><a href="#cb23-136" aria-hidden="true" tabindex="-1"></a>So, a *t*-distribution requires three parameters: $\mu$, $\sigma$, and the degrees of freedom. I set $\mu$ to 5, $\sigma$ to 5, and the degrees of freedom to 1. Below I plot this prior and <span class="in">`brms`</span>'s default prior.</span>
 <span id="cb23-137"><a href="#cb23-137" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-140"><a href="#cb23-140" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb23-141"><a href="#cb23-141" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: height-sigma-prior</span></span>
@@ -1069,102 +1078,108 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-226"><a href="#cb23-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height"</span>, <span class="at">y =</span> <span class="st">""</span>)</span>
 <span id="cb23-227"><a href="#cb23-227" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-228"><a href="#cb23-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-229"><a href="#cb23-229" aria-hidden="true" tabindex="-1"></a>So, our priors result in a normal distribution of heights ranging from about 125 cm to 225 cm. That is probably a bit too wide, but let's go with this. Let's run the model for real now.</span>
+<span id="cb23-229"><a href="#cb23-229" aria-hidden="true" tabindex="-1"></a>So, our priors result in a normal distribution of heights ranging from about 125 cm to 225 cm. That is too wide, but let's run the model to see what happens.</span>
 <span id="cb23-230"><a href="#cb23-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-234"><a href="#cb23-234" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: intercept-model</span></span>
-<span id="cb23-235"><a href="#cb23-235" aria-hidden="true" tabindex="-1"></a>model_height <span class="ot">&lt;-</span> <span class="fu">brm</span>(<span class="at">data =</span> data, </span>
-<span id="cb23-236"><a href="#cb23-236" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> gaussian,</span>
-<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a>  height <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior =</span> <span class="fu">c</span>(</span>
-<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a>    <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">170</span>, <span class="dv">10</span>), <span class="at">class =</span> <span class="st">"Intercept"</span>),</span>
-<span id="cb23-240"><a href="#cb23-240" aria-hidden="true" tabindex="-1"></a>    <span class="fu">prior</span>(<span class="fu">cauchy</span>(<span class="dv">5</span>, <span class="dv">5</span>), <span class="at">class =</span> <span class="st">"sigma"</span>)</span>
-<span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">4</span>,</span>
-<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample_prior =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"models/model_height.rds"</span></span>
-<span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-248"><a href="#cb23-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-249"><a href="#cb23-249" aria-hidden="true" tabindex="-1"></a>Before we check the results, let's first check whether the chains look good.</span>
-<span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-254"><a href="#cb23-254" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: chains</span></span>
-<span id="cb23-255"><a href="#cb23-255" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_height)</span>
-<span id="cb23-256"><a href="#cb23-256" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-257"><a href="#cb23-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-258"><a href="#cb23-258" aria-hidden="true" tabindex="-1"></a>It seems like they do. The distributions look normal and the chains look like caterpillars, which means they're sampling from the distribution space and that's what we want. This also shows us the posterior distributions of the two parameters, but let's create our own graphs that compare both the prior and posterior distributions.</span>
-<span id="cb23-259"><a href="#cb23-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-262"><a href="#cb23-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-mu</span></span>
-<span id="cb23-264"><a href="#cb23-264" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-: Prior vs. posterior for $\mu$</span></span>
-<span id="cb23-265"><a href="#cb23-265" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> model_height <span class="sc">%&gt;%</span></span>
-<span id="cb23-266"><a href="#cb23-266" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather_draws</span>(b_Intercept, sigma, prior_Intercept, prior_sigma) <span class="sc">%&gt;%</span></span>
-<span id="cb23-267"><a href="#cb23-267" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb23-268"><a href="#cb23-268" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb23-269"><a href="#cb23-269" aria-hidden="true" tabindex="-1"></a>    <span class="at">parameter =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"sigma"</span>), <span class="st">"sigma"</span>, <span class="st">"intercept"</span>),</span>
-<span id="cb23-270"><a href="#cb23-270" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"prior"</span>), <span class="st">"prior"</span>, <span class="st">"posterior"</span>)</span>
-<span id="cb23-271"><a href="#cb23-271" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-231"><a href="#cb23-231" aria-hidden="true" tabindex="-1"></a><span class="fu">### Running the model</span></span>
+<span id="cb23-232"><a href="#cb23-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a>We run the model with the code below. Notice that we sample from the prior so we can not only visualize our posterior later, but also the priors we have just defined.</span>
+<span id="cb23-234"><a href="#cb23-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: intercept-model</span></span>
+<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a>model_height <span class="ot">&lt;-</span> <span class="fu">brm</span>(<span class="at">data =</span> data, </span>
+<span id="cb23-240"><a href="#cb23-240" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> gaussian,</span>
+<span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a>  height <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior =</span> <span class="fu">c</span>(</span>
+<span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a>    <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">170</span>, <span class="dv">10</span>), <span class="at">class =</span> <span class="st">"Intercept"</span>),</span>
+<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a>    <span class="fu">prior</span>(<span class="fu">cauchy</span>(<span class="dv">5</span>, <span class="dv">5</span>), <span class="at">class =</span> <span class="st">"sigma"</span>)</span>
+<span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">4</span>,</span>
+<span id="cb23-248"><a href="#cb23-248" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample_prior =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb23-249"><a href="#cb23-249" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"models/model_height.rds"</span></span>
+<span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-251"><a href="#cb23-251" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a>After running the model, we first check whether the chains look good.</span>
+<span id="cb23-254"><a href="#cb23-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-257"><a href="#cb23-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-258"><a href="#cb23-258" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: chains</span></span>
+<span id="cb23-259"><a href="#cb23-259" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_height)</span>
+<span id="cb23-260"><a href="#cb23-260" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-261"><a href="#cb23-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-262"><a href="#cb23-262" aria-hidden="true" tabindex="-1"></a>It seems like they do. The distributions look normal and the chains look like caterpillars, which means they're sampling from the distribution space and that's what we want.</span>
+<span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-264"><a href="#cb23-264" aria-hidden="true" tabindex="-1"></a>We can call up the estimates and the 95% confidence intervals by printing the model object.</span>
+<span id="cb23-265"><a href="#cb23-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-268"><a href="#cb23-268" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-269"><a href="#cb23-269" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model</span></span>
+<span id="cb23-270"><a href="#cb23-270" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_height)</span>
+<span id="cb23-271"><a href="#cb23-271" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-272"><a href="#cb23-272" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-273"><a href="#cb23-273" aria-hidden="true" tabindex="-1"></a>results_intercept <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"intercept"</span>)</span>
-<span id="cb23-274"><a href="#cb23-274" aria-hidden="true" tabindex="-1"></a>results_sigma <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"sigma"</span>)</span>
-<span id="cb23-275"><a href="#cb23-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-276"><a href="#cb23-276" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_intercept, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
-<span id="cb23-277"><a href="#cb23-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
-<span id="cb23-278"><a href="#cb23-278" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">145</span>, <span class="dv">195</span>) <span class="sc">+</span></span>
-<span id="cb23-279"><a href="#cb23-279" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Average height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
-<span id="cb23-280"><a href="#cb23-280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
-<span id="cb23-281"><a href="#cb23-281" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-282"><a href="#cb23-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-283"><a href="#cb23-283" aria-hidden="true" tabindex="-1"></a>Here we see that the posterior distribution of average heights is now much more narrow and centered around 156 cm. So not only should we switch from thinking the average is a lot lower than 170, we can also be much more confident about the mean. </span>
-<span id="cb23-284"><a href="#cb23-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-285"><a href="#cb23-285" aria-hidden="true" tabindex="-1"></a>How about sigma?</span>
-<span id="cb23-286"><a href="#cb23-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-289"><a href="#cb23-289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-290"><a href="#cb23-290" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-sigma</span></span>
-<span id="cb23-291"><a href="#cb23-291" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-: Prior vs. posterior for $\sigma$</span></span>
-<span id="cb23-292"><a href="#cb23-292" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_sigma, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
-<span id="cb23-293"><a href="#cb23-293" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span> </span>
-<span id="cb23-294"><a href="#cb23-294" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">25</span>) <span class="sc">+</span></span>
-<span id="cb23-295"><a href="#cb23-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height standard deviation"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
-<span id="cb23-296"><a href="#cb23-296" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
-<span id="cb23-297"><a href="#cb23-297" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-298"><a href="#cb23-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-299"><a href="#cb23-299" aria-hidden="true" tabindex="-1"></a>Similarly, we see that the posterior for sigma is also much more narrow and around 7.75.</span>
-<span id="cb23-300"><a href="#cb23-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-301"><a href="#cb23-301" aria-hidden="true" tabindex="-1"></a>We can call up the estimates and the 95% confidence intervals by printing the model object.</span>
-<span id="cb23-302"><a href="#cb23-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-305"><a href="#cb23-305" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-306"><a href="#cb23-306" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model-height</span></span>
-<span id="cb23-307"><a href="#cb23-307" aria-hidden="true" tabindex="-1"></a>model_height</span>
-<span id="cb23-308"><a href="#cb23-308" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-309"><a href="#cb23-309" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-310"><a href="#cb23-310" aria-hidden="true" tabindex="-1"></a>Here we see the Intercept and sigma estimates, as well as their 95% CIs to summarize their posterior distribution.</span>
-<span id="cb23-311"><a href="#cb23-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-312"><a href="#cb23-312" aria-hidden="true" tabindex="-1"></a>A final step is to visualize the posterior distribution of all heights (posterior predictive check) and compare it the distribution of heights based on our priors (the prior predictive check).</span>
-<span id="cb23-313"><a href="#cb23-313" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-316"><a href="#cb23-316" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-317"><a href="#cb23-317" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-predictive-check</span></span>
-<span id="cb23-318"><a href="#cb23-318" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Prior and posterior predictive check</span></span>
-<span id="cb23-319"><a href="#cb23-319" aria-hidden="true" tabindex="-1"></a>predictions_posterior <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">distribution =</span> <span class="st">"posterior"</span>)</span>
-<span id="cb23-320"><a href="#cb23-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-321"><a href="#cb23-321" aria-hidden="true" tabindex="-1"></a>predictions_posterior <span class="ot">&lt;-</span> <span class="fu">add_predicted_draws</span>(</span>
-<span id="cb23-322"><a href="#cb23-322" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> predictions_posterior,</span>
-<span id="cb23-323"><a href="#cb23-323" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> model_height, </span>
-<span id="cb23-324"><a href="#cb23-324" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="st">"predicted_height"</span></span>
-<span id="cb23-325"><a href="#cb23-325" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-326"><a href="#cb23-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-327"><a href="#cb23-327" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(predictions_prior, predictions_posterior)</span>
+<span id="cb23-273"><a href="#cb23-273" aria-hidden="true" tabindex="-1"></a>Here we see the Intercept and sigma estimates, as well as their 95% CIs to summarize their posterior distribution. Apparently our posterior estimate for the Intercept is <span class="in">`r round(mean(as_tibble(model_height)$b_Intercept), 2)`</span> and the estimate for $\sigma$ is <span class="in">`r round(mean(as_tibble(model_height)$sigma), 2)`</span>. We also see the 95% CIs, but let's visualize these results instead.</span>
+<span id="cb23-274"><a href="#cb23-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-275"><a href="#cb23-275" aria-hidden="true" tabindex="-1"></a><span class="fu">### Comparing the prior and posterior distributions</span></span>
+<span id="cb23-276"><a href="#cb23-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-277"><a href="#cb23-277" aria-hidden="true" tabindex="-1"></a>Inspecting the chains also showed us the posterior distributions of the two parameters, but let's create our own graphs that compare both the prior and posterior distributions.</span>
+<span id="cb23-278"><a href="#cb23-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-281"><a href="#cb23-281" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-282"><a href="#cb23-282" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-mu</span></span>
+<span id="cb23-283"><a href="#cb23-283" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-: Prior vs. posterior for $\mu$</span></span>
+<span id="cb23-284"><a href="#cb23-284" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> model_height <span class="sc">%&gt;%</span></span>
+<span id="cb23-285"><a href="#cb23-285" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather_draws</span>(b_Intercept, sigma, prior_Intercept, prior_sigma) <span class="sc">%&gt;%</span></span>
+<span id="cb23-286"><a href="#cb23-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb23-287"><a href="#cb23-287" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-288"><a href="#cb23-288" aria-hidden="true" tabindex="-1"></a>    <span class="at">parameter =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"sigma"</span>), <span class="st">"sigma"</span>, <span class="st">"intercept"</span>),</span>
+<span id="cb23-289"><a href="#cb23-289" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"prior"</span>), <span class="st">"prior"</span>, <span class="st">"posterior"</span>)</span>
+<span id="cb23-290"><a href="#cb23-290" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-291"><a href="#cb23-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-292"><a href="#cb23-292" aria-hidden="true" tabindex="-1"></a>results_intercept <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"intercept"</span>)</span>
+<span id="cb23-293"><a href="#cb23-293" aria-hidden="true" tabindex="-1"></a>results_sigma <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"sigma"</span>)</span>
+<span id="cb23-294"><a href="#cb23-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-295"><a href="#cb23-295" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_intercept, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
+<span id="cb23-296"><a href="#cb23-296" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
+<span id="cb23-297"><a href="#cb23-297" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">145</span>, <span class="dv">195</span>) <span class="sc">+</span></span>
+<span id="cb23-298"><a href="#cb23-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Average height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
+<span id="cb23-299"><a href="#cb23-299" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
+<span id="cb23-300"><a href="#cb23-300" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-301"><a href="#cb23-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-302"><a href="#cb23-302" aria-hidden="true" tabindex="-1"></a>Here we see that the posterior distribution of average heights is now much more narrow and centered around <span class="in">`r round(mean(as_tibble(model_height)$b_Intercept))`</span> cm. So not only should we switch from thinking the average is a lot lower than 170, we can also be much more confident about the mean.</span>
+<span id="cb23-303"><a href="#cb23-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-304"><a href="#cb23-304" aria-hidden="true" tabindex="-1"></a>How about sigma?</span>
+<span id="cb23-305"><a href="#cb23-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-308"><a href="#cb23-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-309"><a href="#cb23-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-sigma</span></span>
+<span id="cb23-310"><a href="#cb23-310" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-: Prior vs. posterior for $\sigma$</span></span>
+<span id="cb23-311"><a href="#cb23-311" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_sigma, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
+<span id="cb23-312"><a href="#cb23-312" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span> </span>
+<span id="cb23-313"><a href="#cb23-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">25</span>) <span class="sc">+</span></span>
+<span id="cb23-314"><a href="#cb23-314" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height standard deviation"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
+<span id="cb23-315"><a href="#cb23-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
+<span id="cb23-316"><a href="#cb23-316" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-317"><a href="#cb23-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-318"><a href="#cb23-318" aria-hidden="true" tabindex="-1"></a>Similarly, we see that the posterior for sigma is also much more narrow and around <span class="in">`r round(mean(as_tibble(model_height)$sigma))`</span>.</span>
+<span id="cb23-319"><a href="#cb23-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-320"><a href="#cb23-320" aria-hidden="true" tabindex="-1"></a>A final step is to visualize the posterior distribution of all heights (posterior predictive check) and compare it the distribution of heights based on our priors (the prior predictive check).</span>
+<span id="cb23-321"><a href="#cb23-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-324"><a href="#cb23-324" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-325"><a href="#cb23-325" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-predictive-check</span></span>
+<span id="cb23-326"><a href="#cb23-326" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Prior and posterior predictive check</span></span>
+<span id="cb23-327"><a href="#cb23-327" aria-hidden="true" tabindex="-1"></a>predictions_posterior <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">distribution =</span> <span class="st">"posterior"</span>)</span>
 <span id="cb23-328"><a href="#cb23-328" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-329"><a href="#cb23-329" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(predictions, <span class="fu">aes</span>(<span class="at">x =</span> predicted_height, <span class="at">fill =</span> distribution)) <span class="sc">+</span></span>
-<span id="cb23-330"><a href="#cb23-330" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">alpha =</span> .<span class="dv">85</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb23-331"><a href="#cb23-331" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">100</span>, <span class="dv">250</span>) <span class="sc">+</span></span>
-<span id="cb23-332"><a href="#cb23-332" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
-<span id="cb23-333"><a href="#cb23-333" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
-<span id="cb23-334"><a href="#cb23-334" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-335"><a href="#cb23-335" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-336"><a href="#cb23-336" aria-hidden="true" tabindex="-1"></a>Based on the data, we should believe, after seeing the data, that people's heights are lower than expected and that there is less variation.</span>
+<span id="cb23-329"><a href="#cb23-329" aria-hidden="true" tabindex="-1"></a>predictions_posterior <span class="ot">&lt;-</span> <span class="fu">add_predicted_draws</span>(</span>
+<span id="cb23-330"><a href="#cb23-330" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> predictions_posterior,</span>
+<span id="cb23-331"><a href="#cb23-331" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> model_height, </span>
+<span id="cb23-332"><a href="#cb23-332" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="st">"predicted_height"</span></span>
+<span id="cb23-333"><a href="#cb23-333" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-334"><a href="#cb23-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-335"><a href="#cb23-335" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(predictions_prior, predictions_posterior)</span>
+<span id="cb23-336"><a href="#cb23-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-337"><a href="#cb23-337" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(predictions, <span class="fu">aes</span>(<span class="at">x =</span> predicted_height, <span class="at">fill =</span> distribution)) <span class="sc">+</span></span>
+<span id="cb23-338"><a href="#cb23-338" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">alpha =</span> .<span class="dv">85</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb23-339"><a href="#cb23-339" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">100</span>, <span class="dv">250</span>) <span class="sc">+</span></span>
+<span id="cb23-340"><a href="#cb23-340" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
+<span id="cb23-341"><a href="#cb23-341" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
+<span id="cb23-342"><a href="#cb23-342" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
