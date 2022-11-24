@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.629">
+<meta name="generator" content="quarto-1.1.251">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 </style>
 
 
@@ -35,7 +40,7 @@ ul.task-list{list-style: none;}
 <link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -67,9 +72,11 @@ ul.task-list{list-style: none;}
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-md navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="../../../index.html">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">willemsleegers.com</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -120,7 +127,7 @@ ul.task-list{list-style: none;}
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
@@ -174,6 +181,7 @@ ul.task-list{list-style: none;}
 <p>The replication failures were not just failures of state-of-the-art studies. These were studies that we taught our students in textbooks, that drove people into the field and that formed basis of PhD projects. In short, the replication failures showed us that it is possible for an entire field to be flat-out wrong about something.</p>
 <p>The crisis of confidence wasn’t limited to just social psychology. Other fields also had to admit that there were findings, believed by many, were just flat out mistaken. For example, there was some work showing that the 5-HTTLPR gene played a crucial role in depression. It has all the hallmarks of being an amazing finding. There were replications and meta-analyses to show that the effect must be real. But it wasn’t. A giant with a sample size of over 600,000 participants showed that there simply isn’t a link like that. This whole ordeal, including the sentiment I experience upon reading about it, is well expressed <a href="https://slatestarcodex.com/2019/05/07/5-httlpr-a-pointed-review/">here</a>.</p>
 <p>The main take away from that story is that a large number of researchers in the field can fool themselves. A whole group of researchers can be flat out wrong. They and their PhD students were simply investigating noise, and managed to publish papers and maintain or even create careers out of it.</p>
+<p>Another piece of evidence: Social psychology is based on false confidence because they have studied humans the wrong way for a long time. They used super small samples, thinking it would produce reliable knowledge. Instead, we have come to realize that the samples are too small and that the power was often shit. Now we need to orders of magnitude more participants to address the questions that psychologists are interested in (especially those involving interactions). We also see increases in statistical models like multilevel models that explicitly model variation but more importantly allow researchers to model without averaging, which produces overconfidence as well. It’s still shocking to me to see what the statistical models are often way too simplistic and not taking into account the noise that is so obviously present. We still average a lot (think any scale) and we completely disregard measurement error in models.</p>
 <p><strong>Intermediate conclusion</strong>: It’s possible for a large portion of a field to be absolutely wrong about ostensibly established findings.</p>
 </section>
 <section id="the-incentive-crisis" class="level3">
@@ -188,6 +196,7 @@ ul.task-list{list-style: none;}
 <h3 class="anchored" data-anchor-id="the-impact-crisis">The impact crisis</h3>
 <p>Then the third and final crisis hit me. During the years I attended conferences, talks, and read papers. I started to notice that many of the studies that I encountered were uninteresting. Worse, I thought they were a waste of money and resources. I saw studies whether people perceive food to be bigger when there were people around, whether people’s brains can predict stock exchanges (useful, but extremely unlikely, almost like ESP), and others. I noticed I just couldn’t care less about the studies. Maybe it was because I was just getting more and more demotivated about academia and nothing could interest me about it anymore, but I don’t think so. I think the main problem was that I think the incentives were still wrong and that much better research could be done, but simply wasn’t being done. Not just better research in terms of methodology, but also in terms of topic. I rarely encountered studies about reducing poverty, improving animal welfare, improving pandemic responses, or any other topic that actually mattered. When I did encounter a study that was somewhat related to these topics, they were about the <em>boring</em> and <em>trivial</em> aspects of it. I joined research organizations to study the topic of animal welfare, for example, but most studies were uninterested correlational studies that link psychological traits together, rather than studying how we can motivate people to eat less meat. The reason was clear to me; that stuff is hard to study. It’s much easier to run typical studies and get them published rather than solve the problems that we care about. So the third crisis hit me. Even if we were to do methodologically sound science, apparently we’re not even able to apply it to the right topics to study.</p>
 <p>The third time was the charm and I realized I had to go. I was getting increasingly unhappy to the point where I wanted to quit without even having a backup plan. But I’m somewhat risk averse so I was hesitant to do that. Instead, I spent last summer looking for another job and I found several alternative jobs I could go for. I started applying and I then I also noticed an immediate switch in my thinking about academia. Does academia really make any sense?</p>
+<p>I-level and S-level. It’s so obvious that academics are rarely interested in having actual impact. If they were, they would conclude easily that the best ways to impact are methods such as lobbying. Not small cute interventions directed at individuals.</p>
 </section>
 </section>
 <section id="modern-academia" class="level2">
@@ -204,6 +213,24 @@ ul.task-list{list-style: none;}
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -253,7 +280,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
