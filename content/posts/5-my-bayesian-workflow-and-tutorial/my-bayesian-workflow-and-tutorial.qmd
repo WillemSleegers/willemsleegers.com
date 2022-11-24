@@ -198,6 +198,7 @@ We then use the `tidybayes` package to draw samples from the prior and plot thes
 ```{r}
 #| label: prior-predictive
 #| fig-cap: Prior predictive check
+#| warning: false
 predictions_prior <- tibble(distribution = "prior")
 
 predictions_prior <- add_predicted_draws(
@@ -259,6 +260,7 @@ Inspecting the chains also showed us the posterior distributions of the two para
 ```{r}
 #| label: prior-posterior-mu
 #| fig-cap-: Prior vs. posterior for $\mu$
+#| warning: false
 results <- model_height %>%
   gather_draws(b_Intercept, sigma, prior_Intercept, prior_sigma) %>%
   ungroup() %>%
@@ -284,6 +286,7 @@ How about sigma?
 ```{r}
 #| label: prior-posterior-sigma
 #| fig-cap-: Prior vs. posterior for $\sigma$
+#| warning: false
 ggplot(results_sigma, aes(x = .value, fill = fct_rev(distribution))) +
   geom_histogram(binwidth = 0.25, position = "identity", alpha = .85) + 
   xlim(0, 25) +
@@ -298,6 +301,7 @@ A final step is to visualize the posterior distribution of all heights (posterio
 ```{r}
 #| label: prior-posterior-predictive-check
 #| fig-cap: Prior and posterior predictive check
+#| warning: false
 predictions_posterior <- tibble(distribution = "posterior")
 
 predictions_posterior <- add_predicted_draws(
