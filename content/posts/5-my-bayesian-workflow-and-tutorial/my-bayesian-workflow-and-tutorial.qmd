@@ -117,7 +117,7 @@ ggplot(
 
 Our prior indicates that we believe the average height to be higher than the default prior. In terms of the standard deviation, we both seem to be about equally uncertain about this average. To be fair, I think this prior of ours is not very plausible. Apparently we assign quite a chunk of plausibility to an average of 180 cm, or even 190 cm, which is very unlikely. An average of 160 cm is more plausible to me than an average of 180, so I should probably lower the mu, or use more of a skewed distribution. This is one of the benefits of visualizing the prior, it lets you think again about your prior so that you may improve on it. Regardless, we can keep the prior like this for now. We'll see later that our data easily overshadows our prior.
 
-### The sigma prior
+### The sigma prior ($\sigma$)
 
 What about the standard deviation? I find setting the standard deviation of the distribution of heights (not the mean of the heights) quite difficult. There are parts that are easy, such as the fact that the standard deviation has to be 0 or larger (it can't be negative), but exactly how large it should be, I don't know.
 
@@ -129,7 +129,7 @@ So, a *t*-distribution requires three parameters: $\mu$, $\sigma$, and the degre
 
 ```{r}
 #| label: height-sigma-prior
-#| fig-cap: Two priors for $\sigma$ - brms' default and my own
+#| fig-cap: Two priors for $\sigma$
 height_prior_sigma <- tibble(
   height_sigma = seq(from = 0, to = 50, by = .1),
   default = dstudent_t(height_sigma, df = 3, mu = 0, sigma = 8.5) * 2,
@@ -162,22 +162,6 @@ We can use `brms` to do this by running the `brm()` function. However, instead o
 
 ```{r}
 #| label: height-prior
-model_height_prior <- brm(
-  height ~ 1,  
-  data = data, 
-  family = gaussian,
-  prior = c(
-      prior(normal(170, 10), class = "Intercept"),
-      prior(cauchy(5, 5), class = "sigma")
-    ), 
-  cores = 4,
-  seed = 4, 
-  sample_prior = "only",
-  file = "models/model_height_prior.rds"
-)
-
-data <- mutate(data, height_z = (height - mean(height)) / sd(height))
-
 model_height_prior <- brm(
   height ~ 1,  
   data = data, 
