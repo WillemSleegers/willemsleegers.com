@@ -132,8 +132,8 @@ So, a *t*-distribution requires three parameters: $\mu$, $\sigma$, and the degre
 #| fig-cap: Two priors for $\sigma$
 height_prior_sigma <- tibble(
   height_sigma = seq(from = 0, to = 50, by = .1),
-  default = dstudent_t(height_sigma, df = 3, mu = 0, sigma = 8.5) * 2,
-  ours = dstudent_t(height_sigma, df = 1, mu = 5, sigma = 5) * 2
+  default = dstudent_t(height_sigma, df = 3, mu = 0, sigma = 8.5),
+  ours = dstudent_t(height_sigma, df = 1, mu = 5, sigma = 5) 
 )
 
 height_prior_sigma <- pivot_longer(
