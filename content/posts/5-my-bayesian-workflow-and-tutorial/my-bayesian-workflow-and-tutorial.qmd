@@ -235,7 +235,7 @@ We can call up the estimates and the 95% confidence intervals by printing the mo
 summary(model_height)
 ```
 
-Here we see the Intercept and sigma estimates, as well as their 95% CIs to summarize their posterior distribution. Apparently our posterior estimate for the Intercept is `r round(mean(as_tibble(model_height)$b_Intercept), 2)` and the estimate for $\sigma$ is `r round(mean(as_tibble(model_height)$sigma), 2)`. We also see the 95% CIs, but let's visualize these results instead.
+Here we see the Intercept and sigma estimates. Apparently our posterior estimate for the Intercept is `r round(mean(as_tibble(model_height)$b_Intercept), 2)` and the estimate for $\sigma$ is `r round(mean(as_tibble(model_height)$sigma), 2)`. We also see the 95% CIs, but let's visualize these results instead.
 
 ### Comparing the prior and posterior distributions
 
@@ -247,7 +247,6 @@ Inspecting the chains also showed us the posterior distributions of the two para
 #| warning: false
 results <- model_height %>%
   gather_draws(b_Intercept, sigma, prior_Intercept, prior_sigma) %>%
-  ungroup() %>%
   mutate(
     parameter = if_else(str_detect(.variable, "sigma"), "sigma", "intercept"),
     distribution = if_else(str_detect(.variable, "prior"), "prior", "posterior")

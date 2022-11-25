@@ -593,7 +593,7 @@ and Tail_ESS are effective sample size measures, and Rhat is the potential
 scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
-<p>Here we see the Intercept and sigma estimates, as well as their 95% CIs to summarize their posterior distribution. Apparently our posterior estimate for the Intercept is 154.63 and the estimate for <span class="math inline">\(\sigma\)</span> is 7.77. We also see the 95% CIs, but let’s visualize these results instead.</p>
+<p>Here we see the Intercept and sigma estimates. Apparently our posterior estimate for the Intercept is 154.63 and the estimate for <span class="math inline">\(\sigma\)</span> is 7.77. We also see the 95% CIs, but let’s visualize these results instead.</p>
 </section>
 <section id="comparing-the-prior-and-posterior-distributions" class="level3">
 <h3 class="anchored" data-anchor-id="comparing-the-prior-and-posterior-distributions">Comparing the prior and posterior distributions</h3>
@@ -603,20 +603,19 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> model_height <span class="sc">%&gt;%</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather_draws</span>(b_Intercept, sigma, prior_Intercept, prior_sigma) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">parameter =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"sigma"</span>), <span class="st">"sigma"</span>, <span class="st">"intercept"</span>),</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"prior"</span>), <span class="st">"prior"</span>, <span class="st">"posterior"</span>)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>results_intercept <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"intercept"</span>)</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>results_sigma <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"sigma"</span>)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_intercept, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">145</span>, <span class="dv">195</span>) <span class="sc">+</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Average height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">parameter =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"sigma"</span>), <span class="st">"sigma"</span>, <span class="st">"intercept"</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"prior"</span>), <span class="st">"prior"</span>, <span class="st">"posterior"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>results_intercept <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"intercept"</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>results_sigma <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"sigma"</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_intercept, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">145</span>, <span class="dv">195</span>) <span class="sc">+</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Average height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="my-bayesian-workflow-and-tutorial_files/figure-html/prior-posterior-mu-1.png" class="img-fluid" width="672"></p>
@@ -1061,7 +1060,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-255"><a href="#cb15-255" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_height)</span>
 <span id="cb15-256"><a href="#cb15-256" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-257"><a href="#cb15-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-258"><a href="#cb15-258" aria-hidden="true" tabindex="-1"></a>Here we see the Intercept and sigma estimates, as well as their 95% CIs to summarize their posterior distribution. Apparently our posterior estimate for the Intercept is <span class="in">`r round(mean(as_tibble(model_height)$b_Intercept), 2)`</span> and the estimate for $\sigma$ is <span class="in">`r round(mean(as_tibble(model_height)$sigma), 2)`</span>. We also see the 95% CIs, but let's visualize these results instead.</span>
+<span id="cb15-258"><a href="#cb15-258" aria-hidden="true" tabindex="-1"></a>Here we see the Intercept and sigma estimates. Apparently our posterior estimate for the Intercept is <span class="in">`r round(mean(as_tibble(model_height)$b_Intercept), 2)`</span> and the estimate for $\sigma$ is <span class="in">`r round(mean(as_tibble(model_height)$sigma), 2)`</span>. We also see the 95% CIs, but let's visualize these results instead.</span>
 <span id="cb15-259"><a href="#cb15-259" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-260"><a href="#cb15-260" aria-hidden="true" tabindex="-1"></a><span class="fu">### Comparing the prior and posterior distributions</span></span>
 <span id="cb15-261"><a href="#cb15-261" aria-hidden="true" tabindex="-1"></a></span>
@@ -1073,61 +1072,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-269"><a href="#cb15-269" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
 <span id="cb15-270"><a href="#cb15-270" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> model_height <span class="sc">%&gt;%</span></span>
 <span id="cb15-271"><a href="#cb15-271" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather_draws</span>(b_Intercept, sigma, prior_Intercept, prior_sigma) <span class="sc">%&gt;%</span></span>
-<span id="cb15-272"><a href="#cb15-272" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb15-273"><a href="#cb15-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb15-274"><a href="#cb15-274" aria-hidden="true" tabindex="-1"></a>    <span class="at">parameter =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"sigma"</span>), <span class="st">"sigma"</span>, <span class="st">"intercept"</span>),</span>
-<span id="cb15-275"><a href="#cb15-275" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"prior"</span>), <span class="st">"prior"</span>, <span class="st">"posterior"</span>)</span>
-<span id="cb15-276"><a href="#cb15-276" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb15-277"><a href="#cb15-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-278"><a href="#cb15-278" aria-hidden="true" tabindex="-1"></a>results_intercept <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"intercept"</span>)</span>
-<span id="cb15-279"><a href="#cb15-279" aria-hidden="true" tabindex="-1"></a>results_sigma <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"sigma"</span>)</span>
-<span id="cb15-280"><a href="#cb15-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-281"><a href="#cb15-281" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_intercept, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
-<span id="cb15-282"><a href="#cb15-282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
-<span id="cb15-283"><a href="#cb15-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">145</span>, <span class="dv">195</span>) <span class="sc">+</span></span>
-<span id="cb15-284"><a href="#cb15-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Average height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
-<span id="cb15-285"><a href="#cb15-285" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
-<span id="cb15-286"><a href="#cb15-286" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-287"><a href="#cb15-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-288"><a href="#cb15-288" aria-hidden="true" tabindex="-1"></a>Here we see that the posterior distribution of average heights is now much more narrow and centered around <span class="in">`r round(mean(as_tibble(model_height)$b_Intercept))`</span> cm. So not only should we switch from thinking the average is a lot lower than 170, we can also be much more confident about the mean.</span>
-<span id="cb15-289"><a href="#cb15-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-290"><a href="#cb15-290" aria-hidden="true" tabindex="-1"></a>How about sigma?</span>
-<span id="cb15-291"><a href="#cb15-291" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-294"><a href="#cb15-294" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-295"><a href="#cb15-295" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-sigma</span></span>
-<span id="cb15-296"><a href="#cb15-296" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-: Prior vs. posterior for $\sigma$</span></span>
-<span id="cb15-297"><a href="#cb15-297" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb15-298"><a href="#cb15-298" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_sigma, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
-<span id="cb15-299"><a href="#cb15-299" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span> </span>
-<span id="cb15-300"><a href="#cb15-300" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">25</span>) <span class="sc">+</span></span>
-<span id="cb15-301"><a href="#cb15-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height standard deviation"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
-<span id="cb15-302"><a href="#cb15-302" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
-<span id="cb15-303"><a href="#cb15-303" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-304"><a href="#cb15-304" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-305"><a href="#cb15-305" aria-hidden="true" tabindex="-1"></a>Similarly, we see that the posterior for sigma is also much more narrow and around <span class="in">`r round(mean(as_tibble(model_height)$sigma))`</span>.</span>
-<span id="cb15-306"><a href="#cb15-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-307"><a href="#cb15-307" aria-hidden="true" tabindex="-1"></a>A final step is to visualize the posterior distribution of all heights (posterior predictive check) and compare it the distribution of heights based on our priors (the prior predictive check).</span>
-<span id="cb15-308"><a href="#cb15-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-311"><a href="#cb15-311" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-312"><a href="#cb15-312" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-predictive-check</span></span>
-<span id="cb15-313"><a href="#cb15-313" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Prior and posterior predictive check</span></span>
-<span id="cb15-314"><a href="#cb15-314" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb15-315"><a href="#cb15-315" aria-hidden="true" tabindex="-1"></a>predictions_posterior <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">distribution =</span> <span class="st">"posterior"</span>)</span>
-<span id="cb15-316"><a href="#cb15-316" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-317"><a href="#cb15-317" aria-hidden="true" tabindex="-1"></a>predictions_posterior <span class="ot">&lt;-</span> <span class="fu">add_predicted_draws</span>(</span>
-<span id="cb15-318"><a href="#cb15-318" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> predictions_posterior,</span>
-<span id="cb15-319"><a href="#cb15-319" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> model_height, </span>
-<span id="cb15-320"><a href="#cb15-320" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="st">"predicted_height"</span></span>
-<span id="cb15-321"><a href="#cb15-321" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-322"><a href="#cb15-322" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-323"><a href="#cb15-323" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(predictions_prior, predictions_posterior)</span>
-<span id="cb15-324"><a href="#cb15-324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-325"><a href="#cb15-325" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(predictions, <span class="fu">aes</span>(<span class="at">x =</span> predicted_height, <span class="at">fill =</span> distribution)) <span class="sc">+</span></span>
-<span id="cb15-326"><a href="#cb15-326" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">alpha =</span> .<span class="dv">85</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb15-327"><a href="#cb15-327" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">100</span>, <span class="dv">250</span>) <span class="sc">+</span></span>
-<span id="cb15-328"><a href="#cb15-328" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
-<span id="cb15-329"><a href="#cb15-329" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
-<span id="cb15-330"><a href="#cb15-330" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-272"><a href="#cb15-272" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-273"><a href="#cb15-273" aria-hidden="true" tabindex="-1"></a>    <span class="at">parameter =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"sigma"</span>), <span class="st">"sigma"</span>, <span class="st">"intercept"</span>),</span>
+<span id="cb15-274"><a href="#cb15-274" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(.variable, <span class="st">"prior"</span>), <span class="st">"prior"</span>, <span class="st">"posterior"</span>)</span>
+<span id="cb15-275"><a href="#cb15-275" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-276"><a href="#cb15-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-277"><a href="#cb15-277" aria-hidden="true" tabindex="-1"></a>results_intercept <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"intercept"</span>)</span>
+<span id="cb15-278"><a href="#cb15-278" aria-hidden="true" tabindex="-1"></a>results_sigma <span class="ot">&lt;-</span> <span class="fu">filter</span>(results, parameter <span class="sc">==</span> <span class="st">"sigma"</span>)</span>
+<span id="cb15-279"><a href="#cb15-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-280"><a href="#cb15-280" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_intercept, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
+<span id="cb15-281"><a href="#cb15-281" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
+<span id="cb15-282"><a href="#cb15-282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">145</span>, <span class="dv">195</span>) <span class="sc">+</span></span>
+<span id="cb15-283"><a href="#cb15-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Average height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
+<span id="cb15-284"><a href="#cb15-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
+<span id="cb15-285"><a href="#cb15-285" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-286"><a href="#cb15-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-287"><a href="#cb15-287" aria-hidden="true" tabindex="-1"></a>Here we see that the posterior distribution of average heights is now much more narrow and centered around <span class="in">`r round(mean(as_tibble(model_height)$b_Intercept))`</span> cm. So not only should we switch from thinking the average is a lot lower than 170, we can also be much more confident about the mean.</span>
+<span id="cb15-288"><a href="#cb15-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-289"><a href="#cb15-289" aria-hidden="true" tabindex="-1"></a>How about sigma?</span>
+<span id="cb15-290"><a href="#cb15-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-293"><a href="#cb15-293" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-294"><a href="#cb15-294" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-sigma</span></span>
+<span id="cb15-295"><a href="#cb15-295" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-: Prior vs. posterior for $\sigma$</span></span>
+<span id="cb15-296"><a href="#cb15-296" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb15-297"><a href="#cb15-297" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_sigma, <span class="fu">aes</span>(<span class="at">x =</span> .value, <span class="at">fill =</span> <span class="fu">fct_rev</span>(distribution))) <span class="sc">+</span></span>
+<span id="cb15-298"><a href="#cb15-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span> </span>
+<span id="cb15-299"><a href="#cb15-299" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">25</span>) <span class="sc">+</span></span>
+<span id="cb15-300"><a href="#cb15-300" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height standard deviation"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
+<span id="cb15-301"><a href="#cb15-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
+<span id="cb15-302"><a href="#cb15-302" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-303"><a href="#cb15-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-304"><a href="#cb15-304" aria-hidden="true" tabindex="-1"></a>Similarly, we see that the posterior for sigma is also much more narrow and around <span class="in">`r round(mean(as_tibble(model_height)$sigma))`</span>.</span>
+<span id="cb15-305"><a href="#cb15-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-306"><a href="#cb15-306" aria-hidden="true" tabindex="-1"></a>A final step is to visualize the posterior distribution of all heights (posterior predictive check) and compare it the distribution of heights based on our priors (the prior predictive check).</span>
+<span id="cb15-307"><a href="#cb15-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-310"><a href="#cb15-310" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-311"><a href="#cb15-311" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-predictive-check</span></span>
+<span id="cb15-312"><a href="#cb15-312" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Prior and posterior predictive check</span></span>
+<span id="cb15-313"><a href="#cb15-313" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb15-314"><a href="#cb15-314" aria-hidden="true" tabindex="-1"></a>predictions_posterior <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">distribution =</span> <span class="st">"posterior"</span>)</span>
+<span id="cb15-315"><a href="#cb15-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-316"><a href="#cb15-316" aria-hidden="true" tabindex="-1"></a>predictions_posterior <span class="ot">&lt;-</span> <span class="fu">add_predicted_draws</span>(</span>
+<span id="cb15-317"><a href="#cb15-317" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> predictions_posterior,</span>
+<span id="cb15-318"><a href="#cb15-318" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> model_height, </span>
+<span id="cb15-319"><a href="#cb15-319" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="st">"predicted_height"</span></span>
+<span id="cb15-320"><a href="#cb15-320" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-321"><a href="#cb15-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-322"><a href="#cb15-322" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(predictions_prior, predictions_posterior)</span>
+<span id="cb15-323"><a href="#cb15-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-324"><a href="#cb15-324" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(predictions, <span class="fu">aes</span>(<span class="at">x =</span> predicted_height, <span class="at">fill =</span> distribution)) <span class="sc">+</span></span>
+<span id="cb15-325"><a href="#cb15-325" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">alpha =</span> .<span class="dv">85</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb15-326"><a href="#cb15-326" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">100</span>, <span class="dv">250</span>) <span class="sc">+</span></span>
+<span id="cb15-327"><a href="#cb15-327" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
+<span id="cb15-328"><a href="#cb15-328" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">discrete =</span> <span class="cn">TRUE</span>, <span class="at">begin =</span> .<span class="dv">25</span>, <span class="at">end =</span> .<span class="dv">75</span>)</span>
+<span id="cb15-329"><a href="#cb15-329" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
