@@ -28,6 +28,7 @@ library(tidyverse)
 library(viridis)
 library(brms)
 library(tidybayes)
+library(ggrepel)
 
 # Load data
 data <- read_csv("Howell1.csv")
@@ -300,4 +301,214 @@ ggplot(predictions, aes(x = predicted_height, fill = distribution)) +
   xlim(100, 250) +
   labs(x = "Height", y = "", fill = "Distribution") +
   scale_fill_viridis(option = "mako", discrete = TRUE, begin = .25, end = .75)
+```
+
+## Adding a predictor
+
+Now let's add a predictor to our model. Besides heights, the data set also contains their weights. We can create a model in which we regress heights onto weights. The formula syntax for a model like that in R is `height ~ weight`. We can use this formula again in `get_prior()` to see which priors we need to specify.
+
+```{r}
+#| label: get-priors-predictor
+get_prior(height ~ weight, data = data)
+```
+
+The output is a bit trickier this time. We see the Intercept and sigma priors from our previous model, as well as two extra rows referring to a class called `b`. These two rows actually refer to the same prior, one refers specifically to the weight predictor and one refers to all predictors. If you run a model with many more predictors, you could set one prior that applies to all predictors. In this case though, we only have 1 predictor so it actually doesn't matter, both refer to the same prior.
+
+Given that this is a bit trickier, and given that I said writing down your model explicitly is better, we should go ahead and do that.
+
+$$
+heights_i ∼ Normal(\mu_i, \sigma)\\
+\mu_i = \alpha + \beta x_i
+$$
+
+We again specify that the heights are normally distributed, so we still have a $\mu$ and $\sigma$, but this time the $\mu$ is no longer a parameter we will estimate. Instead, it's constructed from other parameters, $\alpha$, $\beta$, and an observed variable $x_i$ (the weight observations).
+
+If you're used to linear regression equations, this notation should not surprise you. $\alpha$ refers to the intercept and $\beta$ to the slope.
+
+We need to set priors on these parameters. We previously already discussed the intercept prior so we could reuse that prior, although that means we need to center the data so the intercept refers to the average height of someone with an average weight rather than someone with 0 weight. So let's first mean center the weight observations.
+
+```{r}
+#| label: mean-center-weight
+data <- mutate(data, weight_mc = weight - mean(weight))
+```
+
+Now we can use the same prior as before, which was a normal distribution with a mean of 170 and a standard deviation of 10.
+
+Next is the prior for the slope. This represents the relationship between weights and heights. For every 1 increase in weight, how much do we think that the height will increase or decrease? We could begin with an agnostic prior in which we do not specify the direction and instead just add some uncertainty so the slope can go in either direction. For example, let's put a normal distribution on the slope with a mean of 0 and a standard deviation of 10.
+
+```{r}
+#| label: weight-prior
+#| fig-cap: Several priors for $\beta$
+model_height_weight_prior <- brm(
+  height ~ weight_mc,  
+  data = data, 
+  family = gaussian,
+  prior = c(
+      prior(normal(170, 10), class = "Intercept"),
+      prior(cauchy(5, 5), class = "sigma"),
+      prior(normal(0, 10), class = "b")
+    ), 
+  cores = 4,
+  seed = 4, 
+  sample_prior = "only",
+  file = "models/model_height_weight_prior.rds"
+)
+```
+
+We can again create a prior predictive check to see whether our priors actually make sense. However, instead of plotting the predicted distribution of heights, we're mostly interested in the relationship between weight and height, so we should plot a check of that relationship instead. This can be done by drawing sets of intercepts and slopes from the model results.
+
+Below we draw intercepts and slopes from the model result and plot 100 of them. To help make sense of the sensibility of the slopes I've added the average weight to the weights so we're back on the normal scale and not the mean centered scale and I've added two dashed lines to indicate the minimum and maximum height we can expect.
+
+```{r}
+#| label: prior-predictive-check-weight
+#| fig-cap: A prior predictive check of the relationship between weight and height
+draws <- spread_draws(
+  model_height_weight_prior, b_Intercept, b_weight_mc
+)
+
+weight_mean <- data %>%
+  pull(weight) %>%
+  mean()
+
+ggplot(data, aes(x = weight_mc, y = height)) +
+  geom_blank() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = 272, linetype = "dashed") +
+  geom_abline(
+    data = filter(draws, .draw <= 100),
+    mapping = aes(intercept = b_Intercept, slope = b_weight_mc),
+    alpha = .25
+  ) +
+  geom_label(x = 15, y = 260, label = "Tallest person ever") +
+  labs(x = "Weight", y = "Height") +
+  scale_x_continuous(labels = function(x) round(x + weight_mean))
+```
+
+The plot shows a wide range of possible slopes, some of which are definitely unlikely. We should lower our uncertainty by reducing the standard deviation on the prior. In the next model I lower it to 3. Additionally, the negative slopes are all pretty unlikely because we should expect a positive relationship between weight and height (taller people tend to be heavier). We could therefore also change our prior to force it to be positive using the `lb` argument in our prior for `b`.
+
+```{r}
+#| label: weight-updated-prior
+model_height_weight_prior <- brm(
+  height ~ weight_mc,  
+  data = data, 
+  family = gaussian,
+  prior = c(
+      prior(normal(170, 10), class = "Intercept"),
+      prior(cauchy(5, 5), class = "sigma"),
+      prior(normal(0, 3), class = "b", lb = 0)
+    ), 
+  cores = 4,
+  seed = 4, 
+  sample_prior = "only", 
+  file = "models/model_height_weight_prior_lb.rds",
+  control = list(adapt_delta = 0.9)
+)
+```
+
+When I first ran this model I received the warning that there was 1 divergent transition after warmup. The Rhat values did not show this was problematic but I wanted to get rid of the warning anyway so I increased the `adapt_delta`, as suggested in the documentation, from .8 to .9.
+
+```{r}
+#| label: prior-predictive-check-weight-update
+#| fig-cap: A prior predictive check of the relationship between weight and height
+draws <- spread_draws(
+  model_height_weight_prior, b_Intercept, b_weight_mc
+)
+
+ggplot(data, aes(x = weight_mc, y = height)) +
+  geom_blank() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = 272, linetype = "dashed") +
+  geom_abline(
+    data = filter(draws, .draw <= 100),
+    mapping = aes(intercept = b_Intercept, slope = b_weight_mc),
+    alpha = .25
+  ) +
+  geom_label(x = -10, y = 260, label = "Tallest person ever") +
+  labs(x = "Weight", y = "Height") +
+  scale_x_continuous(labels = function(x) round(x + weight_mean))
+```
+
+This looks a lot better, so let's run the model for real now.
+
+```{r}
+#| label: weight-model
+model_height_weight <- brm(data = data, 
+  height ~ weight,
+  family = gaussian,
+  prior = c(
+      prior(normal(170, 10), class = "Intercept"),
+      prior(cauchy(5, 5), class = "sigma"),
+      prior(normal(0, 3), class = "b", lb = 0)
+    ), 
+  cores = 4,
+  seed = 4,
+  sample_prior = TRUE,
+  file = "models/model_height_weight.rds",
+  control = list(adapt_delta = 0.9)
+)
+
+model_height_weight
+```
+
+We see that the estimate for the weight predictor is `r round(fixef(model_height_weight)[2, 1], 2)`. Let's plot the entire posterior for the estimate and also compare it to the prior we set for it.
+
+```{r}
+#| label: weight-prior-posterior
+#| warning: false
+results <- model_height_weight %>%
+  gather_draws(prior_b, b_weight) %>%
+  mutate(
+    distribution = if_else(
+      str_detect(.variable, "prior"), "prior", "posterior"
+    )
+  )
+
+ggplot(results, aes(x = .value, fill = fct_rev(distribution))) +
+  geom_histogram(binwidth = 0.05, position = "identity", alpha = .85) +
+  xlim(0, 5) +
+  labs(x = "Slope", y = "", fill = "Distribution") +
+  scale_fill_viridis(option = "mako", discrete = TRUE, begin = .25, end = .75)
+```
+
+Apparently our prior was still very uninformed because the posterior shows we can be a confident in a much narrower range of slopes!
+
+### Thinking correlations instead
+
+Maybe one reason our prior was so uninformed was because it's harder to think of the right prior for a content-specific topic such as weights and heights of the !Kung San. Maybe we can instead standardize both the heights and weights in order to turn the regression model into a simple correlation analysis. That way we can specify a prior on what we think the correlation should be, which may be easier to do because we then think in terms of whether we think the relationship is small or medium or large, or something along those lines.
+
+So, let's standardize the heights and weights.
+
+```{r}
+#| label: standardize-heights-weights
+data <- mutate(
+  data, 
+  height_z = (height - mean(height)) / sd(height),
+  weight_z = (weight - mean(weight)) / sd(weight)
+)
+```
+
+The formula for our correlation analysis is `height_z ~ weight_z`. Which priors we have to specify remains the same, but what these priors should be did change. For instance, we know that the Intercept has to be 0 now because the heights have been standardized. This means the mean will be 0. In `brms`, we can specify a constant as a prior using `constant()`.
+
+What should the prior for $\sigma$ be? Let's keep that one the same for now and see what the posterior results will be.
+
+The prior for the slope is a lot easier now. We can simply specify a normal distribution with a mean of 0 and a standard deviation equal to the size of the effect we deem likely, together with a lower bound of 0 and upper bound of 1.
+
+```{r}
+#| label: model-height-weight_z
+model_height_weight_z <- brm(
+  height_z ~ weight_z,  
+  data = data, 
+  family = gaussian,
+  prior = c(
+      prior(constant(0), class = "Intercept"),
+      prior(cauchy(0, 2.5), class = "sigma"),
+      prior(normal(0, 1), class = "b", lb = 0, ub = 1)
+    ), 
+  cores = 4,
+  seed = 4, 
+  sample_prior = TRUE,
+  file = "models/model_height_weight_prior_z.rds"
+)
+
+model_height_weight_z
 ```
