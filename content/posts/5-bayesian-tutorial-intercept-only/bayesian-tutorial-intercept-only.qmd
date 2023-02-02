@@ -37,11 +37,10 @@ After loading the packages I set the default `ggplot2` theme and create a color 
 library(tidyverse)
 library(brms)
 library(tidybayes)
-library(willemverse) # remotes::install_github("willemsleegers/willemverse")
 
 theme_set(theme_minimal())
 
-pal_2 <- brew_colors(n = 2, begin = .6)
+colors <- c("#93CFDB", "#1E466E")
 ```
 
 ## Data
@@ -51,6 +50,7 @@ The [data](Howell1.csv) I'll play with is the same data Richard McElreath uses i
 ```{r}
 #| label: data
 #| tbl-cap: Partial census data for the Dobe area !Kung San compiled by Nancy Howell in the late 1960s.
+#| message: false
 data <- read_csv("Howell1.csv")
 data <- filter(data, age >= 18)
 
@@ -269,7 +269,7 @@ ggplot(intercept, aes(x = .value, fill = fct_rev(distribution))) +
     y = "", 
     fill = "Distribution"
   ) +
-  scale_fill_manual(values = pal_2)
+  scale_fill_manual(values = colors)
 ```
 
 Here we see that the posterior distribution of average heights is much more narrow and centered around `r round(mean(as_tibble(model_height)$b_Intercept))` cm. So not only should we switch from thinking the average is lower than 160, we can also be much more confident about the mean.
@@ -295,7 +295,7 @@ ggplot(sigma, aes(x = .value, fill = fct_rev(distribution))) +
     y = "", 
     fill = "Distribution"
   ) +
-  scale_fill_manual(values = pal_2)
+  scale_fill_manual(values = colors)
 ```
 
 Similarly, we see that the posterior for sigma is also much more narrow and around `r round(mean(as_tibble(model_height)$sigma))`.
@@ -320,7 +320,7 @@ ggplot(heights, aes(x = predicted_height, fill = distribution)) +
   geom_histogram(binwidth = 1, alpha = .85, position = "identity") +
   xlim(100, 250) +
   labs(x = "Height", y = "", fill = "Distribution") +
-  scale_fill_manual(values = pal_2)
+  scale_fill_manual(values = colors)
 ```
 
 And that's it!
@@ -328,6 +328,7 @@ And that's it!
 ## Summary
 
 In this post I showed how to run an intercept-only model in `brms`. It consisted of the following steps:
+
 1. Define the model
 2. Use the model to figure out which priors to set
 3. Visualize the priors and create a prior predictive check to potentially tweak the priors

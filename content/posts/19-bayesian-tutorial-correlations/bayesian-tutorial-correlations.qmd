@@ -1,0 +1,59 @@
+---
+title: "Bayesian tutorial: Correlations"
+description: "The third of a series of tutorial posts on Bayesian analyses. In this post I focus on using `brms` to model correlations."
+date: 2022-11-24
+categories:
+  - statistics
+  - tutorial
+  - Bayesian statistics
+  - regression
+code-fold: true
+code-tools: true
+toc: true
+draft: true
+---
+
+### Thinking correlations instead
+
+Maybe one reason our prior was so uninformed was because it's harder to think of the right prior for a content-specific topic such as weights and heights of the !Kung San. Maybe we can instead standardize both the heights and weights in order to turn the regression model into a simple correlation analysis. That way we can specify a prior on what we think the correlation should be, which may be easier to do because we then think in terms of whether we think the relationship is small or medium or large, or something along those lines.
+
+So, let's standardize the heights and weights.
+
+```{r}
+#| label: standardize-heights-weights
+data <- mutate(
+  data, 
+  height_z = (height - mean(height)) / sd(height),
+  weight_z = (weight - mean(weight)) / sd(weight)
+)
+```
+
+The formula for our correlation analysis is `height_z ~ weight_z`. Which priors we have to specify remains the same, but what these priors should be changes. For instance, we know that the Intercept has to be 0 now because the heights have been standardized. This means the mean will be 0. In `brms`, we can specify a constant as a prior using `constant()`.
+
+What should the prior for $\sigma$ be? With the variables standardized, $\sigma$ is limited to range from 0 to 1. If the predictor explains all the variance of the outcome variable, the residuals will be 0, meaning $\sigma$ will be 0. If the predictor explains no variance, $\sigma$ is equal to 1 because it will be similar to the standard deviation of the outcome variable, which is 1 because we've standardized it. Interestingly, this also means that the prior for $\sigma$ is now dependent on the prior for the slope, because the slope is what determines how much variance is explained in the outcome variable. So let's think about the prior for the slope.
+
+The prior for the slope is a bit easier now. We can specify a normal distribution with a mean of 0 and a standard deviation of 0.5, together with a lower bound of -1 and upper bound of 1. With a standard deviation of 0.5, we cover a large range of possible slopes, but assign more plausibility to smaller correlations and less plausibility to very high correlations (like 1 and -1).
+
+As for $\sigma$, let's keep it simple and use a uniform prior that assign equal plausibility to each value between 0 and 1.
+
+```{r}
+#| label: model-height-weight_z
+model_height_weight_z <- brm(
+  height_z ~ weight_z,  
+  data = data, 
+  family = gaussian,
+  prior = c(
+      prior(constant(0), class = "Intercept"),
+      prior(uniform(0, 1), class = "sigma", ub = 1),
+      prior(normal(0, 0.5), class = "b", lb = -1, ub = 1)
+    ), 
+  sample_prior = TRUE,
+  cores = 4,
+  seed = 4,
+  file = "models/model_height_weight_prior_z.rds"
+)
+
+model_height_weight_z
+```
+
+Taking a look at the estimates, we see the intercept is indeed 0 (we forced this). The estimate for the slope is `r round(fixef(model_height_weight_z)[2, 1], 2)`, i.e., the correlation. This means that the estimate for sigma is the square root of 1 minus the variance of the slope estimate (`r round(fixef(model_height_weight_z)[2, 1], 2)`²). In our case, that's .66, which matches the estimate for sigma.
