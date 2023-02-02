@@ -17,6 +17,22 @@ draft: true
 
 Maybe one reason our prior was so uninformed was because it's harder to think of the right prior for a content-specific topic such as weights and heights of the !Kung San. Maybe we can instead standardize both the heights and weights in order to turn the regression model into a simple correlation analysis. That way we can specify a prior on what we think the correlation should be, which may be easier to do because we then think in terms of whether we think the relationship is small or medium or large, or something along those lines.
 
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+library(brms)
+library(tidybayes)
+
+data <- read_csv("Howell1.csv")
+data <- filter(data, age >= 18)
+
+theme_set(theme_minimal())
+
+colors <- c("#93CFDB", "#1E466E")
+```
+
+
 So, let's standardize the heights and weights.
 
 ```{r}
