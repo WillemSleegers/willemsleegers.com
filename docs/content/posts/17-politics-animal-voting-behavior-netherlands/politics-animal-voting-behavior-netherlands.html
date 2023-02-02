@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.629">
+<meta name="generator" content="quarto-1.2.313">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -54,7 +59,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -67,7 +72,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -98,7 +103,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -133,40 +138,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-md navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="../../../index.html">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">willemsleegers.com</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../../index.html">Home</a>
+    <a class="nav-link" href="../../../index.html">
+ <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../content/about.html">About</a>
+    <a class="nav-link" href="../../../content/about.html">
+ <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../content/projects.html">Projects</a>
+    <a class="nav-link" href="../../../content/projects.html">
+ <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../content/blog.html">Blog</a>
+    <a class="nav-link" href="../../../content/blog.html">
+ <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../content/cv/cv.html">CV</a>
+    <a class="nav-link" href="../../../content/cv/cv.html">
+ <span class="menu-text">CV</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
     <a class="nav-link" href="https://www.twitter.com/willemsleegers"><i class="bi bi-twitter" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://www.github.com/willemsleegers"><i class="bi bi-github" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
 </ul>
               <div class="quarto-toggle-container">
@@ -186,7 +198,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
@@ -225,6 +237,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <p class="date">September 24, 2022</p>
     </div>
   </div>
+  
     
   </div>
   
@@ -245,7 +258,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="getting-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="getting-the-data">Getting the data</h2>
 <p>We will use the <a href="https://opendata.tweedekamer.nl/documentatie/odata-api" title="OData API">OData API</a> to obtain the data. Using this API is pretty easy in theory; it’s nothing more than constructing a URL and then retrieving the data using that URL. The only tricky bit is how to set it up. In order to know how to do that, we need to understand the API. The OData API links to an <a href="https://opendata.tweedekamer.nl/documentatie/informatiemodel" title="OData API information model">information model</a> that shows what kind of data we can request. We can request different entities, such as a Zaak (case), Document, Activiteit (activity), and so on. Going through the documentation I figured out we want to request cases because they have a Besluit (decision) entity, which contain a Stemming (vote) entity. Now that we sort of know what we want, we need to figure out how to actually get it.</p>
-<p>The documentation of the API is pretty good. They explain how to set up the URL, called a query, and even provide several examples.</p>
+<p>The documentation of the API is pretty good. They explain how to set up the URL, call a query, and even provide several examples.</p>
 <p>Each query starts with the base URL: <a href="https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0"><code>https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/</code></a>. We need to append additional functions to this URL to hone in on the exact data we want.</p>
 <p>The first thing we’ll specify is that we want a Zaak (case), so we will append <code>Zaak</code> to the end of the base URL.</p>
 <p>Next, we will apply some filter functions. In the documentation they recommend that we always filter on entities that have not been removed. They keep removed entities in the database so they can track changes. In one of the examples we can see how this is done. We have to append the following to the URL: <a href="https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/Persoon?$filter=Verwijderd%20eq%20false%20and%20(Functie%20eq%20%27Eerste%20Kamerlid%27%20or%20Functie%20eq%20%27Tweede%20Kamerlid%27)"><code>?$filter=Verwijderd eq false</code></a>. The (first) filter needs to start with a question mark and a dollar sign, followed by the function name (<code>filter</code>), an equal sign, and a condition. The condition in this case is <code>Verwijderd eq false</code>, in other words: Removed equals false.</p>
@@ -302,14 +315,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 </div>
 <p>The result is the following data frame:</p>
-<div class="cell" data-tbl-cap="Subset of cases data">
+<div class="cell">
 <details open="">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
-<div data-pagedtable="false">
+<div data-pagedtable="false"> <div class="table-caption">Subset of cases data</div>
   <script data-pagedtable-source="" type="application/json">
 {"columns":[{"label":["number"],"name":[1],"type":["chr"],"align":["left"]},{"label":["start_date"],"name":[2],"type":["date"],"align":["right"]},{"label":["title"],"name":[3],"type":["chr"],"align":["left"]},{"label":["subject"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"2021Z05927","2":"2021-04-13","3":"Dierenwelzijn","4":"Motie van het lid Wassenberg over geen uitzonderingen op het gebruik van stroomstootapparatuur"},{"1":"2021Z13420","2":"2021-07-07","3":"Dierenwelzijn","4":"Motie van de leden Vestering en Beckerman over zorgen dat camerabeelden uit slachthuizen eigendom worden van de overheid"},{"1":"2021Z05929","2":"2021-04-13","3":"Dierenwelzijn","4":"Motie van de leden Bisschop en Van der Plas over een uitzondering voor laag energetische halsbanden"},{"1":"2021Z10743","2":"2021-06-14","3":"Dierenwelzijn","4":"Gewijzigde motie van de leden Beckerman en Boswijk over een onderzoek naar een verbod op het doden van haantjes (t.v.v. 28286-1189)"},{"1":"2021Z10427","2":"2021-06-09","3":"Dierenwelzijn","4":"Motie van het lid Van der Plas over een impactanalyse van de wetswijziging voor de handhaafbaarheid"},{"1":"2021Z10757","2":"2021-06-14","3":"Dierenwelzijn","4":"Gewijzigde motie van het lid Van der Plas over een impactanalyse van de wetswijziging voor de handhaafbaarheid (t.v.v. 28286-1193)"},{"1":"2021Z16632","2":"2021-09-28","3":"Dierenwelzijn","4":"Motie van het lid Graus over exportverzamelplaatsen van toezichtcamera's voorzien"},{"1":"2021Z13422","2":"2021-07-07","3":"Dierenwelzijn","4":"Motie van de leden Van der Plas en Van Haga over uiterlijk 1 oktober 2021 capaciteit bij de NVWA beschikbaar maken voor de inzet van Mobiele Dodingsunits"},{"1":"2021Z05928","2":"2021-04-13","3":"Dierenwelzijn","4":"Motie van het lid Wassenberg over een gezamenlijke trainingsschool voor overheidshonden"},{"1":"2021Z10416","2":"2021-06-09","3":"Dierenwelzijn","4":"Motie van het lid Vestering over diergedragsdeskundigen betrekken bij de invulling van de open normen in de Wet dieren"},{"1":"2021Z10418","2":"2021-06-09","3":"Dierenwelzijn","4":"Motie van de leden Beckerman en Vestering over een verbod op het doden van haantjes"},{"1":"2021Z05924","2":"2021-04-13","3":"Dierenwelzijn","4":"Motie van het lid Graus over een verbod op alle dieronvriendelijke hulp- en trainingsmiddelen"},{"1":"2021Z10417","2":"2021-06-09","3":"Dierenwelzijn","4":"Motie van de leden Vestering en Tjeerd de Groot over voorbereidingen treffen voor een tussenevaluatie van de Wet dieren"},{"1":"2021Z05931","2":"2021-04-13","3":"Dierenwelzijn","4":"Motie van het lid Beckerman over het verbieden of uitfaseren van de verkoop van stroomstootapparatuur"},{"1":"2021Z13419","2":"2021-07-07","3":"Dierenwelzijn","4":"Motie van de leden Vestering en Beckerman over een verbod op het gebruik van drijfmiddelen die pijn of stress kunnen veroorzaken bij dieren"},{"1":"2021Z16629","2":"2021-09-28","3":"Dierenwelzijn","4":"Motie van het lid Van der Plas over geen euthanasie van slachtwaardige varkens"},{"1":"2021Z17045","2":"2021-10-03","3":"Dierenwelzijn","4":"Gewijzigde motie van het lid Van der Plas over afspraken met buitenlandse veterinaire autoriteiten over terugkoppeling van klachten over niet-transportwaardige dieren (t.v.v. 28286-1223)"},{"1":"2021Z10424","2":"2021-06-09","3":"Dierenwelzijn","4":"Motie van het lid Van Campen c.s. over het Besluit houders van dieren als grondslag en kader hanteren bij de uitwerking van het amendement"},{"1":"2021Z16630","2":"2021-09-28","3":"Dierenwelzijn","4":"Motie van het lid Van der Plas over aanpassing van de procedure voor het door de NVWA constateren van een strafbaar feit"},{"1":"2021Z13430","2":"2021-07-07","3":"Dierenwelzijn","4":"Gewijzigde motie van het lid Van der Plas over niet later dan 1 januari 2022 capaciteit bij de NVWA beschikbaar maken voor de inzet van Mobiele Dodingsunits (t.v.v. 28286-1205)"},{"1":"2021Z16627","2":"2021-09-28","3":"Dierenwelzijn","4":"Motie van het lid Vestering over consumenten laten zien hoe dieren eruitzien na hun leven lang vlees, eieren en zuivel geproduceerd te hebben"},{"1":"2021Z10425","2":"2021-06-09","3":"Dierenwelzijn","4":"Motie van het lid Van Campen over europeesrechtelijke kaders en het EVRM in relatie tot eigendomsrechten meenemen bij analyse van de Wet dieren"},{"1":"2021Z13421","2":"2021-07-07","3":"Dierenwelzijn","4":"Motie van het lid Tjeerd de Groot over het installeren van slimme camera’s als voorwaarde voor heropening van slachterij Gosschalk"},{"1":"2021Z05930","2":"2021-04-13","3":"Dierenwelzijn","4":"Motie van de leden Bisschop en Van der Plas over geen verbod op elektronische erfafscheiding"},{"1":"2021Z10419","2":"2021-06-09","3":"Dierenwelzijn","4":"Motie van het lid Beckerman over een onderzoek naar een verbod op het doden van haantjes"},{"1":"2021Z10426","2":"2021-06-09","3":"Dierenwelzijn","4":"Motie van het lid Van der Plas c.s. over wetenschappelijk vaststellen wat wordt verstaan onder natuurlijk gedrag van gedomesticeerde dieren"},{"1":"2021Z16631","2":"2021-09-28","3":"Dierenwelzijn","4":"Motie van het lid Van der Plas over afspraken met buitenlandse veterinaire autoriteiten over terugkoppeling van klachten over niet-transportwaardige dieren"},{"1":"2021Z05926","2":"2021-04-13","3":"Dierenwelzijn","4":"Motie van het lid Wassenberg over een verbod op de verkoop van stroomhalsbanden"},{"1":"2021Z17043","2":"2021-10-03","3":"Dierenwelzijn","4":"Gewijzigde motie van het lid Van der Plas over aanpassing van de procedure voor het door de NVWA constateren van een strafbaar feit (t.v.v. 28286-1222)"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
@@ -486,7 +499,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="politics-animal-voting-behavior-netherlands_files/figure-html/plot-voting-all-years-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Percentage of times political parties voted ‘aye’ on motions related to animal welfare</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Percentage of times political parties voted ‘aye’ on motions related to animal welfare</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -526,7 +539,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="politics-animal-voting-behavior-netherlands_files/figure-html/PvdD-benchmark-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Percentage of times a political party voted the same as the Party for the Animals</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Percentage of times a political party voted the same as the Party for the Animals</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -565,13 +578,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="politics-animal-voting-behavior-netherlands_files/figure-html/voting-across-years-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Times each party voted ‘aye’ on animal welfare motions throughout the years</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Times each party voted ‘aye’ on animal welfare motions throughout the years</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Looks like most parties are fairly consistent. There’s some variation from year to year, but for most parties you can tell whether they are pro-animal or not. There are some exceptions to this, like the PvdA and D66, which seem to vary quite a bit. We can actually calculate this variation so we don’t have to guess it from the graph.</p>
-<div class="cell" data-tbl-cap="Party consistency across years">
+<div class="cell">
 <details open="">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>voting_years <span class="sc">%&gt;%</span></span>
@@ -581,7 +594,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output-display">
 
-<div data-pagedtable="false">
+<div data-pagedtable="false"> <div class="table-caption">Party consistency across years</div>
   <script data-pagedtable-source="" type="application/json">
 {"columns":[{"label":["party"],"name":[1],"type":["chr"],"align":["left"]},{"label":["SD"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"PvdA","2":"0.2901784"},{"1":"D66","2":"0.2040161"},{"1":"SGP","2":"0.1715211"},{"1":"CDA","2":"0.1602745"},{"1":"ChristenUnie","2":"0.1511710"},{"1":"SP","2":"0.1378113"},{"1":"PVV","2":"0.1194097"},{"1":"VVD","2":"0.1193068"},{"1":"PvdD","2":"0.1161352"},{"1":"GroenLinks","2":"0.1088361"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
@@ -608,6 +621,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -629,7 +660,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -708,31 +756,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
     });
   }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
@@ -767,7 +834,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>We will use the <span class="co">[</span><span class="ot">OData API</span><span class="co">](https://opendata.tweedekamer.nl/documentatie/odata-api "OData API")</span> to obtain the data. Using this API is pretty easy in theory; it's nothing more than constructing a URL and then retrieving the data using that URL. The only tricky bit is how to set it up. In order to know how to do that, we need to understand the API. The OData API links to an <span class="co">[</span><span class="ot">information model</span><span class="co">](https://opendata.tweedekamer.nl/documentatie/informatiemodel "OData API information model")</span> that shows what kind of data we can request. We can request different entities, such as a Zaak (case), Document, Activiteit (activity), and so on. Going through the documentation I figured out we want to request cases because they have a Besluit (decision) entity, which contain a Stemming (vote) entity. Now that we sort of know what we want, we need to figure out how to actually get it.</span>
 <span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>The documentation of the API is pretty good. They explain how to set up the URL, called a query, and even provide several examples.</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>The documentation of the API is pretty good. They explain how to set up the URL, call a query, and even provide several examples.</span>
 <span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>Each query starts with the base URL: <span class="co">[</span><span class="ot">`https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/`</span><span class="co">](https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0)</span>. We need to append additional functions to this URL to hone in on the exact data we want.</span>
 <span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a></span>

@@ -29,7 +29,7 @@ library(jsonlite)
 
 We will use the [OData API](https://opendata.tweedekamer.nl/documentatie/odata-api "OData API") to obtain the data. Using this API is pretty easy in theory; it's nothing more than constructing a URL and then retrieving the data using that URL. The only tricky bit is how to set it up. In order to know how to do that, we need to understand the API. The OData API links to an [information model](https://opendata.tweedekamer.nl/documentatie/informatiemodel "OData API information model") that shows what kind of data we can request. We can request different entities, such as a Zaak (case), Document, Activiteit (activity), and so on. Going through the documentation I figured out we want to request cases because they have a Besluit (decision) entity, which contain a Stemming (vote) entity. Now that we sort of know what we want, we need to figure out how to actually get it.
 
-The documentation of the API is pretty good. They explain how to set up the URL, called a query, and even provide several examples.
+The documentation of the API is pretty good. They explain how to set up the URL, call a query, and even provide several examples.
 
 Each query starts with the base URL: [`https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/`](https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0). We need to append additional functions to this URL to hone in on the exact data we want.
 
