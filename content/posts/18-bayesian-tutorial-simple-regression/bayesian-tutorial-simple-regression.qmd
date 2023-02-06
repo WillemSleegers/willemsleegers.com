@@ -12,7 +12,7 @@ code-tools: true
 toc: true
 ---
 
-In my previous [blogpost](../5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.qmd) I showed how to use `brms` and `tidybayes` to run an intercept-only model. Now let's extend that model by adding a predictor. 
+In my previous [blog post](../5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.qmd) I showed how to use `brms` and `tidybayes` to run an intercept-only model. Now let's extend that model by adding a predictor. 
 
 The [data](Howell1.csv) is the same as in the previous post (including the filter that we only focus on people 18 years or older). This data contains weight data as well as height data, so that means we can run a model in which we regress heights onto weights, i.e., a regression with a single predictor. 
 

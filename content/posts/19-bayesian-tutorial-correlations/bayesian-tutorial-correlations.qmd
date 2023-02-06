@@ -1,6 +1,6 @@
 ---
-title: "Bayesian tutorial: Correlations"
-description: "The third of a series of tutorial posts on Bayesian analyses. In this post I focus on using `brms` to model correlations."
+title: "Bayesian tutorial: Correlation"
+description: "The third of a series of tutorial posts on Bayesian analyses. In this post I focus on using `brms` to model a correlation."
 date: 2022-11-24
 categories:
   - statistics
@@ -13,9 +13,9 @@ toc: true
 draft: true
 ---
 
-### Thinking correlations instead
+In my previous [blog post](../18-bayesian-tutorial-simple-regression/bayesian-tutorial-simple-regression.qmd), I showed how to use `brms` and `tidybayes` to run a simple regression, i.e., a regression with a single predictor. This analysis required us to set three priors: an intercept prior, a sigma prior, and a slope prior. We can simplify this analysis by turning it into a correlational analysis. This will remove the intercept prior and lets us think about the prior for the slope in as a standardized effect size, i.e., the correlation. 
 
-Maybe one reason our prior was so uninformed was because it's harder to think of the right prior for a content-specific topic such as weights and heights of the !Kung San. Maybe we can instead standardize both the heights and weights in order to turn the regression model into a simple correlation analysis. That way we can specify a prior on what we think the correlation should be, which may be easier to do because we then think in terms of whether we think the relationship is small or medium or large, or something along those lines.
+To run a correlational analysis we'll need to standardize the outcome and predictor variable, so in the setup code below I run the setup code as usual and also standardize both variables.
 
 ```{r}
 #| label: setup
@@ -26,25 +26,32 @@ library(tidybayes)
 
 data <- read_csv("Howell1.csv")
 data <- filter(data, age >= 18)
+data <- mutate(
+  data, 
+  height_z  = (height - mean(height)) / sd(height),
+  weight_z  = (weight - mean(weight)) / sd(weight),
+)
 
 theme_set(theme_minimal())
 
 colors <- c("#93CFDB", "#1E466E")
 ```
 
+The formula for our model is slightly different compared to the formula of the previous single-predictor model and that's because we want to omit the intercept. By standardizing both the outcome and predictor variables, the intercept is guarenteed to be 0. A typical regression model like this will have a slope that goes through the point that represents the means of both outcome and predictor variable. In other words, the value of the outcome when the predictor is 0 (the mean of the predictor) is the mean of the outcome variable (which is 0). I suppose we could still include a prior for the intercept and simply set it to 0 (using `constant(0)`) but we can also simply tell `brms` not to estimate it. The formula syntax then becomes: `height_z ~ 0 + weight_z`.
 
-So, let's standardize the heights and weights.
+Let's confirm that this means we only need to set two priors.
 
 ```{r}
-#| label: standardize-heights-weights
-data <- mutate(
-  data, 
-  height_z = (height - mean(height)) / sd(height),
-  weight_z = (weight - mean(weight)) / sd(weight)
-)
+#| label: get-prior
+get_prior(height_z ~ 0 + weight_z, data = data)
 ```
 
-The formula for our correlation analysis is `height_z ~ weight_z`. Which priors we have to specify remains the same, but what these priors should be changes. For instance, we know that the Intercept has to be 0 now because the heights have been standardized. This means the mean will be 0. In `brms`, we can specify a constant as a prior using `constant()`.
+Indeed, we're left with a prior for $\sigma$ and one for `weight_z`, which we can specify either via class `b` or the specific coefficient for `weight_z`. 
+
+Let's also write down our model more explicitly, which is simply the same model as before but without the intercept ($\alpha$).
+$$\displaylines{heights_i ∼ Normal(\mu_i, \sigma) \\ \mu_i = \beta x_i}$$
+
+## Setting the priors
 
 What should the prior for $\sigma$ be? With the variables standardized, $\sigma$ is limited to range from 0 to 1. If the predictor explains all the variance of the outcome variable, the residuals will be 0, meaning $\sigma$ will be 0. If the predictor explains no variance, $\sigma$ is equal to 1 because it will be similar to the standard deviation of the outcome variable, which is 1 because we've standardized it. Interestingly, this also means that the prior for $\sigma$ is now dependent on the prior for the slope, because the slope is what determines how much variance is explained in the outcome variable. So let's think about the prior for the slope.
 
