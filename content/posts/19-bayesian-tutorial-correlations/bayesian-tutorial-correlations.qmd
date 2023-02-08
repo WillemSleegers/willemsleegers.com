@@ -15,7 +15,7 @@ draft: true
 
 In my previous [blog post](../18-bayesian-tutorial-simple-regression/bayesian-tutorial-simple-regression.qmd), I showed how to use `brms` and `tidybayes` to run a simple regression, i.e., a regression with a single predictor. This analysis required us to set three priors: an intercept prior, a sigma prior, and a slope prior. We can simplify this analysis by turning it into a correlational analysis. This will remove the intercept prior and lets us think about the prior for the slope in as a standardized effect size, i.e., the correlation. 
 
-To run a correlational analysis we'll need to standardize the outcome and predictor variable, so in the setup code below I run the setup code as usual and also standardize both variables.
+To run a correlational analysis we'll need to standardize the outcome and predictor variable, so in the code below I run the setup code as usual and also standardize both variables.
 
 ```{r}
 #| label: setup
@@ -24,20 +24,19 @@ library(tidyverse)
 library(brms)
 library(tidybayes)
 
-data <- read_csv("Howell1.csv")
-data <- filter(data, age >= 18)
-data <- mutate(
-  data, 
-  height_z  = (height - mean(height)) / sd(height),
-  weight_z  = (weight - mean(weight)) / sd(weight),
-)
+data <- read_csv("Howell1.csv") |>
+  filter(age >= 18) |>
+  mutate(
+    height_z  = (height - mean(height)) / sd(height),
+    weight_z  = (weight - mean(weight)) / sd(weight),
+  )
 
 theme_set(theme_minimal())
 
 colors <- c("#93CFDB", "#1E466E")
 ```
 
-The formula for our model is slightly different compared to the formula of the previous single-predictor model and that's because we want to omit the intercept. By standardizing both the outcome and predictor variables, the intercept is guarenteed to be 0. A typical regression model like this will have a slope that goes through the point that represents the means of both outcome and predictor variable. In other words, the value of the outcome when the predictor is 0 (the mean of the predictor) is the mean of the outcome variable (which is 0). I suppose we could still include a prior for the intercept and simply set it to 0 (using `constant(0)`) but we can also simply tell `brms` not to estimate it. The formula syntax then becomes: `height_z ~ 0 + weight_z`.
+The formula for our model is slightly different compared to the formula of the previous single-predictor model and that's because we can omit the intercept. By standardizing both the outcome and predictor variables, the intercept is guarenteed to be 0. The regression line always passes through the mean of the predictor and outcome variable. The mean of both is 0 because of the standardization and the intercept is the value the outcome takes when the predictor is 0. We could still include a prior for the intercept and set it to 0 (using `constant(0)`) but we can also simply tell `brms` not to estimate it. The formula syntax then becomes: `height_z ~ 0 + weight_z`.
 
 Let's confirm that this means we only need to set two priors.
 
@@ -48,35 +47,123 @@ get_prior(height_z ~ 0 + weight_z, data = data)
 
 Indeed, we're left with a prior for $\sigma$ and one for `weight_z`, which we can specify either via class `b` or the specific coefficient for `weight_z`. 
 
-Let's also write down our model more explicitly, which is simply the same model as before but without the intercept ($\alpha$).
+Let's also write down our model more explicitly, which is the same as the single predictor regression but without the intercept ($\alpha$).
 $$\displaylines{heights_i ∼ Normal(\mu_i, \sigma) \\ \mu_i = \beta x_i}$$
 
 ## Setting the priors
 
-What should the prior for $\sigma$ be? With the variables standardized, $\sigma$ is limited to range from 0 to 1. If the predictor explains all the variance of the outcome variable, the residuals will be 0, meaning $\sigma$ will be 0. If the predictor explains no variance, $\sigma$ is equal to 1 because it will be similar to the standard deviation of the outcome variable, which is 1 because we've standardized it. Interestingly, this also means that the prior for $\sigma$ is now dependent on the prior for the slope, because the slope is what determines how much variance is explained in the outcome variable. So let's think about the prior for the slope.
+Let's start with the prior for the slope ($\beta$). A correlation takes a value that ranges from -1 to 1. If you know absolutely nothing about what kind of correlation to expect, you could set a uniform prior that assign equals probability to every value from -1 to -1. Alternatively, we could use a prior that describes a belief that no correlation is most likely, but with some probability that higher correlations are possible too. This could be done with a normal distribution centered around 0. In the case of this particular model, in which height is regressed onto weight, we can probably expect a sizeable positive correlation. So let's use a skewed normal distribution that puts most of the probability on a positive correlation but is wide enough to allow for a range of correlations, including a negative one. `brms` has the `skew_normal()` function to specify a prior that's a skewed normal distribution. I fiddled around with the numbers a bit and the distribution below is sort of what makes sense to me.
 
-The prior for the slope is a bit easier now. We can specify a normal distribution with a mean of 0 and a standard deviation of 0.5, together with a lower bound of -1 and upper bound of 1. With a standard deviation of 0.5, we cover a large range of possible slopes, but assign more plausibility to smaller correlations and less plausibility to very high correlations (like 1 and -1).
+```{r}
+#| label: slope-prior
+#| fig-cap: Prior distribution for the correlation
+prior <- tibble(r = seq(-1, 1, .01)) %>%
+  mutate(
+    prob = dskew_normal(r, xi = .7, omega = .4, alpha = -3)
+  )
 
-As for $\sigma$, let's keep it simple and use a uniform prior that assign equal plausibility to each value between 0 and 1.
+ggplot(prior, aes(x = r, y = prob)) + 
+  geom_line() +
+  labs(x = "Slope", y = "")
+```
+
+What should the prior for $\sigma$ be? With the variables standardized, $\sigma$ is limited to range from 0 to 1. If the predictor explains all the variance of the outcome variable, the residuals will be 0, meaning $\sigma$ will be 0. If the predictor explains no variance, $\sigma$ is equal to 1 because it will be similar to the standard deviation of the outcome variable, which is 1 because we've standardized it. Interestingly, this also means that the prior for $\sigma$ is now dependent on the prior for the slope, because the slope is what determines how much variance is explained in the outcome variable. I don't know exactly how to deal with this dependency, except to fear it and make sure to carefully inspect the output so that we don't have any problems due to incompatible priors. One way to avoid it entirely is to use a uniform prior that assign equal plausibility to each value between 0 and 1, so let's do that.
+
+## Running the model
+
+With the priors ready, we can run the model.
 
 ```{r}
 #| label: model-height-weight_z
-model_height_weight_z <- brm(
-  height_z ~ weight_z,  
+model <- brm(
+  height_z ~ 0 + weight_z,  
   data = data, 
   family = gaussian,
   prior = c(
-      prior(constant(0), class = "Intercept"),
       prior(uniform(0, 1), class = "sigma", ub = 1),
-      prior(normal(0, 0.5), class = "b", lb = -1, ub = 1)
+      prior(
+        skew_normal(.7, .4, -3), 
+        class = "b", lb = -1, ub = 1
+      )
     ), 
   sample_prior = TRUE,
   cores = 4,
   seed = 4,
-  file = "models/model_height_weight_prior_z.rds"
+  file = "models/model.rds"
 )
 
-model_height_weight_z
+model
 ```
 
-Taking a look at the estimates, we see the intercept is indeed 0 (we forced this). The estimate for the slope is `r round(fixef(model_height_weight_z)[2, 1], 2)`, i.e., the correlation. This means that the estimate for sigma is the square root of 1 minus the variance of the slope estimate (`r round(fixef(model_height_weight_z)[2, 1], 2)`²). In our case, that's .66, which matches the estimate for sigma.
+The output shows that the estimate for the slope, i.e., the correlation, is `r round(fixef(model)[1, 1], 2)`. This is just one number though. Let's visualize the entire distribution, including the prior.
+
+```{r}
+#| label: correlation
+draws <- model %>%
+  gather_draws(prior_b, b_weight_z) %>%
+  ungroup() %>%
+  mutate(
+    distribution = if_else(
+      str_detect(.variable, "prior"), "prior", "posterior"
+    ),
+    distribution = fct_relevel(distribution, "prior")
+  )
+
+ggplot(draws, aes(x = .value, fill = distribution)) +
+  geom_histogram(position = "identity", alpha = .85) +
+  labs(x = "Correlation", y = "", fill = "Distribution") +
+  scale_fill_manual(values = colors)
+```
+
+It looks like we can update towards a higher correlation and also be more certain about it because the range of the posterior is much narrower than that of our prior. 
+
+What about sigma? Sigma is the standard deviation of the residuals, i.e., that what is unexplained by the predictor. We saw that the correlation between the predictor and outcome is `r round(fixef(model)[1, 1], 2)`. Squaring this number gives us the amount of variance explained (`r round(fixef(model)[1, 1]^2, 2)`), so if we subtract this from 1 we're left with the variance that is unexplained (`r round(1 - fixef(model)[1, 1]^2, 2)`). Squaring this number to bring it back to a standard deviations gives us `r round(sqrt(1 - fixef(model)[1, 1]^2), 2)`, which matches the estimate for sigma that we saw in the output of `brms`.
+
+## Using a regularizing prior
+
+In the previous section we used a personal and hopefully informed prior, at least to some degree. What would happen if we instead used a [generic weakly informative prior](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations)? This is a prior centered at 0 with a standard deviation of 1.  
+
+```{r}
+#| label: weakly-informative-slope-prior
+#| fig-cap: Generic weakly informationve prior for the correlation
+prior <- tibble(r = seq(-1, 1, .01)) %>%
+  mutate(
+    prob = dnorm(r, mean = 0, sd = 1)
+  )
+
+ggplot(prior, aes(x = r, y = prob)) + 
+  geom_line() +
+  labs(x = "Slope", y = "")
+```
+
+It's a very broad prior, ranging from -1 to 1. It is, however, centered at 0 so wouldn't that push the final estimate closer to a null effect? Let's see by running the model.
+
+```{r}
+#| label: model-generic-prior
+model_generic_prior <- brm(
+  height_z ~ 0 + weight_z,  
+  data = data, 
+  family = gaussian,
+  prior = c(
+      prior(uniform(0, 1), class = "sigma", ub = 1),
+      prior(
+        normal(0, 1), 
+        class = "b", lb = -1, ub = 1
+      )
+    ), 
+  sample_prior = TRUE,
+  cores = 4,
+  seed = 4,
+  file = "models/model_generic_prior_z.rds"
+)
+
+model_generic_prior
+```
+
+The previous estimate of the correlation was `r round(fixef(model)[1, 1], 2)` and now it's `r round(fixef(model_generic_prior)[1, 1], 2)`. Apparently the prior did not influence the final estimate. This hopefully alleviates some worries about priors always having a strong impact on the final results and it also shows you don't always need to carefully construct a prior. Of course, in certain cases the prior will have a strong influence. This can happen when the prior is very strong or when there isn't much data.
+
+## Summary
+
+
+
+

@@ -55,19 +55,13 @@ model_height_male <- brm(
   sample_prior = TRUE,
   cores = 4,
   seed = 4,
-  #file = "models/model_height_.rds"
+  file = "models/model_height_.rds"
 )
 
 model_height_male
 
-get_variables(model_height_male)
-
 draws <- spread_draws(model_height_male, b_male, b_female)
 draws <- mutate(draws, diff = b_male - b_female)
 
-median_qi(draws$diff)
-
-lm(height ~ male, data = data)
 ```
 
-Taking a look at the estimates, we see the intercept is indeed 0 (we forced this). The estimate for the slope is `r round(fixef(model_height_weight_z)[2, 1], 2)`, i.e., the correlation. This means that the estimate for sigma is the square root of 1 minus the variance of the slope estimate (`r round(fixef(model_height_weight_z)[2, 1], 2)`²). In our case, that's .66, which matches the estimate for sigma.
