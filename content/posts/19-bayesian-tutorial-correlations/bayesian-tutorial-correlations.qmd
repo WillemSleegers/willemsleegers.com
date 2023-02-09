@@ -160,7 +160,7 @@ model_generic_prior <- brm(
 model_generic_prior
 ```
 
-The previous estimate of the correlation was `r round(fixef(model)[1, 1], 2)` and now it's `r round(fixef(model_generic_prior)[1, 1], 2)`. Apparently the prior did not influence the final estimate. This hopefully alleviates some worries about priors always having a strong impact on the final results and it also shows you don't always need to carefully construct a prior. Of course, in certain cases the prior will have a strong influence. This can happen when the prior is very strong or when there isn't much data.
+The previous estimate of the correlation was `r round(fixef(model)[1, 1], 2)` and now it's `r round(fixef(model_generic_prior)[1, 1], 2)`. Apparently the prior did not influence the final estimate. This hopefully alleviates some worries about priors always having a strong impact on the final results and it also shows you don't always need to carefully construct a prior. Of course, in certain cases the prior will have a strong influence, for example when the prior is very strong or when there isn't much data.
 
 ## Summary
 
