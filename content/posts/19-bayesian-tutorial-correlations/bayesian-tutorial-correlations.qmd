@@ -162,6 +162,74 @@ model_generic_prior
 
 The previous estimate of the correlation was `r round(fixef(model)[1, 1], 2)` and now it's `r round(fixef(model_generic_prior)[1, 1], 2)`. Apparently the prior did not influence the final estimate. This hopefully alleviates some worries about priors always having a strong impact on the final results and it also shows you don't always need to carefully construct a prior. Of course, in certain cases the prior will have a strong influence, for example when the prior is very strong or when there isn't much data.
 
+## Multiple correlations
+
+What if you want to test multiple correlations? There are two ways to do this, as far as I know. The first is to simply run separate models, each testing a single correlation. The second is by creating a model that tests multiple correlations at once. The latter is possible but it's more complicated and I don't fully understand it yet. If you want to see how it is done, please see this [blog post](https://solomonkurz.netlify.app/blog/2019-02-16-bayesian-correlations-let-s-talk-options/) by Solomon Kurz.
+
+I'll instead focus on simply running multiple models, but to make it easier I'll show how to use the `update()` function in `brms` so we at least don't have to write as much code. In the code below I standardize `age` and run three models in total, correlating `height` with `weight`, `height` with `age`, and `age` with `weight`. I'll use the same generic prior from the last model and repeat the full code for that model, followed by two updates.
+
+```{r}
+#| label: more-correlations
+data <- mutate(data, age_z = (age - mean(age)) / sd(age))
+
+r_height_weight <- brm(
+  height_z ~ 0 + weight_z,  
+  data = data, 
+  family = gaussian,
+  prior = c(
+      prior(uniform(0, 1), class = "sigma", ub = 1),
+      prior(normal(0, 1), class = "b", lb = -1, ub = 1)
+    ), 
+  cores = 4,
+  seed = 4,
+  file = "models/r_height_weight.rds",
+  control = list(adapt_delta = 0.9)
+)
+
+r_height_age <- update(
+  r_height_weight, 
+  height_z ~ 0 + age_z, 
+  newdata = data,
+  file = "models/r_height_age.rds"
+)
+r_weight_age <- update(
+  r_height_weight, 
+  weight_z ~ 0 + age_z, 
+  newdata = data,
+  file = "models/r_weight_age.rds"
+)
+
+r_height_weight
+r_height_age
+r_weight_age
+```
+
+When I first ran the code above I received a warning that there were divergent transitions after warmup for the extra two correlations. That means the posterior may not have been sampled correctly, which is a problem. The solution is to increase the `adapt_delta` value. What that does is simply make the underlying sampler more conservative, which will increase the accuracy of approximating the posterior but might slow down the sampler.
+
+Let's create a nice plot showing the correlations. 
+
+```{r}
+#| label: correlations
+#| 
+correlations <- bind_rows(
+  tibble(
+    pair = "height - weight",
+    r = spread_draws(r_height_weight, b_weight_z)[[4]]
+  ),
+  tibble(
+    pair = "height - age",
+    r = spread_draws(r_height_age, b_age_z)[[4]]
+  ),
+  tibble(
+    pair = "weight - age",
+    r = spread_draws(r_weight_age, b_age_z)[[4]]
+  ),
+)
+
+ggplot(correlations, aes(x = r, y = pair)) +
+  stat_halfeye()
+```
+
 ## Summary
 
 
