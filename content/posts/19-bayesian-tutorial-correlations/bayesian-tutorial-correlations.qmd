@@ -10,7 +10,9 @@ categories:
 code-fold: true
 code-tools: true
 toc: true
-draft: true
+format: 
+  html: 
+    df-print: kable
 ---
 
 In my previous [blog post](../18-bayesian-tutorial-simple-regression/bayesian-tutorial-simple-regression.qmd), I showed how to use `brms` and `tidybayes` to run a simple regression, i.e., a regression with a single predictor. This analysis required us to set three priors: an intercept prior, a sigma prior, and a slope prior. We can simplify this analysis by turning it into a correlational analysis. This will remove the intercept prior and lets us think about the prior for the slope in as a standardized effect size, i.e., the correlation. 
@@ -99,6 +101,7 @@ The output shows that the estimate for the slope, i.e., the correlation, is `r r
 
 ```{r}
 #| label: correlation
+#| message: false
 draws <- model %>%
   gather_draws(prior_b, b_weight_z) %>%
   ungroup() %>%
@@ -198,40 +201,53 @@ r_weight_age <- update(
   newdata = data,
   file = "models/r_weight_age.rds"
 )
-
-r_height_weight
-r_height_age
-r_weight_age
 ```
 
 When I first ran the code above I received a warning that there were divergent transitions after warmup for the extra two correlations. That means the posterior may not have been sampled correctly, which is a problem. The solution is to increase the `adapt_delta` value. What that does is simply make the underlying sampler more conservative, which will increase the accuracy of approximating the posterior but might slow down the sampler.
 
-Let's create a nice plot showing the correlations. 
+The correlations are in the table below.
 
 ```{r}
-#| label: correlations
-#| 
-correlations <- bind_rows(
-  tibble(
-    pair = "height - weight",
-    r = spread_draws(r_height_weight, b_weight_z)[[4]]
-  ),
-  tibble(
-    pair = "height - age",
-    r = spread_draws(r_height_age, b_age_z)[[4]]
-  ),
-  tibble(
-    pair = "weight - age",
-    r = spread_draws(r_weight_age, b_age_z)[[4]]
-  ),
+#| label: correlations-table
+#| tbl-cap: The three correlations and their 95% HDI.
+bind_rows(
+  as_tibble(fixef(r_height_weight)),
+  as_tibble(fixef(r_height_age)),
+  as_tibble(fixef(r_weight_age))
+) %>%
+  mutate(
+    pair = c("height - weight", "height - age", "weight - age"),
+    .before = Estimate
+  ) %>%
+  select(-Est.Error) %>%
+  rename(r = Estimate)
+```
+
+And in the graph below, to show their entire posterior distribution.
+
+```{r}
+#| label: correlations-plot
+#| fig-cap: The posterior distributions of the three correlations
+correlation_draws <- bind_rows(
+  r_height_weight %>%
+    spread_draws(b_weight_z) %>%
+    rename(r = b_weight_z) %>%
+    mutate(pair = "height - weight"),
+  r_height_age %>%
+    spread_draws(b_age_z) %>%
+    rename(r = b_age_z) %>%
+    mutate(pair = "height - age"),
+  r_weight_age %>%
+    spread_draws(b_age_z) %>%
+    rename(r = b_age_z) %>%
+    mutate(pair = "weight - age")
 )
 
-ggplot(correlations, aes(x = r, y = pair)) +
-  stat_halfeye()
+ggplot(correlation_draws, aes(x = r, y = pair)) +
+  stat_halfeye() +
+  labs(x = "Correlation", y = "")
 ```
 
 ## Summary
 
-
-
-
+Running a correlation in `brms` is the same as running a simple regression, except that the outcome and predictor are standardized. Because of the standardization, the intercept can be omitted, thus simplifying the model. The priors are also easier to set as the prior for the correlation ranges from -1 to and 1 and the prior for sigma from 0 to 1. You can use regularizing priors to let the data do most of the talking.
