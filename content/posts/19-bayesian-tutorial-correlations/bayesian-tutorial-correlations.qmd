@@ -128,11 +128,9 @@ In the previous section we used a personal and hopefully informed prior, at leas
 
 ```{r}
 #| label: weakly-informative-slope-prior
-#| fig-cap: Generic weakly informationve prior for the correlation
+#| fig-cap: Generic weakly informative prior for the correlation
 prior <- tibble(r = seq(-1, 1, .01)) %>%
-  mutate(
-    prob = dnorm(r, mean = 0, sd = 1)
-  )
+  mutate(prob = dnorm(r, mean = 0, sd = 1))
 
 ggplot(prior, aes(x = r, y = prob)) + 
   geom_line() +
