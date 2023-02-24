@@ -13,6 +13,12 @@ toc: true
 draft: true
 ---
 
+In this blog post I will cover how to use `brms` to analyze the difference between two groups. Interestingly, this might seem like a very simple analysis, but there are actually many ways to go about this. I'll try to cover each one here. 
+
+The data we'll use is the same as in the previous posts. This data contains the sex of the participant in a column called `male`, in addition to their height, weight, and age. This means we can investigate, say, whether there's a difference in height between men and women.
+
+Run the following setup code if you want to follow along.
+
 ```{r}
 #| label: setup
 #| message: false
@@ -28,7 +34,78 @@ theme_set(theme_minimal())
 colors <- c("#93CFDB", "#1E466E")
 ```
 
-The formula for our correlation analysis is `height ~ male`. 
+## Dummy coding
+
+Probably the most common method to analyze the difference between two groups is to regress the outcome on dummy coded data. The R formula for this is `height ~ male`. Let's see what priors we need to set for this.
+
+```{r}
+#| label: get-prior-dummy
+get_prior(height ~ male, data = data)
+```
+
+The output shows we need to set a prior on sigma, the Intercept, and on the male coefficient. The sigma parameter is the same as before, but the intercept and male coefficient are different. The intercept now refers to the heights of female participants and the male coefficient refers to the difference between males and females. 
+
+Writing down this model shows that it's actually the same as the simple regression model:
+
+$$\displaylines{heights_i ∼ Normal(\mu_i, \sigma) \\ \mu_i = \alpha + \beta x_i}$$
+
+Despite this similarity, there's an issue here that we need to get into. Let's demonstrate this issue by setting some priors visualizing them.
+
+```{r}
+#| label: model-gender-dummy
+model_gender_dummy <- brm(
+  height ~ 1 + male,  
+  data = data, 
+  family = gaussian,
+  prior = c(
+    prior(normal(160, 10), class = "Intercept"),
+    prior(normal(5, 10), coef = "male"),
+    prior(cauchy(5, 5), class = "sigma")
+  ),
+  sample_prior = TRUE,
+  cores = 4
+)
+
+library(brms)
+library(tidyverse)
+
+test <-
+tibble(men = rnorm(1000),
+       women = rnorm(1000, 1.5)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "gender")
+
+priors_1 <- c(set_prior("normal(0 , 2)", class = "Intercept"),
+              set_prior("normal(0 , 1)", class = "b"))
+
+test_form1 <- value ~ 1 + gender
+test_reg1 <- 
+  brm(formula = test_form1,
+      family = gaussian(),
+      data = test,
+      control = list(adapt_delta = 0.99, max_treedepth = 15),
+      prior = priors_1,
+      chains = 4,
+      cores = 4,
+      iter = 10000,
+      warmup = 1000,
+      sample_prior = "only",
+      #init = 0,
+      seed = 1010
+      )
+
+as_draws_df(test_reg1)
+
+tibble(male = c(0, 1)) %>%
+  add_epred_draws(model_gender_dummy, value = "predicted_height") %>%
+  median_qi() %>%
+  mutate(width = .upper - .lower)
+
+ggplot(dummy_heights, aes(x = predicted_height, fill = factor(male))) +
+ geom_histogram(position = "identity", alpha = .5)
+
+```
+
 
 ```{r}
 #| label: data-preparation
@@ -52,6 +129,11 @@ model_height_male <- brm(
   height ~ 0 + male + female,  
   data = data, 
   family = gaussian,
+  prior = c(
+    prior(normal(170, 10), coef = "female"),
+    prior(normal(170, 10), coef = "male"),
+    prior(cauchy(5, 5), class = "sigma")
+  ),
   sample_prior = TRUE,
   cores = 4,
   seed = 4,
