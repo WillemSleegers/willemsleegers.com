@@ -9,6 +9,8 @@ categories:
 code-fold: show
 code-tools: true
 bibliography: references.bib
+toc: true
+toc-depth: 2
 ---
 
 # Introduction
@@ -35,31 +37,28 @@ Besides loading packages, we also set the `s` variable. The value of this variab
 #| label: setup
 #| message: false
 
-# Load packages
 library(MASS)
 library(tidyverse)
 library(effectsize)
 library(broom)
 library(viridis)
 
-# Set global parameters
-s <- 1000 # Number of loops in the power simulation
-
-# Set the default ggplot theme
 theme_set(theme_minimal())
 
-# Set options
 options(
   knitr.kable.NA = "",
   digits = 2
 )
+
+# Set number of loops in the power simulations
+s <- 1000
 ```
 
 With the setup out of the way, let's cover our general approach to power analyses:
 
 1.  Simulate the data with fixed properties
 2.  Check the data to see if the data is plausible
-3.  Run the tests we want to run on this data
+3.  Run the tests we want to run on the data
 4.  Repeat steps 1 to 3 many times, save the p-values, and calculate power
 
 We'll do this for various scenarios. In each scenario we start by defining the parameters. I'll focus on providing means, standard deviations, and correlations, because those are usually the parameters we report in the results section, so I'm guessing most researchers will have some intuitions about what these parameters mean and whether the results are plausible.
@@ -124,10 +123,10 @@ p_values <- vector(length = s)
 for (i in 1:s) {
   # Simulate
   samples <- mvrnorm(N, mu = M, Sigma = SD^2)
-  
+
   # Run test
   test <- t.test(samples[, 1])
-  
+
   # Extract p-value
   p_values[i] <- test$p.value
 }
@@ -156,10 +155,14 @@ N_control <- 50
 N_treatment <- 40
 
 # Simulate once with empirical = TRUE
-control <- mvrnorm(N_control, mu = M_control, Sigma = SD_control^2, 
-  empirical = TRUE)
-treatment <- mvrnorm(N_treatment, mu = M_treatment, Sigma = SD_treatment^2, 
-  empirical = TRUE)
+control <- mvrnorm(N_control,
+  mu = M_control, Sigma = SD_control^2,
+  empirical = TRUE
+)
+treatment <- mvrnorm(N_treatment,
+  mu = M_treatment, Sigma = SD_treatment^2,
+  empirical = TRUE
+)
 
 # Prepare data
 colnames(control) <- "DV"
@@ -186,8 +189,8 @@ Next, we inspect the data by calculating a Cohen's *d* and visualizing the resul
 effect_size <- cohens_d(DV ~ condition, data = data, pooled_sd = FALSE)
 
 # Visualize the data
-ggplot(data, aes(x = condition, y = DV)) + 
-  geom_jitter(width = .2, alpha = .25) + 
+ggplot(data, aes(x = condition, y = DV)) +
+  geom_jitter(width = .2, alpha = .25) +
   stat_summary(fun.data = "mean_cl_boot", geom = "pointrange") +
   labs(x = "Condition")
 ```
@@ -215,10 +218,10 @@ for (i in 1:s) {
   # Simulate
   control <- mvrnorm(N_control, mu = M_control, Sigma = SD_control^2)
   treatment <- mvrnorm(N_treatment, mu = M_treatment, Sigma = SD_treatment^2)
-  
+
   # Run test
   test <- t.test(control[, 1], treatment[, 1])
-  
+
   # Extract p-value
   p_values[i] <- test$p.value
 }
@@ -244,12 +247,13 @@ N <- 40
 
 # Prepare parameters
 mus <- c(M_control, M_treatment)
-Sigma <- matrix(nrow = 2, ncol = 2, 
-    c(
-      SD^2, 0,
-      0, SD^2
-    )
+Sigma <- matrix(
+  nrow = 2, ncol = 2,
+  c(
+    SD^2, 0,
+    0, SD^2
   )
+)
 
 # Simulate once with empirical = TRUE
 samples <- mvrnorm(N, mu = mus, Sigma = Sigma, empirical = TRUE)
@@ -258,8 +262,10 @@ samples <- mvrnorm(N, mu = mus, Sigma = Sigma, empirical = TRUE)
 colnames(samples) <- c("control", "treatment")
 data <- as_tibble(samples)
 
-data_long <- pivot_longer(data, cols = everything(), names_to = "condition", 
-  values_to = "DV")
+data_long <- pivot_longer(data,
+  cols = everything(), names_to = "condition",
+  values_to = "DV"
+)
 ```
 
 We inspect the data with the code from before, substituting `data` with `data_long`.
@@ -272,8 +278,8 @@ We inspect the data with the code from before, substituting `data` with `data_lo
 effect_size <- cohens_d(DV ~ condition, data = data_long)
 
 # Visualize the data
-ggplot(data_long, aes(x = condition, y = DV)) + 
-  geom_jitter(width = .2, alpha = .25) + 
+ggplot(data_long, aes(x = condition, y = DV)) +
+  geom_jitter(width = .2, alpha = .25) +
   stat_summary(fun.data = "mean_cl_boot", geom = "pointrange") +
   labs(x = "Condition")
 ```
@@ -300,10 +306,10 @@ p_values <- vector(length = s)
 for (i in 1:s) {
   # Simulate
   samples <- mvrnorm(N, mu = mus, Sigma = Sigma)
-  
+
   # Run test
   test <- t.test(samples[, 1], samples[, 2], var.equal = TRUE)
-  
+
   # Extract p-value
   p_values[i] <- test$p.value
 }
@@ -330,12 +336,13 @@ r <- 0.75
 
 # Prepare parameters
 mus <- c(M_pre, M_post)
-Sigma <- matrix(ncol = 2, nrow = 2,
-    c(
-      SD^2, SD^2 * r,
-      SD^2 * r, SD^2
-    )
+Sigma <- matrix(
+  ncol = 2, nrow = 2,
+  c(
+    SD^2, SD^2 * r,
+    SD^2 * r, SD^2
   )
+)
 
 # Simulate once with empirical = TRUE
 samples <- mvrnorm(N, mu = mus, Sigma = Sigma, empirical = TRUE)
@@ -344,8 +351,10 @@ samples <- mvrnorm(N, mu = mus, Sigma = Sigma, empirical = TRUE)
 colnames(samples) <- c("pre", "post")
 data <- as_tibble(samples)
 
-data_long <- pivot_longer(data, cols = everything(), 
-    names_to = "condition", values_to = "DV") %>%
+data_long <- pivot_longer(data,
+  cols = everything(),
+  names_to = "condition", values_to = "DV"
+) %>%
   mutate(condition = fct_relevel(condition, "pre"))
 ```
 
@@ -359,8 +368,8 @@ Let's plot the means in each group, with a line between the two points represent
 effect_size <- cohens_d(DV ~ condition, data = data_long, paired = TRUE)
 
 # Visualize the data
-ggplot(data_long, aes(x = condition, y = DV, group = 1)) + 
-  geom_jitter(width = .2, alpha = .25) + 
+ggplot(data_long, aes(x = condition, y = DV, group = 1)) +
+  geom_jitter(width = .2, alpha = .25) +
   stat_summary(fun = "mean", geom = "line", linetype = 2) +
   stat_summary(fun.data = "mean_cl_boot", geom = "pointrange") +
   labs(x = "Condition")
@@ -388,10 +397,10 @@ p_values <- vector(length = s)
 for (i in 1:s) {
   # Simulate
   samples <- mvrnorm(N, mu = mus, Sigma = Sigma)
-  
+
   # Run test
   test <- t.test(samples[, 1], samples[, 2], paired = TRUE)
-  
+
   # Extract p-value
   p_values[i] <- test$p.value
 }
@@ -417,12 +426,13 @@ r <- 0.5
 
 # Prepare parameters
 mus <- c(M, M)
-Sigma <- matrix(ncol = 2, nrow = 2,
-    c(
-      SD^2, SD^2 * r,
-      SD^2 * r, SD^2
-    )
+Sigma <- matrix(
+  ncol = 2, nrow = 2,
+  c(
+    SD^2, SD^2 * r,
+    SD^2 * r, SD^2
   )
+)
 
 # Simulate once with empirical = TRUE
 samples <- mvrnorm(N, mu = mus, Sigma = Sigma, empirical = TRUE)
@@ -440,8 +450,8 @@ This time, we plot the data with a scatter plot---a suitable graph for displayin
 #| message: false
 
 # Visualize the data
-ggplot(data, aes(x = var1, y = var2)) + 
-  geom_point(alpha = .25) + 
+ggplot(data, aes(x = var1, y = var2)) +
+  geom_point(alpha = .25) +
   geom_smooth(method = "lm", color = "black")
 ```
 
@@ -465,10 +475,10 @@ p_values <- vector(length = s)
 for (i in 1:s) {
   # Simulate
   samples <- mvrnorm(N, mu = mus, Sigma = Sigma)
-  
+
   # Run test
   test <- cor.test(samples[, 1], samples[, 2])
-  
+
   # Extract p-value
   p_values[i] <- test$p.value
 }
@@ -502,12 +512,18 @@ N_control2 <- 50
 N_treatment <- 40
 
 # Simulate once
-control1 <- mvrnorm(N_control1, mu = M_control1, Sigma = SD_control1^2, 
-  empirical = TRUE)
-control2 <- mvrnorm(N_control2, mu = M_control2, Sigma = SD_control2^2, 
-  empirical = TRUE)
-treatment <- mvrnorm(N_treatment, mu = M_treatment, Sigma = SD_treatment^2, 
-  empirical = TRUE)
+control1 <- mvrnorm(N_control1,
+  mu = M_control1, Sigma = SD_control1^2,
+  empirical = TRUE
+)
+control2 <- mvrnorm(N_control2,
+  mu = M_control2, Sigma = SD_control2^2,
+  empirical = TRUE
+)
+treatment <- mvrnorm(N_treatment,
+  mu = M_treatment, Sigma = SD_treatment^2,
+  empirical = TRUE
+)
 
 # Prepare data
 colnames(control1) <- "DV"
@@ -536,14 +552,18 @@ We again inspect the data by visualizing it and calculating standardized effect 
 #| fig-cap: Three groups visualization
 
 # Calculate standardized effect sizes
-effect_size1 <- cohens_d(DV ~ condition, pooled_sd = FALSE,
-  data = filter(data, condition != "control 2"))
-effect_size2 <- cohens_d(DV ~ condition, pooled_sd = FALSE,
-  data = filter(data, condition != "control 1"))
+effect_size1 <- cohens_d(DV ~ condition,
+  pooled_sd = FALSE,
+  data = filter(data, condition != "control 2")
+)
+effect_size2 <- cohens_d(DV ~ condition,
+  pooled_sd = FALSE,
+  data = filter(data, condition != "control 1")
+)
 
 # Visualize the data
-ggplot(data, aes(x = condition, y = DV)) + 
-  geom_jitter(width = .2, alpha = .25) + 
+ggplot(data, aes(x = condition, y = DV)) +
+  geom_jitter(width = .2, alpha = .25) +
   stat_summary(fun.data = "mean_cl_boot", geom = "pointrange") +
   labs(x = "Condition")
 ```
@@ -574,11 +594,11 @@ for (i in 1:s) {
   control1 <- mvrnorm(N_control1, mu = M_control1, Sigma = SD_control1^2)
   control2 <- mvrnorm(N_control2, mu = M_control2, Sigma = SD_control2^2)
   treatment <- mvrnorm(N_treatment, mu = M_treatment, Sigma = SD_treatment^2)
-  
+
   # Run tests
   test1 <- t.test(control1[, 1], treatment[, 1])
   test2 <- t.test(control2[, 1], treatment[, 1])
-  
+
   # Extract p-values
   p_values1[i] <- test1$p.value
   p_values2[i] <- test2$p.value
@@ -611,7 +631,8 @@ N <- 40
 
 # Prepare parameters
 mus <- c(M_control_NL, M_control_DE, M_treatment_NL, M_treatment_DE)
-Sigma <- matrix(ncol = 4, nrow = 4,
+Sigma <- matrix(
+  ncol = 4, nrow = 4,
   c(
     SD^2, 0, 0, 0,
     0, SD^2, 0, 0,
@@ -624,14 +645,16 @@ Sigma <- matrix(ncol = 4, nrow = 4,
 samples <- mvrnorm(N, mu = mus, Sigma = Sigma, empirical = TRUE)
 
 # Prepare data
-colnames(samples) <- c("control_NL", "control_DE", "treatment_NL", "treatment_DE")
+colnames(samples) <- c(
+  "control_NL", "control_DE", "treatment_NL", "treatment_DE"
+)
 
 data <- samples %>%
   as_tibble() %>%
   pivot_longer(
-    cols = everything(), 
-    names_to = c("condition", "country"), 
-    names_sep = "_", 
+    cols = everything(),
+    names_to = c("condition", "country"),
+    names_sep = "_",
     values_to = "DV"
   )
 ```
@@ -647,10 +670,10 @@ effect_size_NL <- cohens_d(DV ~ condition, data = filter(data, country == "NL"))
 effect_size_DE <- cohens_d(DV ~ condition, data = filter(data, country == "DE"))
 
 # Visualize the interaction effect
-ggplot(data, aes(x = condition, y = DV)) + 
-  geom_jitter(width = .2, alpha = .25) + 
+ggplot(data, aes(x = condition, y = DV)) +
+  geom_jitter(width = .2, alpha = .25) +
   stat_summary(fun.data = "mean_cl_boot", geom = "pointrange") +
-  facet_grid(~ country) +
+  facet_grid(~country) +
   labs(x = "Condition")
 ```
 
@@ -687,41 +710,177 @@ p_values_interaction <- vector(length = s)
 for (i in 1:s) {
   # Simulate
   samples <- mvrnorm(N, mu = mus, Sigma = Sigma)
-  
+
   # Prepare data
-  colnames(samples) <- c("control_NL", "control_DE", "treatment_NL", 
-    "treatment_DE")
+  colnames(samples) <- c(
+    "control_NL", "control_DE", "treatment_NL",
+    "treatment_DE"
+  )
 
   data <- samples %>%
     as_tibble() %>%
     pivot_longer(
-      cols = everything(), 
-      names_to = c("condition", "country"), 
-      names_sep = "_", 
+      cols = everything(),
+      names_to = c("condition", "country"),
+      names_sep = "_",
       values_to = "DV"
     )
-  
+
   # Run tests
   model_DE <- lm(DV ~ condition * country, data = data)
-  
+
   data <- mutate(data, country = fct_relevel(country, "NL"))
   model_NL <- lm(DV ~ condition * country, data = data)
 
   # Extract p-values
   model_NL_tidy <- tidy(model_NL)
   model_DE_tidy <- tidy(model_DE)
-  
+
   p_values_NL[i] <- model_NL_tidy$p.value[2]
   p_values_DE[i] <- model_DE_tidy$p.value[2]
   p_values_interaction[i] <- model_NL_tidy$p.value[4]
 }
 
 # Calculate power
-power <- sum(p_values_NL <= .05 & p_values_DE <= .05 & 
-    p_values_interaction <= .05) / s * 100
+power <- sum(p_values_NL <= .05 & p_values_DE <= .05 &
+  p_values_interaction <= .05) / s * 100
 ```
 
 The overall power for this scenario is `r power`%. If you instead only look at the power of the interaction test, you get a power of `r sum(p_values_interaction <= .05) / s * 100`%. The difference shows that it matters whether you follow up your interaction test with the analyses that confirm the exact pattern of the interaction test. Also note that these analyses are not independent, so it's not straightforward to calculate the overall power. Simulation makes it relatively easy.
+
+## Regression (2 groups * 1 continuous interaction)
+
+Another scenario involves having multiple groups (e.g., conditions) and a continuous measure that interacts with the group. In other words, this scenario consists of having different correlations, with the correlation between a measure and an outcome depending on the group.
+
+We can simulate a scenario like that by simulating multiple correlations and then merging the data together. In the scenario below, I simulate a correlation of size 0 in one group (i.e., control group) and a correlation of .5 in another group (i.e., treatment group).
+
+```{r}
+#| label: lm-2-by-1-setup
+
+# Parameters
+M_outcome <- 4
+SD_outcome <- 1
+M_control <- 4
+SD_control <- 1
+M_treatment <- 4
+SD_treatment <- 1
+
+r_control <- 0.1
+r_treatment <- 0.5
+
+N <- 40
+
+# Prepare parameters
+mus_control <- c(M_control, M_outcome)
+Sigma_control <- matrix(
+  ncol = 2, nrow = 2,
+  c(
+    SD_control^2, SD_control * SD_outcome * r_control,
+    SD_control * SD_outcome * r_control, SD_outcome^2
+  )
+)
+
+mus_treatment <- c(M_treatment, M_treatment)
+Sigma_treatment <- matrix(
+  ncol = 2, nrow = 2,
+  c(
+    SD_treatment^2, SD_treatment * SD_outcome * r_treatment,
+    SD_treatment * SD_outcome * r_treatment, SD_outcome^2
+  )
+)
+
+# Simulate once with empirical = TRUE
+samples_control <- mvrnorm(
+  N,
+  mu = mus_control,
+  Sigma = Sigma_control, empirical = TRUE
+)
+samples_treatment <- mvrnorm(
+  N,
+  mu = mus_treatment,
+  Sigma = Sigma_treatment, empirical = TRUE
+)
+
+# Prepare data
+colnames(samples_control) <- c("measure", "outcome")
+data_control <- as_tibble(samples_control)
+data_control <- mutate(data_control, condition = "Control")
+
+colnames(samples_treatment) <- c("measure", "outcome")
+data_treatment <- as_tibble(samples_treatment)
+data_treatment <- mutate(data_treatment, condition = "Treatment")
+
+data <- bind_rows(data_control, data_treatment)
+```
+
+Let's visualize the simulated data to see whether we indeed observe a correlation in the treatment condition and none in the control condition.
+
+```{r}
+#| label: fig-lm-2-by-1
+#| fig-cap: 2 (group) x 1 (continuous) interaction visualization
+
+ggplot(data, aes(x = measure, y = outcome)) +
+  facet_grid(~condition) +
+  geom_point(alpha = .25) +
+  geom_smooth(method = "lm", color = "black")
+```
+
+Looks correct. 
+
+Analyzing this data is a bit trickier. To confirm our hypotheses we need to show that:
+1. There is no correlation in the Control condition
+2. There is a positive correlation in the Treatment condition
+3. There is a significant interaction effect.
+
+The first one is rather difficult because it's not straightforward to prove a null using frequentist statistics. We could do an equivalence test of some sort, but I'll just keep it simple and count the test as successful if we find a non-significant p-value.
+
+Besides that, this scenario is similar to the previous one. We run two regression models in order to get the relevant p-value. The first model is to obtain the p-value of the slope between the measure and outcome in the control condition, as well as the p-value of the interaction. The second model is to obtain the p-value of the slope in the treatment condition.
+
+```{r}
+#| label: lm-2-by-1-power-analysis
+
+# Create three empty vectors to store the p-values in
+p_values_control <- vector(length = s)
+p_values_treatment <- vector(length = s)
+p_values_interaction <- vector(length = s)
+
+# Loop
+for (i in 1:s) {
+  # Simulate
+  samples_control <- mvrnorm(N, mu = mus_control, Sigma = Sigma_control)
+  samples_treatment <- mvrnorm(N, mu = mus_treatment, Sigma = Sigma_treatment)
+
+  # Prepare data
+  colnames(samples_control) <- c("measure", "outcome")
+  data_control <- as_tibble(samples_control)
+  data_control <- mutate(data_control, condition = "Control")
+
+  colnames(samples_treatment) <- c("measure", "outcome")
+  data_treatment <- as_tibble(samples_treatment)
+  data_treatment <- mutate(data_treatment, condition = "Treatment")
+
+  data <- bind_rows(data_control, data_treatment)
+
+  # Run tests
+  model_control <- lm(outcome ~ condition * measure, data = data)
+  data <- mutate(data, condition = fct_relevel(condition, "Treatment"))
+  model_treatment <- lm(outcome ~ condition * measure, data = data)
+
+  # Extract p-values
+  model_control_tidy <- tidy(model_control)
+  model_treatment_tidy <- tidy(model_treatment)
+
+  p_values_control[i] <- model_control_tidy$p.value[3]
+  p_values_treatment[i] <- model_treatment_tidy$p.value[3]
+  p_values_interaction[i] <- model_control_tidy$p.value[4]
+}
+
+# Calculate power
+power <- sum(p_values_control > .05 & p_values_treatment <= .05 &
+  p_values_interaction <= .05) / s * 100
+```
+
+The overall power for this scenario is `r power`%. It matters less now whether we power for the whole set of analyses or just the slope in the treatment condition because the interaction effect is wholly driven by this slope.
 
 # Conclusion
 

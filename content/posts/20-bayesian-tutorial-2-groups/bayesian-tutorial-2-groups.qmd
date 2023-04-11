@@ -65,45 +65,6 @@ model_gender_dummy <- brm(
   sample_prior = TRUE,
   cores = 4
 )
-
-library(brms)
-library(tidyverse)
-
-test <-
-tibble(men = rnorm(1000),
-       women = rnorm(1000, 1.5)) %>% 
-  pivot_longer(cols = everything(),
-               names_to = "gender")
-
-priors_1 <- c(set_prior("normal(0 , 2)", class = "Intercept"),
-              set_prior("normal(0 , 1)", class = "b"))
-
-test_form1 <- value ~ 1 + gender
-test_reg1 <- 
-  brm(formula = test_form1,
-      family = gaussian(),
-      data = test,
-      control = list(adapt_delta = 0.99, max_treedepth = 15),
-      prior = priors_1,
-      chains = 4,
-      cores = 4,
-      iter = 10000,
-      warmup = 1000,
-      sample_prior = "only",
-      #init = 0,
-      seed = 1010
-      )
-
-as_draws_df(test_reg1)
-
-tibble(male = c(0, 1)) %>%
-  add_epred_draws(model_gender_dummy, value = "predicted_height") %>%
-  median_qi() %>%
-  mutate(width = .upper - .lower)
-
-ggplot(dummy_heights, aes(x = predicted_height, fill = factor(male))) +
- geom_histogram(position = "identity", alpha = .5)
-
 ```
 
 
@@ -137,7 +98,7 @@ model_height_male <- brm(
   sample_prior = TRUE,
   cores = 4,
   seed = 4,
-  file = "models/model_height_.rds"
+  file = "models/model_height.rds"
 )
 
 model_height_male
