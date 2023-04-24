@@ -13,7 +13,7 @@ toc: true
 draft: true
 ---
 
-In this blog post I will cover how to use `brms` to analyze the difference between two groups. Interestingly, this might seem like a very simple analysis, but there are actually many ways to go about this. I'll try to cover each one here. 
+In this blog post I will cover how to use `brms` to analyze the difference between two groups. Interestingly, this might seem like a very simple analysis, but there are actually many ways to go about this.
 
 The data we'll use is the same as in the previous posts. This data contains the sex of the participant in a column called `male`, in addition to their height, weight, and age. This means we can investigate, say, whether there's a difference in height between men and women.
 
@@ -36,14 +36,16 @@ colors <- c("#93CFDB", "#1E466E")
 
 ## Dummy coding
 
-Probably the most common method to analyze the difference between two groups is to regress the outcome on dummy coded data. The R formula for this is `height ~ male`. Let's see what priors we need to set for this.
+Probably the most common method to analyze the difference between two groups is to regress the outcome on dummy coded data. That means the group column contains the information about both groups, usually using a 0 and 1 to indicate which group is which. The \`male\` column in the current data frame is dummy coded, with a 0 for females and a 1 for males.
+
+The R formula for regressing height on male is `height ~ male`. Let's see what priors we need to set for this by using by using `get_prior()`.
 
 ```{r}
 #| label: get-prior-dummy
 get_prior(height ~ male, data = data)
 ```
 
-The output shows we need to set a prior on sigma, the Intercept, and on the male coefficient. The sigma parameter is the same as before, but the intercept and male coefficient are different. The intercept now refers to the heights of female participants and the male coefficient refers to the difference between males and females. 
+The output shows we need to set a prior on sigma, the Intercept, and on the male coefficient. The intercept refers to the heights of female participants and the male coefficient refers to the difference between males and females, at least, that's what you would expect in standard regression. We'll see that things are a bit more complicated. Sigma refers, as always, to the standard deviation of the residuals.
 
 Writing down this model shows that it's actually the same as the simple regression model:
 
@@ -63,10 +65,11 @@ model_gender_dummy <- brm(
     prior(cauchy(5, 5), class = "sigma")
   ),
   sample_prior = TRUE,
-  cores = 4
+  cores = 4,
+  seed = 4,
+  file = "./models/model-dummy.rds"
 )
 ```
-
 
 ```{r}
 #| label: data-preparation
@@ -107,4 +110,3 @@ draws <- spread_draws(model_height_male, b_male, b_female)
 draws <- mutate(draws, diff = b_male - b_female)
 
 ```
-
