@@ -13,7 +13,11 @@ toc: true
 draft: true
 ---
 
+<<<<<<< Updated upstream
 In this blog post I will cover how to use `brms` to analyze the difference between two groups. Interestingly, this might seem like a very simple analysis, but there are actually many ways to go about this.
+=======
+In this blog post I will cover how to use `brms` to analyze the difference between two groups. Interestingly, this might seem like a very simple analysis, but there are actually many ways to go about this. I'll try to cover each one here.
+>>>>>>> Stashed changes
 
 The data we'll use is the same as in the previous posts. This data contains the sex of the participant in a column called `male`, in addition to their height, weight, and age. This means we can investigate, say, whether there's a difference in height between men and women.
 
@@ -36,34 +40,43 @@ colors <- c("#93CFDB", "#1E466E")
 
 ## Dummy coding
 
+<<<<<<< Updated upstream
 Probably the most common method to analyze the difference between two groups is to regress the outcome on dummy coded data. That means the group column contains the information about both groups, usually using a 0 and 1 to indicate which group is which. The \`male\` column in the current data frame is dummy coded, with a 0 for females and a 1 for males.
 
 The R formula for regressing height on male is `height ~ male`. Let's see what priors we need to set for this by using by using `get_prior()`.
+=======
+Probably the most common method to analyze the difference between two groups is to regress the outcome on dummy coded data. That means the group column contains the information about both groups, usually using a 0 and 1 to indicate which group is which. The `male` column in the current data frame is dummy coded, with a 0 for females and a 1 for males. The R formula for regressing height on male is `height ~ male`. Let's see what priors we need to set for this.
+>>>>>>> Stashed changes
 
 ```{r}
 #| label: get-prior-dummy
 get_prior(height ~ male, data = data)
 ```
 
+<<<<<<< Updated upstream
 The output shows we need to set a prior on sigma, the Intercept, and on the male coefficient. The intercept refers to the heights of female participants and the male coefficient refers to the difference between males and females, at least, that's what you would expect in standard regression. We'll see that things are a bit more complicated. Sigma refers, as always, to the standard deviation of the residuals.
+=======
+The output shows we need to set a prior on sigma, the Intercept, and on the male coefficient. The intercept refers to the heights of female participants and the male coefficient refers to the difference between males and females, at least that's what you would except in standard regression. We'll see that things are a bit more complicated. Sigma refers, as always, to the standard deviation of the residuals.
+>>>>>>> Stashed changes
 
 Writing down this model shows that it's actually the same as the simple regression model:
 
 $$\displaylines{heights_i ∼ Normal(\mu_i, \sigma) \\ \mu_i = \alpha + \beta x_i}$$
 
-Despite this similarity, there's an issue here that we need to get into. Let's demonstrate this issue by setting some priors visualizing them.
+Despite this similarity, there's an issue here that we need to get into. Let's demonstrate this issue by setting some priors and running the model while only sampling from the priors. This means the estimates we get for the intercept and male coefficient should match our priors.
 
 ```{r}
-#| label: model-gender-dummy
-model_gender_dummy <- brm(
-  height ~ 1 + male,  
-  data = data, 
+#| label: model-dummy-priors-default
+model_dummy_priors_default <- brm(
+  height ~ male,
+  data = data,
   family = gaussian,
   prior = c(
-    prior(normal(160, 10), class = "Intercept"),
-    prior(normal(5, 10), coef = "male"),
+    prior(normal(165, 5), class = "Intercept"),
+    prior(normal(10, 5), coef = "male"),
     prior(cauchy(5, 5), class = "sigma")
   ),
+<<<<<<< Updated upstream
   sample_prior = TRUE,
   cores = 4,
   seed = 4,
@@ -71,36 +84,58 @@ model_gender_dummy <- brm(
 )
 ```
 
-```{r}
-#| label: data-preparation
-data <- mutate(data, female = 1 - male)
+=======
+  sample_prior = "only",
+  cores = 4,
+  seed = 4,
+  file = "./models/model-dummy-priors-default.rds"
+)
+
+model_dummy_priors_default
 ```
 
+Looking at the estimates we see that the estimate for male is indeed around 10 but the intercept estimate is not close to what we set it too. In this case, the intercept has an estimate of around 160, even though we set it to 165. How can this be? The reason is that `brms` internally centers the intercept so that it corresponds to expected response when all predictors are held at their means. This is what the prior is set to, not the mean of the heights of female participants. `brms` also re-generates the true intercept, which is the one we see in the output, so the output does correctly indicate the mean height of female participants (i.e., the intercept).
+
+To prevent this from happening, we need to suppress the default intercept and explicitly add one as a coefficient. This means we need to update our prior for the intercept to refer to a `coef` (instead of `class`).
+
+>>>>>>> Stashed changes
 ```{r}
-#| label: get-prior
-get_prior(height ~ 0 + male + female, data = data)
-```
-
-What should the prior for $\sigma$ be? With the variables standardized, $\sigma$ is limited to range from 0 to 1. If the predictor explains all the variance of the outcome variable, the residuals will be 0, meaning $\sigma$ will be 0. If the predictor explains no variance, $\sigma$ is equal to 1 because it will be similar to the standard deviation of the outcome variable, which is 1 because we've standardized it. Interestingly, this also means that the prior for $\sigma$ is now dependent on the prior for the slope, because the slope is what determines how much variance is explained in the outcome variable. So let's think about the prior for the slope.
-
-The prior for the slope is a bit easier now. We can specify a normal distribution with a mean of 0 and a standard deviation of 0.5, together with a lower bound of -1 and upper bound of 1. With a standard deviation of 0.5, we cover a large range of possible slopes, but assign more plausibility to smaller correlations and less plausibility to very high correlations (like 1 and -1).
-
-As for $\sigma$, let's keep it simple and use a uniform prior that assign equal plausibility to each value between 0 and 1.
-
-```{r}
-#| label: model-height-weight_z
-model_height_male <- brm(
-  height ~ 0 + male + female,  
-  data = data, 
+#| label: model-dummy-priors
+model_dummy_priors <- brm(
+  height ~ 0 + Intercept + male,
+  data = data,
   family = gaussian,
   prior = c(
-    prior(normal(170, 10), coef = "female"),
-    prior(normal(170, 10), coef = "male"),
+    prior(normal(165, 5), coef = "Intercept"),
+    prior(normal(0, 5), coef = "male"),
+    prior(cauchy(5, 5), class = "sigma")
+  ),
+  sample_prior = "only",
+  cores = 4,
+  seed = 4,
+  file = "./models/model-dummy-priors.rds"
+)
+
+model_dummy_priors
+```
+
+Now the estimate of the intercept is indeed 165, as indicated by our prior. Let's run the model again so we also get the posterior results.
+
+```{r}
+#| label: model-dummy
+model_dummy <- brm(
+  height ~ 0 + Intercept + male,
+  data = data,
+  family = gaussian,
+  prior = c(
+    prior(normal(165, 5), coef = "Intercept"),
+    prior(normal(10, 5), coef = "male"),
     prior(cauchy(5, 5), class = "sigma")
   ),
   sample_prior = TRUE,
   cores = 4,
   seed = 4,
+<<<<<<< Updated upstream
   file = "models/model_height.rds"
 )
 
@@ -109,4 +144,87 @@ model_height_male
 draws <- spread_draws(model_height_male, b_male, b_female)
 draws <- mutate(draws, diff = b_male - b_female)
 
+=======
+  file = "./models/model-dummy.rds"
+)
+
+model_dummy
+```
+
+The estimates show that the average height for women is `r round(fixef(model_dummy)[1, 1], 2)` and that for men is `r round(fixef(model_dummy)[1, 1], 2)` + `r round(fixef(model_dummy)[2, 1], 2)` = `r round(fixef(model_dummy)[1, 1] + fixef(model_dummy)[2, 1], 2)`.
+
+But now there's a new problem. Let's take a look at how uncertain we should be at these estimates by predicting the means for both men and women and then calculating the width of the 95% quartile interval.
+
+```{r}
+#| label: model-dummy-issue
+tibble(male = c(0, 1)) %>%
+  add_epred_draws(model_dummy_priors) %>%
+  median_qi() %>%
+  mutate(width = .upper - .lower)
+```
+
+We see that the width for males is slightly wider than that for females. If you run the model multiple times at different seeds, you'll see that this is something that happens consistently. The reason there is more uncertainty for the mean of male participants is that we've added a separate prior that only applies to males---the prior on the male coefficient. The mean of female participants is wholly determined by the data and the prior on the intercept, but for males it's the data and the prior for the intercept + the prior for the male coefficient. This is not desirable.
+
+On top of that it less intuitive to think about the priors as a mean for females and then a prior for how much males deviate from this mean. It seems nicer to just specify what we think the heights are for females and what the heights are for males, without thinking about the deviation.
+
+Both of these issues can be solved by using index coding instead of dummy coding.
+
+## Index coding
+
+Index coding requires that we create a new column that is a factor or that contains string values to indicate the sex of the participant. Below I create a new column called `sex` that contains the values `male` and `female` as string values.
+
+```{r}
+#| label: data-preparation
+data <- mutate(data, sex = if_else(male == 1, "male", "female"))
+```
+
+Let's see what the priors are that we need to set.
+
+```{r}
+#| label: get-prior
+get_prior(height ~ 0 + sex, data = data)
+```
+
+We need a prior for sigma, as always, and two priors for the two sexes.
+
+We should also alter how we describe this model. We can now drop the $\beta$ parameter from the model and we should more explicitly indicate that we will model several $\alpha$ parameters, one for each sex.
+
+$$\displaylines{heights_i ∼ Normal(\mu_i, \sigma) \\ \mu_i = \alpha_{sex[i]}}$$
+
+Next, we run the model with the new priors. I simply translated the previous priors to this new notation.
+
+```{r}
+#| label: model-index
+model_index <- brm(
+  height ~ 0 + sex,
+  data = data,
+  family = gaussian,
+  prior = c(
+    prior(normal(165, 5), coef = "sexfemale"),
+    prior(normal(175, 5), coef = "sexmale"),
+    prior(cauchy(5, 5), class = "sigma")
+  ),
+  sample_prior = TRUE,
+  cores = 4,
+  seed = 4,
+  file = "./models/model-index.rds"
+)
+
+model_index
+```
+
+The results now show estimates for both female and male participants directly. Excellent. If you want to verify that the width of the 95% quartile range is the same for both sexes (because the standard deviation of the normal prior for each sex is the same), you can re-run the previous model and sample only from the prior, like in the previous section).
+
+## Calculating a difference score
+
+Seeing the estimates for each sex is nice and all, but oftentimes we're interested in determining whether there's a difference between the two groups. This is easy to do when using index coding because we can simply take the posterior samples from each group and subtract them from each other.
+
+```{r}
+#| label: difference-score
+model_index %>%
+  spread_draws(b_sexfemale, b_sexmale) %>%
+  mutate(difference = b_sexmale - b_sexfemale) %>%
+  pull(difference) %>%
+  median_qi()
+>>>>>>> Stashed changes
 ```
