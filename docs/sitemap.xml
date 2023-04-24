@@ -66,11 +66,11 @@
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/blog.html</loc>
-    <lastmod>2023-04-11T19:18:29.335Z</lastmod>
+    <lastmod>2023-04-24T20:12:23.233Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/index.html</loc>
-    <lastmod>2023-04-11T19:18:29.759Z</lastmod>
+    <lastmod>2023-04-24T20:12:23.606Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/5-my-bayesian-workflow-and-tutorial/my-bayesian-workflow-and-tutorial.html</loc>
@@ -87,5 +87,9 @@
   <url>
     <loc>https://www.willemsleegers.com/content/posts/19-bayesian-tutorial-correlations/bayesian-tutorial-correlations.html</loc>
     <lastmod>2023-02-13T13:41:37.405Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/20-bayesian-tutorial-2-groups/bayesian-tutorial-2-groups.html</loc>
+    <lastmod>2023-04-24T20:12:22.784Z</lastmod>
   </url>
 </urlset>
