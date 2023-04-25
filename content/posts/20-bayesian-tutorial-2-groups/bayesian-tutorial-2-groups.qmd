@@ -1,7 +1,7 @@
 ---
 title: "Bayesian tutorial: Two groups"
 description: "The fourth of a series of tutorial posts on Bayesian analyses. In this post I focus on using `brms` to model the difference between two groups."
-date: 2022-11-24
+date: 2023-04-24
 categories:
   - statistics
   - tutorial
@@ -215,7 +215,7 @@ draws <- model_index %>%
   spread_draws(b_sexfemale, b_sexmale) %>%
   mutate(difference = b_sexmale - b_sexfemale)
 
-ggplot(draws, aes(x = difference)) + 
+ggplot(draws, aes(x = difference)) +
   geom_histogram(fill = color) +
   labs(x = "Difference", y = "")
 ```
