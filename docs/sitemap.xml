@@ -1,43 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.willemsleegers.com/content/posts/9-simulation-based-power-analyses/simulation-based-power-analyses.html</loc>
+    <lastmod>2023-05-10T20:32:54.702Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/6-a-tidystats-example/a-tidystats-example.html</loc>
+    <lastmod>2023-05-10T20:32:56.963Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/20-bayesian-tutorial-2-groups/bayesian-tutorial-2-groups.html</loc>
+    <lastmod>2023-05-10T20:32:58.702Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/16-animals-slaughtered-netherlands/animals-slaughtered-netherlands.html</loc>
+    <lastmod>2023-05-10T20:32:59.702Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/19-bayesian-tutorial-correlations/bayesian-tutorial-correlations.html</loc>
+    <lastmod>2023-05-10T20:33:00.723Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/3-useful-power-analysis-papers/useful-power-analysis-papers.html</loc>
+    <lastmod>2023-05-10T20:33:01.049Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/10-simulation-based-power-curves/simulation-based-power-curves.html</loc>
+    <lastmod>2023-05-10T20:33:01.967Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/17-politics-animal-voting-behavior-netherlands/politics-animal-voting-behavior-netherlands.html</loc>
+    <lastmod>2023-05-10T20:33:03.325Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/8-the-right-order-of-method-sections/the-right-order-of-method-sections.html</loc>
+    <lastmod>2023-05-10T20:33:03.634Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/4-why-divide-by-n-1/why-divide-by-n-1.html</loc>
+    <lastmod>2023-05-10T20:33:05.027Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/1-understanding-regression-part-1/understanding-regression-part-1.html</loc>
+    <lastmod>2023-05-10T20:33:06.102Z</lastmod>
+  </url>
+  <url>
     <loc>https://www.willemsleegers.com/content/posts/5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.html</loc>
-    <lastmod>2023-05-10T20:27:59.075Z</lastmod>
+    <lastmod>2023-05-10T20:33:07.444Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/18-bayesian-tutorial-simple-regression/bayesian-tutorial-simple-regression.html</loc>
-    <lastmod>2023-05-10T19:52:44.465Z</lastmod>
+    <lastmod>2023-05-10T20:33:19.476Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/animal-welfare/animal-welfare.html</loc>
-    <lastmod>2023-05-10T19:52:44.770Z</lastmod>
+    <lastmod>2023-05-10T20:33:19.775Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/statcheck/statcheck.html</loc>
-    <lastmod>2023-05-10T19:52:45.100Z</lastmod>
+    <lastmod>2023-05-10T20:33:20.104Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/tidystats/tidystats.html</loc>
-    <lastmod>2023-05-10T19:52:45.418Z</lastmod>
+    <lastmod>2023-05-10T20:33:20.426Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/cognitive-dissonance/cognitive-dissonance.html</loc>
-    <lastmod>2023-05-10T19:52:45.684Z</lastmod>
+    <lastmod>2023-05-10T20:33:20.685Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects.html</loc>
-    <lastmod>2023-05-10T19:52:45.974Z</lastmod>
+    <lastmod>2023-05-10T20:33:20.985Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/about.html</loc>
-    <lastmod>2023-05-10T19:52:46.314Z</lastmod>
+    <lastmod>2023-05-10T20:33:21.246Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/cv/cv.html</loc>
-    <lastmod>2023-05-10T19:52:46.869Z</lastmod>
+    <lastmod>2023-05-10T20:33:21.757Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/blog.html</loc>
-    <lastmod>2023-05-10T20:27:59.613Z</lastmod>
+    <lastmod>2023-05-10T20:33:22.219Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/index.html</loc>
+    <lastmod>2023-05-10T20:33:22.619Z</lastmod>
   </url>
 </urlset>

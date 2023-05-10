@@ -12,9 +12,9 @@ code-tools: true
 toc: true
 ---
 
-In my previous [blog post](../5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.qmd) I showed how to use `brms` and `tidybayes` to run an intercept-only model. Now let's extend that model by adding a predictor. 
+In my previous [blog post](../5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.qmd) I showed how to use `brms` and `tidybayes` to run an intercept-only model. Now let's extend that model by adding a predictor.
 
-The [data](Howell1.csv) is the same as in the previous post (including the filter that we only focus on people 18 years or older). This data contains weight data as well as height data, so that means we can run a model in which we regress heights onto weights, i.e., a regression with a single predictor. 
+The [data](Howell1.csv) is the same as in the previous post (including the filter that we only focus on people 18 years or older). This data contains weight data as well as height data, so that means we can run a model in which we regress heights onto weights, i.e., a regression with a single predictor.
 
 If you want to follow along, run the following setup code.
 
@@ -23,14 +23,16 @@ If you want to follow along, run the following setup code.
 #| message: false
 library(tidyverse)
 library(brms)
+library(marginaleffects)
 library(tidybayes)
+
+theme_set(theme_minimal())
+colors <- c("#93CFDB", "#1E466E")
+
+options(brms.file_refit = "on_change")
 
 data <- read_csv("Howell1.csv")
 data <- filter(data, age >= 18)
-
-theme_set(theme_minimal())
-
-colors <- c("#93CFDB", "#1E466E")
 ```
 
 ## Adding a single predictor
@@ -117,7 +119,7 @@ ggplot(data, aes(x = weight_mc, y = height)) +
   scale_x_continuous(labels = function(x) round(x + weight_mean))
 ```
 
-The plot shows a wide range of possible slopes, some of which are definitely unlikely because they lead to heights that are smaller than 0 or higher than the tallest person who ever lived. We should lower our uncertainty by reducing the standard deviation on the prior. In the next model I lower it to 3. 
+The plot shows a wide range of possible slopes, some of which are definitely unlikely because they lead to heights that are smaller than 0 or higher than the tallest person who ever lived. We should lower our uncertainty by reducing the standard deviation on the prior. In the next model I lower it to 3.
 
 Additionally, the negative slopes are all pretty unlikely because we should expect a positive relationship between weight and height (taller people tend to be heavier). We could therefore also change our prior to force it to be positive using the `lb` argument in our prior for `b` or use a distribution that doesn't allow for any negative values. Let's not do this though. Let's assume we have no idea whether the relationship will be positive or negative and instead focus on the standard deviation instead so that we don't obtain relationships we definitely know are unlikely.
 
@@ -265,7 +267,7 @@ ggplot() +
   scale_x_continuous(labels = function(x) round(x + weight_mean))
 ```
 
-While this graph is pretty cool, I haven't ever seen one in a social psychology paper, probably because academic psychologists are mostly interested in the parameters (e.g., means, correlations) rather than predicting individual observations. 
+While this graph is pretty cool, I haven't ever seen one in a social psychology paper, probably because academic psychologists are mostly interested in the parameters (e.g., means, correlations) rather than predicting individual observations.
 
 ## Summary
 
