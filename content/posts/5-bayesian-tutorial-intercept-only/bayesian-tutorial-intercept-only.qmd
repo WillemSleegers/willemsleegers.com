@@ -255,7 +255,7 @@ draws_posterior <- model_height %>%
   as_draws_df() %>%
   mutate(distribution = "posterior")
 
-draws <- bind_rows(draws_mu_prior, draws_mu_posterior)
+draws <- bind_rows(draws_prior, draws_posterior)
 
 ggplot(draws, aes(x = b_Intercept, fill = fct_rev(distribution))) +
   geom_histogram(binwidth = 1, position = "identity", alpha = .85) +
