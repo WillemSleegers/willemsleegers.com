@@ -191,6 +191,17 @@ model_index
 
 The estimates show, more clearly now, that the average height for women is `r round(fixef(model_index)[1, 1], 2)` and that for men is `r round(fixef(model_index)[2, 1], 2)`.
 
+We can plot the average heights per group.
+
+```{r}
+#| label: groups-plot
+library(marginaleffects)
+
+draws <- model_index %>%
+    predictions(newdata = tibble(sex = c("male", "female"))) %>%
+    posterior_draws()
+```
+
 ## Calculating a difference score
 
 In the previous section I've argued that we should use index coding so that we can more easily think about, and see the results, of the priors about the two groups. I realize, though, that we are often still interested in the difference between the groups. This is easy to obtain, though. We can simply take the posterior samples from each group and subtract them from each other.

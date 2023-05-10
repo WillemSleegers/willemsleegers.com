@@ -19,7 +19,7 @@ This post is the first of a series of tutorial posts on Bayesian statistics. I'm
 
 The goal will be to go through each step of the data analysis process and make things as intuitive and clear as possible. I'll use the `brms` package to run the models and I will rely heavily on the book [Statistical Rethinking](https://xcelab.net/rm/statistical-rethinking/ "Statistical Rethinking website") by Richard McElreath.
 
-The basic idea behind Bayesian statistics is that we start off with prior beliefs about the parameters in the model and then update those beliefs using the data. That means that for all subsequent models you need to figure out what your beliefs are before running any analyses. This is very different from frequentist statistics and probably the most off-putting part of running Bayesian analyses. However, my goal is to make this relatively easy by focusing on visualizing priors and how they change as a function of the Bayesian process. I'll also try to come up with some methods to simplify the contruction of priors, with the goal to have them be reasonable and non-controversial.
+The basic idea behind Bayesian statistics is that we start off with prior beliefs about the parameters in the model and then update those beliefs using the data. That means that for all subsequent models you need to figure out what your beliefs are before running any analyses. This is very different from frequentist statistics and probably the most off-putting part of running Bayesian analyses. However, my goal is to make this relatively easy by focusing on visualizing priors and how they change as a function of the Bayesian process. I'll also try to come up with some methods to simplify the construction of priors, with the goal to have them be reasonable and non-controversial.
 
 In some cases I might not even use a prior I personally believe in. Instead I'll use a prior that represents a particular position or skepticism so that the results of the analysis can be used to change the mind of the skeptic, rather than me changing whatever I happen to believe.
 
@@ -27,20 +27,19 @@ With this in mind, let's begin.
 
 ## Setup
 
-In the code chunk below I show some setup code to get started, starting with the packages. I will use the amazing `brms` package to run the Bayesian models and  `tidybayes` to visualize the results. I also load a personal package of my own, the `willemverse`, because it contains a function to create a color palette to use in the plots (you can skip this if you want to follow along).
-
-After loading the packages I set the default `ggplot2` theme and create a color palette consisting of two colors.
+In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default `ggplot2` theme and create a color palette consisting of two colors. Finally, I set a `brms` specific option to automatically re-run models if a model has changed. If not, the results will be read from a file to speed things up.
 
 ```{r}
 #| label: setup
 #| message: false
 library(tidyverse)
 library(brms)
-library(tidybayes)
+library(marginaleffects)
 
 theme_set(theme_minimal())
-
 colors <- c("#93CFDB", "#1E466E")
+
+options(brms.file_refit = "on_change")
 ```
 
 ## Data
@@ -61,7 +60,7 @@ head(data)
 
 Let's focus the first question on the heights in the data. What are the heights of the Dobe area !Kung San?
 
-The way to address this question is by constructing a model in which heights are regressed on only the intercept, ie., an intercept-only model. You may be familiar with the R formula for this type of model: `height ~ 1`.
+The way to address this question is by constructing a model in which heights are regressed on only the intercept, i.e., an intercept-only model. You may be familiar with the R formula for this type of model: `height ~ 1`.
 
 With this formula and the data we can use `brms` to figure out which priors we need to set by running the `get_prior()` function. This is probably the easiest way to figure which priors you need when you're just starting out using `brms`.
 
@@ -72,21 +71,21 @@ get_prior(height ~ 1, data = data)
 
 The output shows us that we need to set two priors, one for the Intercept and one for sigma. `brms` already determined a default prior for each parameter (they are required for a Bayesian analysis), so we could immediately run an analysis if we want to but it is recommended to construct your own priors.
 
-Also, using the `get_prior()` function is not the best way to think about which priors we need, though. Using the function will give us the answer, but it doesn't really improve our understanding of why these two priors are needed. In this case I also omitted an important specification of the heights, which is that they are normally distributed (the default assumption in `get_prior()`). So let's instead write down the model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:
+Also, using the `get_prior()` function is not the best way to think about which priors we need. Using the function will give us the answer, but it doesn't really improve our understanding of why these two priors are needed. In this case I also omitted an important specification of the heights, which is that they are normally distributed (the default assumption in `get_prior()`). So let's instead write down the model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:
 
 $$heights_i ∼ Normal(\mu, \sigma)$$
 
 We explicitly note that the individual heights come from a normal distribution, which is determined by the parameters $\mu$ and $\sigma$. This then also immediately tells us that we need to set two priors, one on $\mu$ and one on $\sigma$.
 
-In our intercept-only model, the $\mu$ parameter refers to our intercept and the $\sigma$ parameter refers to, well, sigma. sigma is not often discussed in the literature I'm familiar with, but we'll figure it out below. In fact, let's discuss each of these parameters in turn and figure out what kind of prior makes sense.
+In our intercept-only model, the $\mu$ parameter refers to our intercept and the $\sigma$ parameter refers to, well, sigma. Sigma is not often discussed in the literature I'm familiar with, but we'll figure it out below. In fact, let's discuss each of these parameters in turn and figure out what kind of prior makes sense.
 
-## The Intercept ($\mu$) prior
+## The intercept ($\mu$) prior
 
 The prior for the intercept indicates what I believe the *average* height of the !Kung San to be.
 
-`brms` has set the default Intercept prior as a Student *t*-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means `brms` starts off with a 'belief' that the *average* of the heights is 154.3, but with quite some uncertainty reflected in the standard deviation of 8.5 and the fact that the distribution is a Student *t*-distribution. A Student *t*-distribution has thicker tails compared to a normal distribution, meaning that numbers in the tails of the distribution are more likely compared to a normal distribution, at least when the degrees of freedom are low. At higher degrees of freedom, the *t*-distribution becomes more and more like the normal distribution. So, the thicker tails of the *t*-distributions means smaller and taller average heights are relatively more plausible.
+`brms` has set the default intercept prior as a Student *t*-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means `brms` starts off with a 'belief' that the *average* of the heights is 154.3, but with quite some uncertainty reflected in the standard deviation of 8.5 and the fact that the distribution is a Student *t*-distribution. A Student *t*-distribution has thicker tails compared to a normal distribution, meaning that numbers in the tails of the distribution are more likely compared to a normal distribution, at least when the degrees of freedom are low. At higher degrees of freedom, the *t*-distribution becomes more and more like the normal distribution. So, the thicker tails of the *t*-distributions means smaller and taller average heights are relatively more plausible.
 
-But this is the default prior. `brms` determines this automatic prior by peeking at the data, which is not what we want to do. Instead, we should create our own.
+But this is the default prior. `brms` determines this prior by peeking at the data to create a weak prior that is easily updated by the data. We can generally do better than the default priors, which is why it is recommended to create our own.
 
 So what do I believe the average height to be? As a Dutch person, I might be under the impression that the average height is around 175 centimeters. This is probably too tall to use as an average for the !Kung San because we're known for being quite tall. So I think the average should be lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people's heights; I am only using my layman knowledge here. An average of 165 seems possible to me too. So let's describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We should use a Student *t*-distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it assigns more probability to a wider range of average heights). We're not super uncertain about people's heights, though, so let's use a normal distribution.
 
@@ -102,25 +101,25 @@ height_prior_intercept <- tibble(
 )
 
 height_prior_intercept <- pivot_longer(
-  height_prior_intercept, 
-  cols = -height_mean, 
+  height_prior_intercept,
+  cols = -height_mean,
   names_to = "prior"
-) 
+)
 
 ggplot(
-    height_prior_intercept, 
-    aes(x = height_mean, y = value, linetype = fct_rev(prior))
-  ) +
+  height_prior_intercept,
+  aes(x = height_mean, y = value, linetype = fct_rev(prior))
+) +
   geom_line() +
   labs(x = "Average height", y = "", linetype = "Prior") +
   scale_x_continuous(breaks = seq(100, 250, 20))
 ```
 
-My prior indicates that I believe the average height to be higher than the default prior. In terms of the standard deviation, we both seem to be about equally uncertain about this average. Looking at this graph I think this prior of mine is not very plausible. Apparently I assign quite a chunk of plausibility to an average of 180 cm, or even 190 cm, which is very unlikely. An average of 160 cm is more plausible to me than an average of 180, so I should probably lower the mu, or use more of a skewed distribution. This is one of the benefits of visualizing the prior, it can make you think again about your prior so that you may improve on it. Based on the graph, I will change the mean of my prior to 160. I'm not very certain though, so I'll keep my standard deviation of 10 to allow for the possibility of being quite wrong.
+My prior indicates that I believe the average height to be higher than the default prior. In terms of the standard deviation, we both seem to be about equally uncertain about this average. Looking at this graph I think this prior of mine is not very plausible. Apparently I assign quite a chunk of plausibility to an average of 180 cm, or even 190 cm, which is very unlikely. An average of 160 cm is more plausible to me than an average of 180, so I should probably lower the mu, or use more of a skewed distribution. This is one of the benefits of visualizing the prior, it can make you think again about your prior so that you may improve on it. Based on the graph, I will change the mean of my prior to 160. I can probably also lower the standard deviation, but I'll leave it at 10 to show how easily the data will update this prior.
 
 ## The sigma ($\sigma$) prior
 
-What about the sigma prior? What even is sigma? Sigma is the estimated standard deviation of the errors or, in other words, the standard deviation of the residuals of the model. In the simple case of an intercept-only model, this is identical to what we believe the standard deviation of the outcome to be (heights, in this case).
+What about the sigma prior? What even is sigma? Sigma is the estimated standard deviation of the errors or, in other words, the standard deviation of the residuals of the model. In the simple case of an intercept-only model, this is identical to the standard deviation of the outcome (heights, in this case).
 
 I think setting the standard deviation of the distribution of heights (not the mean of the heights) is quite difficult. There are parts that are easy, such as the fact that the standard deviation has to be 0 or larger (it can't be negative), but exactly how large it should be, I don't know.
 
@@ -140,15 +139,15 @@ height_prior_sigma <- tibble(
 )
 
 height_prior_sigma <- pivot_longer(
-  height_prior_sigma, 
-  cols = -height_sigma, 
+  height_prior_sigma,
+  cols = -height_sigma,
   names_to = "prior"
 )
 
 ggplot(
-    height_prior_sigma, 
-    aes(x = height_sigma, y = value, linetype = fct_rev(prior))
-  ) +
+  height_prior_sigma,
+  aes(x = height_sigma, y = value, linetype = fct_rev(prior))
+) +
   geom_line() +
   labs(x = "Standard deviation of heights", y = "", linetype = "Prior")
 ```
@@ -161,67 +160,63 @@ So far we have inspected each prior in isolation, but we can also use our priors
 
 I'll use `brms` to do this by running the `brm()` function. The `brm()` function is the main work horse of the `brms` package. It allows us to run Bayesian analyses by using a common notation style familiar to those who use R. This is also one of the reasons why the `brms` package is so great; it's very easy to get started with running Bayesian analyses.
 
-The `brm()` function requires a model specification and the data. Optionally, but usefully, we should also specify the response distribution (a normal distribution by default) and the priors (remember, we should not rely on the default priors).
+The `brm()` function requires a model specification and the data. Optionally, but usefully, we should also specify the response distribution (a normal distribution by default) and the priors.
 
-However, we're not ready to actually run the model just yet. Instead, we will kinda trick `brms` into running an analysis, but tell it to only sample from the prior using the `sample_prior` argument. This will give us 'predicted' responses based entirely on our priors and not the data.
+However, we're not ready to actually run the model just yet. Instead, we will kinda trick `brms` into running an analysis, but tell it to only sample from the prior using the `sample_prior` argument. This will enable us to get 'predicted' responses based entirely on our priors and not the data.
 
 Additionally, we also set the number of cores to speed up the analysis, a seed to make the results reproducible, and a file to store the results into so that if we run the analysis again, we can simply read the results from the file rather than running the analysis again.
 
 ```{r}
 #| label: height-prior
 model_height_prior <- brm(
-  height ~ 1,  
-  data = data, 
+  height ~ 1,
+  data = data,
   family = gaussian,
   prior = c(
     prior(normal(160, 10), class = "Intercept"),
     prior(cauchy(5, 5), class = "sigma")
-  ), 
+  ),
   sample_prior = "only",
   cores = 4,
-  seed = 4, 
+  seed = 4,
   file = "models/model_height_prior.rds"
 )
 ```
 
-The next part is a little odd because we will visualize the distribution of predicted heights by visualizing draws from this distribution (as opposed to some analytic formula that describes the distribution). By default, `brms` will draw 4000 draws. We could use the `predict()` function to do this (e.g., `predict(model_height_prior)`, but I prefer to use the `tidybayes` package because it will give us back data frames that we can immediately use to create the plot.
+The next part is a little odd because we will visualize the distribution of predicted heights by visualizing draws from this distribution (as opposed to some analytic formula that describes the distribution). By default, `brms` will draw 4000 draws. We could use the `predict()` function to do this (e.g., `predict(model_height_prior)`, but I prefer to use the `marginaleffects` package because it's a really nice package that will simplify things further down the road.
 
-The `tidybayes` function to use is `add_predicted_draws()`. It takes an initial data frame and it will then add draws to that data frame. Since we have nothing to predict heights with, we will need to make an almost-empty data frame. We'll simply create a data frame with a column that specifies that this is a prior distribution. Finally, the `add_predicted_draws()` function will also let us name the column that will contain the predicted heights, so I do that and call it `predicted_height`.
+The `marginaleffects` function to use is `predictions()` and `posterior_draws()`. The `predictions()` function takes a model object and optionally a new data frame to create predictions for each row in the data frame. This is a little tricky because by default it will use the data from the model itself, which would create a new data frame that has rows equal to the number of rows in the original data frame. This is not needed in our case because we're only interested in a single number (the average height). On top of that, after running the `predictions()` function we want to run the `posterior_draws()` function to obtain the draws of the posterior so that we can visualize it. If we get the predictions of every single row in the original data frame, we would end up with a new data frame with rows equal to the number of rows in the original data frame times the number of draws (4000 by default). We don't want to have such a large data frame. So, because we're dealing with an intercept-only model that has no predictors, we will create an almost empty data frame. I want to re-use these results later to compare the prior to the posterior results, so I'll simply add a column in this almost empty data frame to say that these results are from a prior distribution. After getting the predictions, we use the `posterior_draws()` function to obtain the draws.
 
 ```{r}
 #| label: prior-predictive
 #| fig-cap: Prior predictive check
 #| warning: false
-heights_prior <- tibble(distribution = "prior")
+heights_prior <- model_height_prior %>%
+  predictions(newdata = tibble(distribution = "prior"), type = "prediction") %>%
+  posterior_draws()
 
-heights_prior <-  add_predicted_draws(
-    heights_prior, 
-    model_height_prior, 
-    value = "predicted_height"
-  )
-
-ggplot(heights_prior, aes(x = predicted_height)) +
+ggplot(heights_prior, aes(x = draw)) +
   geom_histogram(binwidth = 1, alpha = .85) +
   xlim(100, 250) +
   labs(x = "Height", y = "")
 ```
 
-So, our priors result in a normal distribution of heights ranging from about 125 cm to 200 cm. That seems fairly reasonable to me, as someone who doesn't know too much about the heights of the !Kung San.
+Our priors result in a normal distribution of heights with the bulk of the observations ranging from about 125 cm to 200 cm. That seems fairly reasonable to me, as someone who doesn't know too much about the heights of the !Kung San.
 
 ## Running the model
 
-Now that the priors are in order we can run the model with the code below. Notice that I still sample from the prior (using `sample_prior = TRUE`) so we can not only visualize our posteriors later, but also the priors we have just defined.
+Now that the priors are in order we can run the model with the code below. Notice that this time I omit the `sample_prior` argument so we only obtain the posterior results.
 
 ```{r}
 #| label: intercept-model
-model_height <- brm(data = data, 
+model_height <- brm(
+  data = data,
   family = gaussian,
   height ~ 1,
   prior = c(
-    prior(normal(170, 10), class = "Intercept"),
+    prior(normal(160, 10), class = "Intercept"),
     prior(cauchy(5, 5), class = "sigma")
   ),
-  sample_prior = TRUE,
   cores = 4,
   seed = 4,
   file = "models/model_height.rds"
@@ -246,27 +241,28 @@ summary(model_height)
 
 Here we see the Intercept and sigma estimates. Apparently our posterior estimate for the Intercept is `r round(mean(as_tibble(model_height)$b_Intercept), 2)` and the estimate for $\sigma$ is `r round(mean(as_tibble(model_height)$sigma), 2)`. We also see the 95% CIs, but let's visualize these results instead.
 
-Inspecting the chains also showed us the posterior distributions of the two parameters, but let's create our own graphs that compare both the prior and posterior distributions. We can use the `gather_draws()` function from `tidybayes` to get draws from each parameter in a long format (each row is a draw for one of the parameters). In the code below I do that twice, once to get the draws relating to the intercept and another time for sigma. The result for each is a data frame and I'll add a column to indicate whether the draw is from the prior or posterior.
-
-To see which variables are in the model, use `get_variables(model_height)`.
+Inspecting the chains also showed us the posterior distributions of the two parameters, but let's create our own graphs that compare both the prior and posterior distributions. We can use the `as_draws_df()` function from `brms` to get draws from each parameter in the model. In the code below I do that twice, once to get the draws from our previous model that sampled from the prior only and once from our new model. The result for each is a data frame and I'll add a column to indicate whether the draw is from the prior or posterior.
 
 ```{r}
 #| label: prior-posterior-mu
 #| fig-cap-: Prior vs. posterior for $\mu$
 #| warning: false
-intercept <- model_height %>%
-  gather_draws(prior_Intercept, b_Intercept, ) %>%
-  mutate(
-    distribution = if_else(
-      str_detect(.variable, "prior"), "prior", "posterior")
-  )
+draws_prior <- model_height_prior %>%
+  as_draws_df() %>%
+  mutate(distribution = "prior")
 
-ggplot(intercept, aes(x = .value, fill = fct_rev(distribution))) +
+draws_posterior <- model_height %>%
+  as_draws_df() %>%
+  mutate(distribution = "posterior")
+
+draws <- bind_rows(draws_mu_prior, draws_mu_posterior)
+
+ggplot(draws, aes(x = b_Intercept, fill = fct_rev(distribution))) +
   geom_histogram(binwidth = 1, position = "identity", alpha = .85) +
   xlim(145, 195) +
   labs(
-    x = "Intercept (i.e., average height)", 
-    y = "", 
+    x = "Intercept (i.e., average height)",
+    y = "",
     fill = "Distribution"
   ) +
   scale_fill_manual(values = colors)
@@ -280,19 +276,12 @@ How about sigma?
 #| label: prior-posterior-sigma
 #| fig-cap-: Prior vs. posterior for $\sigma$
 #| warning: false
-sigma <- model_height %>%
-  gather_draws(prior_sigma, sigma) %>%
-  mutate(
-    distribution = if_else(
-      str_detect(.variable, "prior"), "prior", "posterior")
-  )
-
-ggplot(sigma, aes(x = .value, fill = fct_rev(distribution))) +
-  geom_histogram(binwidth = 0.25, position = "identity", alpha = .85) + 
+ggplot(draws, aes(x = sigma, fill = fct_rev(distribution))) +
+  geom_histogram(binwidth = 0.25, position = "identity", alpha = .85) +
   xlim(0, 25) +
   labs(
-    x = "Sigma (i.e., height standard deviation)", 
-    y = "", 
+    x = "Sigma (i.e., height standard deviation)",
+    y = "",
     fill = "Distribution"
   ) +
   scale_fill_manual(values = colors)
@@ -306,17 +295,14 @@ A final step is to conduct a posterior predictive check. Since we also conducted
 #| label: prior-posterior-predictive-check
 #| fig-cap: Prior and posterior predictive check
 #| warning: false
-heights_posterior <- tibble(distribution = "posterior")
+heights_posterior <- model_height %>%
+  predictions(newdata = tibble(distribution = "posterior"), type = "prediction") %>%
+  posterior_draws()
 
-heights_posterior <- add_predicted_draws(
-  heights_posterior,
-  model_height, 
-  value = "predicted_height"
-)
+heights <- bind_rows(heights_prior, heights_posterior) %>%
+  mutate(distribution = fct_relevel(distribution, "prior"))
 
-heights <- bind_rows(heights_prior, heights_posterior)
-
-ggplot(heights, aes(x = predicted_height, fill = distribution)) +
+ggplot(heights, aes(x = draw, fill = distribution)) +
   geom_histogram(binwidth = 1, alpha = .85, position = "identity") +
   xlim(100, 250) +
   labs(x = "Height", y = "", fill = "Distribution") +
@@ -329,11 +315,14 @@ And that's it!
 
 In this post I showed how to run an intercept-only model in `brms`. It consisted of the following steps:
 
-1. Define the model
-2. Use the model to figure out which priors to set
-3. Visualize the priors and create a prior predictive check to potentially tweak the priors
-4. Run the model using `brms`
-5. Inspect the output of `brms`, including the chains
-6. Visualize the results using `tidybayes`
+1.  Define the model
+2.  Use the model to figure out which priors to set
+3.  Visualize the priors and create a prior predictive check to potentially tweak the priors
+4.  Run the model using `brms`
+5.  Inspect the output of `brms`, including the chains
+6.  Obtain draws of the estimates and visualize their distribution
+7.  Compare the prior predictive check to the posterior results to see how much to update based on the data
 
 In the next post I'll show how to add a predictor to the model.
+
+*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*
