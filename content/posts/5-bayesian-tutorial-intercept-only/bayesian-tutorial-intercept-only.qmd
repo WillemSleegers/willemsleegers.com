@@ -158,7 +158,7 @@ As you can see, both distributions have longish tails, allowing for the possibil
 
 So far we have inspected each prior in isolation, but we can also use our priors to simulate heights and see if the distribution of heights makes sense. This is called a prior predictive check.
 
-I'll use `brms` to do this by running the `brm()` function. The `brm()` function is the main work horse of the `brms` package. It allows us to run Bayesian analyses by using a common notation style familiar to those who use R. This is also one of the reasons why the `brms` package is so great; it's very easy to get started with running Bayesian analyses.
+We can perform a prior predictive check using the `brm()` function from `brms`.The `brm()` function is the main work horse of the `brms` package. It allows us to run Bayesian analyses by using a common notation style familiar to those who use R. This is also one of the reasons why the `brms` package is so great; it's very easy to get started with running Bayesian analyses.
 
 The `brm()` function requires a model specification and the data. Optionally, but usefully, we should also specify the response distribution (a normal distribution by default) and the priors.
 
@@ -183,9 +183,13 @@ model_height_prior <- brm(
 )
 ```
 
-The next part is a little odd because we will visualize the distribution of predicted heights by visualizing draws from this distribution (as opposed to some analytic formula that describes the distribution). By default, `brms` will draw 4000 draws. We could use the `predict()` function to do this (e.g., `predict(model_height_prior)`, but I prefer to use the `marginaleffects` package because it's a really nice package that will simplify things further down the road.
+The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, `brms` will draw 4000 draws to approximate distributions. We could use the `predict()` function to do this (e.g., `predict(model_height_prior)`, but I prefer to use the `marginaleffects` package because it's a really nice package that will simplify things further down the road.
 
-The `marginaleffects` function to use is `predictions()` and `posterior_draws()`. The `predictions()` function takes a model object and optionally a new data frame to create predictions for each row in the data frame. This is a little tricky because by default it will use the data from the model itself, which would create a new data frame that has rows equal to the number of rows in the original data frame. This is not needed in our case because we're only interested in a single number (the average height). On top of that, after running the `predictions()` function we want to run the `posterior_draws()` function to obtain the draws of the posterior so that we can visualize it. If we get the predictions of every single row in the original data frame, we would end up with a new data frame with rows equal to the number of rows in the original data frame times the number of draws (4000 by default). We don't want to have such a large data frame. So, because we're dealing with an intercept-only model that has no predictors, we will create an almost empty data frame. I want to re-use these results later to compare the prior to the posterior results, so I'll simply add a column in this almost empty data frame to say that these results are from a prior distribution. After getting the predictions, we use the `posterior_draws()` function to obtain the draws.
+The `marginaleffects` function to use is `predictions()` and `posterior_draws()`. The `predictions()` function takes a model object and optionally a new data frame to create predictions for each row in the data frame. This is a little tricky because by default it will use the data from the model itself, which would create a new data frame that has rows equal to the number of rows in the original data frame. On top of that, after running the `predictions()` function we want to run the `posterior_draws()` function to obtain the draws of the posterior so that we can visualize it. If we get the predictions of every single row in the original data frame, we would end up with a new data frame with rows equal to the number of rows in the original data frame times the number of draws (4000 by default). We don't want to have such a large data frame. So, because we're dealing with an intercept-only model that has no predictors, we will create an almost empty data frame. I want to re-use these results later to compare the prior to the posterior results, so I'll simply add a column in this almost empty data frame to say that these results are from a prior distribution. 
+
+Note also that we need to set the `type` argument from the `predictions()` function to `prediction`. If we don't set this, we would get 'predictions' of the average heights, rather than individual heights.
+
+After getting the predictions, we use the `posterior_draws()` function to obtain the draws of the distribution.
 
 ```{r}
 #| label: prior-predictive
@@ -309,7 +313,7 @@ ggplot(heights, aes(x = draw, fill = distribution)) +
   scale_fill_manual(values = colors)
 ```
 
-And that's it!
+This is one of my favorite plots. It shows how we started with a belief about heights and what our new belief should be, after seeing the data. That is the main goal of doing data analysis.
 
 ## Summary
 
@@ -317,9 +321,9 @@ In this post I showed how to run an intercept-only model in `brms`. It consisted
 
 1.  Define the model
 2.  Use the model to figure out which priors to set
-3.  Visualize the priors and create a prior predictive check to potentially tweak the priors
-4.  Run the model using `brms`
-5.  Inspect the output of `brms`, including the chains
+3.  Visualize the priors and create a prior predictive check to potentially tweak the priors (using `brms`)
+4.  Run the model
+5.  Inspect the output, including the chains
 6.  Obtain draws of the estimates and visualize their distribution
 7.  Compare the prior predictive check to the posterior results to see how much to update based on the data
 
