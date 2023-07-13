@@ -54,7 +54,7 @@ We again specify that the heights are normally distributed, so we still have a $
 
 If you're used to linear regression equations, this notation should not surprise you. $\alpha$ refers to the intercept and $\beta$ to the slope.
 
-We need to set priors on these parameters. The prior for $\alpha$ can be the same as the prior for $\mu$ from the previous intercept-only model, if we center the data so the intercept refers to the average height of someone with an average weight, rather than someone with 0 weight (the default, which makes no sense). So let's first mean center the weight observations.
+We need to set priors on these parameters. The prior for $\alpha$ can be the same as the prior for $\mu$ from the previous intercept-only model if we center the data so the intercept refers to the average height of someone with an average weight, rather than someone with 0 weight (the default, which makes no sense). So let's first mean center the weight observations.
 
 ```{r}
 #| label: mean-center-weight
@@ -90,16 +90,16 @@ model_height_weight_prior <- brm(
 )
 ```
 
-With this model we can use the `spread_draws()` function from the `tidybayes` package to get draws from the posterior distribution of the intercept and slope parameters. With an intercept and slope we can visualize the relationship we're interested in. Remember, though, that `brms` will give you 4000 draws by default from the posteriors. In other words, you get 4000 intercepts and slopes. That's a bit much to visualize, so let's only draw 100 intercepts and slopes.
+We can use the `as_draws_df()` function to get draws from the posterior distribution of the intercept and slope parameters. With an intercept and slope we can visualize the relationship we're interested in. Remember, though, that `brms` will give you 4000 draws by default from the posteriors. In other words, you get 4000 intercepts and slopes. That's a bit much to visualize, so let's only draw 100 intercepts and slopes.
 
 To help make sense of the sensibility of the slopes I've added the average weight to the weights so we're back on the normal scale and not the mean centered scale and I've added two dashed lines to indicate the minimum and maximum height we can expect.
 
 ```{r}
 #| label: prior-predictive-check-weight
 #| fig-cap: A prior predictive check of the relationship between weight and height
-draws <- spread_draws(
-  model_height_weight_prior, b_Intercept, b_weight_mc, ndraws = 100
-)
+draws <- model_height_weight_prior %>%
+  as_draws_df() %>%
+  slice_sample(n = 100)
 
 weight_mean <- data %>%
   pull(weight) %>%
@@ -146,9 +146,9 @@ Let's inspect the lines again.
 ```{r}
 #| label: prior-predictive-check-weight-update
 #| fig-cap: A prior predictive check of the relationship between weight and height
-draws <- spread_draws(
-  model_height_weight_prior_2, b_Intercept, b_weight_mc, ndraws = 100
-)
+draws <- model_height_weight_prior_2 %>%
+  as_draws_df() %>%
+  slice_sample(n = 100)
 
 ggplot(data, aes(x = weight_mc, y = height)) +
   geom_blank() +
@@ -169,14 +169,14 @@ This looks a lot better, so let's run the model for real now.
 ```{r}
 #| label: weight-model
 model_height_weight <- brm(
-  data = data, 
+  data = data,
   height ~ weight_mc,
   family = gaussian,
   prior = c(
-      prior(normal(160, 10), class = "Intercept"),
-      prior(cauchy(5, 5), class = "sigma"),
-      prior(normal(0, 3), class = "b", lb = 0)
-    ), 
+    prior(normal(160, 10), class = "Intercept"),
+    prior(cauchy(5, 5), class = "sigma"),
+    prior(normal(0, 3), class = "b")
+  ),
   sample_prior = TRUE,
   cores = 4,
   seed = 4,
@@ -192,14 +192,19 @@ We see that the estimate for the weight predictor is `r round(fixef(model_height
 #| label: weight-prior-posterior
 #| warning: false
 results <- model_height_weight %>%
-  gather_draws(prior_b, b_weight_mc) %>%
+  as_draws_df() %>%
+  pivot_longer(
+    cols = c(prior_Intercept, b_Intercept, prior_sigma, sigma),
+    names_to = "distribution"
+  ) %>%
   mutate(
+    parameter = if_else(str_detect(distribution, "sigma"), "sigma", "intercept"),
     distribution = if_else(
-      str_detect(.variable, "prior"), "prior", "posterior"
+      str_detect(distribution, "prior"), "prior", "posterior"
     )
   )
 
-ggplot(results, aes(x = .value, fill = fct_rev(distribution))) +
+ggplot(results, aes(x = value, fill = fct_rev(distribution))) +
   geom_histogram(binwidth = 0.05, position = "identity", alpha = .85) +
   xlim(0, 5) +
   labs(x = "Slope", y = "", fill = "Distribution") +
@@ -215,8 +220,8 @@ Then we use `add_epred_draws()` to predict the expected height for each of the w
 
 ```{r}
 slopes_qi <- tibble(
-    weight_mc = seq(from = -15, to = 20, by = 1)
-  ) %>%
+  weight_mc = seq(from = -15, to = 20, by = 1)
+) %>%
   add_epred_draws(model_height_weight) %>%
   median_qi()
 
@@ -229,7 +234,7 @@ ggplot() +
   geom_line(
     mapping = aes(x = weight_mc, y = .epred),
     data = slopes_qi
-  ) + 
+  ) +
   geom_point(
     mapping = aes(x = weight_mc, y = height),
     data = data,
@@ -243,8 +248,8 @@ This graph is great because it shows us how confident we can be in the regressio
 
 ```{r}
 predicted_slopes_qi <- tibble(
-    weight_mc = seq(from = -20, to = 20, by = 1)
-  ) %>%
+  weight_mc = seq(from = -20, to = 20, by = 1)
+) %>%
   add_predicted_draws(model_height_weight) %>%
   median_qi()
 
@@ -257,7 +262,7 @@ ggplot() +
   geom_line(
     aes(x = weight_mc, y = .prediction),
     data = predicted_slopes_qi
-  ) + 
+  ) +
   geom_point(
     aes(x = weight_mc, y = height),
     data = data,
