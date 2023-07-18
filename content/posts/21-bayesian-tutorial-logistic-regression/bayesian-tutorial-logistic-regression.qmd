@@ -1,0 +1,226 @@
+---
+title: "Bayesian tutorial: Logistic regression"
+description: "The xth of a series of tutorial posts on Bayesian analyses. In this post I focus on using `brms` to run a logistic regression."
+date: 2023-02-12
+categories:
+  - statistics
+  - tutorial
+  - Bayesian statistics
+  - regression
+code-fold: true
+code-tools: true
+toc: true
+format: 
+  html: 
+    df-print: kable
+draft: true
+---
+
+This post is about using `brms` to run a logistic regression. Logistic regression is different from the models from previous posts because it involves a dichotomous outcome measure. This is different from modeling means, which we have roughly been doing, so there are some new things to keep in mind here.
+
+Run the following code to get started. Note that the data we'll be using is the titanic dataset. It contains several interesting columns such as whether or not the passenger survived, their sex, and their age.
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+library(brms)
+library(tidybayes)
+
+data <- read_csv("titanic.csv")
+
+theme_set(theme_minimal())
+
+colors <- c("#93CFDB", "#1E466E")
+```
+
+Let's say that we want to model the proportion of survivors. We can do that by running a logistic regression in which we regress the outcome (`survived`: `0` or `1`) on an intercept and specify that the outcome comes from a binomial family with a logit transformation. We use the `get_prior()` function to get a first grasp of which priors we need.
+
+```{r}
+#| label: get-prior
+get_prior(survived ~ 1, data = data, family = binomial(link = "logit"))
+```
+
+We only need a single prior for the intercept. That's easy enough, but the family and link argument are kinda new. 
+
+$$\displaylines{survived_i ∼ Binomial(n, p_i) \\ logit(p_i) = \alpha}$$
+
+## Setting the priors
+
+You might think that because we're modelling a proportion, the prior for the intercept should be a distribution of values constrained to range from 0 to 1. This is not the case because of the logit transformation. The logit link transforms the probability scale onto a linear scale that ranges from minus infinity to infinity, although the bulk of the values are around 0. We can show this in a graph.
+
+```{r}
+#| label: logit-link
+#| fig-cap: Transformation of probability values via the logit link
+df <- tibble(
+  x = seq(0, 1, 0.001),
+  logit = logit_scaled(x)
+)
+ggplot(df, aes(x = x, y = logit)) +
+  geom_point() +
+  labs(x = "p", y = "logit(p)")
+```
+
+Our prior needs to be set on the transformed values, not the original probability scale. brms sets a default prior of `student_t(3, 0, 2.5)`. Let's take a look at what this looks like by running a model and sampling only from this prior.
+
+```{r}
+#| label: default-prior
+fit_prior_default <- brm(
+  survived ~ 1,
+  family = binomial(link = "logit"),
+  data = data,
+  file = "model-prior-default.rds", 
+  sample_prior = "only"
+)
+```
+
+We get a warning that using the Bernoulli family might be more efficient because we only have 2 levels and that we need to specify the number of trials when using the Binomial family; let's keep this in mind when we run the code again. For now, let's plot the prior.
+
+```{r}
+#| label: default-prior-plot
+#| fig-cap: "Default brms prior on the intercept in a logistic regression"
+#| fig-subcap:
+#|   - "Logit scale"
+#|   - "Probability scale"
+#| layout-ncol: 1
+#| warning: false
+draws_prior <- as_draws_df(fit_prior_default)
+draws_prior_inv <- mutate(
+  draws_prior,
+  b_Intercept = inv_logit_scaled(b_Intercept)
+)
+
+ggplot(draws_prior, aes(x = b_Intercept, y = "")) +
+  stat_halfeye(.width = c(.95)) +
+  stat_pointinterval(
+    geom = "text",
+    aes(label = paste0(
+      round(after_stat(x), 2), "\n [",
+      round(after_stat(xmin), 2), ", ",
+      round(after_stat(xmax), 2), "]"
+    )),
+    .width = .5,
+    position = position_nudge(y = -0.1),
+    size = 3.5
+  )
+
+ggplot(draws_prior_inv, aes(x = b_Intercept)) +
+  stat_halfeye(.width = c(.95))
+```
+
+The top graph shows the prior on the logit scale. The bulk of the values are somewhere between -10 and 10, concentrated around 0. This doesn't seem like a suitable default prior to me because if we convert these values to the probability scale, it turns out that the extreme values (around 0 and 1) are relatively more likely than other values. I would probably prefer a prior that is either more uniform or perhaps centered around .5, depending on the context. This is likely to be a weak prior though, so it will be easily overrun by data. Nevertheless, let's try out another prior and see if it produces a more uniform distribution on the probability scale. Let's also change the `binomial()` family to a `bernoulli()` family.
+
+```{r}
+#| label: prior
+fit_prior <- brm(
+  survived ~ 1,
+  family = bernoulli(link = "logit"),
+  data = data,
+  prior = prior(student_t(5, 0, 1.5), class = "Intercept"),
+  # file = "model-prior.rds",
+  sample_prior = "only",
+  warmup = 2000,
+  iter = 20000
+)
+
+draws_prior <- fit_prior %>%
+  as_draws_df() %>%
+  mutate(
+    b_Intercept = inv_logit_scaled(b_Intercept)
+  )
+
+ggplot(draws_prior, aes(x = b_Intercept)) +
+  # stat_halfeye(.width = c(.95))
+  geom_histogram(binwidth = 0.01)
+```
+
+That looks better, so let's use this prior and estimate the probability of males in the data.
+
+```{r}
+#| label: model-intercept-only
+fit_intercept <- brm(
+  survived ~ 1,
+  family = bernoulli(link = "logit"),
+  data = data,
+  prior = prior(student_t(6, 0, 1.5), class = "Intercept"),
+  file = "model-intercept-only.rds",
+)
+
+fit_intercept
+```
+
+We get an estimate of `r round(summary(fit_intercept)$fixed$Estimate, 2)`. Converted to a probability, this is `r round(inv_logit_scales(summary(fit_intercept)$fixed$Estimate), 2). We can do better, of course, and plot a distribution the plausible probability values.
+
+```{r}
+#| label: single-probability
+#| fig-cap: Posterior distribution of the probability of males
+draws_intercept <- fit_intercept %>%
+  as_draws_df() %>%
+  mutate(b_Intercept = inv_logit_scaled(b_Intercept))
+
+ggplot(draws_intercept, aes(x = b_Intercept)) +
+  geom_histogram()
+```
+
+## Adding a discrete predictor
+
+```{r}
+get_prior(survived ~ 0 + sex, family = bernoulli(link = "logit"), data = data)
+```
+
+$$\displaylines{males_i ∼ Binomial(n, p_i) \\ logit(p_i) = \alpha + \beta x_i}$$
+
+```{r}
+fit <- brm(
+  survived ~ 0 + sex,
+  family = bernoulli(link = "logit"),
+  data = data,
+  prior = c(
+    prior(student_t(6, 0, 1.5), coef = "sexfemale"),
+    prior(student_t(6, 0, 1.5), coef = "sexmale")
+  ),
+  file = "model-sex.rds",
+)
+
+fit
+
+draws <- fit %>%
+  as_draws_df() %>%
+  mutate(
+    b_sexfemale = inv_logit_scaled(b_sexfemale),
+    b_sexmale = inv_logit_scaled(b_sexmale),
+    difference = b_sexfemale - b_sexmale
+  )
+
+library(ggdist)
+
+draws %>%
+  pivot_longer(
+    cols = c(b_sexfemale, b_sexmale),
+    names_to = "sex", values_to = "prob"
+  ) %>%
+  mutate(
+    sex = case_match(sex, "b_sexfemale" ~ "female", "b_sexmale" ~ "male")
+  ) %>%
+  ggplot(aes(x = prob, y = sex)) +
+  stat_halfeye(.width = c(.95)) +
+  stat_pointinterval(
+    geom = "text",
+    aes(label = paste0(
+      round(after_stat(x), 2), "\n [",
+      round(after_stat(xmin), 2), ", ",
+      round(after_stat(xmax), 2), "]"
+    )),
+    .width = .5,
+    position = position_nudge(y = -0.1),
+    size = 3.5
+  ) +
+  scale_x_continuous(limits = c(0, 1))
+
+ggplot(draws, aes(x = difference)) +
+  geom_density(fill = "steelblue") +
+  scale_x_continuous(limits = c(0, 1))
+
+lm(height ~ 0 + weight, data = data) %>%
+  summary()
+```
