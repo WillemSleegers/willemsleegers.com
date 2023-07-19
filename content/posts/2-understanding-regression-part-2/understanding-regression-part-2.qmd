@@ -146,15 +146,17 @@ It seems that both the mean and the median are unbiased--both produce distributi
 
 ```{r}
 samples <- crossing(
-  n = c(10, 25, 100),
+  n = c(10, 30, 100),
   i = 1:10000
 ) %>%
   rowwise() %>%
   mutate(
     mean = mean(
-      c(rnorm(n = n, mean = 0, sd = 1)), rep(3, 500)
+      c(rnorm(n = .9 * n, mean = 0, sd = 1), rep(3, .1 * n))
     ),
-    median = median(rnorm(n = n, mean = 0, sd = 1))
+    median = median(
+      c(rnorm(n = .9 * n, mean = 0, sd = 1), rep(3, .1 * n))
+    )
   ) %>%
   pivot_longer(cols = c(mean, median), names_to = "statistic")
 

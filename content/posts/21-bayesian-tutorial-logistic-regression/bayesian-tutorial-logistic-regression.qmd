@@ -101,11 +101,22 @@ ggplot(draws_prior, aes(x = b_Intercept, y = "")) +
     )),
     .width = .5,
     position = position_nudge(y = -0.1),
-    size = 3.5
+    size = 3.5, color = "gray20"
   )
 
-ggplot(draws_prior_inv, aes(x = b_Intercept)) +
-  stat_halfeye(.width = c(.95))
+ggplot(draws_prior_inv, aes(x = b_Intercept, y = "")) +
+  stat_halfeye(.width = c(.95)) +
+  stat_pointinterval(
+    geom = "text",
+    aes(label = paste0(
+      round(after_stat(x), 2), "\n [",
+      round(after_stat(xmin), 2), ", ",
+      round(after_stat(xmax), 2), "]"
+    )),
+    .width = .5,
+    position = position_nudge(y = -0.1),
+    size = 3.5, color = "gray20"
+  )
 ```
 
 The top graph shows the prior on the logit scale. The bulk of the values are somewhere between -10 and 10, concentrated around 0. This doesn't seem like a suitable default prior to me because if we convert these values to the probability scale, it turns out that the extreme values (around 0 and 1) are relatively more likely than other values. I would probably prefer a prior that is either more uniform or perhaps centered around .5, depending on the context. This is likely to be a weak prior though, so it will be easily overrun by data. Nevertheless, let's try out another prior and see if it produces a more uniform distribution on the probability scale. Let's also change the `binomial()` family to a `bernoulli()` family.
@@ -212,8 +223,8 @@ draws %>%
       round(after_stat(xmax), 2), "]"
     )),
     .width = .5,
-    position = position_nudge(y = -0.1),
-    size = 3.5
+    position = position_nudge(y = -0.05),
+    size = 3.5, vjust = 1, color = "gray20"
   ) +
   scale_x_continuous(limits = c(0, 1))
 
@@ -221,6 +232,4 @@ ggplot(draws, aes(x = difference)) +
   geom_density(fill = "steelblue") +
   scale_x_continuous(limits = c(0, 1))
 
-lm(height ~ 0 + weight, data = data) %>%
-  summary()
 ```
