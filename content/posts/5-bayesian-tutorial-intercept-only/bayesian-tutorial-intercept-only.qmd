@@ -34,12 +34,18 @@ In the code chunk below I show some setup code to get started, starting with the
 #| message: false
 library(tidyverse)
 library(brms)
-library(marginaleffects)
+library(tidybayes)
+library(ggdist)
 
 theme_set(theme_minimal())
 colors <- c("#93CFDB", "#1E466E")
 
-options(brms.file_refit = "on_change")
+options(
+  mc.cores = 4,
+  brms.threads = 4,
+  brms.backend = "cmdstanr",
+  brms.file_refit = "on_change"
+)
 ```
 
 ## Data
@@ -173,39 +179,33 @@ model_height_prior <- brm(
   data = data,
   family = gaussian,
   prior = c(
-    prior(normal(160, 10), class = "Intercept"),
+    prior(normal(160, 10), class = "Intercept", lb = 0, ub = 250),
     prior(cauchy(5, 5), class = "sigma")
   ),
   sample_prior = "only",
-  cores = 4,
   seed = 4,
   file = "models/model_height_prior.rds"
 )
 ```
 
-The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, `brms` will draw 4000 draws to approximate distributions. We could use the `predict()` function to do this (e.g., `predict(model_height_prior)`, but I prefer to use the `marginaleffects` package because it's a really nice package that will simplify things further down the road.
+The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, `brms` will draw 4000 draws to approximate distributions. We could use the `predict()` function to do this (e.g., `predict(model_height_prior)`, but I prefer to use the `tidybayes` package because it's a really nice package that simplies a lot of things about working with brms models.
 
-The `marginaleffects` function to use is `predictions()` and `posterior_draws()`. The `predictions()` function takes a model object and optionally a new data frame to create predictions for each row in the data frame. This is a little tricky because by default it will use the data from the model itself, which would create a new data frame that has rows equal to the number of rows in the original data frame. On top of that, after running the `predictions()` function we want to run the `posterior_draws()` function to obtain the draws of the posterior so that we can visualize them. If we get the predictions of every single row in the original data frame, we would end up with a new data frame with rows equal to the number of rows in the original data frame times the number of draws (4000 by default). We don't want to have such a large data frame. So, because we're dealing with an intercept-only model that has no predictors, we will create an empty data frame that only specifies that the draws are from the prior distribution (i.e., a single column called `distribution` with a single value saying "prior").
-
-Note also that we need to set the `type` argument from the `predictions()` function to `prediction`. If we don't set this, we would get 'predictions' of the *average* heights, rather than individual heights.
-
-After getting the predictions, we use the `posterior_draws()` function to obtain the draws of the distribution.
+The `tidybayes` function to use is `add_predicted_draws()`. The function takes a data frame and a model object to add predictions for each row in the data frame. This is a little tricky because we don't really have any data to supply because it's an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to calculate predicted value for. We don't have that, so we need to give it an empty data frame. You can't really give it an empty data frame so instead I'll give it a data frame with a column (`distribution`) and a single row specifying that the predicted values are from the prior. This will produce a data frame with 4000 predicted values of height.
 
 ```{r}
 #| label: prior-predictive
 #| fig-cap: Prior predictive check
 #| warning: false
-heights_prior <- model_height_prior %>%
-  predictions(newdata = tibble(distribution = "prior"), type = "prediction") %>%
-  posterior_draws()
+heights_prior <- tibble(distribution = "prior") %>%
+  add_predicted_draws(model_height_prior, value = "height")
 
-ggplot(heights_prior, aes(x = draw)) +
+ggplot(heights_prior, aes(x = height)) +
   geom_histogram(binwidth = 1, alpha = .85) +
-  xlim(100, 250) +
+  coord_cartesian(xlim = c(50, 250)) +
   labs(x = "Height", y = "")
 ```
 
-Our priors result in a normal distribution of heights with the bulk of the observations ranging from about 125 cm to 200 cm. That seems fairly reasonable to me, as someone who doesn't know too much about the heights of the !Kung San.
+Our priors result in a normal distribution of heights with the bulk of the observations ranging from about 120 cm to 205 cm. That seems fairly reasonable to me, as someone who doesn't know too much about the heights of the !Kung San.
 
 ## Running the model
 
@@ -221,7 +221,6 @@ model_height <- brm(
     prior(normal(160, 10), class = "Intercept"),
     prior(cauchy(5, 5), class = "sigma")
   ),
-  cores = 4,
   seed = 4,
   file = "models/model_height.rds"
 )
@@ -251,19 +250,19 @@ Inspecting the chains also showed us the posterior distributions of the two para
 #| label: prior-posterior-mu
 #| fig-cap-: Prior vs. posterior for $\mu$
 #| warning: false
-draws_prior <- model_height_prior %>%
-  as_draws_df() %>%
+draws_prior <- model_height_prior %>% 
+  spread_draws(b_Intercept, sigma) %>%
   mutate(distribution = "prior")
 
 draws_posterior <- model_height %>%
-  as_draws_df() %>%
+  spread_draws(b_Intercept, sigma) %>%
   mutate(distribution = "posterior")
 
 draws <- bind_rows(draws_prior, draws_posterior)
 
-ggplot(draws, aes(x = b_Intercept, fill = fct_rev(distribution))) +
-  geom_histogram(binwidth = 1, position = "identity", alpha = .85) +
-  xlim(145, 195) +
+ggplot(draws, aes(x = b_Intercept, fill = distribution)) +
+  geom_histogram(binwidth = 0.25, alpha = .85, position = "identity") +
+  coord_cartesian(xlim = c(140, 190)) +
   labs(
     x = "Intercept (i.e., average height)",
     y = "",
@@ -281,8 +280,8 @@ How about sigma?
 #| fig-cap-: Prior vs. posterior for $\sigma$
 #| warning: false
 ggplot(draws, aes(x = sigma, fill = fct_rev(distribution))) +
-  geom_histogram(binwidth = 0.25, position = "identity", alpha = .85) +
-  xlim(0, 25) +
+  geom_histogram(binwidth = 0.25, alpha = .85, position = "identity") +
+  coord_cartesian(xlim = c(0, 25)) +
   labs(
     x = "Sigma (i.e., height standard deviation)",
     y = "",
@@ -299,16 +298,16 @@ A final step is to conduct a posterior predictive check. Since we also conducted
 #| label: prior-posterior-predictive-check
 #| fig-cap: Prior and posterior predictive check
 #| warning: false
-heights_posterior <- model_height %>%
-  predictions(newdata = tibble(distribution = "posterior"), type = "prediction") %>%
-  posterior_draws()
+heights_posterior <- tibble(distribution = "posterior") %>%
+  add_predicted_draws(model_height, value = "height") 
 
 heights <- bind_rows(heights_prior, heights_posterior) %>%
+  ungroup() %>%
   mutate(distribution = fct_relevel(distribution, "prior"))
 
-ggplot(heights, aes(x = draw, fill = distribution)) +
+ggplot(heights, aes(x = height, fill = distribution)) +
   geom_histogram(binwidth = 1, alpha = .85, position = "identity") +
-  xlim(100, 250) +
+  coord_cartesian(xlim = c(100, 250)) +
   labs(x = "Height", y = "", fill = "Distribution") +
   scale_fill_manual(values = colors)
 ```
