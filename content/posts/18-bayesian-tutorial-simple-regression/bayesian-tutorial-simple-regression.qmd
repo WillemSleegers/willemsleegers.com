@@ -23,7 +23,6 @@ If you want to follow along, run the following setup code.
 #| message: false
 library(tidyverse)
 library(brms)
-library(marginaleffects)
 library(tidybayes)
 
 theme_set(theme_minimal())
@@ -33,6 +32,13 @@ options(brms.file_refit = "on_change")
 
 data <- read_csv("Howell1.csv")
 data <- filter(data, age >= 18)
+
+options(
+  mc.cores = 4,
+  brms.threads = 4,
+  brms.backend = "cmdstanr",
+  brms.file_refit = "on_change"
+)
 ```
 
 ## Adding a single predictor
@@ -84,22 +90,22 @@ model_height_weight_prior <- brm(
       prior(normal(0, 10), class = "b")
     ), 
   sample_prior = "only",
-  cores = 4,
   seed = 4,
   file = "models/model_height_weight_prior.rds"
 )
 ```
 
-We can use the `as_draws_df()` function to get draws from the posterior distribution of the intercept and slope parameters. With an intercept and slope we can visualize the relationship we're interested in. Remember, though, that `brms` will give you 4000 draws by default from the posteriors. In other words, you get 4000 intercepts and slopes. That's a bit much to visualize, so let's only draw 100 intercepts and slopes.
+We can use the `spread_draws()` function to get draws from the posterior distribution of the intercept and slope parameters. With an intercept and slope we can visualize the relationship we're interested in. Remember, though, that `brms` will give you 4000 draws by default from the posteriors. In other words, you get 4000 intercepts and slopes. That's a bit much to visualize, so let's only draw 100 intercepts and slopes.
 
-To help make sense of the sensibility of the slopes I've added the average weight to the weights so we're back on the normal scale and not the mean centered scale and I've added two dashed lines to indicate the minimum and maximum height we can expect.
+To help make sense of the sensibility of the slopes I've added the average weight to the weights so we're back on the normal scale and not the mean centered scale and I've added two dashed lines to indicate a very obvious minimum and a possible maximum height to help figure out whether the priors produce sensible results.
 
 ```{r}
 #| label: prior-predictive-check-weight
 #| fig-cap: A prior predictive check of the relationship between weight and height
-draws <- model_height_weight_prior %>%
-  as_draws_df() %>%
-  slice_sample(n = 100)
+draws <- spread_draws(
+  model_height_weight_prior, b_Intercept, b_weight_mc,
+  ndraws = 100
+)
 
 weight_mean <- data %>%
   pull(weight) %>%
@@ -121,7 +127,7 @@ ggplot(data, aes(x = weight_mc, y = height)) +
 
 The plot shows a wide range of possible slopes, some of which are definitely unlikely because they lead to heights that are smaller than 0 or higher than the tallest person who ever lived. We should lower our uncertainty by reducing the standard deviation on the prior. In the next model I lower it to 3.
 
-Additionally, the negative slopes are all pretty unlikely because we should expect a positive relationship between weight and height (taller people tend to be heavier). We could therefore also change our prior to force it to be positive using the `lb` argument in our prior for `b` or use a distribution that doesn't allow for any negative values. Let's not do this though. Let's assume we have no idea whether the relationship will be positive or negative and instead focus on the standard deviation instead so that we don't obtain relationships we definitely know are unlikely.
+Additionally, the negative slopes are actually also pretty unlikely because we should expect a positive relationship between weight and height (taller people tend to be heavier). We could therefore also change our prior to force it to be positive using the `lb` argument in our prior for `b` or use a distribution that doesn't allow for any negative values. Let's not do this though. Let's assume we have no idea whether the relationship will be positive or negative and instead focus on the standard deviation instead so that we don't obtain relationships we definitely know are unlikely.
 
 ```{r}
 #| label: weight-updated-prior
@@ -135,7 +141,6 @@ model_height_weight_prior_2 <- brm(
       prior(normal(0, 3), class = "b")
     ), 
   sample_prior = "only",
-  cores = 4,
   seed = 4,
   file = "models/model_height_weight_prior_2.rds"
 )
@@ -146,9 +151,10 @@ Let's inspect the lines again.
 ```{r}
 #| label: prior-predictive-check-weight-update
 #| fig-cap: A prior predictive check of the relationship between weight and height
-draws <- model_height_weight_prior_2 %>%
-  as_draws_df() %>%
-  slice_sample(n = 100)
+draws <- spread_draws(
+  model_height_weight_prior_2, b_Intercept, b_weight_mc,
+  ndraws = 100
+)
 
 ggplot(data, aes(x = weight_mc, y = height)) +
   geom_blank() +
@@ -178,7 +184,6 @@ model_height_weight <- brm(
     prior(normal(0, 3), class = "b")
   ),
   sample_prior = TRUE,
-  cores = 4,
   seed = 4,
   file = "models/model_height_weight.rds"
 )
@@ -186,30 +191,24 @@ model_height_weight <- brm(
 model_height_weight
 ```
 
-We see that the estimate for the weight predictor is `r round(fixef(model_height_weight)[2, 1], 2)`. For every increase of weight by 1 we can expect their height to increase by this number. We can also be fairly confident in this kind of relationship because the lower and upper bound of the 95% CI ranges from `r round(fixef(model_height_weight)[2, 3], 2)` to `r round(fixef(model_height_weight)[2, 4], 2)`. These numbers are what we are usually interested in, but let's also plot the the entire posterior for the slope estimate so can see the entire distribution and not just this summary. Let's also add the prior so we can see how much that changed as a result of the data.
+We see that the estimate for the weight predictor is `r round(fixef(model_height_weight)[2, 1], 2)`. For every increase of weight by 1 we can expect height to increase by this number. We can also be fairly confident in this kind of relationship because the lower and upper bound of the 95% CI ranges from `r round(fixef(model_height_weight)[2, 3], 2)` to `r round(fixef(model_height_weight)[2, 4], 2)`. These numbers are what we are usually interested in, but let's also plot the the entire posterior for the slope estimate so can see the entire distribution and not just this summary. Let's also add the prior so we can see how much that changed as a result of the data. This time we use `gather_draws()` to create a long data frame, instead of a wide data frame that you get with `spread_draws()`.
 
 ```{r}
 #| label: weight-prior-posterior
 #| warning: false
-results <- model_height_weight %>%
-  as_draws_df() %>%
-  pivot_longer(
-    cols = c(prior_Intercept, b_Intercept, prior_sigma, sigma),
-    names_to = "distribution"
-  ) %>%
+draws <- model_height_weight %>%
+  gather_draws(prior_b, b_weight_mc) %>%
   mutate(
-    parameter = if_else(str_detect(distribution, "sigma"), "sigma", "intercept"),
     distribution = if_else(
-      str_detect(distribution, "prior"), "prior", "posterior"
+      str_detect(.variable, "prior"), "prior", "posterior"
     )
   )
 
-ggplot(results, aes(x = value, fill = fct_rev(distribution))) +
+ggplot(draws, aes(x = .value, fill = fct_rev(distribution))) +
   geom_histogram(binwidth = 0.05, position = "identity", alpha = .85) +
-  xlim(0, 5) +
   labs(x = "Slope", y = "", fill = "Distribution") +
+  coord_cartesian(xlim = c(-7.5, 7.5)) +
   scale_fill_manual(values = colors)
-
 ```
 
 Apparently our prior was still very uninformed because the posterior shows we can be confident in a much narrower range of slopes!
@@ -244,7 +243,7 @@ ggplot() +
   scale_x_continuous(labels = function(x) round(x + weight_mean))
 ```
 
-This graph is great because it shows us how confident we can be in the regression line. It does omit one source of uncertainty, though. The previous plot only shows the uncertainty about the regression line (the intercept and slope). We can also make a plot with predicted values of individual heights, which also incorporates the uncertainty from the $\sigma$ parameter.
+This graph is great because it shows us how confident we can be in the regression line. It does omit one source of uncertainty, though. The previous plot only shows the uncertainty about the regression line (the intercept and slope). We can also make a plot with predicted values of individual heights, which also incorporates the uncertainty from the $\sigma$ parameter. To get these values, we use `add_predicted_draws()`.
 
 ```{r}
 predicted_slopes_qi <- tibble(
