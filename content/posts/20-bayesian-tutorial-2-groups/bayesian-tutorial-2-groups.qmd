@@ -198,8 +198,8 @@ We can plot the average heights per group.
 library(marginaleffects)
 
 draws <- model_index %>%
-    predictions(newdata = tibble(sex = c("male", "female"))) %>%
-    posterior_draws()
+  predictions(newdata = tibble(sex = c("male", "female"))) %>%
+  posterior_draws()
 ```
 
 ## Calculating a difference score
@@ -234,3 +234,5 @@ ggplot(draws, aes(x = difference)) +
 ## Summary
 
 Just like running a correlation, testing a group difference consists of running a simple regression. However, having groups as a predictor means the regression is not so simple after all. You have to think more carefully about what the priors mean (particularly the intercept) and you have to deal with greater uncertainty for some estimates, depending on how you code the group predictor. I've shown that explicitly including the intercept and using index coding makes thinking about this scenario a bit easier.
+
+*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*

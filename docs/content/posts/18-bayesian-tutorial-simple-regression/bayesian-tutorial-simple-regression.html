@@ -524,6 +524,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
 <p>In this post I showed how to run a single predictor model in <code>brms</code>. The addition of a predictor meant that the previous intercept-only model had to be updated by turning the <span class="math inline">\(\mu\)</span> parameter into a regression equation. This then required an additional prior for the slope. To help set a prior on the slope, I created a prior predictive check of the slope. Running the model itself was straightforward and I provided several visualizations to help understand the results, including visualizing the posteriors of the slope parameter, the slope across the range of weights, and individual predicted heights.</p>
 <p>In the next post I’ll show how to use <code>brms</code> to analyze correlations.</p>
+<p><em>This post was last updated on 2023-08-03.</em></p>
 
 
 <!-- -->
@@ -1095,6 +1096,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb14-300"><a href="#cb14-300" aria-hidden="true" tabindex="-1"></a>In this post I showed how to run a single predictor model in <span class="in">`brms`</span>. The addition of a predictor meant that the previous intercept-only model had to be updated by turning the $\mu$ parameter into a regression equation. This then required an additional prior for the slope. To help set a prior on the slope, I created a prior predictive check of the slope. Running the model itself was straightforward and I provided several visualizations to help understand the results, including visualizing the posteriors of the slope parameter, the slope across the range of weights, and individual predicted heights.</span>
 <span id="cb14-301"><a href="#cb14-301" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-302"><a href="#cb14-302" aria-hidden="true" tabindex="-1"></a>In the next post I'll show how to use <span class="in">`brms`</span> to analyze correlations.</span>
+<span id="cb14-303"><a href="#cb14-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-304"><a href="#cb14-304" aria-hidden="true" tabindex="-1"></a>*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

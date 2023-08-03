@@ -278,3 +278,5 @@ While this graph is pretty cool, I haven't ever seen one in a social psychology 
 In this post I showed how to run a single predictor model in `brms`. The addition of a predictor meant that the previous intercept-only model had to be updated by turning the $\mu$ parameter into a regression equation. This then required an additional prior for the slope. To help set a prior on the slope, I created a prior predictive check of the slope. Running the model itself was straightforward and I provided several visualizations to help understand the results, including visualizing the posteriors of the slope parameter, the slope across the range of weights, and individual predicted heights.
 
 In the next post I'll show how to use `brms` to analyze correlations.
+
+*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*

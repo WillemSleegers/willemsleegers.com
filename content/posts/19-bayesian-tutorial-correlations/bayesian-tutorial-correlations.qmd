@@ -315,3 +315,5 @@ It looks like we used a relatively wide prior centered around 0. That's good to 
 ## Summary
 
 Running a correlation in `brms` is the same as running a simple regression, except that the outcome and predictor are standardized. Because of the standardization, the intercept can be omitted, thus simplifying the model. The priors are also easier to set as the correlation must range from -1 to and 1 and sigma from 0 to 1. You can also run multiple correlations by running separate models or by modelling them all at once using brms' multivariate syntax.
+
+*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*
