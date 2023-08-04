@@ -12,7 +12,7 @@ code-tools: true
 toc: true
 ---
 
-In this blog post I will cover how to use `brms` to analyze the difference between two groups. Interestingly, this might seem like a very simple analysis, but there are actually multiple ways to go about this. I'll try to cover a few here.
+In this blog post I will cover how to use brms to analyze the difference between two groups. Interestingly, this might seem like a very simple analysis, but there are actually multiple ways to go about this. I'll try to cover a few here.
 
 The data we'll use is the same as in the previous posts. This data contains the sex of the participant in a column called `male`, in addition to their height, weight, and age. This means we can investigate, say, whether there's a difference in height between men and women.
 
@@ -32,6 +32,13 @@ theme_set(theme_minimal())
 
 color <- "#1E466E"
 colors <- c("#93CFDB", "#1E466E")
+
+options(
+  mc.cores = 4,
+  brms.threads = 4,
+  brms.backend = "cmdstanr",
+  brms.file_refit = "on_change"
+)
 ```
 
 ## Dummy coding
@@ -64,14 +71,13 @@ model_dummy_priors_default <- brm(
   ),
   sample_prior = "only",
   cores = 4,
-  seed = 4,
   file = "./models/model-dummy-priors-default.rds"
 )
 
 model_dummy_priors_default
 ```
 
-Looking at the estimates we see that the estimate for male is indeed around 10 but the intercept estimate is not close to what we set it too. In this case, the intercept has an estimate of around 160, even though we set it to 165. How can this be? The reason is that `brms` internally centers the intercept so that it corresponds to the expected response when all predictors are held at their means. This is what the prior is set to, not to the mean of the heights of female participants. `brms` also re-generates the true intercept, which is the one we see in the output, so the intercept in the output does correctly indicate the mean height of female participants. Confusing.
+Looking at the estimates we see that the estimate for male is indeed around 10 but the intercept estimate is not close to what we set it too. The intercept has an estimate of around 160, even though we set it to 165. How can this be? The reason is that brms internally centers the intercept so that it corresponds to the expected response when all predictors are held at their means. This is what the prior is set to, not to the mean of the heights of female participants. brms also re-generates the true intercept, which is the one we see in the output, so the intercept in the output does correctly indicate the mean height of female participants. Confusing.
 
 To prevent this from happening, we need to suppress the default intercept and explicitly add one as a coefficient. This means we need to update our prior for the intercept to refer to a `coef` (instead of `class`).
 
@@ -87,7 +93,6 @@ model_dummy_priors <- brm(
     prior(cauchy(5, 5), class = "sigma")
   ),
   sample_prior = "only",
-  cores = 4,
   seed = 4,
   file = "./models/model-dummy-priors.rds"
 )
@@ -122,16 +127,16 @@ Index coding requires that we create a new column that is a factor or that conta
 data <- mutate(data, sex = if_else(male == 1, "male", "female"))
 ```
 
-Let's see what the priors are that we need to set.
+To solve the uncertainty issue, we regress height onto the index-coded sex column, and omit an intercept. This will result in a model that requires priors for each group separately.
 
 ```{r}
 #| label: get-prior
 get_prior(height ~ 0 + sex, data = data)
 ```
 
-We need a prior for sigma, as always, and two priors for the two sexes.
+As you can see, we need a prior for `sexfemale` and `sexmale`, as well as sigma.
 
-We should also alter how we describe this model. We can now drop the $\beta$ parameter from the model and we should more explicitly indicate that we will model several $\alpha$ parameters, one for each sex.
+We should alter how we describe this model. We can now drop the $\beta$ parameter from the model and we should more explicitly indicate that we will model several $\alpha$ parameters, one for each sex.
 
 $$\displaylines{heights_i ∼ Normal(\mu_i, \sigma) \\ \mu_i = \alpha_{sex[i]}}$$
 
@@ -149,7 +154,6 @@ model_index_prior <- brm(
     prior(cauchy(5, 5), class = "sigma")
   ),
   sample_prior = "only",
-  cores = 4,
   seed = 4,
   file = "./models/model-index-prior.rds"
 )
@@ -181,7 +185,6 @@ model_index <- brm(
     prior(cauchy(5, 5), class = "sigma")
   ),
   sample_prior = TRUE,
-  cores = 4,
   seed = 4,
   file = "./models/model-index.rds"
 )
@@ -195,11 +198,13 @@ We can plot the average heights per group.
 
 ```{r}
 #| label: groups-plot
-library(marginaleffects)
-
 draws <- model_index %>%
-  predictions(newdata = tibble(sex = c("male", "female"))) %>%
-  posterior_draws()
+  gather_draws(b_sexfemale, b_sexmale) %>%
+  mutate(sex = str_extract(.variable, "female|male"))
+
+ggplot(draws, aes(x = .value, y = sex)) +
+  stat_halfeye() +
+  labs(x = "Average height", y = "Sex")
 ```
 
 ## Calculating a difference score
@@ -227,7 +232,7 @@ draws <- model_index %>%
   mutate(difference = b_sexmale - b_sexfemale)
 
 ggplot(draws, aes(x = difference)) +
-  geom_histogram(fill = color) +
+  stat_halfeye() +
   labs(x = "Difference", y = "")
 ```
 
