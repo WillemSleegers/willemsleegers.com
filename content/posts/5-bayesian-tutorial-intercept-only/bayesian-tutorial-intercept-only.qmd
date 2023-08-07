@@ -38,7 +38,12 @@ library(tidybayes)
 library(ggdist)
 
 theme_set(theme_minimal())
-colors <- c("#93CFDB", "#1E466E")
+blue_1 <- "#d1e1ec"
+blue_2 <- "#b3cde0"
+blue_3 <- "#6497b1"
+blue_4 <- "#005b96"
+blue_5 <- "#03396c"
+blue_6 <- "#011f4b"
 
 options(
   mc.cores = 4,
@@ -200,9 +205,9 @@ heights_prior <- tibble(distribution = "prior") %>%
   add_predicted_draws(model_height_prior, value = "height")
 
 ggplot(heights_prior, aes(x = height)) +
-  geom_histogram(binwidth = 1, alpha = .85) +
-  coord_cartesian(xlim = c(50, 250)) +
-  labs(x = "Height", y = "")
+  geom_histogram(binwidth = 1, alpha = 1, fill = blue_3) +
+  labs(x = "Height", y = "") +
+  coord_cartesian(xlim = c(50, 250)) 
 ```
 
 Our priors result in a normal distribution of heights with the bulk of the observations ranging from about 120 cm to 205 cm. That seems fairly reasonable to me, as someone who doesn't know too much about the heights of the !Kung San.
@@ -250,7 +255,7 @@ Inspecting the chains also showed us the posterior distributions of the two para
 #| label: prior-posterior-mu
 #| fig-cap-: Prior vs. posterior for $\mu$
 #| warning: false
-draws_prior <- model_height_prior %>% 
+draws_prior <- model_height_prior %>%
   spread_draws(b_Intercept, sigma) %>%
   mutate(distribution = "prior")
 
@@ -258,17 +263,18 @@ draws_posterior <- model_height %>%
   spread_draws(b_Intercept, sigma) %>%
   mutate(distribution = "posterior")
 
-draws <- bind_rows(draws_prior, draws_posterior)
+draws <- bind_rows(draws_prior, draws_posterior) %>%
+  mutate(distribution = fct_relevel(distribution, "prior"))
 
 ggplot(draws, aes(x = b_Intercept, fill = distribution)) +
-  geom_histogram(binwidth = 0.25, alpha = .85, position = "identity") +
-  coord_cartesian(xlim = c(140, 190)) +
+  geom_histogram(binwidth = 0.25, position = "identity") +
   labs(
     x = "Intercept (i.e., average height)",
     y = "",
     fill = "Distribution"
   ) +
-  scale_fill_manual(values = colors)
+  scale_fill_manual(values = c(blue_2, blue_4)) +
+  coord_cartesian(xlim = c(140, 190)) 
 ```
 
 Here we see that the posterior distribution of average heights is much more narrow and centered around `r round(mean(as_tibble(model_height)$b_Intercept))` cm. So not only should we switch from thinking the average is lower than 160, we can also be much more confident about the mean.
@@ -279,15 +285,15 @@ How about sigma?
 #| label: prior-posterior-sigma
 #| fig-cap-: Prior vs. posterior for $\sigma$
 #| warning: false
-ggplot(draws, aes(x = sigma, fill = fct_rev(distribution))) +
+ggplot(draws, aes(x = sigma, fill = distribution)) +
   geom_histogram(binwidth = 0.25, alpha = .85, position = "identity") +
-  coord_cartesian(xlim = c(0, 25)) +
   labs(
     x = "Sigma (i.e., height standard deviation)",
     y = "",
     fill = "Distribution"
   ) +
-  scale_fill_manual(values = colors)
+  scale_fill_manual(values = c(blue_2, blue_4)) +
+  coord_cartesian(xlim = c(0, 25)) 
 ```
 
 Similarly, we see that the posterior for sigma is also much more narrow and around `r round(mean(as_tibble(model_height)$sigma))`.
@@ -299,7 +305,7 @@ A final step is to conduct a posterior predictive check. Since we also conducted
 #| fig-cap: Prior and posterior predictive check
 #| warning: false
 heights_posterior <- tibble(distribution = "posterior") %>%
-  add_predicted_draws(model_height, value = "height") 
+  add_predicted_draws(model_height, value = "height")
 
 heights <- bind_rows(heights_prior, heights_posterior) %>%
   ungroup() %>%
@@ -307,9 +313,9 @@ heights <- bind_rows(heights_prior, heights_posterior) %>%
 
 ggplot(heights, aes(x = height, fill = distribution)) +
   geom_histogram(binwidth = 1, alpha = .85, position = "identity") +
-  coord_cartesian(xlim = c(100, 250)) +
   labs(x = "Height", y = "", fill = "Distribution") +
-  scale_fill_manual(values = colors)
+  scale_fill_manual(values = c(blue_2, blue_4)) +
+  coord_cartesian(xlim = c(100, 250))
 ```
 
 This is one of my favorite plots. It shows how we started with a belief about heights and what our new belief should be, after seeing the data. That is the main goal of doing data analysis.

@@ -88,7 +88,7 @@ fit_prior_default <- brm(
   survived ~ 1,
   family = bernoulli(link = "logit"),
   data = data,
-  file = "models/model-prior-default.rds", 
+  file = "models/model-prior-default.rds",
   sample_prior = "only"
 )
 
@@ -160,7 +160,7 @@ We get an estimate of `r round(fixef(fit)[1], 2)`. Converted to a probability, t
 
 ```{r}
 #| label: single-proportion-plot
-#| fig-cap: Posterior distribution of the probability of 
+#| fig-cap: Posterior distribution of the probability of
 draws <- fit %>%
   spread_draws(b_Intercept) %>%
   mutate(b_Intercept_scaled = inv_logit_scaled(b_Intercept))
@@ -178,7 +178,7 @@ The median proportion of survivors is `r round(inv_logit_scaled(fixef(fit)[1]), 
 Next, let's add a discrete predictor, like the passenger's sex. We begin, once again, by checking which priors we need. Note that we'll use the index coding notation (so no intercept).
 
 ```{r}
-#| label:
+#| label: discrete-predictor-prior
 get_prior(survived ~ 0 + sex, family = bernoulli(link = "logit"), data = data)
 ```
 
@@ -189,7 +189,7 @@ $$\displaylines{survived_i ∼ Bernoulli(p_i) \\ logit(p_i) = \alpha_{sex[i]}}$$
 Below we run the model with the same prior we used before, but specified for both male and female passengers separately.
 
 ```{r}
-#| label: 
+#| label: discrete-predictor-model
 fit_sex <- brm(
   survived ~ 0 + sex,
   family = bernoulli(link = "logit"),
@@ -207,7 +207,8 @@ fit_sex
 A downside with models that use transformations is that the estimates are not that interpretable anymore, so let's just go straight into converting and plotting them.
 
 ```{r}
-#| label: 
+#| label: discrete-predictor-plot
+#| fig-cap: Posterior distributions of survival proportions by sex
 draws <- fit_sex %>%
   gather_draws(b_sexfemale, b_sexmale) %>%
   mutate(
@@ -225,10 +226,19 @@ ggplot(draws, aes(x = .value, y = .variable)) +
   scale_x_continuous(limits = c(0, 1))
 ```
 
-Looks like a sizeable difference between the two sexes, which is not at all surprising of course. Women and children were put in lifeboats first, leading to more women surviving than men. We can calculate the size of this difference by simple subtracting the two estimates and converting it to a proportion.
+Looks like a sizeable difference between the two sexes, which is not at all surprising of course. Women and children were put in lifeboats first, leading to more women surviving than men. We can calculate the size of this difference by simply converting the estimates to proportions and calculating the difference.
 
 ```{r}
-#| label: 
+#| label: discrete-predictor-difference-plot
+fit_sex %>%
+  spread_draws(b_sexfemale, b_sexmale) %>%
+  mutate(
+    b_sexfemale_scaled = inv_logit_scaled(b_sexfemale),
+    b_sexmale_scaled = inv_logit_scaled(b_sexmale),
+    difference = b_sexfemale_scaled - b_sexmale_scaled
+  ) %>%
+  select(difference) %>%
+  median_hdci()
 ```
 
 ## Adding a continuous predictor
