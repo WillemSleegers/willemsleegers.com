@@ -1,6 +1,6 @@
 ---
 title: "Bayesian tutorial: Logistic regression"
-description: "The xth of a series of tutorial posts on Bayesian analyses. In this post I focus on using `brms` to run a logistic regression."
+description: "The xth of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to run a logistic regression."
 date: 2023-02-12
 categories:
   - statistics
@@ -28,11 +28,13 @@ library(brms)
 library(tidybayes)
 library(modelr)
 
-data <- read_csv("titanic.csv")
-
 theme_set(theme_minimal())
-
-colors <- c("#93CFDB", "#1E466E")
+blue_1 <- "#d1e1ec"
+blue_2 <- "#b3cde0"
+blue_3 <- "#6497b1"
+blue_4 <- "#005b96"
+blue_5 <- "#03396c"
+blue_6 <- "#011f4b"
 
 options(
   mc.cores = 4,
@@ -40,6 +42,8 @@ options(
   brms.backend = "cmdstanr",
   brms.file_refit = "on_change"
 )
+
+data <- read_csv("titanic.csv")
 ```
 
 Let's say that we want to model the proportion of survivors. We can do that by running a logistic regression in which we regress the outcome (`survived`: `0` or `1`) on an intercept and specify that the outcome comes from a binomial family with a logit transformation. We use the `get_prior()` function to figure out which priors we need.
@@ -110,12 +114,10 @@ draws <- fit_prior_default %>%
   mutate(b_Intercept_scaled = inv_logit_scaled(b_Intercept))
 
 ggplot(draws, aes(x = b_Intercept)) +
-  stat_slab() +
-  stat_dotsinterval(side = "bottom", .width = .95, alpha = .5)
+  geom_histogram(binwidth = 1, fill = blue_3)
 
 ggplot(draws, aes(x = b_Intercept_scaled)) +
-  stat_slab() +
-  stat_dotsinterval(side = "bottom", .width = .95, alpha = .5)
+  geom_histogram(binwidth = 0.01, fill = blue_3)
 ```
 
 The top graph shows the prior on the logit scale. The bulk of the values are somewhere between -8 and 8, concentrated around 0. This doesn't seem like a suitable default prior because if we convert these values to the probability scale, it turns out that the extreme values (around 0 and 1) are relatively more likely than other values. I prefer a prior that is either more uniform or perhaps centered around .5, depending on the context. This is likely to be a weak prior though, so it will be easily overrun by data. Nevertheless, let's try out another prior and see if it produces a more uniform distribution on the probability scale.
@@ -137,8 +139,7 @@ draws <- fit_prior %>%
   mutate(b_Intercept_scaled = inv_logit_scaled(b_Intercept))
 
 ggplot(draws, aes(x = b_Intercept_scaled)) +
-  stat_slab() +
-  stat_dotsinterval(side = "bottom", .width = .95)
+  geom_histogram(binwidth = 0.01, fill = blue_3)
 ```
 
 That looks better, so let's use this prior and estimate the probability of survivors in the data.
@@ -166,8 +167,7 @@ draws <- fit %>%
   mutate(b_Intercept_scaled = inv_logit_scaled(b_Intercept))
 
 ggplot(draws, aes(x = b_Intercept_scaled)) +
-  stat_slab() +
-  stat_dotsinterval(side = "bottom", .width = .95) +
+  geom_histogram(binwidth = 0.005, fill = blue_3) +
   scale_x_continuous(limits = c(0, 1))
 ```
 
@@ -219,11 +219,11 @@ draws <- fit_sex %>%
     .value = inv_logit_scaled(.value)
   )
 
-ggplot(draws, aes(x = .value, y = .variable)) +
-  stat_slab() +
-  stat_dotsinterval(side = "bottom", .width = .95) +
-  labs(x = "proportion of survivors", y = "") +
-  scale_x_continuous(limits = c(0, 1))
+ggplot(draws, aes(x = .value, fill = .variable)) +
+  geom_histogram(binwidth = 0.01) +
+  labs(x = "proportion of survivors", y = "", fill = "Sex") +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_fill_manual(values = c(blue_2, blue_4))
 ```
 
 Looks like a sizeable difference between the two sexes, which is not at all surprising of course. Women and children were put in lifeboats first, leading to more women surviving than men. We can calculate the size of this difference by simply converting the estimates to proportions and calculating the difference.

@@ -1,6 +1,6 @@
 ---
 title: "Bayesian tutorial: Correlation"
-description: "The third of a series of tutorial posts on Bayesian analyses. In this post I focus on using `brms` to model a correlation."
+description: "The third of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model a correlation."
 date: 2023-02-12
 categories:
   - statistics
@@ -15,7 +15,7 @@ format:
     df-print: kable
 ---
 
-In my previous [blog post](../18-bayesian-tutorial-simple-regression/bayesian-tutorial-simple-regression.qmd), I showed how to use `brms` and `tidybayes` to run a simple regression, i.e., a regression with a single predictor. This analysis required us to set three priors: an intercept prior, a sigma prior, and a slope prior. We can simplify this analysis by turning it into a correlational analysis. This will remove the intercept prior and lets us think about the prior for the slope as a standardized effect size, i.e., the correlation. 
+In my previous [blog post](../18-bayesian-tutorial-simple-regression/bayesian-tutorial-simple-regression.qmd), I showed how to use brms and `tidybayes` to run a simple regression, i.e., a regression with a single predictor. This analysis required us to set three priors: an intercept prior, a sigma prior, and a slope prior. We can simplify this analysis by turning it into a correlational analysis. This will remove the intercept prior and lets us think about the prior for the slope as a standardized effect size, i.e., the correlation. 
 
 To run a correlational analysis we'll need to standardize the outcome and predictor variable, so in the code below I run the setup code as usual and also standardize both variables that we'll be correlating.
 
@@ -26,16 +26,13 @@ library(tidyverse)
 library(brms)
 library(tidybayes)
 
-data <- read_csv("Howell1.csv") |>
-  filter(age >= 18) |>
-  mutate(
-    height_z  = (height - mean(height)) / sd(height),
-    weight_z  = (weight - mean(weight)) / sd(weight),
-  )
-
 theme_set(theme_minimal())
-
-colors <- c("#93CFDB", "#1E466E")
+blue_1 <- "#d1e1ec"
+blue_2 <- "#b3cde0"
+blue_3 <- "#6497b1"
+blue_4 <- "#005b96"
+blue_5 <- "#03396c"
+blue_6 <- "#011f4b"
 
 options(
   mc.cores = 4,
@@ -43,9 +40,17 @@ options(
   brms.backend = "cmdstanr",
   brms.file_refit = "on_change"
 )
+
+data <- read_csv("Howell1.csv")
+data <- data %>%
+  filter(age >= 18) %>%
+  mutate(
+    height_z  = (height - mean(height)) / sd(height),
+    weight_z  = (weight - mean(weight)) / sd(weight)
+  )
 ```
 
-The formula for our model is slightly different compared to the formula of the previous single-predictor model and that's because we can omit the intercept. By standardizing both the outcome and predictor variables, the intercept is guarenteed to be 0. The regression line always passes through the mean of the predictor and outcome variable. The mean of both is 0 because of the standardization and the intercept is the value the outcome takes when the predictor is 0. We could still include a prior for the intercept and set it to 0 (using `constant(0)`) but we can also simply tell `brms` not to estimate it. The formula syntax then becomes: `height_z ~ 0 + weight_z`.
+The formula for our model is slightly different compared to the formula of the previous single-predictor model and that's because we can omit the intercept. By standardizing both the outcome and predictor variables, the intercept is guarenteed to be 0. The regression line always passes through the mean of the predictor and outcome variable. The mean of both is 0 because of the standardization and the intercept is the value the outcome takes when the predictor is 0. We could still include a prior for the intercept and set it to 0 (using `constant(0)`) but we can also simply tell brms not to estimate it. The formula syntax then becomes: `height_z ~ 0 + weight_z`.
 
 Let's confirm that this means we only need to set two priors.
 
@@ -61,7 +66,7 @@ $$\displaylines{heights_i ∼ Normal(\mu_i, \sigma) \\ \mu_i = \beta x_i}$$
 
 ## Setting the priors
 
-Let's start with the prior for the slope ($\beta$). A correlation takes a value that ranges from -1 to 1. If you know absolutely nothing about what kind of correlation to expect, you could set a uniform prior that assign equal probability to every value from -1 to -1. Alternatively, we could use a prior that describes a belief that no correlation is most likely, but with some probability that higher correlations are possible too. This could be done with a normal distribution centered around 0. In the case of this particular model, in which height is regressed onto weight, we can probably expect a sizeable positive correlation. So let's use a skewed normal distribution that puts most of the probability on a positive correlation but is wide enough to allow for a range of correlations, including a negative one. `brms` has the `skew_normal()` function to specify a prior that's a skewed normal distribution. I fiddled around with the numbers a bit and the distribution below is sort of what makes sense to me.
+Let's start with the prior for the slope ($\beta$). A correlation takes a value that ranges from -1 to 1. If you know absolutely nothing about what kind of correlation to expect, you could set a uniform prior that assign equal probability to every value from -1 to -1. Alternatively, we could use a prior that describes a belief that no correlation is most likely, but with some probability that higher correlations are possible too. This could be done with a normal distribution centered around 0. In the case of this particular model, in which height is regressed onto weight, we can probably expect a sizeable positive correlation. So let's use a skewed normal distribution that puts most of the probability on a positive correlation but is wide enough to allow for a range of correlations, including a negative one. brms has the `skew_normal()` function to specify a prior that's a skewed normal distribution. I fiddled around with the numbers a bit and the distribution below is sort of what makes sense to me.
 
 ```{r}
 #| label: slope-prior
@@ -119,14 +124,14 @@ draws <- model %>%
   )
 
 ggplot(draws, aes(x = .value, fill = distribution)) +
-  geom_histogram(position = "identity", alpha = .85) +
+  geom_histogram(binwidth = 0.01, position = "identity") +
   labs(x = "Correlation", y = "", fill = "Distribution") +
-  scale_fill_manual(values = colors)
+  scale_fill_manual(values = c(blue_2, blue_4))
 ```
 
 It looks like we can update towards a higher correlation and also be more certain about it because the range of the posterior is much narrower than that of our prior. 
 
-What about sigma? We saw that the correlation between the predictor and outcome is `r round(fixef(model)[1, 1], 2)`. Squaring this number gives us the amount of variance explained (`r round(fixef(model)[1, 1]^2, 2)`), so if we subtract this from 1 we're left with the variance that is unexplained (`r round(1 - fixef(model)[1, 1]^2, 2)`). Squaring this number to bring it back to a standard deviation gives us `r round(sqrt(1 - fixef(model)[1, 1]^2), 2)`, which matches the estimate for sigma that we saw in the output of `brms`.
+What about sigma? We saw that the correlation between the predictor and outcome is `r round(fixef(model)[1, 1], 2)`. Squaring this number gives us the amount of variance explained (`r round(fixef(model)[1, 1]^2, 2)`), so if we subtract this from 1 we're left with the variance that is unexplained (`r round(1 - fixef(model)[1, 1]^2, 2)`). Squaring this number to bring it back to a standard deviation gives us `r round(sqrt(1 - fixef(model)[1, 1]^2), 2)`, which matches the estimate for sigma that we saw in the output of brms.
 
 ## Using a regularizing prior
 
@@ -173,10 +178,11 @@ What if you want to test multiple correlations? There are two ways to do this, a
 
 ### One-by-one solution
 
-Running multiple models to test each correlation is a bit of a chore, but it's made easier with the `update()` function in `brms`, which makes it so that you don't have to write as much code. In the code below I standardize `age` in addition to the two columns we already standardized and run three models in total, correlating `height` with `weight`, `height` with `age`, and `age` with `weight`. I'll use the same generic prior from the last model and repeat the full code for that model, followed by two updates.
+Running multiple models to test each correlation is a bit of a chore, but it's made easier with the `update()` function in brms, which makes it so that you don't have to write as much code. In the code below I standardize `age` in addition to the two columns we already standardized and run three models in total, correlating `height` with `weight`, `height` with `age`, and `age` with `weight`. I'll use the same generic prior from the last model and repeat the full code for that model, followed by two updates.
 
 ```{r}
 #| label: one-by-one-correlations
+#| message: false
 data <- mutate(data, age_z = (age - mean(age)) / sd(age))
 
 r_height_weight <- brm(
@@ -209,7 +215,7 @@ r_weight_age <- update(
 )
 ```
 
-Initially, the model correlating height with age produced a warning about divergent transitions. `brms` produces a helpful warning message with a link to more information about what exactly this means (in short, it means the sampler thinks it's off in estimating the posterior). The message suggests we increase `adapt_delta` above 0.8, so I adjusted the code to set `adapt_delta` to 0.9. Re-running the model got rid of the warning messages.
+Initially, the model correlating height with age produced a warning about divergent transitions. brms produces a helpful warning message with a link to more information about what exactly this means (in short, it means the sampler thinks it's off in estimating the posterior). The message suggests we increase `adapt_delta` above 0.8, so I adjusted the code to set `adapt_delta` to 0.9. Re-running the model got rid of the warning messages.
 
 The correlations are in the table below (the `Estimate` column).
 
@@ -248,8 +254,9 @@ correlation_draws <- bind_rows(
     mutate(pair = "weight - age")
 )
 
-ggplot(correlation_draws, aes(x = r, y = pair)) +
-  stat_halfeye() +
+ggplot(correlation_draws, aes(x = r)) +
+  facet_wrap(~pair, ncol = 1) +
+  geom_histogram(binwidth = 0.01, fill = blue_3) +
   labs(x = "Correlation", y = "") +
   scale_x_continuous(breaks = seq(-1, 1, 0.2))
 ```
@@ -304,16 +311,19 @@ draws <- model %>%
     .variable = fct_relevel(.variable, "prior")
   )
 
-ggplot(draws, aes(x = .value, y = .variable)) +
-  stat_halfeye() +
+ggplot(draws, aes(x = .value)) +
+  facet_wrap(~.variable, ncol = 2) +
+  geom_histogram(aes(fill = .variable), binwidth = 0.01) +
   labs(x = "Correlation", y = "") +
-  scale_x_continuous(breaks = seq(-1, 1, 0.2))
+  scale_x_continuous(breaks = seq(-1, 1, 0.2)) +
+  scale_fill_manual(values = c(blue_2, blue_4, blue_4, blue_4)) +
+  guides(fill = "none")
 ```
 
 It looks like we used a relatively wide prior centered around 0. That's good to know because I had no idea what the `lkj()` prior was doing. Other than that the results look similar to what we found previously.
 
 ## Summary
 
-Running a correlation in `brms` is the same as running a simple regression, except that the outcome and predictor are standardized. Because of the standardization, the intercept can be omitted, thus simplifying the model. The priors are also easier to set as the correlation must range from -1 to and 1 and sigma from 0 to 1. You can also run multiple correlations by running separate models or by modelling them all at once using brms' multivariate syntax.
+Running a correlation in brms is the same as running a simple regression, except that the outcome and predictor are standardized. Because of the standardization, the intercept can be omitted, thus simplifying the model. The priors are also easier to set as the correlation must range from -1 to and 1 and sigma from 0 to 1. You can also run multiple correlations by running separate models or by modelling them all at once using brms' multivariate syntax.
 
 *This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*

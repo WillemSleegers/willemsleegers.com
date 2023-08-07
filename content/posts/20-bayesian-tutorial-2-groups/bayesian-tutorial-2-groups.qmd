@@ -1,6 +1,6 @@
 ---
 title: "Bayesian tutorial: Two groups"
-description: "The fourth of a series of tutorial posts on Bayesian analyses. In this post I focus on using `brms` to model the difference between two groups."
+description: "The fourth of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model the difference between two groups."
 date: 2023-04-24
 categories:
   - statistics
@@ -25,13 +25,13 @@ library(tidyverse)
 library(brms)
 library(tidybayes)
 
-data <- read_csv("Howell1.csv")
-data <- filter(data, age >= 18)
-
 theme_set(theme_minimal())
-
-color <- "#1E466E"
-colors <- c("#93CFDB", "#1E466E")
+blue_1 <- "#d1e1ec"
+blue_2 <- "#b3cde0"
+blue_3 <- "#6497b1"
+blue_4 <- "#005b96"
+blue_5 <- "#03396c"
+blue_6 <- "#011f4b"
 
 options(
   mc.cores = 4,
@@ -39,6 +39,9 @@ options(
   brms.backend = "cmdstanr",
   brms.file_refit = "on_change"
 )
+
+data <- read_csv("Howell1.csv")
+data <- filter(data, age >= 18)
 ```
 
 ## Dummy coding
@@ -192,19 +195,19 @@ model_index <- brm(
 model_index
 ```
 
-The estimates show, more clearly now, that the average height for women is `r round(fixef(model_index)[1, 1], 2)` and that for men is `r round(fixef(model_index)[2, 1], 2)`.
-
-We can plot the average heights per group.
+The estimates show, more clearly now, that the average height for women is `r round(fixef(model_index)[1, 1], 2)` and that for men is `r round(fixef(model_index)[2, 1], 2)`. The posteriors of these estimates are shown below.
 
 ```{r}
 #| label: groups-plot
+#| fig-cap: Posterior distributions of the coefficients for men and women.
 draws <- model_index %>%
   gather_draws(b_sexfemale, b_sexmale) %>%
   mutate(sex = str_extract(.variable, "female|male"))
 
-ggplot(draws, aes(x = .value, y = sex)) +
-  stat_halfeye() +
-  labs(x = "Average height", y = "Sex")
+ggplot(draws, aes(x = .value, fill = sex)) +
+  geom_histogram(binwidth = 0.1) +
+  labs(x = "Average height", y = "", fill = "Sex") +
+  scale_fill_manual(values = c(blue_2, blue_4))
 ```
 
 ## Calculating a difference score
@@ -232,7 +235,7 @@ draws <- model_index %>%
   mutate(difference = b_sexmale - b_sexfemale)
 
 ggplot(draws, aes(x = difference)) +
-  stat_halfeye() +
+  geom_histogram(binwidth = 0.1, fill = blue_3) +
   labs(x = "Difference", y = "")
 ```
 

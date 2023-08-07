@@ -1,6 +1,6 @@
 ---
 title: "Bayesian tutorial: Single predictor regression"
-description: "The second of a series of tutorial posts on Bayesian analyses. In this post I focus on using `brms` to run a regression with a single predictor."
+description: "The second of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to run a regression with a single predictor."
 date: 2023-02-02
 categories:
   - statistics
@@ -12,7 +12,7 @@ code-tools: true
 toc: true
 ---
 
-In my previous [blog post](../5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.qmd) I showed how to use `brms` and `tidybayes` to run an intercept-only model. Now let's extend that model by adding a predictor.
+In my previous [blog post](../5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.qmd) I showed how to use brms and `tidybayes` to run an intercept-only model. Now let's extend that model by adding a predictor.
 
 The [data](Howell1.csv) is the same as in the previous post (including the filter that we only focus on people 18 years or older). This data contains weight data as well as height data, so that means we can run a model in which we regress heights onto weights, i.e., a regression with a single predictor.
 
@@ -26,12 +26,12 @@ library(brms)
 library(tidybayes)
 
 theme_set(theme_minimal())
-colors <- c("#93CFDB", "#1E466E")
-
-options(brms.file_refit = "on_change")
-
-data <- read_csv("Howell1.csv")
-data <- filter(data, age >= 18)
+blue_1 <- "#d1e1ec"
+blue_2 <- "#b3cde0"
+blue_3 <- "#6497b1"
+blue_4 <- "#005b96"
+blue_5 <- "#03396c"
+blue_6 <- "#011f4b"
 
 options(
   mc.cores = 4,
@@ -39,6 +39,9 @@ options(
   brms.backend = "cmdstanr",
   brms.file_refit = "on_change"
 )
+
+data <- read_csv("Howell1.csv")
+data <- filter(data, age >= 18)
 ```
 
 ## Adding a single predictor
@@ -95,7 +98,7 @@ model_height_weight_prior <- brm(
 )
 ```
 
-We can use the `spread_draws()` function to get draws from the posterior distribution of the intercept and slope parameters. With an intercept and slope we can visualize the relationship we're interested in. Remember, though, that `brms` will give you 4000 draws by default from the posteriors. In other words, you get 4000 intercepts and slopes. That's a bit much to visualize, so let's only draw 100 intercepts and slopes.
+We can use the `spread_draws()` function to get draws from the posterior distribution of the intercept and slope parameters. With an intercept and slope we can visualize the relationship we're interested in. Remember, though, that brms will give you 4000 draws by default from the posteriors. In other words, you get 4000 intercepts and slopes. That's a bit much to visualize, so let's only draw 100 intercepts and slopes.
 
 To help make sense of the sensibility of the slopes I've added the average weight to the weights so we're back on the normal scale and not the mean centered scale and I've added two dashed lines to indicate a very obvious minimum and a possible maximum height to help figure out whether the priors produce sensible results.
 
@@ -205,10 +208,10 @@ draws <- model_height_weight %>%
   )
 
 ggplot(draws, aes(x = .value, fill = fct_rev(distribution))) +
-  geom_histogram(binwidth = 0.05, position = "identity", alpha = .85) +
+  geom_histogram(binwidth = 0.05, position = "identity") +
   labs(x = "Slope", y = "", fill = "Distribution") +
-  coord_cartesian(xlim = c(-7.5, 7.5)) +
-  scale_fill_manual(values = colors)
+  scale_fill_manual(values = c(blue_2, blue_4)) +
+  coord_cartesian(xlim = c(-5, 5))
 ```
 
 Apparently our prior was still very uninformed because the posterior shows we can be confident in a much narrower range of slopes!
@@ -218,6 +221,7 @@ Let's also create another plot in which we plot the slope and its posterior agai
 Then we use `add_epred_draws()` to predict the expected height for each of the weights we stored in the data frame. This is not a single value. Instead, we get a distribution of possible heights for each weight value. We could plot all of these distributions, for example by creating a shaded region at each weight representing how likely the height is, or we can summarize that distribution of heights for each weight. The `tidybayes` package has the `median_qi()` function to summarize a distribution to a point and interval. By default it uses the median for the point summary and a 5% and 95% quartile range for the interval; the same summary we saw in the output from `brm`.
 
 ```{r}
+#| label: weight-slope
 slopes_qi <- tibble(
   weight_mc = seq(from = -15, to = 20, by = 1)
 ) %>%
@@ -246,6 +250,7 @@ ggplot() +
 This graph is great because it shows us how confident we can be in the regression line. It does omit one source of uncertainty, though. The previous plot only shows the uncertainty about the regression line (the intercept and slope). We can also make a plot with predicted values of individual heights, which also incorporates the uncertainty from the $\sigma$ parameter. To get these values, we use `add_predicted_draws()`.
 
 ```{r}
+#| label: weight-slope-predicted
 predicted_slopes_qi <- tibble(
   weight_mc = seq(from = -20, to = 20, by = 1)
 ) %>%
@@ -275,8 +280,8 @@ While this graph is pretty cool, I haven't ever seen one in a social psychology 
 
 ## Summary
 
-In this post I showed how to run a single predictor model in `brms`. The addition of a predictor meant that the previous intercept-only model had to be updated by turning the $\mu$ parameter into a regression equation. This then required an additional prior for the slope. To help set a prior on the slope, I created a prior predictive check of the slope. Running the model itself was straightforward and I provided several visualizations to help understand the results, including visualizing the posteriors of the slope parameter, the slope across the range of weights, and individual predicted heights.
+In this post I showed how to run a single predictor model in brms. The addition of a predictor meant that the previous intercept-only model had to be updated by turning the $\mu$ parameter into a regression equation. This then required an additional prior for the slope. To help set a prior on the slope, I created a prior predictive check of the slope. Running the model itself was straightforward and I provided several visualizations to help understand the results, including visualizing the posteriors of the slope parameter, the slope across the range of weights, and individual predicted heights.
 
-In the next post I'll show how to use `brms` to analyze correlations.
+In the next post I'll show how to use brms to analyze correlations.
 
 *This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*
