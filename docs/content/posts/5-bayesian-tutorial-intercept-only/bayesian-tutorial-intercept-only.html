@@ -155,11 +155,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
 </ul>
             <div class="quarto-navbar-tools">
-  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
-  <div class="quarto-reader-toggle-btn">
-  <i class="bi"></i>
-  </div>
-</a>
 </div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
@@ -229,7 +224,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>With this in mind, let’s begin.</p>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<p>In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default <code>ggplot2</code> theme and create a color palette consisting of two colors. Finally, I set a brms specific option to automatically re-run models if a model has changed. If not, the results will be read from a file to speed things up.</p>
+<p>In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default ggplot2 theme and create a color palette consisting of two colors. Finally, I set a brms specific option to automatically re-run models if a model has changed. If not, the results will be read from a file to speed things up.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -257,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>The <a href="Howell1.csv">data</a> I’ll play with is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistal Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.</p>
+<p>The <a href="Howell1.csv">data</a> I’ll play with is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistical Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -501,8 +496,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the <code>predict()</code> function to do this (e.g., <code>predict(model_height_prior)</code>, but I prefer to use the <code>tidybayes</code> package because it’s a really nice package that simplies a lot of things about working with brms models.</p>
-<p>The <code>tidybayes</code> function to use is <code>add_predicted_draws()</code>. The function takes a data frame and a model object to add predictions for each row in the data frame. This is a little tricky because we don’t really have any data to supply because it’s an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to calculate predicted value for. We don’t have that, so we need to give it an empty data frame. You can’t really give it an empty data frame so instead I’ll give it a data frame with a column (<code>distribution</code>) and a single row specifying that the predicted values are from the prior. This will produce a data frame with 4000 predicted values of height.</p>
+<p>The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the <code>predict()</code> function to do this (e.g., <code>predict(model_height_prior)</code>, but I prefer to use the tidybayes package because it’s a really nice package that simplifies a lot of things about working with brms models.</p>
+<p>The tidybayes function to use is <code>add_predicted_draws()</code>. The function takes a data frame and a model object to add predictions for each row in the data frame. This is a little tricky because we don’t really have any data to supply because it’s an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to calculate predicted value for. We don’t have that, so we need to give it an empty data frame. You can’t really give it an empty data frame so instead I’ll give it a data frame with a column (<code>distribution</code>) and a single row specifying that the predicted values are from the prior. This will produce a data frame with 4000 predicted values of height.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -673,7 +668,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <li>Compare the prior predictive check to the posterior results to see how much to update based on the data</li>
 </ol>
 <p>In the next post I’ll show how to add a predictor to the model.</p>
-<p><em>This post was last updated on 2023-08-07.</em></p>
+<p><em>This post was last updated on 2023-08-08.</em></p>
 
 
 <!-- -->
@@ -994,7 +989,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
 <span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default <span class="in">`ggplot2`</span> theme and create a color palette consisting of two colors. Finally, I set a brms specific option to automatically re-run models if a model has changed. If not, the results will be read from a file to speed things up.</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default ggplot2 theme and create a color palette consisting of two colors. Finally, I set a brms specific option to automatically re-run models if a model has changed. If not, the results will be read from a file to speed things up.</span>
 <span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
@@ -1022,7 +1017,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
 <span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">data</span><span class="co">](Howell1.csv)</span> I'll play with is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistal Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.</span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">data</span><span class="co">](Howell1.csv)</span> I'll play with is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistical Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.</span>
 <span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data</span></span>
@@ -1160,9 +1155,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-205"><a href="#cb15-205" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb15-206"><a href="#cb15-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-207"><a href="#cb15-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-208"><a href="#cb15-208" aria-hidden="true" tabindex="-1"></a>The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the <span class="in">`predict()`</span> function to do this (e.g., <span class="in">`predict(model_height_prior)`</span>, but I prefer to use the <span class="in">`tidybayes`</span> package because it's a really nice package that simplies a lot of things about working with brms models.</span>
+<span id="cb15-208"><a href="#cb15-208" aria-hidden="true" tabindex="-1"></a>The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the <span class="in">`predict()`</span> function to do this (e.g., <span class="in">`predict(model_height_prior)`</span>, but I prefer to use the tidybayes package because it's a really nice package that simplifies a lot of things about working with brms models.</span>
 <span id="cb15-209"><a href="#cb15-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-210"><a href="#cb15-210" aria-hidden="true" tabindex="-1"></a>The <span class="in">`tidybayes`</span> function to use is <span class="in">`add_predicted_draws()`</span>. The function takes a data frame and a model object to add predictions for each row in the data frame. This is a little tricky because we don't really have any data to supply because it's an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to calculate predicted value for. We don't have that, so we need to give it an empty data frame. You can't really give it an empty data frame so instead I'll give it a data frame with a column (<span class="in">`distribution`</span>) and a single row specifying that the predicted values are from the prior. This will produce a data frame with 4000 predicted values of height.</span>
+<span id="cb15-210"><a href="#cb15-210" aria-hidden="true" tabindex="-1"></a>The tidybayes function to use is <span class="in">`add_predicted_draws()`</span>. The function takes a data frame and a model object to add predictions for each row in the data frame. This is a little tricky because we don't really have any data to supply because it's an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to calculate predicted value for. We don't have that, so we need to give it an empty data frame. You can't really give it an empty data frame so instead I'll give it a data frame with a column (<span class="in">`distribution`</span>) and a single row specifying that the predicted values are from the prior. This will produce a data frame with 4000 predicted values of height.</span>
 <span id="cb15-211"><a href="#cb15-211" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-214"><a href="#cb15-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb15-215"><a href="#cb15-215" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-predictive</span></span>
@@ -1307,7 +1302,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">Copyright 2022 - Willem Sleegers</div>   
+    <div class="nav-footer-left">Copyright 2023 - Willem Sleegers</div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>

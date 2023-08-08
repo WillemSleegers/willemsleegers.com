@@ -27,7 +27,7 @@ With this in mind, let's begin.
 
 ## Setup
 
-In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default `ggplot2` theme and create a color palette consisting of two colors. Finally, I set a brms specific option to automatically re-run models if a model has changed. If not, the results will be read from a file to speed things up.
+In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default ggplot2 theme and create a color palette consisting of two colors. Finally, I set a brms specific option to automatically re-run models if a model has changed. If not, the results will be read from a file to speed things up.
 
 ```{r}
 #| label: setup
@@ -55,7 +55,7 @@ options(
 
 ## Data
 
-The [data](Howell1.csv) I'll play with is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistal Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.
+The [data](Howell1.csv) I'll play with is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistical Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.
 
 ```{r}
 #| label: data
@@ -193,9 +193,9 @@ model_height_prior <- brm(
 )
 ```
 
-The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the `predict()` function to do this (e.g., `predict(model_height_prior)`, but I prefer to use the `tidybayes` package because it's a really nice package that simplies a lot of things about working with brms models.
+The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the `predict()` function to do this (e.g., `predict(model_height_prior)`, but I prefer to use the tidybayes package because it's a really nice package that simplifies a lot of things about working with brms models.
 
-The `tidybayes` function to use is `add_predicted_draws()`. The function takes a data frame and a model object to add predictions for each row in the data frame. This is a little tricky because we don't really have any data to supply because it's an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to calculate predicted value for. We don't have that, so we need to give it an empty data frame. You can't really give it an empty data frame so instead I'll give it a data frame with a column (`distribution`) and a single row specifying that the predicted values are from the prior. This will produce a data frame with 4000 predicted values of height.
+The tidybayes function to use is `add_predicted_draws()`. The function takes a data frame and a model object to add predictions for each row in the data frame. This is a little tricky because we don't really have any data to supply because it's an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to calculate predicted value for. We don't have that, so we need to give it an empty data frame. You can't really give it an empty data frame so instead I'll give it a data frame with a column (`distribution`) and a single row specifying that the predicted values are from the prior. This will produce a data frame with 4000 predicted values of height.
 
 ```{r}
 #| label: prior-predictive
