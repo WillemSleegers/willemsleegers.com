@@ -218,13 +218,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <p>This post is the first of a series of tutorial posts on Bayesian statistics. I’m not an expert on this topic, so this tutorial is partly, if not mostly, a way for me to figure it out myself.</p>
-<p>The goal will be to go through each step of the data analysis process and make things as intuitive and clear as possible. I’ll use the brms package to run the models and I will rely heavily on the book <a href="https://xcelab.net/rm/statistical-rethinking/" title="Statistical Rethinking website">Statistical Rethinking</a> by Richard McElreath.</p>
-<p>The basic idea behind Bayesian statistics is that we start off with prior beliefs about the parameters in the model and then update those beliefs using the data. That means that for all subsequent models you need to figure out what your beliefs are before running any analyses. This is very different from frequentist statistics and probably the most off-putting part of running Bayesian analyses. However, my goal is to make this relatively easy by focusing on visualizing priors and how they change as a function of the Bayesian process. I’ll also try to come up with some methods to simplify the construction of priors, with the goal to have them be reasonable and non-controversial.</p>
+<p>The goal will be to go through each step of the data analysis process and make things as intuitive and clear as possible. I’ll use the brms package to run the models and I will rely heavily on the book <a href="https://xcelab.net/rm/statistical-rethinking/" target="_blank" title="Statistical Rethinking website">Statistical Rethinking</a> by Richard McElreath.</p>
+<p>The basic idea behind Bayesian statistics is that we start off with prior beliefs about the parameters in the model and then update those beliefs using data. That means that for all models you need to figure out what your beliefs are before running any analyses. This is very different from frequentist statistics and probably the most off-putting part of running Bayesian analyses. However, my goal is to make this relatively easy by focusing on visualizing priors and how they change as a function of the Bayesian process. I’ll also try to come up with some methods to simplify the construction of priors, with the goal to have them be reasonable and non-controversial.</p>
 <p>In some cases I might not even use a prior I personally believe in. Instead I’ll use a prior that represents a particular position or skepticism so that the results of the analysis can be used to change the mind of the skeptic, rather than me changing whatever I happen to believe.</p>
 <p>With this in mind, let’s begin.</p>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<p>In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default ggplot2 theme and create a color palette consisting of two colors. Finally, I set a brms specific option to automatically re-run models if a model has changed. If not, the results will be read from a file to speed things up.</p>
+<p>In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default ggplot2 theme and some colors. Finally, I set several brms specific options to speed up the functions and automatically re-run models if a model has changed. If a model has not changed, the results will be read from a file to speed things up.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -252,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>The <a href="Howell1.csv">data</a> I’ll play with is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistical Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.</p>
+<p>The <a href="Howell1.csv" target="_blank" title="Howell1 dataset">data</a> I’ll play with is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistical Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -385,8 +385,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>The output shows us that we need to set two priors, one for the Intercept and one for sigma. brms already determined a default prior for each parameter (they are required for a Bayesian analysis), so we could immediately run an analysis if we want to but it is recommended to construct your own priors.</p>
-<p>Also, using the <code>get_prior()</code> function is not the best way to think about which priors we need. Using the function will give us the answer, but it doesn’t really improve our understanding of why these two priors are needed. In this case I also omitted an important specification of the heights, which is that they are normally distributed (the default assumption in <code>get_prior()</code>). So let’s instead write down the model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:</p>
+<p>The output shows us that we need to set two priors, one for the Intercept and one for sigma. brms already determined a default prior for each parameter (they are required for a Bayesian analysis), so we could immediately run an analysis if we want to but it is recommended to construct your own priors because you can often do better than the default priors.</p>
+<p>Also, using the <code>get_prior()</code> function is not the best way to think about which priors we need. Using the function will give us the answer, but it doesn’t really improve our understanding of why these two priors are needed. In this case I also omitted an important specification of the heights, which is that they are normally distributed (the default in <code>get_prior()</code>). So let’s instead write down the model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:</p>
 <p><span class="math display">\[heights_i ∼ Normal(\mu, \sigma)\]</span></p>
 <p>We explicitly note that the individual heights come from a normal distribution, which is determined by the parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. This then also immediately tells us that we need to set two priors, one on <span class="math inline">\(\mu\)</span> and one on <span class="math inline">\(\sigma\)</span>.</p>
 <p>In our intercept-only model, the <span class="math inline">\(\mu\)</span> parameter refers to our intercept and the <span class="math inline">\(\sigma\)</span> parameter refers to, well, sigma. Sigma is not often discussed in the literature I’m familiar with, but we’ll figure it out below. In fact, let’s discuss each of these parameters in turn and figure out what kind of prior makes sense.</p>
@@ -394,9 +394,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-intercept-mu-prior" class="level2">
 <h2 class="anchored" data-anchor-id="the-intercept-mu-prior">The intercept (<span class="math inline">\(\mu\)</span>) prior</h2>
 <p>The prior for the intercept indicates what I believe the <em>average</em> height of the !Kung San to be.</p>
-<p>brms has set the default intercept prior as a Student <em>t</em>-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means brms starts off with a ‘belief’ that the <em>average</em> of the heights is 154.3, but with quite some uncertainty reflected in the standard deviation of 8.5 and the fact that the distribution is a Student <em>t</em>-distribution. A Student <em>t</em>-distribution has thicker tails compared to a normal distribution, meaning that numbers in the tails of the distribution are more likely compared to a normal distribution, at least when the degrees of freedom are low. At higher degrees of freedom, the <em>t</em>-distribution becomes more and more like the normal distribution. So, the thicker tails of the <em>t</em>-distributions means smaller and taller average heights are relatively more plausible.</p>
-<p>But this is the default prior. brms determines this prior by peeking at the data to create a weak prior that is easily updated by the data. We can generally do better than the default priors, which is why it is recommended to create our own.</p>
-<p>So what do I believe the average height to be? As a Dutch person, I might be under the impression that the average height is around 175 centimeters. This is probably too tall to use as an average for the !Kung San because we’re known for being quite tall. So I think the average should be lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people’s heights; I am only using my layman knowledge here. An average of 165 seems possible to me too. So let’s describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We should use a Student <em>t</em>-distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it assigns more probability to a wider range of average heights). We’re not super uncertain about people’s heights, though, so let’s use a normal distribution.</p>
+<p>brms has set the default intercept prior as a Student <em>t</em>-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means brms starts off with a ‘belief’ that the average of the heights is 154.3, but with quite some uncertainty reflected in the standard deviation of 8.5 and the fact that the distribution is a Student <em>t</em>-distribution. A Student <em>t</em>-distribution has thicker tails compared to a normal distribution, meaning that numbers in the tails of the distribution are more likely compared to a normal distribution, at least when the degrees of freedom are low. At higher degrees of freedom, the <em>t</em>-distribution becomes more and more like the normal distribution. So, the thicker tails of the <em>t</em>-distributions means smaller and taller average heights are relatively more plausible.</p>
+<p>But this is the default prior. brms determines this prior by peeking at the data to create a weak prior that is easily updated by the data. We can do better a bit better than the default prior, though.</p>
+<p>What do I believe the average height to be? As a Dutch person, I might think that the average height is around 175 centimeters. This is probably too tall to use as an average for the !Kung San because we’re known for being quite tall. So I think the average should be lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people’s heights; I am only using my layman knowledge here. An average of 165 seems possible to me too. So let’s describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We could use a Student <em>t</em>-distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it assigns more probability to a wider range of average heights). We’re not super uncertain about people’s heights, though, so let’s use a normal distribution.</p>
 <p>As we saw in defining our height model, a normal distribution requires that we set two parameters: the <span class="math inline">\(\mu\)</span> and the <span class="math inline">\(\sigma\)</span>. The <span class="math inline">\(\mu\)</span> we already covered (i.e., 170), so that leaves <span class="math inline">\(\sigma\)</span>. Let’s set this to 10 and see what happens by visualizing this prior. Below I plot both the default brms prior and our own with <span class="math inline">\(\mu\)</span> = 170 and <span class="math inline">\(\sigma\)</span> = 10.</p>
 <div class="cell">
 <details>
@@ -477,8 +477,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>So far we have inspected each prior in isolation, but we can also use our priors to simulate heights and see if the distribution of heights makes sense. This is called a prior predictive check.</p>
 <p>We can perform a prior predictive check using the <code>brm()</code> function from brms.The <code>brm()</code> function is the main work horse of the brms package. It allows us to run Bayesian analyses by using a common notation style familiar to those who use R. This is also one of the reasons why the brms package is so great; it’s very easy to get started with running Bayesian analyses.</p>
 <p>The <code>brm()</code> function requires a model specification and the data. Optionally, but usefully, we should also specify the response distribution (a normal distribution by default) and the priors.</p>
-<p>However, we’re not ready to actually run the model just yet. Instead, we will kinda trick brms into running an analysis, but tell it to only sample from the prior using the <code>sample_prior</code> argument. This will enable us to get ‘predicted’ responses based entirely on our priors and not the data.</p>
-<p>Additionally, we also set the number of cores to speed up the analysis, a seed to make the results reproducible, and a file to store the results into so that if we run the analysis again, we can simply read the results from the file rather than running the analysis again.</p>
+<p>However, we’re not ready to actually run the model just yet. Instead, we will kinda trick brms into running an analysis, but tell it to only sample from the prior using the <code>sample_prior</code> argument. This will give us ‘predicted’ responses based entirely on our priors and not the data.</p>
+<p>Additionally, we also set a seed to make the results reproducible and a file to store the results into so that if we run the analysis again, we can simply read the results from the file rather than running the analysis again.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -496,8 +496,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the <code>predict()</code> function to do this (e.g., <code>predict(model_height_prior)</code>, but I prefer to use the tidybayes package because it’s a really nice package that simplifies a lot of things about working with brms models.</p>
-<p>The tidybayes function to use is <code>add_predicted_draws()</code>. The function takes a data frame and a model object to add predictions for each row in the data frame. This is a little tricky because we don’t really have any data to supply because it’s an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to calculate predicted value for. We don’t have that, so we need to give it an empty data frame. You can’t really give it an empty data frame so instead I’ll give it a data frame with a column (<code>distribution</code>) and a single row specifying that the predicted values are from the prior. This will produce a data frame with 4000 predicted values of height.</p>
+<p>The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the <code>predict()</code> function to get these draws (e.g., <code>predict(model_height_prior)</code>, but I prefer to use the tidybayes package because it’s a really nice package that simplifies a lot of things about working with brms models.</p>
+<p>The tidybayes function to use is <code>add_predicted_draws()</code>. The function takes a data frame and a model object to add predictions for each row in the data frame. This is the tricky part because we don’t really have any data to supply because it’s an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to obtain predicted values for. We don’t have that, so we need to give it an empty data frame. You can’t really give it an empty data frame so instead I’ll give it a data frame with a column (<code>distribution</code>) and a single row specifying that the predicted values reflect draws from the prior. This will produce a data frame with 4000 predicted values of height. This is another reason this step is kinda tricky. The function turns out data frame that consists of 1 row into a data frame that consists of 4000 rows. If we had a data frame consisting of more rows, we could get a new data frame that has rows equal to 4000 times the number of rows.</p>
+<p>After obtain the draws, I plot the draws using a simple histogram.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -550,7 +551,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The chains look good.</p>
-<p>We can call up the estimates and the 95% confidence intervals by printing the model object.</p>
+<p>We can call up the estimates and the 95% confidence intervals by printing the model object. Do note that the confidence intervals don’t have the same meaning as frequentist confidence intervals. The intervals here simply indicate what the most likely values are (given the model, priors, and data). By default, the function returns 95% intervals, meaning that 95% of the draws are between the lower and upper bounds.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -578,7 +579,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 <p>Here we see the Intercept and sigma estimates. Apparently our posterior estimate for the Intercept is 154.61 and the estimate for <span class="math inline">\(\sigma\)</span> is 7.77. We also see the 95% CIs, but let’s visualize these results instead.</p>
-<p>Inspecting the chains also showed us the posterior distributions of the two parameters, but let’s create our own graphs that compare both the prior and posterior distributions. We can use the <code>as_draws_df()</code> function from brms to get draws from each parameter in the model. In the code below I do that twice, once to get the draws from our previous model that sampled from the prior only and once from our new model. The result for each is a data frame and I’ll add a column to indicate whether the draw is from the prior or posterior.</p>
+<p>Inspecting the chains also showed us the posterior distributions of the two parameters, but let’s create our own graphs that compare both the prior and posterior distributions. We can use the <code>spread_draws()</code> function from tidybayes to get draws from each parameter in the model. In the code below I do that twice, once to get the draws from our previous model that sampled from the prior only and once from our new model. The result for each is a data frame and I’ll add a column to indicate whether the draw is from the prior or posterior. If you don’t know what the parameters are called, you can use the <code>get_variables()</code> function to get a list of the names you can extract draws from.</p>
 <div class="cell" data-fig.cap-="Prior vs. posterior for $\mu$">
 <details>
 <summary>Code</summary>
@@ -668,7 +669,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <li>Compare the prior predictive check to the posterior results to see how much to update based on the data</li>
 </ol>
 <p>In the next post I’ll show how to add a predictor to the model.</p>
-<p><em>This post was last updated on 2023-08-08.</em></p>
+<p><em>This post was last updated on 2023-08-09.</em></p>
 
 
 <!-- -->
@@ -979,9 +980,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>This post is the first of a series of tutorial posts on Bayesian statistics. I'm not an expert on this topic, so this tutorial is partly, if not mostly, a way for me to figure it out myself.</span>
 <span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>The goal will be to go through each step of the data analysis process and make things as intuitive and clear as possible. I'll use the brms package to run the models and I will rely heavily on the book <span class="co">[</span><span class="ot">Statistical Rethinking</span><span class="co">](https://xcelab.net/rm/statistical-rethinking/ "Statistical Rethinking website")</span> by Richard McElreath.</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>The goal will be to go through each step of the data analysis process and make things as intuitive and clear as possible. I'll use the brms package to run the models and I will rely heavily on the book <span class="co">[</span><span class="ot">Statistical Rethinking</span><span class="co">](https://xcelab.net/rm/statistical-rethinking/ "Statistical Rethinking website")</span>{target="_blank"} by Richard McElreath.</span>
 <span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>The basic idea behind Bayesian statistics is that we start off with prior beliefs about the parameters in the model and then update those beliefs using the data. That means that for all subsequent models you need to figure out what your beliefs are before running any analyses. This is very different from frequentist statistics and probably the most off-putting part of running Bayesian analyses. However, my goal is to make this relatively easy by focusing on visualizing priors and how they change as a function of the Bayesian process. I'll also try to come up with some methods to simplify the construction of priors, with the goal to have them be reasonable and non-controversial.</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>The basic idea behind Bayesian statistics is that we start off with prior beliefs about the parameters in the model and then update those beliefs using data. That means that for all models you need to figure out what your beliefs are before running any analyses. This is very different from frequentist statistics and probably the most off-putting part of running Bayesian analyses. However, my goal is to make this relatively easy by focusing on visualizing priors and how they change as a function of the Bayesian process. I'll also try to come up with some methods to simplify the construction of priors, with the goal to have them be reasonable and non-controversial.</span>
 <span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>In some cases I might not even use a prior I personally believe in. Instead I'll use a prior that represents a particular position or skepticism so that the results of the analysis can be used to change the mind of the skeptic, rather than me changing whatever I happen to believe.</span>
 <span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a></span>
@@ -989,7 +990,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
 <span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default ggplot2 theme and create a color palette consisting of two colors. Finally, I set a brms specific option to automatically re-run models if a model has changed. If not, the results will be read from a file to speed things up.</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default ggplot2 theme and some colors. Finally, I set several brms specific options to speed up the functions and automatically re-run models if a model has changed. If a model has not changed, the results will be read from a file to speed things up.</span>
 <span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
@@ -1017,7 +1018,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
 <span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">data</span><span class="co">](Howell1.csv)</span> I'll play with is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistical Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.</span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">data</span><span class="co">](Howell1.csv "Howell1 dataset")</span>{target="_blank"} I'll play with is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistical Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.</span>
 <span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data</span></span>
@@ -1042,9 +1043,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-86"><a href="#cb15-86" aria-hidden="true" tabindex="-1"></a><span class="fu">get_prior</span>(height <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> data)</span>
 <span id="cb15-87"><a href="#cb15-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-88"><a href="#cb15-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-89"><a href="#cb15-89" aria-hidden="true" tabindex="-1"></a>The output shows us that we need to set two priors, one for the Intercept and one for sigma. brms already determined a default prior for each parameter (they are required for a Bayesian analysis), so we could immediately run an analysis if we want to but it is recommended to construct your own priors.</span>
+<span id="cb15-89"><a href="#cb15-89" aria-hidden="true" tabindex="-1"></a>The output shows us that we need to set two priors, one for the Intercept and one for sigma. brms already determined a default prior for each parameter (they are required for a Bayesian analysis), so we could immediately run an analysis if we want to but it is recommended to construct your own priors because you can often do better than the default priors.</span>
 <span id="cb15-90"><a href="#cb15-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-91"><a href="#cb15-91" aria-hidden="true" tabindex="-1"></a>Also, using the <span class="in">`get_prior()`</span> function is not the best way to think about which priors we need. Using the function will give us the answer, but it doesn't really improve our understanding of why these two priors are needed. In this case I also omitted an important specification of the heights, which is that they are normally distributed (the default assumption in <span class="in">`get_prior()`</span>). So let's instead write down the model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:</span>
+<span id="cb15-91"><a href="#cb15-91" aria-hidden="true" tabindex="-1"></a>Also, using the <span class="in">`get_prior()`</span> function is not the best way to think about which priors we need. Using the function will give us the answer, but it doesn't really improve our understanding of why these two priors are needed. In this case I also omitted an important specification of the heights, which is that they are normally distributed (the default in <span class="in">`get_prior()`</span>). So let's instead write down the model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:</span>
 <span id="cb15-92"><a href="#cb15-92" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-93"><a href="#cb15-93" aria-hidden="true" tabindex="-1"></a>$$heights_i ∼ Normal(\mu, \sigma)$$</span>
 <span id="cb15-94"><a href="#cb15-94" aria-hidden="true" tabindex="-1"></a></span>
@@ -1056,11 +1057,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-100"><a href="#cb15-100" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-101"><a href="#cb15-101" aria-hidden="true" tabindex="-1"></a>The prior for the intercept indicates what I believe the *average* height of the !Kung San to be.</span>
 <span id="cb15-102"><a href="#cb15-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-103"><a href="#cb15-103" aria-hidden="true" tabindex="-1"></a>brms has set the default intercept prior as a Student *t*-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means brms starts off with a 'belief' that the *average* of the heights is 154.3, but with quite some uncertainty reflected in the standard deviation of 8.5 and the fact that the distribution is a Student *t*-distribution. A Student *t*-distribution has thicker tails compared to a normal distribution, meaning that numbers in the tails of the distribution are more likely compared to a normal distribution, at least when the degrees of freedom are low. At higher degrees of freedom, the *t*-distribution becomes more and more like the normal distribution. So, the thicker tails of the *t*-distributions means smaller and taller average heights are relatively more plausible.</span>
+<span id="cb15-103"><a href="#cb15-103" aria-hidden="true" tabindex="-1"></a>brms has set the default intercept prior as a Student *t*-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means brms starts off with a 'belief' that the average of the heights is 154.3, but with quite some uncertainty reflected in the standard deviation of 8.5 and the fact that the distribution is a Student *t*-distribution. A Student *t*-distribution has thicker tails compared to a normal distribution, meaning that numbers in the tails of the distribution are more likely compared to a normal distribution, at least when the degrees of freedom are low. At higher degrees of freedom, the *t*-distribution becomes more and more like the normal distribution. So, the thicker tails of the *t*-distributions means smaller and taller average heights are relatively more plausible.</span>
 <span id="cb15-104"><a href="#cb15-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-105"><a href="#cb15-105" aria-hidden="true" tabindex="-1"></a>But this is the default prior. brms determines this prior by peeking at the data to create a weak prior that is easily updated by the data. We can generally do better than the default priors, which is why it is recommended to create our own.</span>
+<span id="cb15-105"><a href="#cb15-105" aria-hidden="true" tabindex="-1"></a>But this is the default prior. brms determines this prior by peeking at the data to create a weak prior that is easily updated by the data. We can do better a bit better than the default prior, though.</span>
 <span id="cb15-106"><a href="#cb15-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-107"><a href="#cb15-107" aria-hidden="true" tabindex="-1"></a>So what do I believe the average height to be? As a Dutch person, I might be under the impression that the average height is around 175 centimeters. This is probably too tall to use as an average for the !Kung San because we're known for being quite tall. So I think the average should be lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people's heights; I am only using my layman knowledge here. An average of 165 seems possible to me too. So let's describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We should use a Student *t*-distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it assigns more probability to a wider range of average heights). We're not super uncertain about people's heights, though, so let's use a normal distribution.</span>
+<span id="cb15-107"><a href="#cb15-107" aria-hidden="true" tabindex="-1"></a>What do I believe the average height to be? As a Dutch person, I might think that the average height is around 175 centimeters. This is probably too tall to use as an average for the !Kung San because we're known for being quite tall. So I think the average should be lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people's heights; I am only using my layman knowledge here. An average of 165 seems possible to me too. So let's describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We could use a Student *t*-distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it assigns more probability to a wider range of average heights). We're not super uncertain about people's heights, though, so let's use a normal distribution.</span>
 <span id="cb15-108"><a href="#cb15-108" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-109"><a href="#cb15-109" aria-hidden="true" tabindex="-1"></a>As we saw in defining our height model, a normal distribution requires that we set two parameters: the $\mu$ and the $\sigma$. The $\mu$ we already covered (i.e., 170), so that leaves $\sigma$. Let's set this to 10 and see what happens by visualizing this prior. Below I plot both the default brms prior and our own with $\mu$ = 170 and $\sigma$ = 10.</span>
 <span id="cb15-110"><a href="#cb15-110" aria-hidden="true" tabindex="-1"></a></span>
@@ -1135,9 +1136,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-183"><a href="#cb15-183" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-184"><a href="#cb15-184" aria-hidden="true" tabindex="-1"></a>The <span class="in">`brm()`</span> function requires a model specification and the data. Optionally, but usefully, we should also specify the response distribution (a normal distribution by default) and the priors.</span>
 <span id="cb15-185"><a href="#cb15-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-186"><a href="#cb15-186" aria-hidden="true" tabindex="-1"></a>However, we're not ready to actually run the model just yet. Instead, we will kinda trick brms into running an analysis, but tell it to only sample from the prior using the <span class="in">`sample_prior`</span> argument. This will enable us to get 'predicted' responses based entirely on our priors and not the data.</span>
+<span id="cb15-186"><a href="#cb15-186" aria-hidden="true" tabindex="-1"></a>However, we're not ready to actually run the model just yet. Instead, we will kinda trick brms into running an analysis, but tell it to only sample from the prior using the <span class="in">`sample_prior`</span> argument. This will give us 'predicted' responses based entirely on our priors and not the data.</span>
 <span id="cb15-187"><a href="#cb15-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-188"><a href="#cb15-188" aria-hidden="true" tabindex="-1"></a>Additionally, we also set the number of cores to speed up the analysis, a seed to make the results reproducible, and a file to store the results into so that if we run the analysis again, we can simply read the results from the file rather than running the analysis again.</span>
+<span id="cb15-188"><a href="#cb15-188" aria-hidden="true" tabindex="-1"></a>Additionally, we also set a seed to make the results reproducible and a file to store the results into so that if we run the analysis again, we can simply read the results from the file rather than running the analysis again.</span>
 <span id="cb15-189"><a href="#cb15-189" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-192"><a href="#cb15-192" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb15-193"><a href="#cb15-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: height-prior</span></span>
@@ -1155,148 +1156,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-205"><a href="#cb15-205" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb15-206"><a href="#cb15-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-207"><a href="#cb15-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-208"><a href="#cb15-208" aria-hidden="true" tabindex="-1"></a>The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the <span class="in">`predict()`</span> function to do this (e.g., <span class="in">`predict(model_height_prior)`</span>, but I prefer to use the tidybayes package because it's a really nice package that simplifies a lot of things about working with brms models.</span>
+<span id="cb15-208"><a href="#cb15-208" aria-hidden="true" tabindex="-1"></a>The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the <span class="in">`predict()`</span> function to get these draws (e.g., <span class="in">`predict(model_height_prior)`</span>, but I prefer to use the tidybayes package because it's a really nice package that simplifies a lot of things about working with brms models.</span>
 <span id="cb15-209"><a href="#cb15-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-210"><a href="#cb15-210" aria-hidden="true" tabindex="-1"></a>The tidybayes function to use is <span class="in">`add_predicted_draws()`</span>. The function takes a data frame and a model object to add predictions for each row in the data frame. This is a little tricky because we don't really have any data to supply because it's an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to calculate predicted value for. We don't have that, so we need to give it an empty data frame. You can't really give it an empty data frame so instead I'll give it a data frame with a column (<span class="in">`distribution`</span>) and a single row specifying that the predicted values are from the prior. This will produce a data frame with 4000 predicted values of height.</span>
+<span id="cb15-210"><a href="#cb15-210" aria-hidden="true" tabindex="-1"></a>The tidybayes function to use is <span class="in">`add_predicted_draws()`</span>. The function takes a data frame and a model object to add predictions for each row in the data frame. This is the tricky part because we don't really have any data to supply because it's an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to obtain predicted values for. We don't have that, so we need to give it an empty data frame. You can't really give it an empty data frame so instead I'll give it a data frame with a column (<span class="in">`distribution`</span>) and a single row specifying that the predicted values reflect draws from the prior. This will produce a data frame with 4000 predicted values of height. This is another reason this step is kinda tricky. The function turns out data frame that consists of 1 row into a data frame that consists of 4000 rows. If we had a data frame consisting of more rows, we could get a new data frame that has rows equal to 4000 times the number of rows.</span>
 <span id="cb15-211"><a href="#cb15-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-214"><a href="#cb15-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-215"><a href="#cb15-215" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-predictive</span></span>
-<span id="cb15-216"><a href="#cb15-216" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Prior predictive check</span></span>
-<span id="cb15-217"><a href="#cb15-217" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb15-218"><a href="#cb15-218" aria-hidden="true" tabindex="-1"></a>heights_prior <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">distribution =</span> <span class="st">"prior"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb15-219"><a href="#cb15-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_predicted_draws</span>(model_height_prior, <span class="at">value =</span> <span class="st">"height"</span>)</span>
-<span id="cb15-220"><a href="#cb15-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-221"><a href="#cb15-221" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(heights_prior, <span class="fu">aes</span>(<span class="at">x =</span> height)) <span class="sc">+</span></span>
-<span id="cb15-222"><a href="#cb15-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">fill =</span> blue_3) <span class="sc">+</span></span>
-<span id="cb15-223"><a href="#cb15-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height"</span>, <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb15-224"><a href="#cb15-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">250</span>))</span>
-<span id="cb15-225"><a href="#cb15-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-226"><a href="#cb15-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-227"><a href="#cb15-227" aria-hidden="true" tabindex="-1"></a>Our priors result in a normal distribution of heights with the bulk of the observations ranging from about 120 cm to 205 cm. That seems fairly reasonable to me, as someone who doesn't know too much about the heights of the !Kung San.</span>
+<span id="cb15-212"><a href="#cb15-212" aria-hidden="true" tabindex="-1"></a>After obtain the draws, I plot the draws using a simple histogram.</span>
+<span id="cb15-213"><a href="#cb15-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-216"><a href="#cb15-216" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-217"><a href="#cb15-217" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-predictive</span></span>
+<span id="cb15-218"><a href="#cb15-218" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Prior predictive check</span></span>
+<span id="cb15-219"><a href="#cb15-219" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb15-220"><a href="#cb15-220" aria-hidden="true" tabindex="-1"></a>heights_prior <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">distribution =</span> <span class="st">"prior"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-221"><a href="#cb15-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_predicted_draws</span>(model_height_prior, <span class="at">value =</span> <span class="st">"height"</span>)</span>
+<span id="cb15-222"><a href="#cb15-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-223"><a href="#cb15-223" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(heights_prior, <span class="fu">aes</span>(<span class="at">x =</span> height)) <span class="sc">+</span></span>
+<span id="cb15-224"><a href="#cb15-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">fill =</span> blue_3) <span class="sc">+</span></span>
+<span id="cb15-225"><a href="#cb15-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height"</span>, <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb15-226"><a href="#cb15-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">250</span>))</span>
+<span id="cb15-227"><a href="#cb15-227" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-228"><a href="#cb15-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-229"><a href="#cb15-229" aria-hidden="true" tabindex="-1"></a><span class="fu">## Running the model</span></span>
+<span id="cb15-229"><a href="#cb15-229" aria-hidden="true" tabindex="-1"></a>Our priors result in a normal distribution of heights with the bulk of the observations ranging from about 120 cm to 205 cm. That seems fairly reasonable to me, as someone who doesn't know too much about the heights of the !Kung San.</span>
 <span id="cb15-230"><a href="#cb15-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-231"><a href="#cb15-231" aria-hidden="true" tabindex="-1"></a>Now that the priors are in order we can run the model with the code below. Notice that this time I omit the <span class="in">`sample_prior`</span> argument so we only obtain the posterior results.</span>
+<span id="cb15-231"><a href="#cb15-231" aria-hidden="true" tabindex="-1"></a><span class="fu">## Running the model</span></span>
 <span id="cb15-232"><a href="#cb15-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-235"><a href="#cb15-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-236"><a href="#cb15-236" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: intercept-model</span></span>
-<span id="cb15-237"><a href="#cb15-237" aria-hidden="true" tabindex="-1"></a>model_height <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
-<span id="cb15-238"><a href="#cb15-238" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data,</span>
-<span id="cb15-239"><a href="#cb15-239" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> gaussian,</span>
-<span id="cb15-240"><a href="#cb15-240" aria-hidden="true" tabindex="-1"></a>  height <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb15-241"><a href="#cb15-241" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior =</span> <span class="fu">c</span>(</span>
-<span id="cb15-242"><a href="#cb15-242" aria-hidden="true" tabindex="-1"></a>    <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">160</span>, <span class="dv">10</span>), <span class="at">class =</span> <span class="st">"Intercept"</span>),</span>
-<span id="cb15-243"><a href="#cb15-243" aria-hidden="true" tabindex="-1"></a>    <span class="fu">prior</span>(<span class="fu">cauchy</span>(<span class="dv">5</span>, <span class="dv">5</span>), <span class="at">class =</span> <span class="st">"sigma"</span>)</span>
-<span id="cb15-244"><a href="#cb15-244" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb15-245"><a href="#cb15-245" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">4</span>,</span>
-<span id="cb15-246"><a href="#cb15-246" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"models/model_height.rds"</span></span>
-<span id="cb15-247"><a href="#cb15-247" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-248"><a href="#cb15-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-249"><a href="#cb15-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-250"><a href="#cb15-250" aria-hidden="true" tabindex="-1"></a>After running the model, we first check whether the chains look like caterpillars because that indicates we have samples from the entire distribution space of the posteriors.</span>
+<span id="cb15-233"><a href="#cb15-233" aria-hidden="true" tabindex="-1"></a>Now that the priors are in order we can run the model with the code below. Notice that this time I omit the <span class="in">`sample_prior`</span> argument so we only obtain the posterior results.</span>
+<span id="cb15-234"><a href="#cb15-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-237"><a href="#cb15-237" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-238"><a href="#cb15-238" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: intercept-model</span></span>
+<span id="cb15-239"><a href="#cb15-239" aria-hidden="true" tabindex="-1"></a>model_height <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb15-240"><a href="#cb15-240" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data,</span>
+<span id="cb15-241"><a href="#cb15-241" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> gaussian,</span>
+<span id="cb15-242"><a href="#cb15-242" aria-hidden="true" tabindex="-1"></a>  height <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb15-243"><a href="#cb15-243" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior =</span> <span class="fu">c</span>(</span>
+<span id="cb15-244"><a href="#cb15-244" aria-hidden="true" tabindex="-1"></a>    <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">160</span>, <span class="dv">10</span>), <span class="at">class =</span> <span class="st">"Intercept"</span>),</span>
+<span id="cb15-245"><a href="#cb15-245" aria-hidden="true" tabindex="-1"></a>    <span class="fu">prior</span>(<span class="fu">cauchy</span>(<span class="dv">5</span>, <span class="dv">5</span>), <span class="at">class =</span> <span class="st">"sigma"</span>)</span>
+<span id="cb15-246"><a href="#cb15-246" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb15-247"><a href="#cb15-247" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">4</span>,</span>
+<span id="cb15-248"><a href="#cb15-248" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"models/model_height.rds"</span></span>
+<span id="cb15-249"><a href="#cb15-249" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-250"><a href="#cb15-250" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-251"><a href="#cb15-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-254"><a href="#cb15-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-255"><a href="#cb15-255" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: chains</span></span>
-<span id="cb15-256"><a href="#cb15-256" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_height)</span>
-<span id="cb15-257"><a href="#cb15-257" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-258"><a href="#cb15-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-259"><a href="#cb15-259" aria-hidden="true" tabindex="-1"></a>The chains look good.</span>
+<span id="cb15-252"><a href="#cb15-252" aria-hidden="true" tabindex="-1"></a>After running the model, we first check whether the chains look like caterpillars because that indicates we have samples from the entire distribution space of the posteriors.</span>
+<span id="cb15-253"><a href="#cb15-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-256"><a href="#cb15-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-257"><a href="#cb15-257" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: chains</span></span>
+<span id="cb15-258"><a href="#cb15-258" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_height)</span>
+<span id="cb15-259"><a href="#cb15-259" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-260"><a href="#cb15-260" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-261"><a href="#cb15-261" aria-hidden="true" tabindex="-1"></a>We can call up the estimates and the 95% confidence intervals by printing the model object.</span>
+<span id="cb15-261"><a href="#cb15-261" aria-hidden="true" tabindex="-1"></a>The chains look good.</span>
 <span id="cb15-262"><a href="#cb15-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-265"><a href="#cb15-265" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-266"><a href="#cb15-266" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model</span></span>
-<span id="cb15-267"><a href="#cb15-267" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_height)</span>
-<span id="cb15-268"><a href="#cb15-268" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-269"><a href="#cb15-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-270"><a href="#cb15-270" aria-hidden="true" tabindex="-1"></a>Here we see the Intercept and sigma estimates. Apparently our posterior estimate for the Intercept is <span class="in">`r round(mean(as_tibble(model_height)$b_Intercept), 2)`</span> and the estimate for $\sigma$ is <span class="in">`r round(mean(as_tibble(model_height)$sigma), 2)`</span>. We also see the 95% CIs, but let's visualize these results instead.</span>
+<span id="cb15-263"><a href="#cb15-263" aria-hidden="true" tabindex="-1"></a>We can call up the estimates and the 95% confidence intervals by printing the model object. Do note that the confidence intervals don't have the same meaning as frequentist confidence intervals. The intervals here simply indicate what the most likely values are (given the model, priors, and data). By default, the function returns 95% intervals, meaning that 95% of the draws are between the lower and upper bounds.</span>
+<span id="cb15-264"><a href="#cb15-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-267"><a href="#cb15-267" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-268"><a href="#cb15-268" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model</span></span>
+<span id="cb15-269"><a href="#cb15-269" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_height)</span>
+<span id="cb15-270"><a href="#cb15-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-271"><a href="#cb15-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-272"><a href="#cb15-272" aria-hidden="true" tabindex="-1"></a>Inspecting the chains also showed us the posterior distributions of the two parameters, but let's create our own graphs that compare both the prior and posterior distributions. We can use the <span class="in">`as_draws_df()`</span> function from brms to get draws from each parameter in the model. In the code below I do that twice, once to get the draws from our previous model that sampled from the prior only and once from our new model. The result for each is a data frame and I'll add a column to indicate whether the draw is from the prior or posterior.</span>
+<span id="cb15-272"><a href="#cb15-272" aria-hidden="true" tabindex="-1"></a>Here we see the Intercept and sigma estimates. Apparently our posterior estimate for the Intercept is <span class="in">`r round(mean(as_tibble(model_height)$b_Intercept), 2)`</span> and the estimate for $\sigma$ is <span class="in">`r round(mean(as_tibble(model_height)$sigma), 2)`</span>. We also see the 95% CIs, but let's visualize these results instead.</span>
 <span id="cb15-273"><a href="#cb15-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-276"><a href="#cb15-276" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-277"><a href="#cb15-277" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-mu</span></span>
-<span id="cb15-278"><a href="#cb15-278" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-: Prior vs. posterior for $\mu$</span></span>
-<span id="cb15-279"><a href="#cb15-279" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb15-280"><a href="#cb15-280" aria-hidden="true" tabindex="-1"></a>draws_prior <span class="ot">&lt;-</span> model_height_prior <span class="sc">%&gt;%</span></span>
-<span id="cb15-281"><a href="#cb15-281" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_draws</span>(b_Intercept, sigma) <span class="sc">%&gt;%</span></span>
-<span id="cb15-282"><a href="#cb15-282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">distribution =</span> <span class="st">"prior"</span>)</span>
-<span id="cb15-283"><a href="#cb15-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-284"><a href="#cb15-284" aria-hidden="true" tabindex="-1"></a>draws_posterior <span class="ot">&lt;-</span> model_height <span class="sc">%&gt;%</span></span>
-<span id="cb15-285"><a href="#cb15-285" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_draws</span>(b_Intercept, sigma) <span class="sc">%&gt;%</span></span>
-<span id="cb15-286"><a href="#cb15-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">distribution =</span> <span class="st">"posterior"</span>)</span>
-<span id="cb15-287"><a href="#cb15-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-288"><a href="#cb15-288" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(draws_prior, draws_posterior) <span class="sc">%&gt;%</span></span>
-<span id="cb15-289"><a href="#cb15-289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">distribution =</span> <span class="fu">fct_relevel</span>(distribution, <span class="st">"prior"</span>))</span>
-<span id="cb15-290"><a href="#cb15-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-291"><a href="#cb15-291" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(draws, <span class="fu">aes</span>(<span class="at">x =</span> b_Intercept, <span class="at">fill =</span> distribution)) <span class="sc">+</span></span>
-<span id="cb15-292"><a href="#cb15-292" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb15-293"><a href="#cb15-293" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb15-294"><a href="#cb15-294" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Intercept (i.e., average height)"</span>,</span>
-<span id="cb15-295"><a href="#cb15-295" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span>,</span>
-<span id="cb15-296"><a href="#cb15-296" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Distribution"</span></span>
-<span id="cb15-297"><a href="#cb15-297" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb15-298"><a href="#cb15-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(blue_2, blue_4)) <span class="sc">+</span></span>
-<span id="cb15-299"><a href="#cb15-299" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">140</span>, <span class="dv">190</span>))</span>
-<span id="cb15-300"><a href="#cb15-300" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-301"><a href="#cb15-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-302"><a href="#cb15-302" aria-hidden="true" tabindex="-1"></a>Here we see that the posterior distribution of average heights is much more narrow and centered around <span class="in">`r round(mean(as_tibble(model_height)$b_Intercept))`</span> cm. So not only should we switch from thinking the average is lower than 160, we can also be much more confident about the mean.</span>
+<span id="cb15-274"><a href="#cb15-274" aria-hidden="true" tabindex="-1"></a>Inspecting the chains also showed us the posterior distributions of the two parameters, but let's create our own graphs that compare both the prior and posterior distributions. We can use the <span class="in">`spread_draws()`</span> function from tidybayes to get draws from each parameter in the model. In the code below I do that twice, once to get the draws from our previous model that sampled from the prior only and once from our new model. The result for each is a data frame and I'll add a column to indicate whether the draw is from the prior or posterior. If you don't know what the parameters are called, you can use the <span class="in">`get_variables()`</span> function to get a list of the names you can extract draws from.</span>
+<span id="cb15-275"><a href="#cb15-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-278"><a href="#cb15-278" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-279"><a href="#cb15-279" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-mu</span></span>
+<span id="cb15-280"><a href="#cb15-280" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-: Prior vs. posterior for $\mu$</span></span>
+<span id="cb15-281"><a href="#cb15-281" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb15-282"><a href="#cb15-282" aria-hidden="true" tabindex="-1"></a>draws_prior <span class="ot">&lt;-</span> model_height_prior <span class="sc">%&gt;%</span></span>
+<span id="cb15-283"><a href="#cb15-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_draws</span>(b_Intercept, sigma) <span class="sc">%&gt;%</span></span>
+<span id="cb15-284"><a href="#cb15-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">distribution =</span> <span class="st">"prior"</span>)</span>
+<span id="cb15-285"><a href="#cb15-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-286"><a href="#cb15-286" aria-hidden="true" tabindex="-1"></a>draws_posterior <span class="ot">&lt;-</span> model_height <span class="sc">%&gt;%</span></span>
+<span id="cb15-287"><a href="#cb15-287" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_draws</span>(b_Intercept, sigma) <span class="sc">%&gt;%</span></span>
+<span id="cb15-288"><a href="#cb15-288" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">distribution =</span> <span class="st">"posterior"</span>)</span>
+<span id="cb15-289"><a href="#cb15-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-290"><a href="#cb15-290" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(draws_prior, draws_posterior) <span class="sc">%&gt;%</span></span>
+<span id="cb15-291"><a href="#cb15-291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">distribution =</span> <span class="fu">fct_relevel</span>(distribution, <span class="st">"prior"</span>))</span>
+<span id="cb15-292"><a href="#cb15-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-293"><a href="#cb15-293" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(draws, <span class="fu">aes</span>(<span class="at">x =</span> b_Intercept, <span class="at">fill =</span> distribution)) <span class="sc">+</span></span>
+<span id="cb15-294"><a href="#cb15-294" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb15-295"><a href="#cb15-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb15-296"><a href="#cb15-296" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Intercept (i.e., average height)"</span>,</span>
+<span id="cb15-297"><a href="#cb15-297" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb15-298"><a href="#cb15-298" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Distribution"</span></span>
+<span id="cb15-299"><a href="#cb15-299" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb15-300"><a href="#cb15-300" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(blue_2, blue_4)) <span class="sc">+</span></span>
+<span id="cb15-301"><a href="#cb15-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">140</span>, <span class="dv">190</span>))</span>
+<span id="cb15-302"><a href="#cb15-302" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-303"><a href="#cb15-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-304"><a href="#cb15-304" aria-hidden="true" tabindex="-1"></a>How about sigma?</span>
+<span id="cb15-304"><a href="#cb15-304" aria-hidden="true" tabindex="-1"></a>Here we see that the posterior distribution of average heights is much more narrow and centered around <span class="in">`r round(mean(as_tibble(model_height)$b_Intercept))`</span> cm. So not only should we switch from thinking the average is lower than 160, we can also be much more confident about the mean.</span>
 <span id="cb15-305"><a href="#cb15-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-308"><a href="#cb15-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-309"><a href="#cb15-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-sigma</span></span>
-<span id="cb15-310"><a href="#cb15-310" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-: Prior vs. posterior for $\sigma$</span></span>
-<span id="cb15-311"><a href="#cb15-311" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb15-312"><a href="#cb15-312" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(draws, <span class="fu">aes</span>(<span class="at">x =</span> sigma, <span class="at">fill =</span> distribution)) <span class="sc">+</span></span>
-<span id="cb15-313"><a href="#cb15-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb15-314"><a href="#cb15-314" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb15-315"><a href="#cb15-315" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sigma (i.e., height standard deviation)"</span>,</span>
-<span id="cb15-316"><a href="#cb15-316" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span>,</span>
-<span id="cb15-317"><a href="#cb15-317" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Distribution"</span></span>
-<span id="cb15-318"><a href="#cb15-318" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb15-319"><a href="#cb15-319" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(blue_2, blue_4)) <span class="sc">+</span></span>
-<span id="cb15-320"><a href="#cb15-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">25</span>))</span>
-<span id="cb15-321"><a href="#cb15-321" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-322"><a href="#cb15-322" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-323"><a href="#cb15-323" aria-hidden="true" tabindex="-1"></a>Similarly, we see that the posterior for sigma is also much more narrow and around <span class="in">`r round(mean(as_tibble(model_height)$sigma))`</span>.</span>
+<span id="cb15-306"><a href="#cb15-306" aria-hidden="true" tabindex="-1"></a>How about sigma?</span>
+<span id="cb15-307"><a href="#cb15-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-310"><a href="#cb15-310" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-311"><a href="#cb15-311" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-sigma</span></span>
+<span id="cb15-312"><a href="#cb15-312" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap-: Prior vs. posterior for $\sigma$</span></span>
+<span id="cb15-313"><a href="#cb15-313" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb15-314"><a href="#cb15-314" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(draws, <span class="fu">aes</span>(<span class="at">x =</span> sigma, <span class="at">fill =</span> distribution)) <span class="sc">+</span></span>
+<span id="cb15-315"><a href="#cb15-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb15-316"><a href="#cb15-316" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb15-317"><a href="#cb15-317" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sigma (i.e., height standard deviation)"</span>,</span>
+<span id="cb15-318"><a href="#cb15-318" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb15-319"><a href="#cb15-319" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Distribution"</span></span>
+<span id="cb15-320"><a href="#cb15-320" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb15-321"><a href="#cb15-321" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(blue_2, blue_4)) <span class="sc">+</span></span>
+<span id="cb15-322"><a href="#cb15-322" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">25</span>))</span>
+<span id="cb15-323"><a href="#cb15-323" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-324"><a href="#cb15-324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-325"><a href="#cb15-325" aria-hidden="true" tabindex="-1"></a>A final step is to conduct a posterior predictive check. Since we also conducted a prior predictive check we can plot both and compare how our overall beliefs about the distribution of heights should change as a function of the data. Below I create a new data frame with draws from the posterior, just like when I created the prior predictive check, and merge it with the prior data frame from before.</span>
+<span id="cb15-325"><a href="#cb15-325" aria-hidden="true" tabindex="-1"></a>Similarly, we see that the posterior for sigma is also much more narrow and around <span class="in">`r round(mean(as_tibble(model_height)$sigma))`</span>.</span>
 <span id="cb15-326"><a href="#cb15-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-329"><a href="#cb15-329" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-330"><a href="#cb15-330" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-predictive-check</span></span>
-<span id="cb15-331"><a href="#cb15-331" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Prior and posterior predictive check</span></span>
-<span id="cb15-332"><a href="#cb15-332" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb15-333"><a href="#cb15-333" aria-hidden="true" tabindex="-1"></a>heights_posterior <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">distribution =</span> <span class="st">"posterior"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb15-334"><a href="#cb15-334" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_predicted_draws</span>(model_height, <span class="at">value =</span> <span class="st">"height"</span>)</span>
-<span id="cb15-335"><a href="#cb15-335" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-336"><a href="#cb15-336" aria-hidden="true" tabindex="-1"></a>heights <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(heights_prior, heights_posterior) <span class="sc">%&gt;%</span></span>
-<span id="cb15-337"><a href="#cb15-337" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb15-338"><a href="#cb15-338" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">distribution =</span> <span class="fu">fct_relevel</span>(distribution, <span class="st">"prior"</span>))</span>
-<span id="cb15-339"><a href="#cb15-339" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-340"><a href="#cb15-340" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(heights, <span class="fu">aes</span>(<span class="at">x =</span> height, <span class="at">fill =</span> distribution)) <span class="sc">+</span></span>
-<span id="cb15-341"><a href="#cb15-341" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb15-342"><a href="#cb15-342" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
-<span id="cb15-343"><a href="#cb15-343" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(blue_2, blue_4)) <span class="sc">+</span></span>
-<span id="cb15-344"><a href="#cb15-344" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">250</span>))</span>
-<span id="cb15-345"><a href="#cb15-345" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-346"><a href="#cb15-346" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-347"><a href="#cb15-347" aria-hidden="true" tabindex="-1"></a>This is one of my favorite plots. It shows how we started with a belief about heights and what our new belief should be, after seeing the data. That is the main goal of doing data analysis.</span>
+<span id="cb15-327"><a href="#cb15-327" aria-hidden="true" tabindex="-1"></a>A final step is to conduct a posterior predictive check. Since we also conducted a prior predictive check we can plot both and compare how our overall beliefs about the distribution of heights should change as a function of the data. Below I create a new data frame with draws from the posterior, just like when I created the prior predictive check, and merge it with the prior data frame from before.</span>
+<span id="cb15-328"><a href="#cb15-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-331"><a href="#cb15-331" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-332"><a href="#cb15-332" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: prior-posterior-predictive-check</span></span>
+<span id="cb15-333"><a href="#cb15-333" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Prior and posterior predictive check</span></span>
+<span id="cb15-334"><a href="#cb15-334" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb15-335"><a href="#cb15-335" aria-hidden="true" tabindex="-1"></a>heights_posterior <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">distribution =</span> <span class="st">"posterior"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-336"><a href="#cb15-336" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_predicted_draws</span>(model_height, <span class="at">value =</span> <span class="st">"height"</span>)</span>
+<span id="cb15-337"><a href="#cb15-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-338"><a href="#cb15-338" aria-hidden="true" tabindex="-1"></a>heights <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(heights_prior, heights_posterior) <span class="sc">%&gt;%</span></span>
+<span id="cb15-339"><a href="#cb15-339" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-340"><a href="#cb15-340" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">distribution =</span> <span class="fu">fct_relevel</span>(distribution, <span class="st">"prior"</span>))</span>
+<span id="cb15-341"><a href="#cb15-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-342"><a href="#cb15-342" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(heights, <span class="fu">aes</span>(<span class="at">x =</span> height, <span class="at">fill =</span> distribution)) <span class="sc">+</span></span>
+<span id="cb15-343"><a href="#cb15-343" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb15-344"><a href="#cb15-344" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Height"</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">"Distribution"</span>) <span class="sc">+</span></span>
+<span id="cb15-345"><a href="#cb15-345" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(blue_2, blue_4)) <span class="sc">+</span></span>
+<span id="cb15-346"><a href="#cb15-346" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">250</span>))</span>
+<span id="cb15-347"><a href="#cb15-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-348"><a href="#cb15-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-349"><a href="#cb15-349" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb15-349"><a href="#cb15-349" aria-hidden="true" tabindex="-1"></a>This is one of my favorite plots. It shows how we started with a belief about heights and what our new belief should be, after seeing the data. That is the main goal of doing data analysis.</span>
 <span id="cb15-350"><a href="#cb15-350" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-351"><a href="#cb15-351" aria-hidden="true" tabindex="-1"></a>In this post I showed how to run an intercept-only model in brms. It consisted of the following steps:</span>
+<span id="cb15-351"><a href="#cb15-351" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
 <span id="cb15-352"><a href="#cb15-352" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-353"><a href="#cb15-353" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Define the model</span>
-<span id="cb15-354"><a href="#cb15-354" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Use the model to figure out which priors to set</span>
-<span id="cb15-355"><a href="#cb15-355" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Visualize the priors and create a prior predictive check to potentially tweak the priors (using brms)</span>
-<span id="cb15-356"><a href="#cb15-356" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Run the model</span>
-<span id="cb15-357"><a href="#cb15-357" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>Inspect the output, including the chains</span>
-<span id="cb15-358"><a href="#cb15-358" aria-hidden="true" tabindex="-1"></a><span class="ss">6.  </span>Obtain draws of the estimates and visualize their distribution</span>
-<span id="cb15-359"><a href="#cb15-359" aria-hidden="true" tabindex="-1"></a><span class="ss">7.  </span>Compare the prior predictive check to the posterior results to see how much to update based on the data</span>
-<span id="cb15-360"><a href="#cb15-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-361"><a href="#cb15-361" aria-hidden="true" tabindex="-1"></a>In the next post I'll show how to add a predictor to the model.</span>
+<span id="cb15-353"><a href="#cb15-353" aria-hidden="true" tabindex="-1"></a>In this post I showed how to run an intercept-only model in brms. It consisted of the following steps:</span>
+<span id="cb15-354"><a href="#cb15-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-355"><a href="#cb15-355" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Define the model</span>
+<span id="cb15-356"><a href="#cb15-356" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Use the model to figure out which priors to set</span>
+<span id="cb15-357"><a href="#cb15-357" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Visualize the priors and create a prior predictive check to potentially tweak the priors (using brms)</span>
+<span id="cb15-358"><a href="#cb15-358" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Run the model</span>
+<span id="cb15-359"><a href="#cb15-359" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>Inspect the output, including the chains</span>
+<span id="cb15-360"><a href="#cb15-360" aria-hidden="true" tabindex="-1"></a><span class="ss">6.  </span>Obtain draws of the estimates and visualize their distribution</span>
+<span id="cb15-361"><a href="#cb15-361" aria-hidden="true" tabindex="-1"></a><span class="ss">7.  </span>Compare the prior predictive check to the posterior results to see how much to update based on the data</span>
 <span id="cb15-362"><a href="#cb15-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-363"><a href="#cb15-363" aria-hidden="true" tabindex="-1"></a>*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*</span>
+<span id="cb15-363"><a href="#cb15-363" aria-hidden="true" tabindex="-1"></a>In the next post I'll show how to add a predictor to the model.</span>
+<span id="cb15-364"><a href="#cb15-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-365"><a href="#cb15-365" aria-hidden="true" tabindex="-1"></a>*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
