@@ -302,7 +302,7 @@ cv %>%
   kable(col.names = NULL)
 ```
 
-## Programming
+### Programming
 
 ```{r}
 #| label: skills-programming
@@ -324,5 +324,3 @@ cv %>%
   select(content) %>%
   kable(col.names = NULL)
 ```
-
-## 
