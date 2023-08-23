@@ -31,7 +31,7 @@ library(tidyverse)
 library(here)
 library(knitr)
 
-# Load cv data  
+# Load cv data
 cv <- read_csv(here("data", "cv.csv"))
 ```
 
@@ -69,19 +69,9 @@ cv %>%
 #| label: publications-in-preparation
 cv %>%
   filter(
-    section == "Publications" & 
-    subsection == "In preparation"
+    section == "Publications" &
+      subsection == "In preparation"
   ) %>%
-  select(content) %>%
-  kable(col.names = NULL)
-```
-
-### Preprints
-
-```{r}
-#| label: publications-preprints
-cv %>%
-  filter(section == "Publications" & subsection == "Preprints") %>%
   select(content) %>%
   kable(col.names = NULL)
 ```
@@ -93,8 +83,8 @@ cv %>%
 #| tbl-colwidths: [10, 90]
 cv %>%
   filter(
-    section == "Publications" & 
-    subsection == "Stage-1 accepted manuscripts"
+    section == "Publications" &
+      subsection == "Stage-1 accepted manuscripts"
   ) %>%
   select(year, content) %>%
   kable(col.names = NULL)
@@ -107,8 +97,8 @@ cv %>%
 #| tbl-colwidths: [10, 90]
 cv %>%
   filter(
-    section == "Publications" & 
-    subsection == "Peer-reviewed journals"
+    section == "Publications" &
+      subsection == "Peer-reviewed journals"
   ) %>%
   select(year, content) %>%
   kable(col.names = NULL)
@@ -177,8 +167,8 @@ cv %>%
 #| tbl-colwidths: [10, 90]
 cv %>%
   filter(
-    section == "Presentations" & 
-    subsection == "Conference presentations"
+    section == "Presentations" &
+      subsection == "Conference presentations"
   ) %>%
   select(year, content) %>%
   kable(col.names = NULL)
@@ -213,8 +203,8 @@ cv %>%
 #| tbl-colwidths: [10, 90]
 cv %>%
   filter(
-    section == "Presentations" & 
-    subsection == "Valorization presentations"
+    section == "Presentations" &
+      subsection == "Valorization presentations"
   ) %>%
   select(year, content) %>%
   kable(col.names = NULL)
@@ -229,6 +219,8 @@ reviewed <- cv %>%
 ```
 
 I reviewed for `r paste(reviewed, collapse = ", ")`.
+
+I'm a consulting editor for the [Psychology of Human-Animal Intergroup Relations (PHAIR)](https://phairsociety.org/journal/) journal.
 
 ## Teaching
 
@@ -326,8 +318,8 @@ cv %>%
 #| label: skills-experimental-design
 cv %>%
   filter(
-    section == "Technical skills" & 
-    subsection == "Experimental design"
+    section == "Technical skills" &
+      subsection == "Experimental design"
   ) %>%
   select(content) %>%
   kable(col.names = NULL)
