@@ -49,7 +49,7 @@ Research Affiliate at Tilburg University
 
 ## About
 
-I'm a Senior Behavioral Scientist at [Rethink Priorities](https://rethinkpriorities.org/). I am part of the survey team, which means I conduct research on attitude assessments and attitude change, using surveys and experimental designs. Before joining Rethink Priorities, I was an assistant professor in the Department of Social Psychology at [Tilburg University](https://www.tilburguniversity.edu/), where I currently maintain an affiliation. On this website you can find information about some of the projects I'm involved in. I also blog about various topics related to my work.
+I'm a Senior Behavioral Scientist at [Rethink Priorities](https://rethinkpriorities.org/). I am part of the survey team, which means I conduct research on attitude assessments and attitude change, using surveys and experimental designs. Before joining Rethink Priorities, I was an assistant professor in the Department of Social Psychology at [Tilburg University](https://www.tilburguniversity.edu/), where I continue to be affiliated. On this website you can find information about some of the projects I'm involved in. I also blog about various topics related to my work.
 
 [Learn more](content/about.qmd "Learn more about me")
 
