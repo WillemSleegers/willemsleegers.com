@@ -248,39 +248,39 @@ get_prior(survived ~ age, family = bernoulli(link = "logit"), data = data)
 ```
 
 ```{r}
-fit_age <- brm(
-  survived ~ age,
-  family = bernoulli(link = "logit"),
-  data = data,
-  prior = c(
-    prior(student_t(5, 0, 1.5), class = "Intercept"),
-    prior(student_t(5, 0, 0.5), class = "b")
-  ),
-  sample_prior = "only"
-  # file = "models/model-sex.rds"
-)
+# fit_age <- brm(
+#   survived ~ age,
+#   family = bernoulli(link = "logit"),
+#   data = data,
+#   prior = c(
+#     prior(student_t(5, 0, 1.5), class = "Intercept"),
+#     prior(student_t(5, 0, 0.5), class = "b")
+#   ),
+#   sample_prior = "only"
+#   # file = "models/model-sex.rds"
+# )
 
-data %>%
-  data_grid(age = seq_range(age, 10)) %>%
-  add_epred_draws(fit_age) %>%
-  ggplot(aes(x = age, y = .epred)) +
-  stat_lineribbon() +
-  scale_y_continuous(limits = c(0, 1)) +
-  scale_fill_brewer(palette = "Greys")
+# data %>%
+#   data_grid(age = seq_range(age, 10)) %>%
+#   add_epred_draws(fit_age) %>%
+#   ggplot(aes(x = age, y = .epred)) +
+#   stat_lineribbon() +
+#   scale_y_continuous(limits = c(0, 1)) +
+#   scale_fill_brewer(palette = "Greys")
 
-draws <- fit_sex %>%
-  gather_draws(b_sexfemale, b_sexmale) %>%
-  mutate(
-    .variable = case_match(
-      .variable,
-      "b_sexfemale" ~ "female", "b_sexmale" ~ "male"
-    ),
-    .value = inv_logit_scaled(.value)
-  )
+# draws <- fit_sex %>%
+#   gather_draws(b_sexfemale, b_sexmale) %>%
+#   mutate(
+#     .variable = case_match(
+#       .variable,
+#       "b_sexfemale" ~ "female", "b_sexmale" ~ "male"
+#     ),
+#     .value = inv_logit_scaled(.value)
+#   )
 
-ggplot(draws, aes(x = .value, y = .variable)) +
-  stat_slab() +
-  stat_dotsinterval(side = "bottom", .width = .95) +
-  labs(x = "proportion of survivors", y = "") +
-  scale_x_continuous(limits = c(0, 1))
+# ggplot(draws, aes(x = .value, y = .variable)) +
+#   stat_slab() +
+#   stat_dotsinterval(side = "bottom", .width = .95) +
+#   labs(x = "proportion of survivors", y = "") +
+#   scale_x_continuous(limits = c(0, 1))
 ```

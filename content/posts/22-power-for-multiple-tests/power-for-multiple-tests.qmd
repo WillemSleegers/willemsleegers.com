@@ -8,7 +8,6 @@ categories:
   - simulation
 code-fold: show
 code-tools: true
-bibliography: references.bib
 toc: true
 toc-depth: 2
 draft: true
@@ -63,9 +62,9 @@ samples <- mvrnorm(N, mu = Ms, Sigma = Sigma, empirical = TRUE)
 
 # Prepare data
 colnames(samples) <- c(
-  "control_1", "control_2", "control_3", "treatment_1", "treatment_2", 
+  "control_1", "control_2", "control_3", "treatment_1", "treatment_2",
   "treatment_3"
-  )
+)
 
 data <- as_tibble(samples)
 
@@ -81,19 +80,9 @@ Let's visualize the data to get a better grasp of what the data looks like.
 
 ```{r}
 #| label: visualization
-ggot(data_long aes(x = condition, y = value)) +
-  facet_wrap(~ outcome) +
-  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25) +
-  stat_summary(fun = "mean", geom```
-
-We have 3 group differences, increasing in size from left to right. Specifically, the differences in terms of a Cohen's d are:
-
-```{r}
-bind_rows(
-  cohens_d(data$treatment_1, data$control_1),
-  cohens_d(data$treatment_2, data$control_2),
-  cohens_d(data$treatment_3, data$control_3)
-)
+ggplot(data_long, aes(x = condition, y = value)) +
+  facet_wrap(~outcome) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25)
 ```
 
 These are the three effect sizes associated with our hypotheses and we want to have enough statistical power to detect all of them.

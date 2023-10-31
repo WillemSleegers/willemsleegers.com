@@ -1,7 +1,7 @@
-/* css styles */
-
 /* Reduce the width of meta columns of blog post listings */
-.quarto-listing-container-default .quarto-listing-default .quarto-post 
+.quarto-listing-container-default
+  .quarto-listing-default
+  .quarto-post
   .metadata {
   flex-basis: 10%;
 }
@@ -23,7 +23,7 @@ summary {
 }
 
 #listing-projects .quarto-grid-item .card-title {
-  background-color: rgba(0,0,0,.125);
+  background-color: rgba(0, 0, 0, 0.125);
   padding: 1rem;
 }
 

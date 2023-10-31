@@ -1,0 +1,16 @@
+{
+  "hash": "458fed414a9c971222e68a578f7a451a",
+  "result": {
+    "markdown": "---\ntitle: Should you power for multiple statistical tests?\ndescription: \"When conducting a power analysis, should you power for a single test or multiple tests? In this blog post I provide a few examples of when you should power for multiple tests.\"\ndate: 2023-09-10\ncategories:\n  - statistics\n  - power analysis\n  - simulation\ncode-fold: show\ncode-tools: true\ntoc: true\ntoc-depth: 2\ndraft: true\n---\n\n\n# Introduction\n\nShould you power for multiple tests when conducting a power analysis? The answer is probably yes. Below I cover a few scenarios in which I think it makes sense to power for multiple tests.\n\n## Setup\n\nRun the following code to get started. We'll be using simulations to conduct the power analyses.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(MASS)\nlibrary(tidyverse)\nlibrary(effectsize)\nlibrary(broom)\nlibrary(viridis)\n\ntheme_set(theme_minimal())\n\noptions(\n  knitr.kable.NA = \"\",\n  digits = 2\n)\n\n# Set number of loops in the power simulations\ns <- 1000\n```\n:::\n\n\n## The scenario\n\nLet's say that we want to test three hypotheses. The three hypotheses all pertain to differences between two groups. This could be the case when we have a study with two conditions and three different outcome measures. Let's first simulate some data once and then look at the different ways to power for this scenario.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# Parameters\nMs <- c(3, 3, 3, 3.2, 3.3, 3.5)\nSDs <- c(1, 1, 1, 1, 1, 1)\nN <- 100\n\n# Prepare parameters\nSigma <- matrix(nrow = length(SDs), ncol = length(SDs), 0)\ndiag(Sigma) <- SDs^2\n\n# Simulate once with empirical = TRUE so we can calculate the effect sizes and\n# plot the data with the exact parameters that we set\nsamples <- mvrnorm(N, mu = Ms, Sigma = Sigma, empirical = TRUE)\n\n# Prepare data\ncolnames(samples) <- c(\n  \"control_1\", \"control_2\", \"control_3\", \"treatment_1\", \"treatment_2\",\n  \"treatment_3\"\n)\n\ndata <- as_tibble(samples)\n\ndata_long <- data %>%\n  pivot_longer(\n    cols = everything(),\n    names_to = c(\"condition\", \"outcome\"),\n    names_pattern = \"(.+)_(.)\"\n  )\n```\n:::\n\n\nLet's visualize the data to get a better grasp of what the data looks like.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nggplot(data_long, aes(x = condition, y = value)) +\n  facet_wrap(~outcome) +\n  stat_summary(fun.data = \"mean_cl_boot\", geom = \"errorbar\", width = .25)\n```\n\n::: {.cell-output-display}\n![](power-for-multiple-tests_files/figure-html/visualization-1.png){width=672}\n:::\n:::\n\n\nThese are the three effect sizes associated with our hypotheses and we want to have enough statistical power to detect all of them.\n\n## Powering for the smallest effect\n\nOne approach is to only power for the smallest effect. \n\n0.2 = 788\n0.3 = .99997\n0.4 = .9999\n\n",
+    "supporting": [
+      "power-for-multiple-tests_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

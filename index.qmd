@@ -1,5 +1,5 @@
 ---
-title: Willem Sleegers
+title: dr. Willem Sleegers
 about:
   id: hero-heading
   template: jolla
@@ -42,13 +42,14 @@ listing:
     filter-ui: false
 ---
 
-::: {#hero-heading}
-Senior Behavioral Scientist at Rethink Priorities
+::: {#hero-heading style="text-align: center"}
+Senior Behavioral Scientist at Rethink Priorities\
+Research Affiliate at Tilburg University
 :::
 
 ## About
 
-I'm a Senior Behavioral Scientist at [Rethink Priorities](https://rethinkpriorities.org/). I am part of the survey team, which means I conduct research on attitude assessments and attitude change, using surveys and experimental designs. Before joining Rethink Priorities, I was an assistant professor in the Department of Social Psychology at [Tilburg University](https://www.tilburguniversity.edu/). On this website you can find information about some of the projects I'm involved in. I also blog about various topics related to my work.
+I'm a Senior Behavioral Scientist at [Rethink Priorities](https://rethinkpriorities.org/). I am part of the survey team, which means I conduct research on attitude assessments and attitude change, using surveys and experimental designs. Before joining Rethink Priorities, I was an assistant professor in the Department of Social Psychology at [Tilburg University](https://www.tilburguniversity.edu/), where I currently maintain an affiliation. On this website you can find information about some of the projects I'm involved in. I also blog about various topics related to my work.
 
 [Learn more](content/about.qmd "Learn more about me")
 
@@ -66,6 +67,6 @@ I'm a Senior Behavioral Scientist at [Rethink Priorities](https://rethinkpriori
 
 ## CV
 
-I'm an Senior Behavioral Scientist at Rethink Priorities. I have recently left academia after having built up 10 years of research experience, with publications of both scientific papers in peer-reviewed journals, as well as software publications. It should be no surprise then that my skill set consists of research skills (e.g., experimental design, data analysis, writing) and technical skills (e.g., programming). I now look forward to applying my skills to topics of great impact together with my colleagues at Rethink Priorities.
+I'm an Senior Behavioral Scientist at Rethink Priorities. I'm a former academic with 10 years of research experience. I have published, and continue to publish, scientific papers in peer-reviewed journals and I also develop research-related software. My skill set consists of various research skills (e.g., experimental design, data analysis, writing) and technical skills (e.g., programming). I'm currently focused on applying my skills to topics of high impact together with my colleagues at Rethink Priorities.
 
 [Learn more](content/cv/cv.qmd "Learn more about my CV")
