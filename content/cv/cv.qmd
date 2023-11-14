@@ -76,6 +76,20 @@ cv %>%
   kable(col.names = NULL)
 ```
 
+### Preprints
+
+```{r}
+#| label: publications-preprints
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(
+    section == "Publications" &
+      subsection == "Preprints"
+  ) %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
 ### Stage-1 accepted manuscripts
 
 ```{r}
