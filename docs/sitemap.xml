@@ -2,90 +2,90 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.willemsleegers.com/index.html</loc>
-    <lastmod>2023-10-31T12:35:45.789Z</lastmod>
+    <lastmod>2023-11-14T15:20:59.179Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/cv/cv.html</loc>
-    <lastmod>2023-08-23T11:44:06.984Z</lastmod>
+    <lastmod>2023-11-14T15:20:57.211Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects.html</loc>
-    <lastmod>2023-08-09T19:04:29.157Z</lastmod>
+    <lastmod>2023-11-14T15:20:55.616Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/tidystats/tidystats.html</loc>
-    <lastmod>2023-08-09T19:04:28.455Z</lastmod>
+    <lastmod>2023-11-14T15:20:54.808Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/animal-welfare/animal-welfare.html</loc>
-    <lastmod>2023-08-09T19:04:27.691Z</lastmod>
+    <lastmod>2023-11-14T15:20:54.022Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.html</loc>
-    <lastmod>2023-08-09T19:04:24.593Z</lastmod>
+    <lastmod>2023-11-14T15:20:51.069Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/4-why-divide-by-n-1/why-divide-by-n-1.html</loc>
-    <lastmod>2023-08-09T19:04:21.174Z</lastmod>
+    <lastmod>2023-11-14T15:20:47.435Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/17-politics-animal-voting-behavior-netherlands/politics-animal-voting-behavior-netherlands.html</loc>
-    <lastmod>2023-08-09T19:04:19.106Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.willemsleegers.com/content/posts/3-useful-power-analysis-papers/useful-power-analysis-papers.html</loc>
-    <lastmod>2023-08-09T19:04:16.637Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.willemsleegers.com/content/posts/16-animals-slaughtered-netherlands/animals-slaughtered-netherlands.html</loc>
-    <lastmod>2023-08-09T19:04:14.806Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.willemsleegers.com/content/posts/6-a-tidystats-example/a-tidystats-example.html</loc>
-    <lastmod>2023-08-09T19:04:11.959Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.willemsleegers.com/content/posts/9-simulation-based-power-analyses/simulation-based-power-analyses.html</loc>
-    <lastmod>2023-08-09T19:04:09.731Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.willemsleegers.com/content/posts/20-bayesian-tutorial-2-groups/bayesian-tutorial-2-groups.html</loc>
-    <lastmod>2023-08-09T19:04:13.668Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.willemsleegers.com/content/posts/19-bayesian-tutorial-correlations/bayesian-tutorial-correlations.html</loc>
-    <lastmod>2023-08-09T19:04:16.253Z</lastmod>
+    <lastmod>2023-11-14T15:20:45.247Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/10-simulation-based-power-curves/simulation-based-power-curves.html</loc>
-    <lastmod>2023-08-09T19:04:17.583Z</lastmod>
+    <lastmod>2023-11-14T15:20:42.547Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/19-bayesian-tutorial-correlations/bayesian-tutorial-correlations.html</loc>
+    <lastmod>2023-11-14T15:20:41.292Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/20-bayesian-tutorial-2-groups/bayesian-tutorial-2-groups.html</loc>
+    <lastmod>2023-11-14T15:20:38.677Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/9-simulation-based-power-analyses/simulation-based-power-analyses.html</loc>
+    <lastmod>2023-11-14T15:20:34.699Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/6-a-tidystats-example/a-tidystats-example.html</loc>
+    <lastmod>2023-11-14T15:20:36.887Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/16-animals-slaughtered-netherlands/animals-slaughtered-netherlands.html</loc>
+    <lastmod>2023-11-14T15:20:39.916Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/3-useful-power-analysis-papers/useful-power-analysis-papers.html</loc>
+    <lastmod>2023-11-14T15:20:41.630Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/8-the-right-order-of-method-sections/the-right-order-of-method-sections.html</loc>
-    <lastmod>2023-08-09T19:04:19.508Z</lastmod>
+    <lastmod>2023-11-14T15:20:45.722Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/1-understanding-regression-part-1/understanding-regression-part-1.html</loc>
-    <lastmod>2023-08-09T19:04:22.712Z</lastmod>
+    <lastmod>2023-11-14T15:20:49.054Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/18-bayesian-tutorial-simple-regression/bayesian-tutorial-simple-regression.html</loc>
-    <lastmod>2023-08-09T19:04:27.271Z</lastmod>
+    <lastmod>2023-11-14T15:20:53.563Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/statcheck/statcheck.html</loc>
-    <lastmod>2023-08-09T19:04:28.075Z</lastmod>
+    <lastmod>2023-11-14T15:20:54.411Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/cognitive-dissonance/cognitive-dissonance.html</loc>
-    <lastmod>2023-08-09T19:04:28.771Z</lastmod>
+    <lastmod>2023-11-14T15:20:55.182Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/about.html</loc>
-    <lastmod>2023-08-09T19:04:29.443Z</lastmod>
+    <lastmod>2023-11-14T15:20:55.958Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/blog.html</loc>
-    <lastmod>2023-10-31T09:54:35.153Z</lastmod>
+    <lastmod>2023-11-14T15:20:58.469Z</lastmod>
   </url>
 </urlset>
