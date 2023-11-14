@@ -1,5 +1,5 @@
 ---
-title: Willem Sleegers
+title: dr. Willem Sleegers
 about:
   id: hero-heading
   template: jolla
@@ -35,8 +35,9 @@ library(knitr)
 cv <- read_csv(here("data", "cv.csv"))
 ```
 
-::: {#hero-heading}
-Senior Behavioral Scientist at Rethink Priorities
+::: {#hero-heading style="text-align: center"}
+Senior Behavioral Scientist at Rethink Priorities\
+Research Affiliate at Tilburg University
 :::
 
 ## Employment
