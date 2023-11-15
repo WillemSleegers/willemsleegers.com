@@ -6,17 +6,15 @@ about:
   image: ../../images/avatar.png
   image-width: 200px
   links:
-    - icon: email
-      text: E-mail
+    - text: E-mail
       href: mailto:w.sleegers@me.com
-    - icon: twitter
-      text: Twitter
-      href: https://twitter.com/willemsleegers
-    - icon: google-scholar
-      text: Google Scholar
+    - text: X
+      href: https://x.com/willemsleegers
+    - text: Bluesky
+      href: https://bsky.app/profile/willemsleegers.bsky.social
+    - text: Google Scholar
       href: https://scholar.google.nl/citations?user=06xq2zYAAAAJ
-    - icon: github
-      text: Github
+    - text: Github
       href: https://github.com/willemsleegers
 execute: 
   echo: false
