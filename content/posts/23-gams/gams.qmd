@@ -1,0 +1,163 @@
+---
+title: GAMs
+description: "A post on how to use GAMs."
+date: 2023-11-16
+categories:
+  - statistics
+  - regression
+  - GAM
+  - simulation
+code-fold: show
+code-tools: true
+toc: true
+toc-depth: 2
+draft: true
+---
+
+## Setup
+
+Run the following code to get started.
+
+```{r}
+#| label: setup
+#| message: false
+library(MASS)
+library(mgcv)
+library(tidyverse)
+library(marginaleffects)
+
+theme_set(theme_minimal())
+
+options(
+  knitr.kable.NA = "",
+  digits = 2
+)
+
+# Set number of loops in the power simulations
+s <- 1000
+```
+
+## 
+
+Let's say that we want to test three hypotheses. The three hypotheses all pertain to differences between two groups. This could be the case when we have a study with two conditions and three different outcome measures. Let's first simulate some data once and then look at the different ways to power for this scenario.
+
+```{r}
+#| label: scenario-2-groups
+# Parameters
+intercept <- 3
+b <- 0.5
+sigma <- 1
+n <- 1000
+
+# Simulate
+x <- rep(0:1, each = n / 2)
+y <- rnorm(n = n, mean = intercept, sd = sigma)
+y <- y + x * b
+
+# Prepare data
+data <- tibble(
+  condition = factor(x, labels = LETTERS[1:2]),
+  outcome = y
+)
+```
+
+Let's visualize the data to get a better grasp of what the data looks like.
+
+```{r}
+#| label: visualization
+ggplot(data, aes(x = condition, y = outcome)) +
+  geom_violin(fill = "steelblue") +
+  geom_point(alpha = .2)
+```
+
+```{r}
+#| label: models
+lm <- lm(outcome ~ condition, data = data)
+summary(lm)
+
+gam <- gam(outcome ~ condition, data = data)
+summary(gam)
+```
+
+## Correlation
+
+```{r}
+#| label: scenario-correlation
+# Parameters
+n <- 10000
+r <- 0.5
+
+x <- rnorm(n = n, mean = 0, sd = 1)
+y <- rnorm(n = n, mean = 0, sd = 1)
+y <- scale(x) * r + scale(residuals(lm(y ~ x))) * sqrt(1 - r * r)
+
+cor(x, y)
+
+# Prepare parameters
+Sigma <- matrix(
+  data = c(
+    SDs[1]^2, SDs[1] * SDs[2] * r,
+    SDs[1] * SDs[2] * r, SDs[2]^2
+  ),
+  nrow = length(SDs),
+  ncol = length(SDs)
+)
+
+# Simulate with empirical = TRUE so the estimates are guaranteed to match the
+# parameter values
+samples <- mvrnorm(N, mu = Ms, Sigma = Sigma, empirical = TRUE)
+
+# Prepare data
+colnames(samples) <- LETTERS[1:length(Ms)]
+
+data <- as_tibble(samples)
+```
+
+```{r}
+#| label: visualization
+ggplot(data, aes(x = A, y = B)) +
+  geom_point(alpha = .2)
+```
+
+## Non-linear correlation
+
+```{r}
+#| label: scenario-2-groups
+# Parameters
+Ms <- c(3, 3)
+SDs <- c(1, 1)
+r <- 0.5
+N <- 100
+
+# Prepare parameters
+Sigma <- matrix(
+  data = c(
+    SDs[1]^2, SDs[1] * SDs[2] * r,
+    SDs[1] * SDs[2] * r, SDs[2]^2
+  ),
+  nrow = length(SDs),
+  ncol = length(SDs)
+)
+
+# Simulate with empirical = TRUE so the estimates are guaranteed to match the
+# parameter values
+samples <- mvrnorm(N, mu = Ms, Sigma = 0.001 * Sigma, empirical = TRUE)
+
+offset <- seq(0, 2, length = N)
+
+# Prepare data
+colnames(samples) <- LETTERS[1:length(Ms)]
+
+data <- samples |>
+  as_tibble() |>
+  mutate(
+    A = A + exp(3 * offset),
+    B = B + offset
+  )
+```
+
+```{r}
+#| label: visualization
+ggplot(data, aes(x = A, y = B)) +
+  geom_point(alpha = .2)
+```
