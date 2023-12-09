@@ -1,3 +1,9 @@
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 /* Reduce the width of meta columns of blog post listings */
 .quarto-listing-container-default
   .quarto-listing-default

@@ -1,0 +1,16 @@
+{
+  "hash": "aa55e6a9e53af702d02c20ce7b1b272f",
+  "result": {
+    "markdown": "---\ntitle: GAMs\ndescription: \"A post on how to use GAMs.\"\ndate: 2023-11-16\ncategories:\n  - statistics\n  - regression\n  - GAM\n  - simulation\ncode-fold: show\ncode-tools: true\ntoc: true\ntoc-depth: 2\ndraft: true\n---\n\n\n## Setup\n\nRun the following code to get started.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(MASS)\nlibrary(mgcv)\nlibrary(tidyverse)\nlibrary(marginaleffects)\n\ntheme_set(theme_minimal())\n\noptions(\n  knitr.kable.NA = \"\",\n  digits = 2\n)\n```\n:::\n",
+    "supporting": [
+      "gams_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
