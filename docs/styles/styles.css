@@ -2,6 +2,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-family: system-ui, sans-serif;
 }
 
 /* Reduce the width of meta columns of blog post listings */

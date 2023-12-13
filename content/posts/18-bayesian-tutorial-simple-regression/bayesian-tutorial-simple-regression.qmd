@@ -12,7 +12,7 @@ code-tools: true
 toc: true
 ---
 
-In my previous [blog post](../5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.qmd) I showed how to use brms and `tidybayes` to run an intercept-only model. Now let's extend that model by adding a predictor.
+In my previous [blog post](../5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.qmd) I showed how to use brms and tidybayes to run an intercept-only model. Now let's extend that model by adding a predictor.
 
 The [data](Howell1.csv) is the same as in the previous post (including the filter that we only focus on people 18 years or older). This data contains weight data as well as height data, so that means we can run a model in which we regress heights onto weights, i.e., a regression with a single predictor.
 
@@ -84,14 +84,14 @@ We can again create a prior predictive check to see whether our priors actually 
 #| label: weight-prior
 #| fig-cap: Several priors for $\beta$
 model_height_weight_prior <- brm(
-  height ~ weight_mc,  
-  data = data, 
+  height ~ weight_mc,
+  data = data,
   family = gaussian,
   prior = c(
-      prior(normal(160, 10), class = "Intercept"),
-      prior(cauchy(5, 5), class = "sigma"),
-      prior(normal(0, 10), class = "b")
-    ), 
+    prior(normal(160, 10), class = "Intercept"),
+    prior(cauchy(5, 5), class = "sigma"),
+    prior(normal(0, 10), class = "b")
+  ),
   sample_prior = "only",
   seed = 4,
   file = "models/model_height_weight_prior.rds"
@@ -135,14 +135,14 @@ Additionally, the negative slopes are actually also pretty unlikely because we s
 ```{r}
 #| label: weight-updated-prior
 model_height_weight_prior_2 <- brm(
-  height ~ weight_mc,  
-  data = data, 
+  height ~ weight_mc,
+  data = data,
   family = gaussian,
   prior = c(
-      prior(normal(160, 10), class = "Intercept"),
-      prior(cauchy(5, 5), class = "sigma"),
-      prior(normal(0, 3), class = "b")
-    ), 
+    prior(normal(160, 10), class = "Intercept"),
+    prior(cauchy(5, 5), class = "sigma"),
+    prior(normal(0, 3), class = "b")
+  ),
   sample_prior = "only",
   seed = 4,
   file = "models/model_height_weight_prior_2.rds"
