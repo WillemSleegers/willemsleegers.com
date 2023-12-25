@@ -1,0 +1,339 @@
+---
+title: dr. Willem Sleegers
+about:
+  id: hero-heading
+  template: jolla
+  image: ../../images/avatar.png
+  image-width: 200px
+  links:
+    - text: E-mail
+      href: mailto:w.sleegers@me.com
+    - text: X
+      href: https://x.com/willemsleegers
+    - text: Bluesky
+      href: https://bsky.app/profile/willemsleegers.bsky.social
+    - text: Google Scholar
+      href: https://scholar.google.nl/citations?user=06xq2zYAAAAJ
+    - text: Github
+      href: https://github.com/willemsleegers
+execute: 
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: false
+
+# Load packages
+library(tidyverse)
+library(here)
+library(knitr)
+
+# Load cv data
+cv <- read_csv(here("data", "cv.csv"))
+```
+
+::: {#hero-heading style="text-align: center"}
+Senior Behavioral Scientist at Rethink Priorities\
+Research Affiliate at Tilburg University
+:::
+
+## Employment
+
+```{r}
+#| label: employment
+#| tbl-colwidths: [15, 85]
+cv %>%
+  filter(section == "Employment") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+## Education
+
+```{r}
+#| label: education
+#| tbl-colwidths: [15, 85]
+cv %>%
+  filter(section == "Education") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+## Publications
+
+### In preparation
+
+```{r}
+#| label: publications-in-preparation
+cv %>%
+  filter(
+    section == "Publications" &
+      subsection == "In preparation"
+  ) %>%
+  select(content) %>%
+  kable(col.names = NULL)
+```
+
+### Preprints
+
+```{r}
+#| label: publications-preprints
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(
+    section == "Publications" &
+      subsection == "Preprints"
+  ) %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Stage-1 accepted manuscripts
+
+```{r}
+#| label: publications-stage-1
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(
+    section == "Publications" &
+      subsection == "Stage-1 accepted manuscripts"
+  ) %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Peer-reviewed journals
+
+```{r}
+#| label: publications-peer-reviewed
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(
+    section == "Publications" &
+      subsection == "Peer-reviewed journals"
+  ) %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Book chapters
+
+```{r}
+#| label: publications-book-chapters
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(section == "Publications" & subsection == "Book chapters") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Dissertation
+
+```{r}
+#| label: publications-dissertation
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(section == "Publications" & subsection == "Dissertation") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Software
+
+```{r}
+#| label: publications-software
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(section == "Publications" & subsection == "Software") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Websites
+
+```{r}
+#| label: publications-websites
+cv %>%
+  filter(section == "Publications" & subsection == "Websites") %>%
+  select(content) %>%
+  kable(col.names = NULL)
+```
+
+## Presentations
+
+### Invited talks
+
+```{r}
+#| label: presentations-invited-talks
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(section == "Presentations" & subsection == "Invited talks") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Conference presentations
+
+```{r}
+#| label: presentations-conference
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(
+    section == "Presentations" &
+      subsection == "Conference presentations"
+  ) %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Small meetings
+
+```{r}
+#| label: presentations-small-meetings
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(section == "Presentations" & subsection == "Small meetings") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Poster presentations
+
+```{r}
+#| label: presentations-posters
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(section == "Presentations" & subsection == "Poster presentations") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Valorization presentations
+
+```{r}
+#| label: presentations-valorization
+#| tbl-colwidths: [10, 90]
+cv %>%
+  filter(
+    section == "Presentations" &
+      subsection == "Valorization presentations"
+  ) %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+## Journals
+
+```{r}
+reviewed <- cv %>%
+  filter(section == "Journals" & subsection == "Reviewer") %>%
+  pull(content)
+```
+
+I reviewed for `r paste(reviewed, collapse = ", ")`.
+
+I'm a consulting editor for the [Psychology of Human-Animal Intergroup Relations (PHAIR)](https://phairsociety.org/journal/) journal.
+
+## Teaching
+
+### Courses
+
+```{r}
+#| label: teaching-courses
+#| tbl-colwidths: [15, 85]
+cv %>%
+  filter(section == "Teaching" & subsection == "Courses") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Seminars
+
+```{r}
+#| label: teaching-seminars
+#| tbl-colwidths: [15, 85]
+cv %>%
+  filter(section == "Teaching" & subsection == "Seminars") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Individual lectures
+
+```{r}
+#| label: teaching-lectures
+#| tbl-colwidths: [15, 85]
+cv %>%
+  filter(section == "Teaching" & subsection == "Individual lectures") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Supervision
+
+```{r}
+#| label: teaching-supervision
+#| tbl-colwidths: [15, 85]
+cv %>%
+  filter(section == "Teaching" & subsection == "Supervision") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Coordination
+
+```{r}
+#| label: teaching-coordination
+#| tbl-colwidths: [15, 85]
+cv %>%
+  filter(section == "Teaching" & subsection == "Coordination") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+### Other
+
+```{r}
+#| label: teaching-other
+#| tbl-colwidths: [15, 85]
+cv %>%
+  filter(section == "Teaching" & subsection == "Other") %>%
+  select(year, content) %>%
+  kable(col.names = NULL)
+```
+
+## Technical skills
+
+### Statistics
+
+```{r}
+#| label: skills-statistics
+cv %>%
+  filter(section == "Technical skills" & subsection == "Statistics") %>%
+  select(content) %>%
+  kable(col.names = NULL)
+```
+
+### Programming
+
+```{r}
+#| label: skills-programming
+cv %>%
+  filter(section == "Technical skills" & subsection == "Programming") %>%
+  select(content) %>%
+  kable(col.names = NULL)
+```
+
+### Experimental design
+
+```{r}
+#| label: skills-experimental-design
+cv %>%
+  filter(
+    section == "Technical skills" &
+      subsection == "Experimental design"
+  ) %>%
+  select(content) %>%
+  kable(col.names = NULL)
+```

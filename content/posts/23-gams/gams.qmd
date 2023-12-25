@@ -21,7 +21,6 @@ Run the following code to get started.
 ```{r}
 #| label: setup
 #| message: false
-library(MASS)
 library(mgcv)
 library(tidyverse)
 library(marginaleffects)
@@ -32,6 +31,27 @@ options(
   knitr.kable.NA = "",
   digits = 2
 )
+
+gss <- read_csv("gss.csv")
+```
+
+## GSS
+
+```{r}
+#| label: GSS data inspection
+ggplot(gss, aes(x = age, y = polviews, color = factor(sex))) +
+  stat_summary(fun = "mean", geom = "point") +
+  # geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "gam", se = FALSE)
+
+
+gss_gam <- gam(polviews ~ s(age), data = gss)
+gss_fit <- predictions(gss_gam, newdata = datagrid(age = unique))
+
+ggplot(gss_fit, aes(x = age, y = estimate)) +
+  geom_point()
+
+summary(gss_gam)
 ```
 
 

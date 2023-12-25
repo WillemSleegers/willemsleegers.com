@@ -39,7 +39,7 @@ format:
   html:
     toc: false
     smooth-scroll: true
-    theme: cosmo
+    theme: default
     css: styles/styles.css
     csl: styles/apa.csl
 

@@ -1,0 +1,14 @@
+{
+  "hash": "c47cad55b930e543df6d87c69e21e11e",
+  "result": {
+    "markdown": "---\ntitle: Bootstrapping\ndescription: \"A post on how to obtain p-values through bootstrapping.\"\ndate: 2023-12-25\ncategories:\n  - statistics\n  - bootstrapping\ncode-fold: show\ncode-tools: true\ntoc: true\ntoc-depth: 2\ndraft: true\n---\n\n\n## Setup\n\nRun the following code to get started.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(MASS)\nlibrary(tidyverse)\nlibrary(infer)\n\ntheme_set(theme_minimal())\n\noptions(\n  knitr.kable.NA = \"\",\n  digits = 2\n)\n```\n:::\n\n\n## One sample t-test\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# Set parameters\nM <- 1\nSD <- 20\nN <- 100\n\n# Simulate data\nsamples <- mvrnorm(n = N, mu = M, Sigma = SD, empirical = TRUE)\ncolnames(samples) <- \"x\"\ndata <- as_tibble(samples)\n\n# Run t-test\nt.test(data$x)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n\n\tOne Sample t-test\n\ndata:  data$x\nt = 2, df = 99, p-value = 0.03\nalternative hypothesis: true mean is not equal to 0\n95 percent confidence interval:\n 0.11 1.89\nsample estimates:\nmean of x \n        1 \n```\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nreps <- 1000\n\ndraw <- function(x, mu) {\n  x <- x - mu\n  sample <- sample(x, size = length(x), replace = TRUE)\n  sample\n}\n\nobs_mean <- mean(data$x)\n\nset.seed(1)\n\nnull_dist <- tibble(rep = 1:reps) |>\n  group_by(rep) |>\n  reframe(draw = draw(data$x, mu = obs_mean)) |>\n  group_by(rep) |>\n  summarize(null_stat = mean(draw))\n\np_value <- sum(abs(null_dist$null_stat) >= obs_mean) / 1000\np_value\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 0.03\n```\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nset.seed(1)\nreps <- 1000\n\nobs_mean <- data %>%\n  specify(response = x) %>%\n  calculate(stat = \"mean\")\n\nnull_dist <- data |>\n  specify(response = x) |>\n  hypothesize(null = \"point\", mu = 0) |>\n  generate(reps = reps, type = \"bootstrap\") |>\n  calculate(stat = \"mean\")\n\nget_p_value(null_dist, obs_stat = obs_mean, direction = \"two-sided\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n# A tibble: 1 × 1\n  p_value\n    <dbl>\n1   0.024\n```\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
