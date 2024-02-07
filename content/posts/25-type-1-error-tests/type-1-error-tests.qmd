@@ -1,0 +1,182 @@
+---
+title: Type 1 error tests
+description: "A post on how to make sure your type 1 error is what you want it to be."
+date: 2024-01-22
+categories:
+  - statistics
+  - type-1 error
+code-fold: show
+code-tools: true
+toc: true
+toc-depth: 2
+draft: true
+---
+
+## Setup
+
+Run the following code to get started.
+
+```{r}
+#| label: setup
+#| message: false
+library(MASS)
+library(psych)
+library(tidyverse)
+
+theme_set(theme_minimal())
+```
+
+## Type 1 error of a single test
+
+```{r}
+#| label: One test data
+# Set parameters
+Ms <- c(0, 0)
+SDs <- c(1, 1)
+N <- 100
+
+# Prepare parameters
+sigma <- matrix(0, nrow = length(SDs), ncol = length(SDs))
+diag(sigma) <- SDs^2
+
+# Simulate data
+samples <- mvrnorm(n = N, mu = Ms, Sigma = sigma)
+
+# Run a t-test
+t.test(samples[, 1], samples[, 2])
+```
+
+```{r}
+#| label: One sample t-test bootstrapping
+reps <- 10000
+
+simulate <- function() {
+  samples <- mvrnorm(n = N, mu = Ms, Sigma = sigma)
+  t_test <- t.test(samples[, 1], samples[, 2])
+
+  return(t_test$p.value)
+}
+
+set.seed(1)
+
+type_1_error <- tibble(rep = 1:reps) |>
+  group_by(rep) |>
+  mutate(p = simulate()) |>
+  ungroup() |>
+  summarize(type_1_error = sum(p < 0.05) / reps)
+
+type_1_error
+```
+
+Formula: 1 - (1 - 0.05)^2
+
+## Type 1 error of two tests
+
+```{r}
+#| label: Two tests data
+# Set parameters
+Ms <- c(0, 0, 0)
+SDs <- c(1, 1, 1)
+N <- 100
+
+# Prepare parameters
+sigma <- matrix(0, nrow = length(SDs), ncol = length(SDs))
+diag(sigma) <- SDs^2
+
+# Simulate data
+samples <- mvrnorm(n = N, mu = Ms, Sigma = sigma)
+
+# Run a t-test
+t.test(samples[, 1], samples[, 2])
+t.test(samples[, 1], samples[, 3])
+```
+
+```{r}
+#| label: One sample t-test bootstrapping
+reps <- 10000
+
+simulate <- function() {
+  samples <- mvrnorm(n = N, mu = Ms, Sigma = sigma)
+  t_test_1 <- t.test(samples[, 1], samples[, 2])
+  t_test_2 <- t.test(samples[, 1], samples[, 3])
+
+  return(
+    tibble(
+      p_1 = t_test_1$p.value,
+      p_2 = t_test_2$p.value,
+    )
+  )
+}
+
+set.seed(1)
+
+p_values <- tibble(rep = 1:reps) |>
+  group_by(rep) |>
+  reframe(simulate()) |>
+  ungroup()
+
+summarize(
+  p_values,
+  type_1_error = sum(p_1 < 0.05 | p_2 < 0.05) / reps
+)
+
+summarize(
+  p_values,
+  type_1_error = sum(p_1 < 0.05 & p_2 < 0.05) / reps
+)
+```
+
+## Type 1 error of many tests
+
+```{r}
+#| label: Many tests data
+# Set parameters
+Ms <- rep(0, 10)
+SDs <- rep(1, 10)
+N <- 100
+
+# Prepare parameters
+sigma <- matrix(0, nrow = length(SDs), ncol = length(SDs))
+diag(sigma) <- SDs^2
+
+# Simulate data
+samples <- mvrnorm(n = N, mu = Ms, Sigma = sigma)
+
+# Run a t-test
+corrs <- corr.test(as_tibble(samples), adjust = "none")
+corrs$p |>
+  as_tibble(rownames = "left") |>
+  pivot_longer(cols = -left, names_to = "right", values_to = "p") |>
+  filter(left != right) |>
+  filter(p < .05)
+```
+
+```{r}
+#| label: Many tests
+reps <- 10000
+
+simulate <- function() {
+  samples <- mvrnorm(n = N, mu = Ms, Sigma = sigma)
+  corrs <- corr.test(as_tibble(samples), adjust = "none")
+
+  return(
+    corrs$p |>
+      as_tibble(rownames = "left") |>
+      pivot_longer(cols = -left, names_to = "right", values_to = "p") |>
+      filter(left != right)
+  )
+}
+
+set.seed(1)
+
+p_values <- tibble(rep = 1:reps) |>
+  group_by(rep) |>
+  reframe(simulate()) |>
+  ungroup()
+
+p_values |>
+  unite(pair, left, right, sep = " - ") |>
+  group_by(rep) |>
+  summarize(sig_sum = sum(p < .05)) |>
+  summarize(type_1_error = sum(sig_sum > 0) / reps)
+```
