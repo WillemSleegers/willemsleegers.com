@@ -1,0 +1,12 @@
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  background: white;
+  max-width: 600px;
+  margin: 0 auto;
+}

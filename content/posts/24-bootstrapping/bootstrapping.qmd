@@ -61,24 +61,6 @@ p_value <- sum(abs(null_dist$null_stat) >= obs_mean) / reps
 p_value
 ```
 
-```{r}
-#| label: One sample t-test infer
-set.seed(1)
-reps <- 1000
-
-obs_mean <- data %>%
-  specify(response = x) %>%
-  calculate(stat = "mean")
-
-null_dist <- data |>
-  specify(response = x) |>
-  hypothesize(null = "point", mu = 0) |>
-  generate(reps = reps, type = "bootstrap") |>
-  calculate(stat = "mean")
-
-get_p_value(null_dist, obs_stat = obs_mean, direction = "two-sided")
-```
-
 ## Two sample t-test
 
 ```{r}
@@ -93,6 +75,7 @@ sigma <- matrix(0, nrow = length(SDs), ncol = length(SDs))
 diag(sigma) <- SDs^2
 
 # Simulate data
+samples <- mvrnorm(n = n, mu = Ms, Sigma = sigma, empirical = TRUE)
 samples <- mvrnorm(n = n, mu = Ms, Sigma = sigma, empirical = TRUE)
 
 # Prepare data
@@ -141,7 +124,6 @@ p_value
 ```
 
 ```{r}
-#| label: Two sample t-test infer
 set.seed(1)
 reps <- 1000
 

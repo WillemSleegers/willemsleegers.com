@@ -40,7 +40,8 @@ format:
     toc: false
     smooth-scroll: true
     theme: default
-    css: styles/styles.css
+    css: 
+     - styles/styles.css
     csl: styles/apa.csl
 
 freeze: auto
