@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.willemsleegers.com/index.html</loc>
-    <lastmod>2024-02-07T12:33:08.838Z</lastmod>
+    <lastmod>2023-10-31T12:35:44.624Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/cv/cv.html</loc>
@@ -86,6 +86,10 @@
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/blog.html</loc>
-    <lastmod>2022-04-13T09:02:20.106Z</lastmod>
+    <lastmod>2022-04-02T20:54:40.287Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/27-custom-brms-functions/custom-brms-functions.html</loc>
+    <lastmod>2024-03-07T20:19:52.344Z</lastmod>
   </url>
 </urlset>

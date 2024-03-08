@@ -47,7 +47,6 @@ t.test(samples[, 1], samples[, 2])
 ```
 
 ```{r}
-#| label: One sample t-test bootstrapping
 reps <- 10000
 
 simulate <- function() {

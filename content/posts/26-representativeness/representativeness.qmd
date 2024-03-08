@@ -1,0 +1,196 @@
+---
+title: Obtaining representative estimates
+description: "A post in which I try to figure out some stuff about how to obtain representative estimates from smaller samples."
+date: 2024-02-26
+categories:
+  - statistics
+  - representativeness
+code-fold: true
+code-tools: true
+toc: true
+toc-depth: 2
+draft: true
+df-print: kable
+---
+
+In survey research it's common to use weights in the data analysis to obtain more representative estimates. In this blog post I work through some simple examples to try and understand how this works and which packages can be used.
+
+## Setup
+
+Run the following code to get started.
+
+```{r}
+#| label: setup
+#| message: false
+library(MASS)
+library(survey)
+library(anesrake)
+library(tidyverse)
+library(marginaleffects)
+
+theme_set(theme_minimal())
+```
+
+## A simple example
+
+Let's begin by creating a simple data set. The goal is to estimate the mean of an outcome variable across two groups. Group A is sampled 1 time and Group B is sampled 2 times.
+
+```{r}
+#| label: simple-example
+data <- tribble(
+  ~id, ~age, ~outcome,
+  1, "young", 4,
+  2, "old", 4,
+  3, "old", 5
+) |>
+  mutate(age = factor(age))
+
+data
+```
+
+We can estimate the mean of the outcome variable using the `lm()` function[^1].
+
+[^1]: We could also use the `mean()` function but we will need `lm()` in the next steps so I'll immediately begin with using `lm()` for consistency.
+
+```{r}
+lm(outcome ~ 1, data = data) |>
+  summary()
+```
+
+This shows a mean of 4.3333. However, group A is sampled only once and group B is sampled twice. If in the population each group is equally common, this means group A is underrepresented.
+
+We can fix this by counting the observation from group A more and counting the observations from group B less. In other words, we can apply weights to each observation so they match their relative proportion in the population.
+
+In this case, a weight of 1.5 for the observation of group A and a weight of 0.75 for the observations of group B would do it.
+
+After adding the weights we can again use `lm()` to obtain the mean, this time including the weights via the `weight` argument.
+
+```{r}
+data <- mutate(data, weight = c(1.5, 0.75, 0.75))
+
+lm(outcome ~ 1, data = data, weights = weight) |>
+  summary()
+```
+
+Now we get a more representative estimate of 4.25.
+
+We specified the weights manually, but we can also use an R package to calculate the weights for us. Speci
+
+```{r}
+inputter <- list(age = c("young" = 0.50, "old" = 0.50))
+
+weights <- anesrake(
+  inputter = inputter,
+  dataframe = as.data.frame(data),
+  caseid = data$id
+)
+
+weights$weightvec
+```
+
+This produces the same weights we specified manually previously.
+
+## Another example
+
+```{r}
+#| label: harder-example
+# Parameters
+M_male <- 5
+M_female <- 4
+SD <- 2
+N_male <- 400
+N_female <- 600
+
+# Simulate
+samples_male <- mvrnorm(
+  n = N_male,
+  mu = M_male,
+  Sigma = SD^2,
+  empirical = TRUE
+)
+
+samples_female <- mvrnorm(
+  n = N_female,
+  mu = M_female,
+  Sigma = SD^2,
+  empirical = TRUE
+)
+
+# Prepare data
+colnames(samples_male) <- c("outcome")
+colnames(samples_female) <- c("outcome")
+
+data_male <- samples_male |>
+  as_tibble() |>
+  mutate(sex = "male")
+data_female <- samples_female |>
+  as_tibble() |>
+  mutate(sex = "female")
+
+data <- bind_rows(data_male, data_female) |>
+  mutate(
+    id = 1:n(),
+    sex = factor(sex)
+  )
+
+inputter <- list(
+  sex = c(
+    "male" = 0.50,
+    "female" = 0.50
+  )
+)
+
+weights <- anesrake(
+  inputter = inputter,
+  dataframe = as.data.frame(data),
+  caseid = data$id
+)
+
+summary(weights)
+
+data <- mutate(data, weight = weights$weightvec)
+
+lm(outcome ~ 1, data = data) |>
+  summary()
+lm(outcome ~ 1, data = data, weights = weight) |>
+  summary()
+
+lm(outcome ~ 1, data = data) |>
+  predictions(newdata = datagrid())
+
+lm(outcome ~ 1, data = data, weights = weight) |>
+  predictions(newdata = datagrid())
+
+lm(outcome ~ 1 + sex, data = data) |>
+  avg_predictions(newdata = datagrid(sex = unique))
+```
+
+```{r}
+#| label: simple-example-survey
+data <- tribble(
+  ~id, ~sex,     ~outcome,
+  1,   "male",   1,
+  2,   "male",   2,
+  5,   "female", 2,
+  6,   "female", 4,
+  7,   "female", 2
+)
+
+data <- mutate(data, sex = factor(sex), pop = 2000)
+
+design <- svydesign(id = ~0, data = data, fpc = ~pop)
+svymean(~outcome, design)
+
+pop_sex <- data.frame(
+  sex = c("male", "female"),
+  Freq = c(1000, 1000)
+)
+
+rake <- rake(
+  design,
+  list(~sex),
+  list(pop_sex),
+)
+
+svymean(~outcome, rake)
+```
