@@ -1,0 +1,10 @@
+id,name,latin_name,category,description,source,tags,citekey,counter,include,notes
+1,Meadow vole,Microtus pennsylvanicus,Mammals,"One study found that only 12% of meadow voles survive the first month, with most voles likely dying due to predation.",https://doi.org/10.2307/2422671,predation,clutton-brock1998,,1,
+2,Orangutan,Pongo pygmaeus,Mammals,Male orangutans frequently force female orangutans to mate with them.,https://doi.org/10.1016/S0003-3472(85)80063-4,sexual coercion,mitani1985,,1,
+3,Brown-headed cowbird,Molothrus ater,Birds,Cowbirds lay their eggs in the nests of other birds and display 'mafia' like behavior by destroying eggs or nestlings of hosts if they eject their eggs.,https://doi.org/10.1073/pnas.0609710104,brood parasitism,hoover2007,https://doi.org/10.5751/JFO-00180-930404,1,
+4,Meerkat,Suricata suricatta,Mammals,Dominant females commonly kill pups born to subordinates and temporarily expel subordinate females from the group during the latter months of their own pregnancy.,https://doi.org/10.1098/rspb.1998.0573,infanticide; expulsion,turner2022,,1,
+5,Common cuckoo,Cuculus canorus,Birds,"The common cuckoo female lays one egg is the nest of other birds and usually removes and eats one of the host’s eggs. In general, the cuckoo egg hatches before those of the host and the cuckoo chicks start evicting host offspring from the nest.",https://doi.org/10.1016/j.anbehav.2005.03.031,brood parasitism,martín-gálvez2005,,1,
+6,-,Forelius pusillus,Insects,"In the Brazilian ant Forelius pusillus, the nest entrance is closed at sunset. One to eight workers ﬁnish the job from the outside and, in doing so, sacriﬁce their lives.",https://doi.org/10.1086/591688,sacrifice,tofilski2008,,1,
+7,Podarcis muralis: the common wall lizard,,,,Johanssen (2021),,,,0,
+8,New world screw fly,,,,Johanssen (2021),,,,0,
+9,"Trichinella, Echinococcus spp., Leishmania, Sarcoptes scabiei canis, Babesia, Trichomonosis, and Haemosporida.",,,,Johanssen (2021),,,,0,

@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.willemsleegers.com/index.html</loc>
-    <lastmod>2023-10-31T12:35:44.624Z</lastmod>
+    <lastmod>2024-03-11T08:34:26.511Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/cv/cv.html</loc>
@@ -86,10 +86,14 @@
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/blog.html</loc>
-    <lastmod>2022-04-02T20:54:40.287Z</lastmod>
+    <lastmod>2022-04-13T09:02:20.106Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/27-custom-brms-functions/custom-brms-functions.html</loc>
-    <lastmod>2024-03-07T20:19:52.344Z</lastmod>
+    <lastmod>2024-03-11T08:24:44.940Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/28-sad-animal-facts/sad-animal-facts.html</loc>
+    <lastmod>2024-03-11T21:21:04.826Z</lastmod>
   </url>
 </urlset>

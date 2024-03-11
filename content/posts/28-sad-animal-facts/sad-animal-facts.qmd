@@ -1,0 +1,69 @@
+---
+title: "Sad wild animal facts"
+description: "A collection of facts about wild animals that make me sad."
+date: 2024-03-11
+categories:
+  - wild animals
+  - wild animal suffering
+toc: true
+bibliography: references.bib
+---
+
+> Let us understand, once for all, that the ethical process of society depends, not on imitating the cosmic process, still less on running away from it, but in combating it.
+>
+> Thomas Huxley
+
+This post serves to illustrate why I agree with the quote above. Below I list examples of what happens in nature that I think are just horrible and that I wish we could do something about.
+
+The list is not complete and I intend to continuously update it when I encounter more sad facts.
+
+*Last updated: `r lubridate::stamp_date("March 1, 1999", quiet = TRUE)(Sys.Date())`*
+
+```{r}
+#| label: setup
+#| message: false
+#| echo: false
+data <- readr::read_csv("./data/animals.csv", na = c("", "-"))
+data <- dplyr::filter(data, include == 1)
+
+categories <- data |>
+  dplyr::pull(category) |>
+  unique()
+```
+
+```{r}
+#| label: sad-animal-fact
+#| results: asis
+#| echo: false
+for (current_category in categories) {
+  subset <- dplyr::filter(data, category == current_category)
+  cat(paste("##", current_category))
+  cat("\n\n")
+  for (i in 1:nrow(subset)) {
+    name <- subset$name[i]
+    latin_name <- subset$latin_name[i]
+    description <- subset$description[i]
+    citekey <- subset$citekey[i]
+
+    name <- dplyr::if_else(is.na(name), latin_name, name)
+
+    image <- stringr::str_to_lower(name)
+    image <- stringr::str_replace_all(image, " ", "-")
+    image <- paste0("images/", image, ".jpg")
+
+    cat(paste("###", name))
+    cat("\n\n")
+
+    if (file.exists(image)) {
+      cat(paste0("![](", image), ")")
+      cat("\n\n")
+    }
+
+    cat(paste("**Scientific name**:", latin_name))
+    cat("\n\n")
+
+    cat(paste0(description, " [@", citekey, "]"))
+    cat("\n\n")
+  }
+}
+```

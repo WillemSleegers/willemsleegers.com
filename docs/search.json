@@ -25,7 +25,7 @@
     "href": "index.html#blog-posts",
     "title": "dr. Willem Sleegers",
     "section": "Blog posts",
-    "text": "Blog posts\n\n\n\n\n\nCustom functions to inspect the chains of a Bayesian regression model using brms\n\n\n\n\n\n\nstatistics\n\n\npackage\n\n\nBayesian statistics\n\n\n\nA post on functions from my own personal package for running Bayesian analyses.\n\n\n\n\n\nMar 6, 2024\n\n\n\n\n\n\n\nBayesian tutorial: Two groups\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nBayesian statistics\n\n\nregression\n\n\n\nThe fourth of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model the difference between two groups.\n\n\n\n\n\nApr 24, 2023\n\n\n\n\n\n\n\nBayesian tutorial: Correlation\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nBayesian statistics\n\n\nregression\n\n\n\nThe third of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model a correlation.\n\n\n\n\n\nFeb 12, 2023\n\n\n\n\n\n\nNo matching items\n\n\nMore posts"
+    "text": "Blog posts\n\n\n\n\n\nSad wild animal facts\n\n\n\n\n\n\nwild animals\n\n\nwild animal suffering\n\n\n\nA collection of facts about wild animals that make me sad.\n\n\n\n\n\nMar 6, 2024\n\n\n\n\n\n\n\nCustom functions to inspect the chains of a Bayesian regression model using brms\n\n\n\n\n\n\nstatistics\n\n\npackage\n\n\nBayesian statistics\n\n\n\nA post on some custom functions to inspect the chains of a Bayesian regression model using brms.\n\n\n\n\n\nMar 6, 2024\n\n\n\n\n\n\n\nBayesian tutorial: Two groups\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nBayesian statistics\n\n\nregression\n\n\n\nThe fourth of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model the difference between two groups.\n\n\n\n\n\nApr 24, 2023\n\n\n\n\n\n\nNo matching items\n\n\nMore posts"
   },
   {
     "objectID": "index.html#cv",
@@ -704,7 +704,7 @@
     "href": "content/blog.html",
     "title": "Blog",
     "section": "",
-    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nCustom functions to inspect the chains of a Bayesian regression model using brms\n\n\n\n\n\n\nstatistics\n\n\npackage\n\n\nBayesian statistics\n\n\n\nA post on functions from my own personal package for running Bayesian analyses.\n\n\n\n\n\nMar 6, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian tutorial: Two groups\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nBayesian statistics\n\n\nregression\n\n\n\nThe fourth of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model the difference between two groups.\n\n\n\n\n\nApr 24, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian tutorial: Correlation\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nBayesian statistics\n\n\nregression\n\n\n\nThe third of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model a correlation.\n\n\n\n\n\nFeb 12, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian tutorial: Single predictor regression\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nBayesian statistics\n\n\nregression\n\n\n\nThe second of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to run a regression with a single predictor.\n\n\n\n\n\nFeb 2, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian tutorial: Intercept-only model\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nBayesian statistics\n\n\nregression\n\n\n\nThe first of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to run an intercept-only regression model.\n\n\n\n\n\nFeb 1, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nVoting behavior of Dutch political parties on animal welfare motions\n\n\n\n\n\n\nanimal welfare\n\n\ndata cleaning\n\n\nAPIs\n\n\npolitics\n\n\n\n\n\n\n\n\n\nSep 24, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nAnimals slaughtered in the Netherlands\n\n\n\n\n\n\nanimal welfare\n\n\ndata cleaning\n\n\ndata visualization\n\n\n\n\n\n\n\n\n\nSep 18, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nSimulation-based power curves\n\n\n\n\n\n\npower analysis\n\n\nsimulation\n\n\nstatistics\n\n\n\n\n\n\n\n\n\nNov 9, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nSimulation-based power analyses\n\n\n\n\n\n\nstatistics\n\n\npower analysis\n\n\nsimulation\n\n\n\nSimulation-based power analyses make it easy to understand what power is: Power is simply counting how often you find the results you expect to find. Running simulation-based power analyses might be new for some, so in this blog post I present code to simulate data for a range of different scenarios.\n\n\n\n\n\nOct 23, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nThe right order of method sections\n\n\n\n\n\n\nwriting\n\n\nstatistics\n\n\npower analysis\n\n\n\nMethod sections in academic (psychology) papers usually consist of the following sections: Participants, Design, Procedure, and Materials. They also tend to be presented in this order. But is this, generally speaking, the right order? I don’t think so.\n\n\n\n\n\nJul 8, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nA tidystats example\n\n\n\n\n\n\ntidystats\n\n\nstatistics\n\n\ntutorial\n\n\n\nI illustrate how to use my tidystats software to analyze and report the results of a replication study that was part of the Many Labs 1 project.\n\n\n\n\n\nApr 25, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nWhy divide by \\(n - 1\\) to calculate the variance of a sample?“\n\n\n\n\n\n\nstatistics\n\n\n\nIn a recent tweet I asked the question why we use \\(n - 1\\) to calculate the variance of a sample. Many people contributed an answer, but many of them were of the type I feared. Most consisted of some statistical jargon that confuses me more, rather than less. Other responses were very useful, though, so I recommend checking out the replies to the tweet. In this post, I will try to describe my favorite way of looking at the issue.\n\n\n\n\n\nAug 5, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nUseful power analysis papers\n\n\n\n\n\n\nstatistics\n\n\npower analysis\n\n\n\nA curious thing happened in the field of social psychology: Social psychologists finally realized that statistical power is important. Unfortunately, they then skipped the step of figuring out how to do them correctly. Here I list some papers on power analyses that I hope help in improving the way we do them.\n\n\n\n\n\nAug 1, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nUnderstanding regression (part 1)\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nregression\n\n\n\nThis is Part 1 of a series of blog posts on how to understand regression. The goal is to develop an intuitive understanding of the different components of regression. In this first post, we figure out where the estimate of an intercept-only regression model comes from.\n\n\n\n\n\nAug 1, 2020\n\n\n\n\n\n\nNo matching items"
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nSad wild animal facts\n\n\n\n\n\n\nwild animals\n\n\nwild animal suffering\n\n\n\nA collection of facts about wild animals that make me sad.\n\n\n\n\n\nMar 6, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nCustom functions to inspect the chains of a Bayesian regression model using brms\n\n\n\n\n\n\nstatistics\n\n\npackage\n\n\nBayesian statistics\n\n\n\nA post on some custom functions to inspect the chains of a Bayesian regression model using brms.\n\n\n\n\n\nMar 6, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian tutorial: Two groups\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nBayesian statistics\n\n\nregression\n\n\n\nThe fourth of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model the difference between two groups.\n\n\n\n\n\nApr 24, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian tutorial: Correlation\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nBayesian statistics\n\n\nregression\n\n\n\nThe third of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model a correlation.\n\n\n\n\n\nFeb 12, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian tutorial: Single predictor regression\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nBayesian statistics\n\n\nregression\n\n\n\nThe second of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to run a regression with a single predictor.\n\n\n\n\n\nFeb 2, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian tutorial: Intercept-only model\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nBayesian statistics\n\n\nregression\n\n\n\nThe first of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to run an intercept-only regression model.\n\n\n\n\n\nFeb 1, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nVoting behavior of Dutch political parties on animal welfare motions\n\n\n\n\n\n\nanimal welfare\n\n\ndata cleaning\n\n\nAPIs\n\n\npolitics\n\n\n\n\n\n\n\n\n\nSep 24, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nAnimals slaughtered in the Netherlands\n\n\n\n\n\n\nanimal welfare\n\n\ndata cleaning\n\n\ndata visualization\n\n\n\n\n\n\n\n\n\nSep 18, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nSimulation-based power curves\n\n\n\n\n\n\npower analysis\n\n\nsimulation\n\n\nstatistics\n\n\n\n\n\n\n\n\n\nNov 9, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nSimulation-based power analyses\n\n\n\n\n\n\nstatistics\n\n\npower analysis\n\n\nsimulation\n\n\n\nSimulation-based power analyses make it easy to understand what power is: Power is simply counting how often you find the results you expect to find. Running simulation-based power analyses might be new for some, so in this blog post I present code to simulate data for a range of different scenarios.\n\n\n\n\n\nOct 23, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nThe right order of method sections\n\n\n\n\n\n\nwriting\n\n\nstatistics\n\n\npower analysis\n\n\n\nMethod sections in academic (psychology) papers usually consist of the following sections: Participants, Design, Procedure, and Materials. They also tend to be presented in this order. But is this, generally speaking, the right order? I don’t think so.\n\n\n\n\n\nJul 8, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nA tidystats example\n\n\n\n\n\n\ntidystats\n\n\nstatistics\n\n\ntutorial\n\n\n\nI illustrate how to use my tidystats software to analyze and report the results of a replication study that was part of the Many Labs 1 project.\n\n\n\n\n\nApr 25, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nWhy divide by \\(n - 1\\) to calculate the variance of a sample?“\n\n\n\n\n\n\nstatistics\n\n\n\nIn a recent tweet I asked the question why we use \\(n - 1\\) to calculate the variance of a sample. Many people contributed an answer, but many of them were of the type I feared. Most consisted of some statistical jargon that confuses me more, rather than less. Other responses were very useful, though, so I recommend checking out the replies to the tweet. In this post, I will try to describe my favorite way of looking at the issue.\n\n\n\n\n\nAug 5, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nUseful power analysis papers\n\n\n\n\n\n\nstatistics\n\n\npower analysis\n\n\n\nA curious thing happened in the field of social psychology: Social psychologists finally realized that statistical power is important. Unfortunately, they then skipped the step of figuring out how to do them correctly. Here I list some papers on power analyses that I hope help in improving the way we do them.\n\n\n\n\n\nAug 1, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nUnderstanding regression (part 1)\n\n\n\n\n\n\nstatistics\n\n\ntutorial\n\n\nregression\n\n\n\nThis is Part 1 of a series of blog posts on how to understand regression. The goal is to develop an intuitive understanding of the different components of regression. In this first post, we figure out where the estimate of an intercept-only regression model comes from.\n\n\n\n\n\nAug 1, 2020\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "content/posts/27-custom-brms-functions/custom-brms-functions.html",
@@ -747,5 +747,82 @@
     "title": "Custom functions to inspect the chains of a Bayesian regression model using brms",
     "section": "A simple model",
     "text": "A simple model\nLet’s run a simple model estimating the correlation between weight and height in the provided data set.\n\n\nCode\nmodel &lt;- brm(\n  height_z ~ 0 + weight_z,\n  data = data,\n  family = gaussian(),\n  sample_prior = TRUE,\n  seed = 4,\n  cores = 4,\n  threads = 4,\n  backend = \"cmdstanr\",\n  file = \"models/model.rds\",\n  file_refit = \"on_change\",\n  silent = 2\n)\n\nmodel\n\n\n Family: gaussian \n  Links: mu = identity; sigma = identity \nFormula: height_z ~ 0 + weight_z \n   Data: data (Number of observations: 352) \n  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;\n         total post-warmup draws = 4000\n\nPopulation-Level Effects: \n         Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nweight_z     0.76      0.04     0.69     0.82 1.00     3390     2645\n\nFamily Specific Parameters: \n      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsigma     0.66      0.02     0.61     0.71 1.00     3571     2932\n\nDraws were sampled using sample(hmc). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1)."
+  },
+  {
+    "objectID": "content/posts/28-sad-animal-facts/sad-animal-facts.html",
+    "href": "content/posts/28-sad-animal-facts/sad-animal-facts.html",
+    "title": "Sad wild animal facts",
+    "section": "",
+    "text": "Let us understand, once for all, that the ethical process of society depends, not on imitating the cosmic process, still less on running away from it, but in combating it.\nThomas Huxley\nThis post serves to illustrate why I agree with the quote above. Below I list examples of what happens in nature that I think are just horrible and that I wish we could do something about.\nThe list is not complete and I intend to continuously update it when I encounter more sad facts.\nLast updated: March 11, 2024"
+  },
+  {
+    "objectID": "content/posts/28-sad-animal-facts/sad-animal-facts.html#section",
+    "href": "content/posts/28-sad-animal-facts/sad-animal-facts.html#section",
+    "title": "Sad wild animal facts",
+    "section": "-",
+    "text": "-\nTest"
+  },
+  {
+    "objectID": "content/posts/28-sad-animal-facts/sad-animal-facts.html#test",
+    "href": "content/posts/28-sad-animal-facts/sad-animal-facts.html#test",
+    "title": "Sad wild animal facts",
+    "section": "-Test",
+    "text": "-Test"
+  },
+  {
+    "objectID": "content/posts/28-sad-animal-facts/sad-animal-facts.html#meadow-vole",
+    "href": "content/posts/28-sad-animal-facts/sad-animal-facts.html#meadow-vole",
+    "title": "Sad wild animal facts",
+    "section": "",
+    "text": "Test"
+  },
+  {
+    "objectID": "content/posts/28-sad-animal-facts/sad-animal-facts.html#orangutans",
+    "href": "content/posts/28-sad-animal-facts/sad-animal-facts.html#orangutans",
+    "title": "Sad wild animal facts",
+    "section": "Orangutans",
+    "text": "Orangutans\nTest"
+  },
+  {
+    "objectID": "content/posts/28-sad-animal-facts/sad-animal-facts.html#brown-headed-cowbird",
+    "href": "content/posts/28-sad-animal-facts/sad-animal-facts.html#brown-headed-cowbird",
+    "title": "Sad wild animal facts",
+    "section": "Brown-headed cowbird",
+    "text": "Brown-headed cowbird\nTest"
+  },
+  {
+    "objectID": "content/posts/28-sad-animal-facts/sad-animal-facts.html#meerkat",
+    "href": "content/posts/28-sad-animal-facts/sad-animal-facts.html#meerkat",
+    "title": "Sad wild animal facts",
+    "section": "Meerkat",
+    "text": "Meerkat\nTest"
+  },
+  {
+    "objectID": "content/posts/28-sad-animal-facts/sad-animal-facts.html#common-cuckoo",
+    "href": "content/posts/28-sad-animal-facts/sad-animal-facts.html#common-cuckoo",
+    "title": "Sad wild animal facts",
+    "section": "Common cuckoo",
+    "text": "Common cuckoo\nTest"
+  },
+  {
+    "objectID": "content/posts/28-sad-animal-facts/sad-animal-facts.html#mammals",
+    "href": "content/posts/28-sad-animal-facts/sad-animal-facts.html#mammals",
+    "title": "Sad wild animal facts",
+    "section": "Mammals",
+    "text": "Mammals\n\nMeadow vole\n\nScientific name: Microtus pennsylvanicus\nOne study found that only 12% of meadow voles survive the first month, with most voles likely dying due to predation. (Clutton-Brock et al., 1998)\n\n\nOrangutan\n\nScientific name: Pongo pygmaeus\nMale orangutans frequently force female orangutans to mate with them. (Mitani, 1985)\n\n\nMeerkat\n\nScientific name: Suricata suricatta\nDominant females commonly kill pups born to subordinates and temporarily expel subordinate females from the group during the latter months of their own pregnancy. (Turner et al., 2022)"
+  },
+  {
+    "objectID": "content/posts/28-sad-animal-facts/sad-animal-facts.html#birds",
+    "href": "content/posts/28-sad-animal-facts/sad-animal-facts.html#birds",
+    "title": "Sad wild animal facts",
+    "section": "Birds",
+    "text": "Birds\n\nBrown-headed cowbird\n\nScientific name: Molothrus ater\nCowbirds lay their eggs in the nests of other birds and display ‘mafia’ like behavior by destroying eggs or nestlings of hosts if they eject their eggs. (Hoover & Robinson, 2007)\n\n\nCommon cuckoo\n\nScientific name: Cuculus canorus\nThe common cuckoo female lays one egg is the nest of other birds and usually removes and eats one of the host’s eggs. In general, the cuckoo egg hatches before those of the host and the cuckoo chicks start evicting host offspring from the nest. (Martín-Gálvez et al., 2005)"
+  },
+  {
+    "objectID": "content/posts/28-sad-animal-facts/sad-animal-facts.html#insects",
+    "href": "content/posts/28-sad-animal-facts/sad-animal-facts.html#insects",
+    "title": "Sad wild animal facts",
+    "section": "Insects",
+    "text": "Insects\n\nForelius pusillus\nScientific name: Forelius pusillus\nIn the Brazilian ant Forelius pusillus, the nest entrance is closed at sunset. One to eight workers ﬁnish the job from the outside and, in doing so, sacriﬁce their lives. (Tofilski et al., 2008)"
   }
 ]
