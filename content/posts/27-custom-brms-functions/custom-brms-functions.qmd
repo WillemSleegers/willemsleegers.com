@@ -9,6 +9,7 @@ categories:
 code-fold: show
 code-tools: true
 toc: true
+draft: true
 format: 
   html: 
     df-print: kable
