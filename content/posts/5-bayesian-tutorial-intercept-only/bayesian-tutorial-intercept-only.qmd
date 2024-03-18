@@ -36,14 +36,10 @@ library(tidyverse)
 library(brms)
 library(tidybayes)
 library(ggdist)
+library(modelr)
 
 theme_set(theme_minimal())
-blue_1 <- "#d1e1ec"
-blue_2 <- "#b3cde0"
-blue_3 <- "#6497b1"
-blue_4 <- "#005b96"
-blue_5 <- "#03396c"
-blue_6 <- "#011f4b"
+colors <- c("#d1e1ec", "#b3cde0", "#6497b1", "#005b96", "#03396c", "#011f4b")
 
 options(
   mc.cores = 4,
@@ -195,19 +191,19 @@ model_height_prior <- brm(
 
 The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the `predict()` function to get these draws (e.g., `predict(model_height_prior)`, but I prefer to use the tidybayes package because it's a really nice package that simplifies a lot of things about working with brms models.
 
-The tidybayes function to use is `add_predicted_draws()`. The function takes a data frame and a model object to add predictions for each row in the data frame. This is the tricky part because we don't really have any data to supply because it's an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to obtain predicted values for. We don't have that, so we need to give it an empty data frame. You can't really give it an empty data frame so instead I'll give it a data frame with a column (`distribution`) and a single row specifying that the predicted values reflect draws from the prior. This will produce a data frame with 4000 predicted values of height. This is another reason this step is kinda tricky. The function turns out data frame that consists of 1 row into a data frame that consists of 4000 rows. If we had a data frame consisting of more rows, we could get a new data frame that has rows equal to 4000 times the number of rows.
+The tidybayes function to use is `add_predicted_draws()`. The function takes a data frame and a model object to add predictions for each row in the data frame. This is the tricky part because we don't really have any data to supply because it's an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to obtain predicted values for. We don't have that, so we need to give it an empty data frame. To simplify this, we'll use a function from the modelr package called `data_grid()`. This function can be used to construct a data frame with predictors from the model. In this case we don't have any predictors, but we can still specify the model. It will then create an empty data frame for us that we can add predictions to. Note that means the data frame starts off empty but we then add draws to the data frame, creating a larger data frame.
 
-After obtain the draws, I plot the draws using a simple histogram.
+After obtaining the draws, I plot the draws using a simple histogram.
 
 ```{r}
 #| label: prior-predictive
 #| fig-cap: Prior predictive check
 #| warning: false
-heights_prior <- tibble(distribution = "prior") %>%
+heights_prior <- data_grid(.model = model_height_prior) |>
   add_predicted_draws(model_height_prior, value = "height")
 
 ggplot(heights_prior, aes(x = height)) +
-  geom_histogram(binwidth = 1, fill = blue_3) +
+  geom_histogram(binwidth = 1, fill = colors[3]) +
   labs(x = "Height", y = "") +
   coord_cartesian(xlim = c(50, 250))
 ```
@@ -257,15 +253,15 @@ Inspecting the chains also showed us the posterior distributions of the two para
 #| label: prior-posterior-mu
 #| fig-cap-: Prior vs. posterior for $\mu$
 #| warning: false
-draws_prior <- model_height_prior %>%
-  spread_draws(b_Intercept, sigma) %>%
+draws_prior <- model_height_prior |>
+  spread_draws(b_Intercept, sigma) |>
   mutate(distribution = "prior")
 
-draws_posterior <- model_height %>%
-  spread_draws(b_Intercept, sigma) %>%
+draws_posterior <- model_height |>
+  spread_draws(b_Intercept, sigma) |>
   mutate(distribution = "posterior")
 
-draws <- bind_rows(draws_prior, draws_posterior) %>%
+draws <- bind_rows(draws_prior, draws_posterior) |>
   mutate(distribution = fct_relevel(distribution, "prior"))
 
 ggplot(draws, aes(x = b_Intercept, fill = distribution)) +
@@ -275,7 +271,7 @@ ggplot(draws, aes(x = b_Intercept, fill = distribution)) +
     y = "",
     fill = "Distribution"
   ) +
-  scale_fill_manual(values = c(blue_2, blue_4)) +
+  scale_fill_manual(values = c(colors[2], colors[5])) +
   coord_cartesian(xlim = c(140, 190))
 ```
 
@@ -294,7 +290,7 @@ ggplot(draws, aes(x = sigma, fill = distribution)) +
     y = "",
     fill = "Distribution"
   ) +
-  scale_fill_manual(values = c(blue_2, blue_4)) +
+  scale_fill_manual(values = c(colors[2], colors[5])) +
   coord_cartesian(xlim = c(0, 25))
 ```
 
@@ -306,17 +302,19 @@ A final step is to conduct a posterior predictive check. Since we also conducted
 #| label: prior-posterior-predictive-check
 #| fig-cap: Prior and posterior predictive check
 #| warning: false
-heights_posterior <- tibble(distribution = "posterior") %>%
-  add_predicted_draws(model_height, value = "height")
+heights_posterior <- data_grid(.model = model_height) |>
+  add_predicted_draws(model_height, value = "height") |>
+  mutate(distribution = "posterior")
 
-heights <- bind_rows(heights_prior, heights_posterior) %>%
-  ungroup() %>%
+heights_prior <- mutate(heights_prior, distribution = "prior")
+
+heights <- bind_rows(heights_prior, heights_posterior) |>
   mutate(distribution = fct_relevel(distribution, "prior"))
 
 ggplot(heights, aes(x = height, fill = distribution)) +
   geom_histogram(binwidth = 1, position = "identity") +
   labs(x = "Height", y = "", fill = "Distribution") +
-  scale_fill_manual(values = c(blue_2, blue_4)) +
+  scale_fill_manual(values = c(colors[2], colors[5])) +
   coord_cartesian(xlim = c(100, 250))
 ```
 
