@@ -6,6 +6,7 @@
       "/content/projects/cognitive-dissonance/cognitive-dissonance.html",
       "/content/projects/statcheck/statcheck.html",
       "/content/projects/tidystats/tidystats.html",
+      "/content/posts/30-predicting-values-of-intercept-only-models/predicting-values-of-intercept-only-models.html",
       "/content/posts/28-sad-animal-facts/sad-animal-facts.html",
       "/content/posts/20-bayesian-tutorial-2-groups/bayesian-tutorial-2-groups.html",
       "/content/posts/19-bayesian-tutorial-correlations/bayesian-tutorial-correlations.html",
@@ -34,6 +35,7 @@
   {
     "listing": "/content/blog.html",
     "items": [
+      "/content/posts/30-predicting-values-of-intercept-only-models/predicting-values-of-intercept-only-models.html",
       "/content/posts/28-sad-animal-facts/sad-animal-facts.html",
       "/content/posts/20-bayesian-tutorial-2-groups/bayesian-tutorial-2-groups.html",
       "/content/posts/19-bayesian-tutorial-correlations/bayesian-tutorial-correlations.html",
