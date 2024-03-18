@@ -45,6 +45,13 @@ for (current_category in categories) {
     description <- subset$description[i]
     citekey <- subset$citekey[i]
 
+    # Find and replace the final period with the citekey and period
+    description <- stringr::str_replace(
+      description,
+      pattern = ".$",
+      replacement = paste0(" [@", citekey, "].")
+    )
+
     name <- dplyr::if_else(is.na(name), latin_name, name)
 
     image <- stringr::str_to_lower(name)
@@ -62,7 +69,7 @@ for (current_category in categories) {
     cat(paste("**Scientific name**:", latin_name))
     cat("\n\n")
 
-    cat(paste0(description, " [@", citekey, "]"))
+    cat(description)
     cat("\n\n")
   }
 }
