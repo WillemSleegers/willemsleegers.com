@@ -24,14 +24,10 @@ If you want to follow along, run the following setup code.
 library(tidyverse)
 library(brms)
 library(tidybayes)
+library(modelr)
 
 theme_set(theme_minimal())
-blue_1 <- "#d1e1ec"
-blue_2 <- "#b3cde0"
-blue_3 <- "#6497b1"
-blue_4 <- "#005b96"
-blue_5 <- "#03396c"
-blue_6 <- "#011f4b"
+colors <- c("#d1e1ec", "#b3cde0", "#6497b1", "#005b96", "#03396c", "#011f4b")
 
 options(
   mc.cores = 4,
@@ -94,19 +90,21 @@ model_height_weight_prior <- brm(
   ),
   sample_prior = "only",
   seed = 4,
+  silent = 2,
   file = "models/model_height_weight_prior.rds"
 )
 ```
 
 We can use the `spread_draws()` function to get draws from the posterior distribution of the intercept and slope parameters. With an intercept and slope we can visualize the relationship we're interested in. Remember, though, that brms will give you 4000 draws by default from the posteriors. In other words, you get 4000 intercepts and slopes. That's a bit much to visualize, so let's only draw 100 intercepts and slopes.
 
-To help make sense of the sensibility of the slopes I've added the average weight to the weights so we're back on the normal scale and not the mean centered scale and I've added two dashed lines to indicate a very obvious minimum and a possible maximum height to help figure out whether the priors produce sensible results.
+To help make sense of the sensibility of the slopes I've added the average weight to the weights so we're back on the normal scale and not the mean centered scale and I've added two dashed lines to indicate a very obvious minimum and a possible maximum height.
 
 ```{r}
 #| label: prior-predictive-check-weight
 #| fig-cap: A prior predictive check of the relationship between weight and height
 draws <- spread_draws(
-  model_height_weight_prior, b_Intercept, b_weight_mc,
+  model_height_weight_prior,
+  b_Intercept, b_weight_mc,
   ndraws = 100
 )
 
@@ -145,6 +143,7 @@ model_height_weight_prior_2 <- brm(
   ),
   sample_prior = "only",
   seed = 4,
+  silent = 2,
   file = "models/model_height_weight_prior_2.rds"
 )
 ```
@@ -173,7 +172,7 @@ ggplot(data, aes(x = weight_mc, y = height)) +
   scale_x_continuous(labels = function(x) round(x + weight_mean))
 ```
 
-This looks a lot better, so let's run the model for real now.
+This looks a lot better, so let's run the model for real now. `sample_prior` is now set to `TRUE` so we obtain samples of both prior and posterior distributions.
 
 ```{r}
 #| label: weight-model
@@ -188,19 +187,22 @@ model_height_weight <- brm(
   ),
   sample_prior = TRUE,
   seed = 4,
+  silent = 2,
   file = "models/model_height_weight.rds"
 )
 
 model_height_weight
 ```
 
-We see that the estimate for the weight predictor is `r round(fixef(model_height_weight)[2, 1], 2)`. For every increase of weight by 1 we can expect height to increase by this number. We can also be fairly confident in this kind of relationship because the lower and upper bound of the 95% CI ranges from `r round(fixef(model_height_weight)[2, 3], 2)` to `r round(fixef(model_height_weight)[2, 4], 2)`. These numbers are what we are usually interested in, but let's also plot the the entire posterior for the slope estimate so can see the entire distribution and not just this summary. Let's also add the prior so we can see how much that changed as a result of the data. This time we use `gather_draws()` to create a long data frame, instead of a wide data frame that you get with `spread_draws()`.
+The estimate for the weight predictor is `r round(fixef(model_height_weight)[2, 1], 2)`. For every increase of weight by 1 we can expect height to increase by this number. We can also be fairly confident in this kind of relationship because the lower and upper bound of the 95% CI ranges from `r round(fixef(model_height_weight)[2, 3], 2)` to `r round(fixef(model_height_weight)[2, 4], 2)`. 
+
+These numbers are what we are usually interested in, but let's also plot the the entire posterior for the slope estimate so can see the entire distribution and not just the summary results. Let's also add the prior so we can see how much that changed as a result of the data. This time we use `gather_draws()` to create a long data frame, instead of a wide data frame that you get with `spread_draws()`.
 
 ```{r}
 #| label: weight-prior-posterior
 #| warning: false
-draws <- model_height_weight %>%
-  gather_draws(prior_b, b_weight_mc) %>%
+draws <- model_height_weight |>
+  gather_draws(prior_b, b_weight_mc) |>
   mutate(
     distribution = if_else(
       str_detect(.variable, "prior"), "prior", "posterior"
@@ -210,70 +212,68 @@ draws <- model_height_weight %>%
 ggplot(draws, aes(x = .value, fill = fct_rev(distribution))) +
   geom_histogram(binwidth = 0.05, position = "identity") +
   labs(x = "Slope", y = "", fill = "Distribution") +
-  scale_fill_manual(values = c(blue_2, blue_4)) +
+  scale_fill_manual(values = c(colors[2], colors[5])) +
   coord_cartesian(xlim = c(-5, 5))
 ```
 
 Apparently our prior was still very uninformed because the posterior shows we can be confident in a much narrower range of slopes!
 
-Let's also create another plot in which we plot the slope and its posterior against the observed data. The way to do this is by first creating a data frame containing weights that we want to predict the heights for. The (mean-centered) weights in the data range from `r round(min(data$weight_mc), 2)` to `r round(max(data$weight_mc), 2)`, so we can roughly use that same range.
+Let's also create another plot in which we plot the slope and its posterior against the observed data. The way to do this is by first creating a data frame containing weights that we want to predict the heights for. Below I use the `data_grid()` function from the modelr package to create this data frame. Specifically, I use it to create a data frame with a `weight_mc` column that has all unique (rounded) values of the mean-centered weight column.
 
-Then we use `add_epred_draws()` to predict the expected height for each of the weights we stored in the data frame. This is not a single value. Instead, we get a distribution of possible heights for each weight value. We could plot all of these distributions, for example by creating a shaded region at each weight representing how likely the height is, or we can summarize that distribution of heights for each weight. The `tidybayes` package has the `median_qi()` function to summarize a distribution to a point and interval. By default it uses the median for the point summary and a 5% and 95% quartile range for the interval; the same summary we saw in the output from `brm`.
+Then we use `add_epred_draws()` to predict the expected height for each mean centered weight. This is not a single value per weight. Instead, we get a distribution of possible heights for each weight value. We could plot all of these distributions, for example by creating a shaded region at each weight representing how likely the height is, or we can summarize that distribution of heights for each weight. The `tidybayes` package has the `median_qi()` function to summarize a distribution to a point and interval. By default it uses the median for the point summary and a 5% and 95% quartile range for the interval; the same summary we saw in the output from `brm`.
+
+Finally, I add a new column called `weight` with weight values back on the normal scale (not mean centered).
 
 ```{r}
 #| label: weight-slope
-slopes_qi <- tibble(
-  weight_mc = seq(from = -15, to = 20, by = 1)
-) %>%
-  add_epred_draws(model_height_weight) %>%
-  median_qi()
+slopes_qi <- data_grid(data, weight_mc = round(weight_mc)) |>
+  add_epred_draws(model_height_weight) |>
+  median_qi() |>
+  mutate(weight = weight_mc + weight_mean)
 
 ggplot() +
   geom_ribbon(
-    mapping = aes(ymin = .lower, ymax = .upper, x = weight_mc),
+    mapping = aes(ymin = .lower, ymax = .upper, x = weight),
     data = slopes_qi,
     alpha = .25
   ) +
   geom_line(
-    mapping = aes(x = weight_mc, y = .epred),
+    mapping = aes(x = weight, y = .epred),
     data = slopes_qi
   ) +
   geom_point(
-    mapping = aes(x = weight_mc, y = height),
+    mapping = aes(x = weight, y = height),
     data = data,
     alpha = .25
   ) +
-  labs(x = "Weight", y = "Height") +
-  scale_x_continuous(labels = function(x) round(x + weight_mean))
+  labs(x = "Weight", y = "Height")
 ```
 
 This graph is great because it shows us how confident we can be in the regression line. It does omit one source of uncertainty, though. The previous plot only shows the uncertainty about the regression line (the intercept and slope). We can also make a plot with predicted values of individual heights, which also incorporates the uncertainty from the $\sigma$ parameter. To get these values, we use `add_predicted_draws()`.
 
 ```{r}
 #| label: weight-slope-predicted
-predicted_slopes_qi <- tibble(
-  weight_mc = seq(from = -20, to = 20, by = 1)
-) %>%
-  add_predicted_draws(model_height_weight) %>%
-  median_qi()
+predicted_slopes_qi <- data_grid(data, weight_mc = round(weight_mc)) |>
+  add_predicted_draws(model_height_weight) |>
+  median_qi() |>
+  mutate(weight = weight_mc + weight_mean)
 
 ggplot() +
   geom_ribbon(
-    aes(ymin = .lower, ymax = .upper, x = weight_mc),
+    aes(ymin = .lower, ymax = .upper, x = weight),
     data = predicted_slopes_qi,
     alpha = .25
   ) +
   geom_line(
-    aes(x = weight_mc, y = .prediction),
+    aes(x = weight, y = .prediction),
     data = predicted_slopes_qi
   ) +
   geom_point(
-    aes(x = weight_mc, y = height),
+    aes(x = weight, y = height),
     data = data,
     alpha = .25
   ) +
-  labs(x = "Weight", y = "Height") +
-  scale_x_continuous(labels = function(x) round(x + weight_mean))
+  labs(x = "Weight", y = "Height")
 ```
 
 While this graph is pretty cool, I haven't ever seen one in a social psychology paper, probably because academic psychologists are mostly interested in the parameters (e.g., means, correlations) rather than predicting individual observations.

@@ -10,9 +10,7 @@ categories:
 code-fold: true
 code-tools: true
 toc: true
-format: 
-  html: 
-    df-print: kable
+df-print: kable
 ---
 
 In my previous [blog post](../18-bayesian-tutorial-simple-regression/bayesian-tutorial-simple-regression.qmd), I showed how to use brms and `tidybayes` to run a simple regression, i.e., a regression with a single predictor. This analysis required us to set three priors: an intercept prior, a sigma prior, and a slope prior. We can simplify this analysis by turning it into a correlational analysis. This will remove the intercept prior and lets us think about the prior for the slope as a standardized effect size, i.e., the correlation. 
@@ -25,14 +23,10 @@ To run a correlational analysis we'll need to standardize the outcome and predic
 library(tidyverse)
 library(brms)
 library(tidybayes)
+library(modelr)
 
 theme_set(theme_minimal())
-blue_1 <- "#d1e1ec"
-blue_2 <- "#b3cde0"
-blue_3 <- "#6497b1"
-blue_4 <- "#005b96"
-blue_5 <- "#03396c"
-blue_6 <- "#011f4b"
+colors <- c("#d1e1ec", "#b3cde0", "#6497b1", "#005b96", "#03396c", "#011f4b")
 
 options(
   mc.cores = 4,
@@ -42,8 +36,8 @@ options(
 )
 
 data <- read_csv("Howell1.csv")
-data <- data %>%
-  filter(age >= 18) %>%
+data <- data |>
+  filter(age >= 18) |>
   mutate(
     height_z  = (height - mean(height)) / sd(height),
     weight_z  = (weight - mean(weight)) / sd(weight)
@@ -71,7 +65,7 @@ Let's start with the prior for the slope ($\beta$). A correlation takes a value 
 ```{r}
 #| label: slope-prior
 #| fig-cap: Prior distribution for the correlation
-prior <- tibble(r = seq(-1, 1, .01)) %>%
+prior <- tibble(r = seq(-1, 1, .01)) |>
   mutate(
     prob = dskew_normal(r, xi = .7, omega = .4, alpha = -3)
   )
@@ -100,8 +94,9 @@ model <- brm(
       class = "b", lb = -1, ub = 1
     )
   ),
-  sample_prior = TRUE, ,
+  sample_prior = TRUE,
   seed = 4,
+  silent = 2,
   file = "models/model.rds"
 )
 
@@ -158,16 +153,26 @@ model_generic_prior <- brm(
   family = gaussian(),
   prior = c(
     prior(uniform(0, 1), class = "sigma", ub = 1),
-    prior(
-      normal(0, 1),
-      class = "b", lb = -1, ub = 1
-    )
+    prior(normal(0, 1), class = "b", lb = -1, ub = 1)
   ),
+  sample_prior = TRUE,
   seed = 4,
+  silent = 2,
   file = "models/model_generic_prior_z.rds"
 )
 
 model_generic_prior
+
+model_generic_prior |>
+  gather_draws(b_weight_z, prior_b) |>
+  mutate(
+    distribution = if_else(
+      str_detect(.variable, "prior"),
+      "prior", "posterior"
+    )
+  ) |>
+  ggplot(aes(x = .value, fill = distribution)) +
+  geom_histogram(position = "identity")
 ```
 
 The previous estimate of the correlation was `r round(fixef(model)[1, 1], 2)` and now it's `r round(fixef(model_generic_prior)[1, 1], 2)`. Apparently the prior did not influence the final estimate. This hopefully alleviates some worries about priors always having a strong impact on the final results and it also shows you don't always need to carefully construct a prior. Of course, in certain cases the prior will have a strong influence, for example when the prior is very strong or when there isn't much data. The prior we used here was broad enough so it didn't exert a strong influence on the final estimates.
@@ -186,31 +191,35 @@ Running multiple models to test each correlation is a bit of a chore, but it's m
 data <- mutate(data, age_z = (age - mean(age)) / sd(age))
 
 r_height_weight <- brm(
-  height_z ~ 0 + weight_z,  
-  data = data, 
+  height_z ~ 0 + weight_z,
+  data = data,
   family = gaussian(),
   prior = c(
-      prior(uniform(0, 1), class = "sigma", ub = 1),
-      prior(normal(0, 1), class = "b", lb = -1, ub = 1)
-    ), 
+    prior(uniform(0, 1), class = "sigma", ub = 1),
+    prior(normal(0, 1), class = "b", lb = -1, ub = 1)
+  ),
   seed = 4,
+  silent = 2,
   file = "models/r_height_weight.rds"
 )
 
 r_height_age <- update(
-  r_height_weight, 
-  height_z ~ 0 + age_z, 
+  r_height_weight,
+  height_z ~ 0 + age_z,
   newdata = data,
   seed = 4,
+  silent = 2,
   control = list(adapt_delta = .9),
   file = "models/r_height_age.rds"
 )
 
 r_weight_age <- update(
-  r_height_weight, 
-  weight_z ~ 0 + age_z, 
+  r_height_weight,
+  weight_z ~ 0 + age_z,
   newdata = data,
   seed = 4,
+  silent = 2,
+  control = list(adapt_delta = .9),
   file = "models/r_weight_age.rds"
 )
 ```
@@ -219,7 +228,6 @@ Initially, the model correlating height with age produced a warning about diverg
 
 The correlations are in the table below (the `Estimate` column).
 
-
 ```{r}
 #| label: one-by-one-plot
 #| tbl-cap: The three correlations and their 95% HDI modeled one-by-one.
@@ -227,7 +235,7 @@ bind_rows(
   as_tibble(fixef(r_height_weight)),
   as_tibble(fixef(r_height_age)),
   as_tibble(fixef(r_weight_age))
-) %>%
+) |>
   mutate(
     Pair = c("height - weight", "height - age", "weight - age"),
     .before = Estimate
@@ -281,6 +289,7 @@ model <- brm(
   prior = prior(lkj(2), class = rescor),
   sample_prior = TRUE,
   seed = 4,
+  silent = 2,
   file = "models/multiple-correlations.rds"
 )
 

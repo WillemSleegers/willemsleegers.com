@@ -224,6 +224,15 @@ ggplot(draws, aes(x = .value, fill = .variable)) +
   labs(x = "proportion of survivors", y = "", fill = "Sex") +
   scale_x_continuous(limits = c(0, 1)) +
   scale_fill_manual(values = c(blue_2, blue_4))
+
+data_grid(data, sex) |>
+  add_epred_draws(fit_sex) |>
+  ggplot(aes(x = .epred, fill = sex)) +
+  geom_histogram(binwidth = 0.01) +
+  labs(x = "proportion of survivors", y = "", fill = "Sex") +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_fill_manual(values = c(blue_2, blue_4))
+
 ```
 
 Looks like a sizeable difference between the two sexes, which is not at all surprising of course. Women and children were put in lifeboats first, leading to more women surviving than men. We can calculate the size of this difference by simply converting the estimates to proportions and calculating the difference.

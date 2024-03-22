@@ -10,16 +10,14 @@ categories:
 code-fold: true
 code-tools: true
 toc: true
-format: 
-   html:
-     df-print: kable
+df-print: kable
 ---
 
 This post is the first of a series of tutorial posts on Bayesian statistics. I'm not an expert on this topic, so this tutorial is partly, if not mostly, a way for me to figure it out myself.
 
 The goal will be to go through each step of the data analysis process and make things as intuitive and clear as possible. I'll use the brms package to run the models and I will rely heavily on the book [Statistical Rethinking](https://xcelab.net/rm/statistical-rethinking/ "Statistical Rethinking website"){target="_blank"} by Richard McElreath.
 
-The basic idea behind Bayesian statistics is that we start off with prior beliefs about the parameters in the model and then update those beliefs using data. That means that for all models you need to figure out what your beliefs are before running any analyses. This is very different from frequentist statistics and probably the most off-putting part of running Bayesian analyses. However, my goal is to make this relatively easy by focusing on visualizing priors and how they change as a function of the Bayesian process. I'll also try to come up with some methods to simplify the construction of priors, with the goal to have them be reasonable and non-controversial.
+The basic idea behind Bayesian statistics is that we start off with prior beliefs about the parameters in the model and then update those parameter beliefs using data. That means that for all models you need to figure out what your beliefs are before running any analyses. This is very different from frequentist statistics and probably the most off-putting part of running Bayesian analyses. However, my goal is to make this relatively easy by focusing on visualizing priors and how they change as a function of the Bayesian process. I'll also try to come up with some methods to simplify the construction of priors, with the goal to have them be reasonable and non-controversial.
 
 In some cases I might not even use a prior I personally believe in. Instead I'll use a prior that represents a particular position or skepticism so that the results of the analysis can be used to change the mind of the skeptic, rather than me changing whatever I happen to believe.
 
@@ -27,7 +25,7 @@ With this in mind, let's begin.
 
 ## Setup
 
-In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default ggplot2 theme and some colors. Finally, I set several brms specific options to speed up the functions and automatically re-run models if a model has changed. If a model has not changed, the results will be read from a file to speed things up.
+In the code chunk below I show some setup code to get started, starting with the packages. After loading the packages I set the default ggplot2 theme and some colors. Finally, I set several brms specific options to speed up the functions and automatically re-run models if a model has changed. If a model has not changed, the results will be read from a file instead of re-running the model.
 
 ```{r}
 #| label: setup
@@ -35,7 +33,6 @@ In the code chunk below I show some setup code to get started, starting with the
 library(tidyverse)
 library(brms)
 library(tidybayes)
-library(ggdist)
 library(modelr)
 
 theme_set(theme_minimal())
@@ -51,7 +48,7 @@ options(
 
 ## Data
 
-The [data](Howell1.csv "Howell1 dataset"){target="_blank"} I'll play with is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistical Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.
+The [data](Howell1.csv "Howell1 dataset"){target="_blank"} I'll use is the same data Richard McElreath uses in Chapter 4 of his amazing book Statistical Rethinking. The data consists of partial census data of the !Kung San, compiled from interviews conducted by Nancy Howell in the late 1960s. Just like in the book, I will focus only on people 18 years or older.
 
 ```{r}
 #| label: data
@@ -88,11 +85,11 @@ In our intercept-only model, the $\mu$ parameter refers to our intercept and the
 
 ## The intercept ($\mu$) prior
 
-The prior for the intercept indicates what I believe the *average* height of the !Kung San to be.
+The prior for the intercept refers to, in this case, the *average* height of the !Kung San.
 
 brms has set the default intercept prior as a Student *t*-distribution with 3 degrees of freedom, a mean of 154.3 and a standard deviation of 8.5. That means brms starts off with a 'belief' that the average of the heights is 154.3, but with quite some uncertainty reflected in the standard deviation of 8.5 and the fact that the distribution is a Student *t*-distribution. A Student *t*-distribution has thicker tails compared to a normal distribution, meaning that numbers in the tails of the distribution are more likely compared to a normal distribution, at least when the degrees of freedom are low. At higher degrees of freedom, the *t*-distribution becomes more and more like the normal distribution. So, the thicker tails of the *t*-distributions means smaller and taller average heights are relatively more plausible.
 
-But this is the default prior. brms determines this prior by peeking at the data to create a weak prior that is easily updated by the data. We can do better a bit better than the default prior, though.
+But this is the default prior. brms determines this prior by peeking at the data to create a weak prior that is easily updated by the data. We can do a bit better than the default prior, though.
 
 What do I believe the average height to be? As a Dutch person, I might think that the average height is around 175 centimeters. This is probably too tall to use as an average for the !Kung San because we're known for being quite tall. So I think the average should be lower than 175, perhaps 170. I am not very sure, though. After all, I am far from an expert on people's heights; I am only using my layman knowledge here. An average of 165 seems possible to me too. So let's describe my belief in the form of a distribution in which multiple averages are possible, to varying extents. We could use a Student *t*-distribution with small degrees of freedom if we want to allow for the possibility of being very wrong (remember, it has thicker tails, so it assigns more probability to a wider range of average heights). We're not super uncertain about people's heights, though, so let's use a normal distribution.
 
@@ -104,7 +101,7 @@ As we saw in defining our height model, a normal distribution requires that we s
 height_prior_intercept <- tibble(
   height_mean = seq(from = 100, to = 250, by = 0.1),
   mine = dnorm(height_mean, mean = 170, sd = 10),
-  default = dstudent_t(height_mean, df = 30, mu = 154.3, sigma = 8.5),
+  default = dstudent_t(height_mean, df = 30, mu = 154.3, sigma = 8.5)
 )
 
 height_prior_intercept <- pivot_longer(
@@ -159,19 +156,19 @@ ggplot(
   labs(x = "Standard deviation of heights", y = "", linetype = "Prior")
 ```
 
-As you can see, both distributions have longish tails, allowing for the possibility of high standard deviations. There are some notable differences between the two priors, though. Our prior puts more weight on a standard deviation larger than 0, while the default prior reflects a belief in which a standard deviation of 0 is most likely. However, both priors are quite weak.
+As you can see, both distributions have longish tails, allowing for the possibility of high standard deviations. There are some notable differences between the two priors, though. My prior puts more weight on a standard deviation larger than 0, while the default prior reflects a belief in which a standard deviation of 0 is most likely. However, both priors are quite weak.
 
 ## Prior predictive check
 
 So far we have inspected each prior in isolation, but we can also use our priors to simulate heights and see if the distribution of heights makes sense. This is called a prior predictive check.
 
-We can perform a prior predictive check using the `brm()` function from brms.The `brm()` function is the main work horse of the brms package. It allows us to run Bayesian analyses by using a common notation style familiar to those who use R. This is also one of the reasons why the brms package is so great; it's very easy to get started with running Bayesian analyses.
+We can perform a prior predictive check using the `brm()` function from brms.The `brm()` function is the main work horse of the brms package. It enables us to run Bayesian analyses by using a common notation style familiar to those who use R. This is also one of the reasons why the brms package is so great; it's very easy to get started with running Bayesian analyses.
 
 The `brm()` function requires a model specification and the data. Optionally, but usefully, we should also specify the response distribution (a normal distribution by default) and the priors.
 
 However, we're not ready to actually run the model just yet. Instead, we will kinda trick brms into running an analysis, but tell it to only sample from the prior using the `sample_prior` argument. This will give us 'predicted' responses based entirely on our priors and not the data.
 
-Additionally, we also set a seed to make the results reproducible and a file to store the results into so that if we run the analysis again, we can simply read the results from the file rather than running the analysis again.
+Additionally, we also set a seed to make the results reproducible and a file to store the results into so that if we run the analysis again, we can simply read the results from the file rather than running the analysis again. I will also set the `silent` argument to 2 to hide some logs that aren't useful.
 
 ```{r}
 #| label: height-prior
@@ -185,13 +182,14 @@ model_height_prior <- brm(
   ),
   sample_prior = "only",
   seed = 4,
+  silent = 2,
   file = "models/model_height_prior.rds"
 )
 ```
 
 The next part is a little tricky. The goal is to obtain a large sample of predicted heights so we can visualize its distribution. By default, brms will draw 4000 draws to approximate distributions. We could use the `predict()` function to get these draws (e.g., `predict(model_height_prior)`, but I prefer to use the tidybayes package because it's a really nice package that simplifies a lot of things about working with brms models.
 
-The tidybayes function to use is `add_predicted_draws()`. The function takes a data frame and a model object to add predictions for each row in the data frame. This is the tricky part because we don't really have any data to supply because it's an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to obtain predicted values for. We don't have that, so we need to give it an empty data frame. To simplify this, we'll use a function from the modelr package called `data_grid()`. This function can be used to construct a data frame with predictors from the model. In this case we don't have any predictors, but we can still specify the model. It will then create an empty data frame for us that we can add predictions to. Note that means the data frame starts off empty but we then add draws to the data frame, creating a larger data frame.
+The tidybayes function I'll use is `add_predicted_draws()`. The function takes a data frame and a model object. The function adds predictions for each row in the data frame. This is kinda tricky because we only have an intercept-only model. If you have predictors in the model you could give the function a data frame with values for each predictor that you want to obtain predicted values for. We don't have that, so we need to give it an empty data frame. To simplify this, we'll use a function from the modelr package called `data_grid()`. This function can be used to construct a data frame with predictors from the model. In this case we don't have any predictors, but we can still specify the model. It will then create an empty data frame for us that we can add predictions to. Note that this means the data frame starts off empty but we then add draws to the data frame, creating a larger data frame.
 
 After obtaining the draws, I plot the draws using a simple histogram.
 
@@ -225,6 +223,7 @@ model_height <- brm(
     prior(cauchy(5, 5), class = "sigma")
   ),
   seed = 4,
+  silent = 2,
   file = "models/model_height.rds"
 )
 ```
