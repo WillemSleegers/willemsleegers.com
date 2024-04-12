@@ -1,0 +1,95 @@
+---
+title: "The metalog distribution"
+date: 2024-04-09
+categories:
+  - statistics
+  - distributions
+  - simulation
+code-tools: true
+code-fold: show
+draft: true
+---
+
+According to [Wikipedia](https://en.wikipedia.org/wiki/Metalog_distribution), the metalog distribution "is a flexible continuous probability distribution designed for ease of use in practice".  In this blog post I show how to use it and why it might be useful.
+
+Run the code below to get started.
+
+```{r}
+#| lasbel: setup
+#| message: false
+library(tidyverse)
+library(rmetalog)
+library(magrittr)
+
+theme_set(theme_minimal())
+```
+
+## The problem with distributions
+
+A common problem with working with distributions is that you need to know which distribution to use for which use-case and then shape the distribution to your liking by giving the distribution's parameters the right values. In some cases this is fairly straightforward, like when you want to model something as a normal distribution with a certain mean and standard devation.
+
+But what if you want to model, say, how long you think a particular task will take in hours? Here a normal distribution is not well suited and instead you have to use something else, perhaps a Gamma distribution or a lognormal distribution. These distributions take parameters other than a mean and standard deviation and they don't have much intuitive meaning (at least not to me).
+
+## Using the metalog distribution
+
+The metalog distribution changes all of that because you can simply specify the distribution by giving it a set of quartile-value pairs that should form the distribution.
+
+```{r}
+x <- c(70, 100, 130)
+prob <- c(0.025, 0.5, .975)
+
+metalog <- metalog(
+  x = x,
+  prob = prob,
+  term_limit = 3,
+)
+
+summary(metalog)
+```
+
+```{r}
+plots <- plot(metalog)
+plots$pdf
+```
+
+```{r}
+points <- tibble(
+  x = x,
+  y = dmetalog(metalog, x)
+)
+
+df <- metalog |>
+  use_series("M") |>
+  as_tibble()
+
+ggplot(df, aes(x = M3, y = m3)) +
+  geom_line() +
+  geom_point(data = points, aes(x = x, y = y)) +
+  labs(x = "Quantile value", y = "PDF value")
+```
+
+## Simulating hours
+
+```{r}
+x <- c(3, 6, 10)
+prob <- c(0.1, 0.5, .9)
+
+metalog <- metalog(
+  x = x,
+  prob = prob,
+  term_limit = 3,
+  boundedness = "sl",
+  bound = 0
+)
+
+summary(metalog)
+plot(metalog)$pdf
+
+hours <- tibble(
+  hour = rmetalog(metalog, n = 1000, term = 3)
+)
+ggplot(hours, aes(x = hour)) +
+  geom_histogram(binwidth = 1) +
+  labs(x = "Hour", y = "")
+```
+
