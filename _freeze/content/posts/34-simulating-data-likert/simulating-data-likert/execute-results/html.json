@@ -1,0 +1,17 @@
+{
+  "hash": "a5ea2ae3f1c818c5928757f3a18eb7dc",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Simulating Likert data\"\ndate: 2024-03-20\ncategories:\n  - statistics\n  - simulation\n  - logistic regression\ncode-tools: true\ncode-fold: show\ndraft: true\n---\n\n\nRun the following setup code if you want to follow along.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\nlibrary(marginaleffects)\n\nset.seed(666)\n\nbaseline_prob <- 0.95\nbaseline_logit <- qlogis(baseline_prob)\n\nx <- runif(1000, min = 0, max = 20)\nz <- baseline_logit + -0.5 * x\npr <- plogis(z)\ny <- rbinom(1000, 1, pr)\n\ndf <- data.frame(y = y, x = x)\nmodel <- glm(y ~ 1 + x, data = df, family = \"binomial\")\nsummary(model)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n\nCall:\nglm(formula = y ~ 1 + x, family = \"binomial\", data = df)\n\nCoefficients:\n            Estimate Std. Error z value Pr(>|z|)    \n(Intercept)  3.55835    0.26197   13.58   <2e-16 ***\nx           -0.55435    0.03627  -15.28   <2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n(Dispersion parameter for binomial family taken to be 1)\n\n    Null deviance: 1259.70  on 999  degrees of freedom\nResidual deviance:  564.53  on 998  degrees of freedom\nAIC: 568.53\n\nNumber of Fisher Scoring iterations: 6\n```\n\n\n:::\n\n```{.r .cell-code}\nexp(coef(model))\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n(Intercept)           x \n 35.1051551   0.5744453 \n```\n\n\n:::\n\n```{.r .cell-code}\npredictions <- predictions(model, newdata = datagrid(x = unique))\n\npredictions |>\n  as_tibble() |>\n  mutate(temp = x * estimate) |>\n  pull(temp) |>\n  sum()\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 1300.502\n```\n\n\n:::\n\n```{.r .cell-code}\nggplot(predictions, aes(x = x, y = estimate)) +\n  geom_line() +\n  scale_y_continuous(limits = c(0, 1))\n```\n\n::: {.cell-output-display}\n![](simulating-data-likert_files/figure-html/setup-1.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "simulating-data-likert_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
