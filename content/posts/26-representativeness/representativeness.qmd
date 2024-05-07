@@ -155,9 +155,6 @@ lm(outcome ~ 1, data = data) |>
 lm(outcome ~ 1, data = data, weights = weight) |>
   summary()
 
-lm(outcome ~ 1, data = data) |>
-  predictions(newdata = datagrid())
-
 lm(outcome ~ 1, data = data, weights = weight) |>
   predictions(newdata = datagrid())
 
@@ -170,13 +167,17 @@ lm(outcome ~ 1 + sex, data = data) |>
 data <- tribble(
   ~id, ~sex,     ~outcome,
   1,   "male",   1,
-  2,   "male",   2,
-  5,   "female", 2,
-  6,   "female", 4,
-  7,   "female", 2
+  2,   "male",   0,
+  5,   "female", 1,
+  6,   "female", 1,
+  7,   "female", 0
 )
 
-data <- mutate(data, sex = factor(sex), pop = 2000)
+data <- mutate(
+  data,
+  sex = factor(sex),
+  pop = 2000
+)
 
 design <- svydesign(id = ~0, data = data, fpc = ~pop)
 svymean(~outcome, design)
@@ -192,5 +193,16 @@ rake <- rake(
   list(pop_sex),
 )
 
+
+
 svymean(~outcome, rake)
+model <- svyglm(outcome ~ 1, design = rake, family = quasibinomial())
+summary(model)
+predict(
+  model,
+  newdata = modelr::data_grid(.model = model),
+  type = "response"
+)
+
+model <- glm(outcome ~ 1, data = data, )
 ```

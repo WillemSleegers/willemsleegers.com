@@ -1,5 +1,6 @@
 ---
 title: "Probability of superiority"
+description: "The probability of superiority is, according to some, a more intuitive effect size measure than other more commonly reported effect sizes. In this blog post I work through some code to calculate the probabily of superiority. "
 date: 2024-03-20
 categories:
   - statistics
@@ -9,6 +10,12 @@ code-tools: true
 code-fold: show
 draft: true
 ---
+
+The probability of superiority for a comparison between two groups is  the probability that, when sampling an observation from each of the groups at random, the observation from the second group will be larger than the sample from the first group. It ranges from 0 to 1 (because it's a probability), where 0.5 means there is no difference between the two groups.
+
+An advantage of the probability of superiority, I'll shorten it to p-sup, is that it's more easily understood than something like a Cohen's d. There are still some limitations (e.g., see some discussed here), but I think overall it's an interesting effect size and I should use it more often.
+
+So, in this blog post I'll figure out how to calculate it.
 
 Run the following setup code if you want to follow along.
 
@@ -32,7 +39,9 @@ options(
 )
 ```
 
-## Manually calculating PSup
+## Manually calculating p-sup
+
+Let's manually calculate p-sup with some simple data. In the code block below I create two variables containing some data; one per group. I'll also store the length of one of them in a variable because we'll use it later.
 
 ```{r}
 #| label: manual-data
@@ -42,21 +51,25 @@ b <- c(1, 2, 3, 4, 5)
 n <- length(a)
 ```
 
+With these two groups of data we want to calculate p-sup. The steps needed consist of making all pairwise comparisons between members of each group, tallying the number of times that the former scores are higher than the latter (and incrementing by 0.5 if they are tied), and dividing by the total number of comparisons that were made (also see [Ruscio, 2008](https://doi.org/10.1037/1082-989X.13.1.19)).
+
+Let's do this step by step and start with making all pairwise comparisons. We can do that using the `outer()` function. We give it two sets of data and tell it which comparison to make. In the code below we have it check whether values in `a` are higher than values in `b`.
+
 ```{r}
 #| label: manual-outer
 outer(a, b, ">")
 ```
 
-The output is a matrix with the results of a comparison between each element of `a` and `b`. For example, the result in row 1 and column 1 is `TRUE`, indicating that the first element of `a` (2) is larger than the first element of `b` (1). Another example, the result in row 1 column 2 is `FALSE` because the second element of `b` (2) is not larger than the first element of `a` (2), it's a tie.
+The output is a matrix with `TRUE`s and `FALSE`s. For example, the result in row 1 and column 1 is `TRUE`, indicating that the first element of `a` (2) is larger than the first element of `b` (1). Another example, the result in row 1 column 2 is `FALSE` because the second element of `b` (2) is not larger than the first element of `a` (2), it's a tie.
 
-Next, we need to count the number of times that an element in `a` is larger than an element in `b`. This is easily done by using `sum()` on the matrix. This works because `TRUE`s are treated as 1 and `FALSE`s as 0.
+Next, we need to count the number of times that an element in `a` is larger than an element in `b`. This is easily done by using `sum()` on the matrix. This works because `TRUE` is treated as 1 and `FALSE` as 0.
 
 ```{r}
 #| label: manual-sum
 sum(outer(a, b, ">"))
 ```
 
-It's possible that two elements are tied (i.e., have the exact same value). To deal with this, we count the number of times this happens and divide the sum by 2, thereby saying that ties are treated as one value being larger than the other half the time.
+To deal with ties, we count the number of times a tie happens and divide the sum by 2, thereby saying that ties are treated as one value being larger than the other half the time.
 
 Both of the sums are summed together, giving us:
 
@@ -68,7 +81,7 @@ Both of the sums are summed together, giving us:
 This is actually the same thing as the Wilcoxon (or Mann-Whitney) test statistic.
 
 ```{r}
-#| label: manual-p-sup
+#| label: manual-wilcox
 #| warning: false
 wilcox.test(a, b)
 ```
@@ -97,7 +110,7 @@ p_sup <- function(a, b) {
   return(p_sup)
 }
 
-data <- cbind(c(a, b), c(rep("a", 5), rep("b", 5)))
+df <- cbind(c(a, b), c(rep("a", 5), rep("b", 5)))
 
 tribble(
   ~package, ~code, ~p_sup,
@@ -105,15 +118,13 @@ tribble(
   "effectsize",
   "p_superiority(a, b, parametric = FALSE)",
   p_superiority(a, b, parametric = FALSE)$p_superiority,
-  "RProbSup", "A(data, 1, 2)", A(data, 1, 2)$A
+  "RProbSup", "A(df, 1, 2)", A(df, 1, 2)$A
 )
 ```
 
 ## A Frequentist example
 
 ```{r}
-
-
 props <- data |>
   group_by(sex) |>
   count(importance_animal_rights) |>
@@ -121,7 +132,6 @@ props <- data |>
 
 ggplot(props, aes(x = importance_animal_rights, y = prop, fill = sex)) +
   geom_col(position = "dodge")
-
 
 p_superiority(importance_animal_rights ~ sex, data = data, parametric = FALSE)$p_superiority
 

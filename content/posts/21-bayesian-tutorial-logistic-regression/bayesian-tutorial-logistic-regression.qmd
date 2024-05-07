@@ -29,12 +29,7 @@ library(tidybayes)
 library(modelr)
 
 theme_set(theme_minimal())
-blue_1 <- "#d1e1ec"
-blue_2 <- "#b3cde0"
-blue_3 <- "#6497b1"
-blue_4 <- "#005b96"
-blue_5 <- "#03396c"
-blue_6 <- "#011f4b"
+colors <- c("#d1e1ec", "#b3cde0", "#6497b1", "#005b96", "#03396c", "#011f4b")
 
 options(
   mc.cores = 4,
@@ -74,7 +69,7 @@ You might think that because we're modelling a proportion, the prior for the int
 #| fig-cap: Transformation of probability values via the logit link
 df <- tibble(
   x = seq(0, 1, 0.001),
-  logit = logit_scaled(x)
+  logit = qlogis(x)
 )
 
 ggplot(df, aes(x = x, y = logit)) +
@@ -109,15 +104,16 @@ We get an estimate of `r round(fixef(fit_prior_default)[1], 2)` and a 95% CI tha
 #|   - "Probability scale"
 #| layout-ncol: 1
 #| warning: false
-draws <- fit_prior_default %>%
-  spread_draws(b_Intercept) %>%
-  mutate(b_Intercept_scaled = inv_logit_scaled(b_Intercept))
+draws <- fit_prior_default |>
+  spread_draws(b_Intercept) |>
+  mutate(b_Intercept_scaled = plogis(b_Intercept))
 
 ggplot(draws, aes(x = b_Intercept)) +
-  geom_histogram(binwidth = 1, fill = blue_3)
+  geom_histogram(binwidth = 0.4, fill = colors[3]) +
+  coord_cartesian(xlim = c(-20, 20))
 
 ggplot(draws, aes(x = b_Intercept_scaled)) +
-  geom_histogram(binwidth = 0.01, fill = blue_3)
+  geom_histogram(binwidth = 0.01, fill = colors[3])
 ```
 
 The top graph shows the prior on the logit scale. The bulk of the values are somewhere between -8 and 8, concentrated around 0. This doesn't seem like a suitable default prior because if we convert these values to the probability scale, it turns out that the extreme values (around 0 and 1) are relatively more likely than other values. I prefer a prior that is either more uniform or perhaps centered around .5, depending on the context. This is likely to be a weak prior though, so it will be easily overrun by data. Nevertheless, let's try out another prior and see if it produces a more uniform distribution on the probability scale.
@@ -139,7 +135,7 @@ draws <- fit_prior %>%
   mutate(b_Intercept_scaled = inv_logit_scaled(b_Intercept))
 
 ggplot(draws, aes(x = b_Intercept_scaled)) +
-  geom_histogram(binwidth = 0.01, fill = blue_3)
+  geom_histogram(binwidth = 0.01, fill = colors[3])
 ```
 
 That looks better, so let's use this prior and estimate the probability of survivors in the data.
@@ -167,19 +163,40 @@ draws <- fit %>%
   mutate(b_Intercept_scaled = inv_logit_scaled(b_Intercept))
 
 ggplot(draws, aes(x = b_Intercept_scaled)) +
-  geom_histogram(binwidth = 0.005, fill = blue_3) +
-  scale_x_continuous(limits = c(0, 1))
+  geom_histogram(binwidth = 0.005, fill = colors[3])
 ```
 
 The median proportion of survivors is `r round(inv_logit_scaled(fixef(fit)[1]), 2)`, with a 95% CI ranging from `r round(inv_logit_scaled(fixef(fit)[4]), 2)` to `r round(inv_logit_scaled(fixef(fit)[4]), 2)`.
 
-## Adding a discrete predictor
-
-Next, let's add a discrete predictor, like the passenger's sex. We begin, once again, by checking which priors we need. Note that we'll use the index coding notation (so no intercept).
+## Probit
 
 ```{r}
-#| label: discrete-predictor-prior
-get_prior(survived ~ 0 + sex, family = bernoulli(link = "logit"), data = data)
+#| label: single-proportion-probit-model
+# fit <- brm(
+#   survived ~ 1,
+#   family = bernoulli(link = "probit"),
+#   data = data,
+#   prior = prior(student_t(5, 0, 1.5), class = "Intercept"),
+#   file = "models/probit-model.rds",
+# )
+
+# draws <- fit |>
+#   spread_draws(b_Intercept)
+
+# ggplot(draws, aes(x = b_Intercept)) +
+#   geom_histogram(fill = colors[3]) 
+
+# ggplot(draws, aes(x = b_Intercept_scaled)) +
+#   geom_histogram(binwidth = 0.01, fill = colors[3])
+```
+  
+  ## Adding a discrete predictor
+  
+  Next, let's add a discrete predictor, like the passenger's sex. We begin, once again, by checking which priors we need. Note that we'll use the index coding notation (so no intercept).
+  
+  ```{r}
+  #| label: discrete-predictor-prior
+  get_prior(survived ~ 0 + sex, family = bernoulli(link = "logit"), data = data)
 ```
 
 We need two priors, one for each of two sexes. The formula:
@@ -223,7 +240,7 @@ ggplot(draws, aes(x = .value, fill = .variable)) +
   geom_histogram(binwidth = 0.01) +
   labs(x = "proportion of survivors", y = "", fill = "Sex") +
   scale_x_continuous(limits = c(0, 1)) +
-  scale_fill_manual(values = c(blue_2, blue_4))
+  scale_fill_manual(values = c(colors[3], colors[4]))
 
 data_grid(data, sex) |>
   add_epred_draws(fit_sex) |>
@@ -231,7 +248,7 @@ data_grid(data, sex) |>
   geom_histogram(binwidth = 0.01) +
   labs(x = "proportion of survivors", y = "", fill = "Sex") +
   scale_x_continuous(limits = c(0, 1)) +
-  scale_fill_manual(values = c(blue_2, blue_4))
+  scale_fill_manual(values = c(colors[3], colors[4]))
 
 ```
 
