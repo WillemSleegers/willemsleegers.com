@@ -11,9 +11,9 @@ code-fold: show
 draft: true
 ---
 
-The probability of superiority for a comparison between two groups is  the probability that, when sampling an observation from each of the groups at random, the observation from the second group will be larger than the sample from the first group. It ranges from 0 to 1 (because it's a probability), where 0.5 means there is no difference between the two groups.
+The probability of superiority for a comparison between two groups is the probability that, when sampling an observation from each of the groups at random, the observation from the second group will be larger than the sample from the first group. It ranges from 0 to 1 (because it's a probability), where 0.5 means there is no difference between the two groups.
 
-An advantage of the probability of superiority, I'll shorten it to p-sup, is that it's more easily understood than something like a Cohen's d. There are still some limitations (e.g., see some discussed here), but I think overall it's an interesting effect size and I should use it more often.
+An advantage of the probability of superiority, I'll shorten it to p-sup, is that it's more easily understood than something like a Cohen's d. There are still some limitations (e.g., see some discussed [here](https://statmodeling.stat.columbia.edu/2023/08/16/confusions-about-inference-prediction-and-probability-of-superiority/)), but I think overall it's an interesting effect size and I should use it more often.
 
 So, in this blog post I'll figure out how to calculate it.
 
@@ -27,6 +27,7 @@ library(effectsize)
 library(RProbSup)
 library(brms)
 library(tidybayes)
+library(scales)
 
 data <- read_csv("data.csv")
 data <- drop_na(data)
@@ -37,6 +38,9 @@ options(
   brms.backend = "cmdstanr",
   brms.file_refit = "on_change"
 )
+
+theme_set(theme_minimal())
+colors <- c("#d1e1ec", "#b3cde0", "#6497b1", "#005b96", "#03396c", "#011f4b")
 ```
 
 ## Manually calculating p-sup
@@ -51,7 +55,7 @@ b <- c(1, 2, 3, 4, 5)
 n <- length(a)
 ```
 
-With these two groups of data we want to calculate p-sup. The steps needed consist of making all pairwise comparisons between members of each group, tallying the number of times that the former scores are higher than the latter (and incrementing by 0.5 if they are tied), and dividing by the total number of comparisons that were made (also see [Ruscio, 2008](https://doi.org/10.1037/1082-989X.13.1.19)).
+With these two groups of data we want to calculate p-sup. The steps needed consist of making all pairwise comparisons between members of each group, tallying the number of times that the former scores are higher than the latter (incrementing by 0.5 if they are tied), and dividing by the total number of comparisons that were made (also see [Ruscio, 2008](https://doi.org/10.1037/1082-989X.13.1.19)).
 
 Let's do this step by step and start with making all pairwise comparisons. We can do that using the `outer()` function. We give it two sets of data and tell it which comparison to make. In the code below we have it check whether values in `a` are higher than values in `b`.
 
@@ -60,7 +64,7 @@ Let's do this step by step and start with making all pairwise comparisons. We ca
 outer(a, b, ">")
 ```
 
-The output is a matrix with `TRUE`s and `FALSE`s. For example, the result in row 1 and column 1 is `TRUE`, indicating that the first element of `a` (2) is larger than the first element of `b` (1). Another example, the result in row 1 column 2 is `FALSE` because the second element of `b` (2) is not larger than the first element of `a` (2), it's a tie.
+The output is a matrix with the outcomes of each comparison (`TRUE`, `FALSE`), where the rows represent values from `a` and the columns values from `b`. For example, the result in row 1 and column 1 is `TRUE`, because the first element of `a` (2) is larger than the first element of `b` (1). Another example, the result in row 1 column 2 is `FALSE` because the first element of `a` (2) is not larger than the second element of `b` (2), it's a tie.
 
 Next, we need to count the number of times that an element in `a` is larger than an element in `b`. This is easily done by using `sum()` on the matrix. This works because `TRUE` is treated as 1 and `FALSE` as 0.
 
@@ -124,6 +128,8 @@ tribble(
 
 ## A Frequentist example
 
+Let's take a look at a real-life example by calculating p-sup using real data. I found some data from the LISS panel on how important people think animal rights are. I added the participant's sex to the data so we can take a look at sex differences on this outcome.
+
 ```{r}
 props <- data |>
   group_by(sex) |>
@@ -131,17 +137,31 @@ props <- data |>
   mutate(prop = n / sum(n))
 
 ggplot(props, aes(x = importance_animal_rights, y = prop, fill = sex)) +
-  geom_col(position = "dodge")
+  geom_col(position = "dodge", alpha = .8) +
+  scale_x_continuous(breaks = 1:7) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_manual(values = c(colors[2], colors[5])) +
+  labs(x = "Importance of animal rights", y = "Percentage", fill = "")
+```
 
-p_superiority(importance_animal_rights ~ sex, data = data, parametric = FALSE)$p_superiority
+Let's calculate p-sup using our function.
 
+```{r}
 p_sup(
   pull(filter(data, sex == "Female"), importance_animal_rights),
   pull(filter(data, sex == "Male"), importance_animal_rights)
 )
 ```
 
+And the function from the effectsize package.
+
+```{r}
+p_superiority(importance_animal_rights ~ sex, data = data, parametric = FALSE)
+```
+
 ## A Bayesian example
+
+We can analyze the same data using a Bayesian model.
 
 ```{r}
 model <- brm(
@@ -162,7 +182,4 @@ p_sups <- draws |>
   )
 
 median_qi(p_sups, p_sup)
-
-ggplot(p_sups, aes(x = p_sup)) +
-  geom_histogram()
 ```

@@ -1,0 +1,76 @@
+---
+title: "Formatting numbers"
+description: "A showcase of the function I use to format numbers."
+date: 2024-05-14
+categories:
+  - R
+  - function
+  - statistics
+code-tools: true
+code-fold: show
+draft: true
+---
+
+Run the following setup code if you want to follow along.
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+```
+
+## The function
+
+```{r}
+format_number <- function(
+    x,
+    trailing_digits = 2,
+    digits = NULL,
+    omit_zero = FALSE) {
+  # Convert the number to a string to use regex to extract different parts
+  # of the number (e.g., decimals)
+  string <- as.character(x)
+
+  # Extract and count decimals
+  decimals <- stringr::str_extract(string, "(?<=\\.).+")
+  decimals_n <- dplyr::if_else(is.na(decimals), 0, stringr::str_length(decimals))
+
+  # Count number of leading zeroes in the decimals
+  zeroes <- stringr::str_extract(string, "(?<=\\.)0+")
+  zeroes_n <- dplyr::if_else(is.na(zeroes), 0, stringr::str_length(zeroes))
+
+  # If digits are set, it overrules trailing digits
+  if (!is.null(digits)) {
+    output <- format(round(x, digits), nsmall = digits)
+  } else {
+    trailing_digits <- ifelse(decimals_n > trailing_digits, trailing_digits + zeroes_n, trailing_digits)
+    output <- formatC(
+      round(x, digits = trailing_digits),
+      digits = trailing_digits, format = "f"
+    )
+  }
+
+  # Remove leading zero
+  if (omit_zero) output <- stringr::str_remove(output, "^0")
+
+  return(output)
+}
+```
+
+## Testing it out
+
+| Number      | `trailing_digits` | `digits` | `omit_zero` | Result                                                           |
+|---------------|---------------|---------------|---------------|---------------|
+| 2           | 0                 | \-       | `FALSE`     | `r format_number(2, trailing_digits = 0)`                        |
+| 2           | 2                 | \-       | `FALSE`     | `r format_number(2, trailing_digits = 2)`                        |
+| 2           | \-                | 2        | `FALSE`     | `r format_number(2, digits = 2)`                                 |
+| 2.0         | 2                 | \-       | `FALSE`     | `r format_number(2.0, trailing_digits = 2)`                      |
+| 2.01        | 1                 | \-       | `FALSE`     | `r format_number(2.01, trailing_digits = 1)`                     |
+| 2.01        | -                 | 1        | `FALSE`     | `r format_number(2.01, digits = 1)`                              |
+| 2.01        | 2                 | \-       | `FALSE`     | `r format_number(2.01, trailing_digits = 2)`                     |
+| 2.013232    | 2                 | \-       | `FALSE`     | `r format_number(2.013232, trailing_digits = 2)`                 |
+| 12.00013232 | 2                 | \-       | `FALSE`     | `r format_number(12.00013232, trailing_digits = 2)`              |
+| 12.01003232 | 2                 | \-       | `FALSE`     | `r format_number(12.01003232, trailing_digits = 2)`              |
+| 12.00120032 | 2                 | \-       | `FALSE`     | `r format_number(12.00120032, trailing_digits = 2)`              |
+| 0.434       | 2                 | \-       | `TRUE`      | `r format_number(0.434, trailing_digits = 2, omit_zero = TRUE)`  |
+| 1.434       | 2                 | \-       | `FALSE`     | `r format_number(0.434, trailing_digits = 2, omit_zero = FALSE)` |

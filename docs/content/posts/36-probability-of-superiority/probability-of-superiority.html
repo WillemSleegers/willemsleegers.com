@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2024-03-20">
+<meta name="description" content="The probability of superiority is, according to some, a more intuitive effect size measure than other more commonly reported effect sizes. In this blog post I work through some code to calculate the probabily of superiority.">
 
 <title>willemsleegers.com - Probability of superiority</title>
 <style>
@@ -182,6 +183,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   </div>
 
+<div>
+  <div class="description">
+    The probability of superiority is, according to some, a more intuitive effect size measure than other more commonly reported effect sizes. In this blog post I work through some code to calculate the probabily of superiority.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -202,6 +208,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p>The probability of superiority for a comparison between two groups is the probability that, when sampling an observation from each of the groups at random, the observation from the second group will be larger than the sample from the first group. It ranges from 0 to 1 (because it’s a probability), where 0.5 means there is no difference between the two groups.</p>
+<p>An advantage of the probability of superiority, I’ll shorten it to p-sup, is that it’s more easily understood than something like a Cohen’s d.&nbsp;There are still some limitations (e.g., see some discussed <a href="https://statmodeling.stat.columbia.edu/2023/08/16/confusions-about-inference-prediction-and-probability-of-superiority/">here</a>), but I think overall it’s an interesting effect size and I should use it more often.</p>
+<p>So, in this blog post I’ll figure out how to calculate it.</p>
 <p>Run the following setup code if you want to follow along.</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -211,20 +220,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RProbSup)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data.csv"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(data)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">mc.cores =</span> <span class="dv">4</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.threads =</span> <span class="dv">4</span>,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.backend =</span> <span class="st">"cmdstanr"</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.file_refit =</span> <span class="st">"on_change"</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data.csv"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(data)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">mc.cores =</span> <span class="dv">4</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.threads =</span> <span class="dv">4</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.file_refit =</span> <span class="st">"on_change"</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_minimal</span>())</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#d1e1ec"</span>, <span class="st">"#b3cde0"</span>, <span class="st">"#6497b1"</span>, <span class="st">"#005b96"</span>, <span class="st">"#03396c"</span>, <span class="st">"#011f4b"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="manually-calculating-psup" class="level2">
-<h2 class="anchored" data-anchor-id="manually-calculating-psup">Manually calculating PSup</h2>
+<section id="manually-calculating-p-sup" class="level2">
+<h2 class="anchored" data-anchor-id="manually-calculating-p-sup">Manually calculating p-sup</h2>
+<p>Let’s manually calculate p-sup with some simple data. In the code block below I create two variables containing some data; one per group. I’ll also store the length of one of them in a variable because we’ll use it later.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -234,6 +248,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p>With these two groups of data we want to calculate p-sup. The steps needed consist of making all pairwise comparisons between members of each group, tallying the number of times that the former scores are higher than the latter (incrementing by 0.5 if they are tied), and dividing by the total number of comparisons that were made (also see <a href="https://doi.org/10.1037/1082-989X.13.1.19">Ruscio, 2008</a>).</p>
+<p>Let’s do this step by step and start with making all pairwise comparisons. We can do that using the <code>outer()</code> function. We give it two sets of data and tell it which comparison to make. In the code below we have it check whether values in <code>a</code> are higher than values in <code>b</code>.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -248,8 +264,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 [5,] TRUE  TRUE  TRUE  TRUE  TRUE</code></pre>
 </div>
 </div>
-<p>The output is a matrix with the results of a comparison between each element of <code>a</code> and <code>b</code>. For example, the result in row 1 and column 1 is <code>TRUE</code>, indicating that the first element of <code>a</code> (2) is larger than the first element of <code>b</code> (1). Another example, the result in row 1 column 2 is <code>FALSE</code> because the second element of <code>b</code> (2) is not larger than the first element of <code>a</code> (2), it’s a tie.</p>
-<p>Next, we need to count the number of times that an element in <code>a</code> is larger than an element in <code>b</code>. This is easily done by using <code>sum()</code> on the matrix. This works because <code>TRUE</code>s are treated as 1 and <code>FALSE</code>s as 0.</p>
+<p>The output is a matrix with the outcomes of each comparison (<code>TRUE</code>, <code>FALSE</code>), where the rows represent values from <code>a</code> and the columns values from <code>b</code>. For example, the result in row 1 and column 1 is <code>TRUE</code>, because the first element of <code>a</code> (2) is larger than the first element of <code>b</code> (1). Another example, the result in row 1 column 2 is <code>FALSE</code> because the first element of <code>a</code> (2) is not larger than the second element of <code>b</code> (2), it’s a tie.</p>
+<p>Next, we need to count the number of times that an element in <code>a</code> is larger than an element in <code>b</code>. This is easily done by using <code>sum()</code> on the matrix. This works because <code>TRUE</code> is treated as 1 and <code>FALSE</code> as 0.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -259,7 +275,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 15</code></pre>
 </div>
 </div>
-<p>It’s possible that two elements are tied (i.e., have the exact same value). To deal with this, we count the number of times this happens and divide the sum by 2, thereby saying that ties are treated as one value being larger than the other half the time.</p>
+<p>To deal with ties, we count the number of times a tie happens and divide the sum by 2, thereby saying that ties are treated as one value being larger than the other half the time.</p>
 <p>Both of the sums are summed together, giving us:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -335,6 +351,7 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 </section>
 <section id="a-frequentist-example" class="level2">
 <h2 class="anchored" data-anchor-id="a-frequentist-example">A Frequentist example</h2>
+<p>Let’s take a look at a real-life example by calculating p-sup using real data. I found some data from the LISS panel on how important people think animal rights are. I added the participant’s sex to the data so we can take a look at sex differences on this outcome.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -344,7 +361,11 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n))</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(props, <span class="fu">aes</span>(<span class="at">x =</span> importance_animal_rights, <span class="at">y =</span> prop, <span class="at">fill =</span> sex)) <span class="sc">+</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">alpha =</span> .<span class="dv">8</span>) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>) <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(colors[<span class="dv">2</span>], colors[<span class="dv">5</span>])) <span class="sc">+</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Importance of animal rights"</span>, <span class="at">y =</span> <span class="st">"Percentage"</span>, <span class="at">fill =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -353,27 +374,38 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 </figure>
 </div>
 </div>
+</div>
+<p>Let’s calculate p-sup using our function.</p>
+<div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">p_superiority</span>(importance_animal_rights <span class="sc">~</span> sex, <span class="at">data =</span> data, <span class="at">parametric =</span> <span class="cn">FALSE</span>)<span class="sc">$</span>p_superiority</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">p_sup</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="fu">filter</span>(data, sex <span class="sc">==</span> <span class="st">"Female"</span>), importance_animal_rights),</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="fu">filter</span>(data, sex <span class="sc">==</span> <span class="st">"Male"</span>), importance_animal_rights)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5849741</code></pre>
 </div>
+</div>
+<p>And the function from the effectsize package.</p>
+<div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">p_sup</span>(</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="fu">filter</span>(data, sex <span class="sc">==</span> <span class="st">"Female"</span>), importance_animal_rights),</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="fu">filter</span>(data, sex <span class="sc">==</span> <span class="st">"Male"</span>), importance_animal_rights)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">p_superiority</span>(importance_animal_rights <span class="sc">~</span> sex, <span class="at">data =</span> data, <span class="at">parametric =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5849741</code></pre>
+<pre><code>Pr(superiority) |       95% CI
+------------------------------
+0.58            | [0.57, 0.60]
+
+- Non-parametric CLES</code></pre>
 </div>
 </div>
 </section>
 <section id="a-bayesian-example" class="level2">
 <h2 class="anchored" data-anchor-id="a-bayesian-example">A Bayesian example</h2>
+<p>We can analyze the same data using a Bayesian model.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -400,22 +432,7 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 <pre><code># A tibble: 1 × 6
   p_sup .lower .upper .width .point .interval
   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;    
-1 0.589  0.568  0.609   0.95 median qi       </code></pre>
-</div>
-<details open="" class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p_sups, <span class="fu">aes</span>(<span class="at">x =</span> p_sup)) <span class="sc">+</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="probability-of-superiority_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
+1 0.589  0.569  0.609   0.95 median qi       </code></pre>
 </div>
 </div>
 
@@ -863,161 +880,191 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb24" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Probability of superiority"</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-03-20</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - statistics</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">  - effect size</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">  - probability of superiority</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="an">code-tools:</span><span class="co"> true</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="an">code-fold:</span><span class="co"> show</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="an">draft:</span><span class="co"> true</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>Run the following setup code if you want to follow along.</span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effectsize)</span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RProbSup)</span>
-<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
-<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
-<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data.csv"</span>)</span>
-<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(data)</span>
-<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(</span>
-<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">mc.cores =</span> <span class="dv">4</span>,</span>
-<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.threads =</span> <span class="dv">4</span>,</span>
-<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.backend =</span> <span class="st">"cmdstanr"</span>,</span>
-<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.file_refit =</span> <span class="st">"on_change"</span></span>
-<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a><span class="fu">## Manually calculating PSup</span></span>
-<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-data</span></span>
-<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>)</span>
-<span id="cb24-44"><a href="#cb24-44" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
-<span id="cb24-45"><a href="#cb24-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-46"><a href="#cb24-46" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(a)</span>
-<span id="cb24-47"><a href="#cb24-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-48"><a href="#cb24-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-51"><a href="#cb24-51" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-52"><a href="#cb24-52" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-outer</span></span>
-<span id="cb24-53"><a href="#cb24-53" aria-hidden="true" tabindex="-1"></a><span class="fu">outer</span>(a, b, <span class="st">"&gt;"</span>)</span>
-<span id="cb24-54"><a href="#cb24-54" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-55"><a href="#cb24-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-56"><a href="#cb24-56" aria-hidden="true" tabindex="-1"></a>The output is a matrix with the results of a comparison between each element of <span class="in">`a`</span> and <span class="in">`b`</span>. For example, the result in row 1 and column 1 is <span class="in">`TRUE`</span>, indicating that the first element of <span class="in">`a`</span> (2) is larger than the first element of <span class="in">`b`</span> (1). Another example, the result in row 1 column 2 is <span class="in">`FALSE`</span> because the second element of <span class="in">`b`</span> (2) is not larger than the first element of <span class="in">`a`</span> (2), it's a tie.</span>
-<span id="cb24-57"><a href="#cb24-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-58"><a href="#cb24-58" aria-hidden="true" tabindex="-1"></a>Next, we need to count the number of times that an element in <span class="in">`a`</span> is larger than an element in <span class="in">`b`</span>. This is easily done by using <span class="in">`sum()`</span> on the matrix. This works because <span class="in">`TRUE`</span>s are treated as 1 and <span class="in">`FALSE`</span>s as 0.</span>
-<span id="cb24-59"><a href="#cb24-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-62"><a href="#cb24-62" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-63"><a href="#cb24-63" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-sum</span></span>
-<span id="cb24-64"><a href="#cb24-64" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"&gt;"</span>))</span>
-<span id="cb24-65"><a href="#cb24-65" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-66"><a href="#cb24-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-67"><a href="#cb24-67" aria-hidden="true" tabindex="-1"></a>It's possible that two elements are tied (i.e., have the exact same value). To deal with this, we count the number of times this happens and divide the sum by 2, thereby saying that ties are treated as one value being larger than the other half the time.</span>
-<span id="cb24-68"><a href="#cb24-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-69"><a href="#cb24-69" aria-hidden="true" tabindex="-1"></a>Both of the sums are summed together, giving us:</span>
-<span id="cb24-70"><a href="#cb24-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-73"><a href="#cb24-73" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-74"><a href="#cb24-74" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-sums</span></span>
-<span id="cb24-75"><a href="#cb24-75" aria-hidden="true" tabindex="-1"></a>(<span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"&gt;"</span>)) <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"=="</span>)))</span>
-<span id="cb24-76"><a href="#cb24-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-77"><a href="#cb24-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-78"><a href="#cb24-78" aria-hidden="true" tabindex="-1"></a>This is actually the same thing as the Wilcoxon (or Mann-Whitney) test statistic.</span>
-<span id="cb24-79"><a href="#cb24-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-82"><a href="#cb24-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-83"><a href="#cb24-83" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-wilcox</span></span>
-<span id="cb24-84"><a href="#cb24-84" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb24-85"><a href="#cb24-85" aria-hidden="true" tabindex="-1"></a><span class="fu">wilcox.test</span>(a, b)</span>
-<span id="cb24-86"><a href="#cb24-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-87"><a href="#cb24-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-88"><a href="#cb24-88" aria-hidden="true" tabindex="-1"></a>Dividing this number by the total number of comparisons gives us the probability of superiority.</span>
-<span id="cb24-89"><a href="#cb24-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-92"><a href="#cb24-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-93"><a href="#cb24-93" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-p-sup</span></span>
-<span id="cb24-94"><a href="#cb24-94" aria-hidden="true" tabindex="-1"></a>(<span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"&gt;"</span>)) <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"=="</span>))) <span class="sc">/</span> (n <span class="sc">*</span> n)</span>
-<span id="cb24-95"><a href="#cb24-95" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-96"><a href="#cb24-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-97"><a href="#cb24-97" aria-hidden="true" tabindex="-1"></a>Let's turn this into a function and then compare the result to what we get when we use some ready-made functions from various packages.</span>
-<span id="cb24-98"><a href="#cb24-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-101"><a href="#cb24-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-102"><a href="#cb24-102" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-comparison</span></span>
-<span id="cb24-103"><a href="#cb24-103" aria-hidden="true" tabindex="-1"></a>p_sup <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) {</span>
-<span id="cb24-104"><a href="#cb24-104" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Count number of times a &gt; b</span></span>
-<span id="cb24-105"><a href="#cb24-105" aria-hidden="true" tabindex="-1"></a>  sum <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"&gt;"</span>))</span>
-<span id="cb24-106"><a href="#cb24-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-107"><a href="#cb24-107" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Count ties, counting each tie as a half</span></span>
-<span id="cb24-108"><a href="#cb24-108" aria-hidden="true" tabindex="-1"></a>  ties <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"=="</span>)) <span class="sc">*</span> <span class="fl">0.5</span></span>
-<span id="cb24-109"><a href="#cb24-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-110"><a href="#cb24-110" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sum both and divide by total number of comparisons</span></span>
-<span id="cb24-111"><a href="#cb24-111" aria-hidden="true" tabindex="-1"></a>  p_sup <span class="ot">&lt;-</span> (sum <span class="sc">+</span> ties) <span class="sc">/</span> (<span class="fu">length</span>(a) <span class="sc">*</span> <span class="fu">length</span>(b))</span>
-<span id="cb24-112"><a href="#cb24-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-113"><a href="#cb24-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p_sup)</span>
-<span id="cb24-114"><a href="#cb24-114" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb24-115"><a href="#cb24-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-116"><a href="#cb24-116" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">c</span>(a, b), <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"a"</span>, <span class="dv">5</span>), <span class="fu">rep</span>(<span class="st">"b"</span>, <span class="dv">5</span>)))</span>
-<span id="cb24-117"><a href="#cb24-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-118"><a href="#cb24-118" aria-hidden="true" tabindex="-1"></a><span class="fu">tribble</span>(</span>
-<span id="cb24-119"><a href="#cb24-119" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>package, <span class="sc">~</span>code, <span class="sc">~</span>p_sup,</span>
-<span id="cb24-120"><a href="#cb24-120" aria-hidden="true" tabindex="-1"></a>  <span class="st">"-"</span>, <span class="st">"p_sup(a, b)"</span>, <span class="fu">p_sup</span>(a, b),</span>
-<span id="cb24-121"><a href="#cb24-121" aria-hidden="true" tabindex="-1"></a>  <span class="st">"effectsize"</span>,</span>
-<span id="cb24-122"><a href="#cb24-122" aria-hidden="true" tabindex="-1"></a>  <span class="st">"p_superiority(a, b, parametric = FALSE)"</span>,</span>
-<span id="cb24-123"><a href="#cb24-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">p_superiority</span>(a, b, <span class="at">parametric =</span> <span class="cn">FALSE</span>)<span class="sc">$</span>p_superiority,</span>
-<span id="cb24-124"><a href="#cb24-124" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RProbSup"</span>, <span class="st">"A(df, 1, 2)"</span>, <span class="fu">A</span>(df, <span class="dv">1</span>, <span class="dv">2</span>)<span class="sc">$</span>A</span>
-<span id="cb24-125"><a href="#cb24-125" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb24-126"><a href="#cb24-126" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-127"><a href="#cb24-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-128"><a href="#cb24-128" aria-hidden="true" tabindex="-1"></a><span class="fu">## A Frequentist example</span></span>
-<span id="cb24-129"><a href="#cb24-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-132"><a href="#cb24-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-133"><a href="#cb24-133" aria-hidden="true" tabindex="-1"></a>props <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<span id="cb24-134"><a href="#cb24-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex) <span class="sc">|&gt;</span></span>
-<span id="cb24-135"><a href="#cb24-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(importance_animal_rights) <span class="sc">|&gt;</span></span>
-<span id="cb24-136"><a href="#cb24-136" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n))</span>
-<span id="cb24-137"><a href="#cb24-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-138"><a href="#cb24-138" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(props, <span class="fu">aes</span>(<span class="at">x =</span> importance_animal_rights, <span class="at">y =</span> prop, <span class="at">fill =</span> sex)) <span class="sc">+</span></span>
-<span id="cb24-139"><a href="#cb24-139" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>)</span>
-<span id="cb24-140"><a href="#cb24-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-141"><a href="#cb24-141" aria-hidden="true" tabindex="-1"></a><span class="fu">p_superiority</span>(importance_animal_rights <span class="sc">~</span> sex, <span class="at">data =</span> data, <span class="at">parametric =</span> <span class="cn">FALSE</span>)<span class="sc">$</span>p_superiority</span>
-<span id="cb24-142"><a href="#cb24-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-143"><a href="#cb24-143" aria-hidden="true" tabindex="-1"></a><span class="fu">p_sup</span>(</span>
-<span id="cb24-144"><a href="#cb24-144" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="fu">filter</span>(data, sex <span class="sc">==</span> <span class="st">"Female"</span>), importance_animal_rights),</span>
-<span id="cb24-145"><a href="#cb24-145" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="fu">filter</span>(data, sex <span class="sc">==</span> <span class="st">"Male"</span>), importance_animal_rights)</span>
-<span id="cb24-146"><a href="#cb24-146" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb24-147"><a href="#cb24-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-148"><a href="#cb24-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-149"><a href="#cb24-149" aria-hidden="true" tabindex="-1"></a><span class="fu">## A Bayesian example</span></span>
-<span id="cb24-150"><a href="#cb24-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-153"><a href="#cb24-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-154"><a href="#cb24-154" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
-<span id="cb24-155"><a href="#cb24-155" aria-hidden="true" tabindex="-1"></a>  importance_animal_rights <span class="sc">~</span> sex,</span>
-<span id="cb24-156"><a href="#cb24-156" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data, <span class="at">file =</span> <span class="st">"model.Rds"</span></span>
-<span id="cb24-157"><a href="#cb24-157" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb24-158"><a href="#cb24-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-159"><a href="#cb24-159" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<span id="cb24-160"><a href="#cb24-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_predicted_draws</span>(model, <span class="at">value =</span> <span class="st">"predicted_outcome"</span>)</span>
-<span id="cb24-161"><a href="#cb24-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-162"><a href="#cb24-162" aria-hidden="true" tabindex="-1"></a>p_sups <span class="ot">&lt;-</span> draws <span class="sc">|&gt;</span></span>
-<span id="cb24-163"><a href="#cb24-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(.draw) <span class="sc">|&gt;</span></span>
-<span id="cb24-164"><a href="#cb24-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb24-165"><a href="#cb24-165" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_sup =</span> <span class="fu">p_superiority</span>(</span>
-<span id="cb24-166"><a href="#cb24-166" aria-hidden="true" tabindex="-1"></a>      predicted_outcome <span class="sc">~</span> sex,</span>
-<span id="cb24-167"><a href="#cb24-167" aria-hidden="true" tabindex="-1"></a>      <span class="at">parametric =</span> <span class="cn">FALSE</span></span>
-<span id="cb24-168"><a href="#cb24-168" aria-hidden="true" tabindex="-1"></a>    )<span class="sc">$</span>p_superiority</span>
-<span id="cb24-169"><a href="#cb24-169" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb24-170"><a href="#cb24-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-171"><a href="#cb24-171" aria-hidden="true" tabindex="-1"></a><span class="fu">median_qi</span>(p_sups, p_sup)</span>
-<span id="cb24-172"><a href="#cb24-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-173"><a href="#cb24-173" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p_sups, <span class="fu">aes</span>(<span class="at">x =</span> p_sup)) <span class="sc">+</span></span>
-<span id="cb24-174"><a href="#cb24-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()</span>
-<span id="cb24-175"><a href="#cb24-175" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb22" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Probability of superiority"</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "The probability of superiority is, according to some, a more intuitive effect size measure than other more commonly reported effect sizes. In this blog post I work through some code to calculate the probabily of superiority. "</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-03-20</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">  - statistics</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">  - effect size</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">  - probability of superiority</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="an">code-tools:</span><span class="co"> true</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="an">code-fold:</span><span class="co"> show</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="an">draft:</span><span class="co"> true</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>The probability of superiority for a comparison between two groups is the probability that, when sampling an observation from each of the groups at random, the observation from the second group will be larger than the sample from the first group. It ranges from 0 to 1 (because it's a probability), where 0.5 means there is no difference between the two groups.</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>An advantage of the probability of superiority, I'll shorten it to p-sup, is that it's more easily understood than something like a Cohen's d. There are still some limitations (e.g., see some discussed <span class="co">[</span><span class="ot">here</span><span class="co">](https://statmodeling.stat.columbia.edu/2023/08/16/confusions-about-inference-prediction-and-probability-of-superiority/)</span>), but I think overall it's an interesting effect size and I should use it more often.</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>So, in this blog post I'll figure out how to calculate it.</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>Run the following setup code if you want to follow along.</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effectsize)</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RProbSup)</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data.csv"</span>)</span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(data)</span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">mc.cores =</span> <span class="dv">4</span>,</span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.threads =</span> <span class="dv">4</span>,</span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">brms.file_refit =</span> <span class="st">"on_change"</span></span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_minimal</span>())</span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#d1e1ec"</span>, <span class="st">"#b3cde0"</span>, <span class="st">"#6497b1"</span>, <span class="st">"#005b96"</span>, <span class="st">"#03396c"</span>, <span class="st">"#011f4b"</span>)</span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Manually calculating p-sup</span></span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>Let's manually calculate p-sup with some simple data. In the code block below I create two variables containing some data; one per group. I'll also store the length of one of them in a variable because we'll use it later.</span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-data</span></span>
+<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>)</span>
+<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
+<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(a)</span>
+<span id="cb22-60"><a href="#cb22-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a>With these two groups of data we want to calculate p-sup. The steps needed consist of making all pairwise comparisons between members of each group, tallying the number of times that the former scores are higher than the latter (incrementing by 0.5 if they are tied), and dividing by the total number of comparisons that were made (also see <span class="co">[</span><span class="ot">Ruscio, 2008</span><span class="co">](https://doi.org/10.1037/1082-989X.13.1.19)</span>).</span>
+<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a>Let's do this step by step and start with making all pairwise comparisons. We can do that using the <span class="in">`outer()`</span> function. We give it two sets of data and tell it which comparison to make. In the code below we have it check whether values in <span class="in">`a`</span> are higher than values in <span class="in">`b`</span>.</span>
+<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-outer</span></span>
+<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a><span class="fu">outer</span>(a, b, <span class="st">"&gt;"</span>)</span>
+<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a>The output is a matrix with the outcomes of each comparison (<span class="in">`TRUE`</span>, <span class="in">`FALSE`</span>), where the rows represent values from <span class="in">`a`</span> and the columns values from <span class="in">`b`</span>. For example, the result in row 1 and column 1 is <span class="in">`TRUE`</span>, because the first element of <span class="in">`a`</span> (2) is larger than the first element of <span class="in">`b`</span> (1). Another example, the result in row 1 column 2 is <span class="in">`FALSE`</span> because the first element of <span class="in">`a`</span> (2) is not larger than the second element of <span class="in">`b`</span> (2), it's a tie.</span>
+<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a>Next, we need to count the number of times that an element in <span class="in">`a`</span> is larger than an element in <span class="in">`b`</span>. This is easily done by using <span class="in">`sum()`</span> on the matrix. This works because <span class="in">`TRUE`</span> is treated as 1 and <span class="in">`FALSE`</span> as 0.</span>
+<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-sum</span></span>
+<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"&gt;"</span>))</span>
+<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-83"><a href="#cb22-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a>To deal with ties, we count the number of times a tie happens and divide the sum by 2, thereby saying that ties are treated as one value being larger than the other half the time.</span>
+<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-86"><a href="#cb22-86" aria-hidden="true" tabindex="-1"></a>Both of the sums are summed together, giving us:</span>
+<span id="cb22-87"><a href="#cb22-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-90"><a href="#cb22-90" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-sums</span></span>
+<span id="cb22-92"><a href="#cb22-92" aria-hidden="true" tabindex="-1"></a>(<span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"&gt;"</span>)) <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"=="</span>)))</span>
+<span id="cb22-93"><a href="#cb22-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-94"><a href="#cb22-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-95"><a href="#cb22-95" aria-hidden="true" tabindex="-1"></a>This is actually the same thing as the Wilcoxon (or Mann-Whitney) test statistic.</span>
+<span id="cb22-96"><a href="#cb22-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-99"><a href="#cb22-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-100"><a href="#cb22-100" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-wilcox</span></span>
+<span id="cb22-101"><a href="#cb22-101" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb22-102"><a href="#cb22-102" aria-hidden="true" tabindex="-1"></a><span class="fu">wilcox.test</span>(a, b)</span>
+<span id="cb22-103"><a href="#cb22-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-104"><a href="#cb22-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-105"><a href="#cb22-105" aria-hidden="true" tabindex="-1"></a>Dividing this number by the total number of comparisons gives us the probability of superiority.</span>
+<span id="cb22-106"><a href="#cb22-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-109"><a href="#cb22-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-110"><a href="#cb22-110" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-p-sup</span></span>
+<span id="cb22-111"><a href="#cb22-111" aria-hidden="true" tabindex="-1"></a>(<span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"&gt;"</span>)) <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"=="</span>))) <span class="sc">/</span> (n <span class="sc">*</span> n)</span>
+<span id="cb22-112"><a href="#cb22-112" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-113"><a href="#cb22-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-114"><a href="#cb22-114" aria-hidden="true" tabindex="-1"></a>Let's turn this into a function and then compare the result to what we get when we use some ready-made functions from various packages.</span>
+<span id="cb22-115"><a href="#cb22-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-118"><a href="#cb22-118" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-119"><a href="#cb22-119" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: manual-comparison</span></span>
+<span id="cb22-120"><a href="#cb22-120" aria-hidden="true" tabindex="-1"></a>p_sup <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) {</span>
+<span id="cb22-121"><a href="#cb22-121" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Count number of times a &gt; b</span></span>
+<span id="cb22-122"><a href="#cb22-122" aria-hidden="true" tabindex="-1"></a>  sum <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"&gt;"</span>))</span>
+<span id="cb22-123"><a href="#cb22-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-124"><a href="#cb22-124" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Count ties, counting each tie as a half</span></span>
+<span id="cb22-125"><a href="#cb22-125" aria-hidden="true" tabindex="-1"></a>  ties <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">outer</span>(a, b, <span class="st">"=="</span>)) <span class="sc">*</span> <span class="fl">0.5</span></span>
+<span id="cb22-126"><a href="#cb22-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-127"><a href="#cb22-127" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sum both and divide by total number of comparisons</span></span>
+<span id="cb22-128"><a href="#cb22-128" aria-hidden="true" tabindex="-1"></a>  p_sup <span class="ot">&lt;-</span> (sum <span class="sc">+</span> ties) <span class="sc">/</span> (<span class="fu">length</span>(a) <span class="sc">*</span> <span class="fu">length</span>(b))</span>
+<span id="cb22-129"><a href="#cb22-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-130"><a href="#cb22-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p_sup)</span>
+<span id="cb22-131"><a href="#cb22-131" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-132"><a href="#cb22-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-133"><a href="#cb22-133" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">c</span>(a, b), <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"a"</span>, <span class="dv">5</span>), <span class="fu">rep</span>(<span class="st">"b"</span>, <span class="dv">5</span>)))</span>
+<span id="cb22-134"><a href="#cb22-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-135"><a href="#cb22-135" aria-hidden="true" tabindex="-1"></a><span class="fu">tribble</span>(</span>
+<span id="cb22-136"><a href="#cb22-136" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>package, <span class="sc">~</span>code, <span class="sc">~</span>p_sup,</span>
+<span id="cb22-137"><a href="#cb22-137" aria-hidden="true" tabindex="-1"></a>  <span class="st">"-"</span>, <span class="st">"p_sup(a, b)"</span>, <span class="fu">p_sup</span>(a, b),</span>
+<span id="cb22-138"><a href="#cb22-138" aria-hidden="true" tabindex="-1"></a>  <span class="st">"effectsize"</span>,</span>
+<span id="cb22-139"><a href="#cb22-139" aria-hidden="true" tabindex="-1"></a>  <span class="st">"p_superiority(a, b, parametric = FALSE)"</span>,</span>
+<span id="cb22-140"><a href="#cb22-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">p_superiority</span>(a, b, <span class="at">parametric =</span> <span class="cn">FALSE</span>)<span class="sc">$</span>p_superiority,</span>
+<span id="cb22-141"><a href="#cb22-141" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RProbSup"</span>, <span class="st">"A(df, 1, 2)"</span>, <span class="fu">A</span>(df, <span class="dv">1</span>, <span class="dv">2</span>)<span class="sc">$</span>A</span>
+<span id="cb22-142"><a href="#cb22-142" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-143"><a href="#cb22-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-144"><a href="#cb22-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-145"><a href="#cb22-145" aria-hidden="true" tabindex="-1"></a><span class="fu">## A Frequentist example</span></span>
+<span id="cb22-146"><a href="#cb22-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-147"><a href="#cb22-147" aria-hidden="true" tabindex="-1"></a>Let's take a look at a real-life example by calculating p-sup using real data. I found some data from the LISS panel on how important people think animal rights are. I added the participant's sex to the data so we can take a look at sex differences on this outcome.</span>
+<span id="cb22-148"><a href="#cb22-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-151"><a href="#cb22-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-152"><a href="#cb22-152" aria-hidden="true" tabindex="-1"></a>props <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb22-153"><a href="#cb22-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex) <span class="sc">|&gt;</span></span>
+<span id="cb22-154"><a href="#cb22-154" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(importance_animal_rights) <span class="sc">|&gt;</span></span>
+<span id="cb22-155"><a href="#cb22-155" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n))</span>
+<span id="cb22-156"><a href="#cb22-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-157"><a href="#cb22-157" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(props, <span class="fu">aes</span>(<span class="at">x =</span> importance_animal_rights, <span class="at">y =</span> prop, <span class="at">fill =</span> sex)) <span class="sc">+</span></span>
+<span id="cb22-158"><a href="#cb22-158" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">alpha =</span> .<span class="dv">8</span>) <span class="sc">+</span></span>
+<span id="cb22-159"><a href="#cb22-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>) <span class="sc">+</span></span>
+<span id="cb22-160"><a href="#cb22-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb22-161"><a href="#cb22-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(colors[<span class="dv">2</span>], colors[<span class="dv">5</span>])) <span class="sc">+</span></span>
+<span id="cb22-162"><a href="#cb22-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Importance of animal rights"</span>, <span class="at">y =</span> <span class="st">"Percentage"</span>, <span class="at">fill =</span> <span class="st">""</span>)</span>
+<span id="cb22-163"><a href="#cb22-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-164"><a href="#cb22-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-165"><a href="#cb22-165" aria-hidden="true" tabindex="-1"></a>Let's calculate p-sup using our function.</span>
+<span id="cb22-166"><a href="#cb22-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-169"><a href="#cb22-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-170"><a href="#cb22-170" aria-hidden="true" tabindex="-1"></a><span class="fu">p_sup</span>(</span>
+<span id="cb22-171"><a href="#cb22-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="fu">filter</span>(data, sex <span class="sc">==</span> <span class="st">"Female"</span>), importance_animal_rights),</span>
+<span id="cb22-172"><a href="#cb22-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="fu">filter</span>(data, sex <span class="sc">==</span> <span class="st">"Male"</span>), importance_animal_rights)</span>
+<span id="cb22-173"><a href="#cb22-173" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-174"><a href="#cb22-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-175"><a href="#cb22-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-176"><a href="#cb22-176" aria-hidden="true" tabindex="-1"></a>And the function from the effectsize package.</span>
+<span id="cb22-177"><a href="#cb22-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-180"><a href="#cb22-180" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-181"><a href="#cb22-181" aria-hidden="true" tabindex="-1"></a><span class="fu">p_superiority</span>(importance_animal_rights <span class="sc">~</span> sex, <span class="at">data =</span> data, <span class="at">parametric =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb22-182"><a href="#cb22-182" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-183"><a href="#cb22-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-184"><a href="#cb22-184" aria-hidden="true" tabindex="-1"></a><span class="fu">## A Bayesian example</span></span>
+<span id="cb22-185"><a href="#cb22-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-186"><a href="#cb22-186" aria-hidden="true" tabindex="-1"></a>We can analyze the same data using a Bayesian model.</span>
+<span id="cb22-187"><a href="#cb22-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-190"><a href="#cb22-190" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-191"><a href="#cb22-191" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb22-192"><a href="#cb22-192" aria-hidden="true" tabindex="-1"></a>  importance_animal_rights <span class="sc">~</span> sex,</span>
+<span id="cb22-193"><a href="#cb22-193" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data, <span class="at">file =</span> <span class="st">"model.Rds"</span></span>
+<span id="cb22-194"><a href="#cb22-194" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-195"><a href="#cb22-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-196"><a href="#cb22-196" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb22-197"><a href="#cb22-197" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_predicted_draws</span>(model, <span class="at">value =</span> <span class="st">"predicted_outcome"</span>)</span>
+<span id="cb22-198"><a href="#cb22-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-199"><a href="#cb22-199" aria-hidden="true" tabindex="-1"></a>p_sups <span class="ot">&lt;-</span> draws <span class="sc">|&gt;</span></span>
+<span id="cb22-200"><a href="#cb22-200" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(.draw) <span class="sc">|&gt;</span></span>
+<span id="cb22-201"><a href="#cb22-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb22-202"><a href="#cb22-202" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_sup =</span> <span class="fu">p_superiority</span>(</span>
+<span id="cb22-203"><a href="#cb22-203" aria-hidden="true" tabindex="-1"></a>      predicted_outcome <span class="sc">~</span> sex,</span>
+<span id="cb22-204"><a href="#cb22-204" aria-hidden="true" tabindex="-1"></a>      <span class="at">parametric =</span> <span class="cn">FALSE</span></span>
+<span id="cb22-205"><a href="#cb22-205" aria-hidden="true" tabindex="-1"></a>    )<span class="sc">$</span>p_superiority</span>
+<span id="cb22-206"><a href="#cb22-206" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-207"><a href="#cb22-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-208"><a href="#cb22-208" aria-hidden="true" tabindex="-1"></a><span class="fu">median_qi</span>(p_sups, p_sup)</span>
+<span id="cb22-209"><a href="#cb22-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
