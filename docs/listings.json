@@ -6,6 +6,7 @@
       "/content/projects/cognitive-dissonance/cognitive-dissonance.html",
       "/content/projects/statcheck/statcheck.html",
       "/content/projects/tidystats/tidystats.html",
+      "/content/posts/37-format-numbers/format-numbers.html",
       "/content/posts/35-metalog-distribution/metalog-distribution.html",
       "/content/posts/30-predicting-values-of-intercept-only-models/predicting-values-of-intercept-only-models.html",
       "/content/posts/28-sad-animal-facts/sad-animal-facts.html",
@@ -36,6 +37,7 @@
   {
     "listing": "/content/blog.html",
     "items": [
+      "/content/posts/37-format-numbers/format-numbers.html",
       "/content/posts/35-metalog-distribution/metalog-distribution.html",
       "/content/posts/30-predicting-values-of-intercept-only-models/predicting-values-of-intercept-only-models.html",
       "/content/posts/28-sad-animal-facts/sad-animal-facts.html",

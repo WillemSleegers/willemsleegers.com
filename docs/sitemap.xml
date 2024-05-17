@@ -22,47 +22,59 @@
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/18-bayesian-tutorial-simple-regression/bayesian-tutorial-simple-regression.html</loc>
-    <lastmod>2024-03-19T20:37:31.160Z</lastmod>
+    <lastmod>2024-04-03T07:30:57.478Z</lastmod>
   </url>
   <url>
-    <loc>https://www.willemsleegers.com/content/posts/1-understanding-regression-part-1/understanding-regression-part-1.html</loc>
-    <lastmod>2022-04-14T06:46:03.089Z</lastmod>
+    <loc>https://www.willemsleegers.com/content/posts/30-predicting-values-of-intercept-only-models/predicting-values-of-intercept-only-models.html</loc>
+    <lastmod>2024-04-03T07:30:57.483Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.html</loc>
+    <lastmod>2024-04-03T07:30:57.484Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/8-the-right-order-of-method-sections/the-right-order-of-method-sections.html</loc>
     <lastmod>2022-04-14T06:47:55.036Z</lastmod>
   </url>
   <url>
-    <loc>https://www.willemsleegers.com/content/posts/3-useful-power-analysis-papers/useful-power-analysis-papers.html</loc>
-    <lastmod>2022-04-14T06:46:17.985Z</lastmod>
+    <loc>https://www.willemsleegers.com/content/posts/35-metalog-distribution/metalog-distribution.html</loc>
+    <lastmod>2024-04-14T12:04:29.818Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/10-simulation-based-power-curves/simulation-based-power-curves.html</loc>
+    <lastmod>2022-04-14T06:48:48.675Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/16-animals-slaughtered-netherlands/animals-slaughtered-netherlands.html</loc>
     <lastmod>2022-09-22T10:20:26.467Z</lastmod>
   </url>
   <url>
-    <loc>https://www.willemsleegers.com/content/posts/6-a-tidystats-example/a-tidystats-example.html</loc>
-    <lastmod>2022-04-14T06:47:20.777Z</lastmod>
+    <loc>https://www.willemsleegers.com/content/posts/20-bayesian-tutorial-2-groups/bayesian-tutorial-2-groups.html</loc>
+    <lastmod>2023-08-07T18:17:51.597Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/28-sad-animal-facts/sad-animal-facts.html</loc>
-    <lastmod>2024-03-18T23:21:39.621Z</lastmod>
+    <lastmod>2024-04-03T07:30:57.480Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/9-simulation-based-power-analyses/simulation-based-power-analyses.html</loc>
     <lastmod>2023-04-24T17:57:08.154Z</lastmod>
   </url>
   <url>
-    <loc>https://www.willemsleegers.com/content/posts/20-bayesian-tutorial-2-groups/bayesian-tutorial-2-groups.html</loc>
-    <lastmod>2023-08-07T18:17:51.597Z</lastmod>
+    <loc>https://www.willemsleegers.com/content/posts/37-format-numbers/format-numbers.html</loc>
+    <lastmod>2024-05-17T08:41:11.532Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/6-a-tidystats-example/a-tidystats-example.html</loc>
+    <lastmod>2022-04-14T06:47:20.777Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/19-bayesian-tutorial-correlations/bayesian-tutorial-correlations.html</loc>
-    <lastmod>2023-08-07T18:17:31.171Z</lastmod>
+    <lastmod>2024-04-13T21:18:57.593Z</lastmod>
   </url>
   <url>
-    <loc>https://www.willemsleegers.com/content/posts/10-simulation-based-power-curves/simulation-based-power-curves.html</loc>
-    <lastmod>2022-04-14T06:48:48.675Z</lastmod>
+    <loc>https://www.willemsleegers.com/content/posts/3-useful-power-analysis-papers/useful-power-analysis-papers.html</loc>
+    <lastmod>2022-04-14T06:46:17.985Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/posts/17-politics-animal-voting-behavior-netherlands/politics-animal-voting-behavior-netherlands.html</loc>
@@ -73,8 +85,8 @@
     <lastmod>2022-06-03T07:14:02.792Z</lastmod>
   </url>
   <url>
-    <loc>https://www.willemsleegers.com/content/posts/5-bayesian-tutorial-intercept-only/bayesian-tutorial-intercept-only.html</loc>
-    <lastmod>2024-03-19T19:25:33.149Z</lastmod>
+    <loc>https://www.willemsleegers.com/content/posts/1-understanding-regression-part-1/understanding-regression-part-1.html</loc>
+    <lastmod>2022-04-14T06:46:03.089Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/projects/statcheck/statcheck.html</loc>
@@ -91,13 +103,5 @@
   <url>
     <loc>https://www.willemsleegers.com/content/blog.html</loc>
     <lastmod>2022-04-13T09:02:20.106Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.willemsleegers.com/content/posts/30-predicting-values-of-intercept-only-models/predicting-values-of-intercept-only-models.html</loc>
-    <lastmod>2024-03-18T08:32:38.493Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.willemsleegers.com/content/posts/35-metalog-distribution/metalog-distribution.html</loc>
-    <lastmod>2024-04-14T12:04:29.818Z</lastmod>
   </url>
 </urlset>

@@ -1,15 +1,15 @@
 ---
 title: "Formatting numbers"
 description: "A showcase of the function I use to format numbers."
-date: 2024-05-14
+date: 2024-05-17
 categories:
   - R
   - function
-  - statistics
 code-tools: true
 code-fold: show
-draft: true
 ---
+
+This blog post covers the function I use to format numbers. It's kinda work-in-progress / test place for my function because I know I'm not happy with it yet and, as you can see below, I'll show what output it produces for many different numbers, so I can also use it to see if it does what I want it to do.
 
 Run the following setup code if you want to follow along.
 
@@ -21,7 +21,15 @@ library(tidyverse)
 
 ## The function
 
+Below is the function I use. It has 4 arguments:
+
+- `x`: The number to format
+- `trailing_digits`: This is a bit of a weird one. It refers to how many decimals you want, excluding leading zeroes in the decimal part of the number. I often want a number like 0.002121 to be rounded to 0.0021 instead of 0.00, so instead of simply referring to the number of digits, I call it trailing digits.
+- `digits`: This one forces the number of decimals, so setting this to 2 will always show (only) 2 digits
+- `omit_zero`: For numbers that can only range from -1 to 1, the leading zero is often non-informative, so this argument removes that leading zero.
+
 ```{r}
+#| label: function
 format_number <- function(
     x,
     trailing_digits = 2,
@@ -59,6 +67,8 @@ format_number <- function(
 
 ## Testing it out
 
+The table below shows what kind of output is produced by the function depending on its input. It serves as an illustration of how the function works and as a test for me to see whether the function does what I want it to do.
+
 | Number      | `trailing_digits` | `digits` | `omit_zero` | Result                                                           |
 |---------------|---------------|---------------|---------------|---------------|
 | 2           | 0                 | \-       | `FALSE`     | `r format_number(2, trailing_digits = 0)`                        |
@@ -74,3 +84,9 @@ format_number <- function(
 | 12.00120032 | 2                 | \-       | `FALSE`     | `r format_number(12.00120032, trailing_digits = 2)`              |
 | 0.434       | 2                 | \-       | `TRUE`      | `r format_number(0.434, trailing_digits = 2, omit_zero = TRUE)`  |
 | 1.434       | 2                 | \-       | `FALSE`     | `r format_number(0.434, trailing_digits = 2, omit_zero = FALSE)` |
+
+## Limitations
+
+The function isn't complete yet. For example, I should also add something to deal with very large or very small numbers. The function is also not vectorized (i.e., it only accepts a single number), so there's still room for improvement. I'll update the post when I make adjustments to the function.
+
+*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*
