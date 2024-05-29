@@ -248,18 +248,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(digits)) {</span>
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    output <span class="ot">&lt;-</span> <span class="fu">format</span>(<span class="fu">round</span>(x, digits), <span class="at">nsmall =</span> digits)</span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    trailing_digits <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(decimals_n <span class="sc">&gt;</span> trailing_digits, trailing_digits <span class="sc">+</span> zeroes_n, trailing_digits)</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    output <span class="ot">&lt;-</span> <span class="fu">formatC</span>(</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">round</span>(x, <span class="at">digits =</span> trailing_digits),</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> trailing_digits, <span class="at">format =</span> <span class="st">"f"</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    trailing_digits <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">if_else</span>(</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>      decimals_n <span class="sc">&gt;</span> trailing_digits,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>      trailing_digits <span class="sc">+</span> zeroes_n,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      trailing_digits</span>
 <span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove leading zero</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (omit_zero) output <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(output, <span class="st">"^0"</span>)</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(output)</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    output <span class="ot">&lt;-</span> x <span class="sc">|&gt;</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>      <span class="fu">round</span>(<span class="at">digits =</span> trailing_digits) <span class="sc">|&gt;</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>      purrr<span class="sc">::</span><span class="fu">map2_chr</span>(trailing_digits, formatC, <span class="at">format =</span> <span class="st">"f"</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove leading zero</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (omit_zero) output <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(output, <span class="st">"^0"</span>)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(output)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -380,8 +384,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="limitations" class="level2">
 <h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
-<p>The function isn’t complete yet. For example, I should also add something to deal with very large or very small numbers. The function is also not vectorized (i.e., it only accepts a single number), so there’s still room for improvement. I’ll update the post when I make adjustments to the function.</p>
-<p><em>This post was last updated on 2024-05-17.</em></p>
+<p>The function isn’t complete yet. For example, I should also add something to deal with very large or very small numbers. I’ll update the post when I make adjustments to the function.</p>
+</section>
+<section id="updates" class="level2">
+<h2 class="anchored" data-anchor-id="updates">Updates</h2>
+<p>The function is now vectorized, so it works when you give it multiple numbers at once.</p>
+<p><em>This post was last updated on 2024-05-21.</em></p>
 
 
 <!-- -->
@@ -880,45 +888,53 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(digits)) {</span>
 <span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    output <span class="ot">&lt;-</span> <span class="fu">format</span>(<span class="fu">round</span>(x, digits), <span class="at">nsmall =</span> digits)</span>
 <span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    trailing_digits <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(decimals_n <span class="sc">&gt;</span> trailing_digits, trailing_digits <span class="sc">+</span> zeroes_n, trailing_digits)</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    output <span class="ot">&lt;-</span> <span class="fu">formatC</span>(</span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>      <span class="fu">round</span>(x, <span class="at">digits =</span> trailing_digits),</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> trailing_digits, <span class="at">format =</span> <span class="st">"f"</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    trailing_digits <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">if_else</span>(</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>      decimals_n <span class="sc">&gt;</span> trailing_digits,</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>      trailing_digits <span class="sc">+</span> zeroes_n,</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>      trailing_digits</span>
 <span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove leading zero</span></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (omit_zero) output <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(output, <span class="st">"^0"</span>)</span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(output)</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>    output <span class="ot">&lt;-</span> x <span class="sc">|&gt;</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>      <span class="fu">round</span>(<span class="at">digits =</span> trailing_digits) <span class="sc">|&gt;</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>      purrr<span class="sc">::</span><span class="fu">map2_chr</span>(trailing_digits, formatC, <span class="at">format =</span> <span class="st">"f"</span>)</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove leading zero</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (omit_zero) output <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(output, <span class="st">"^0"</span>)</span>
 <span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="fu">## Testing it out</span></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>The table below shows what kind of output is produced by the function depending on its input. It serves as an illustration of how the function works and as a test for me to see whether the function does what I want it to do.</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(output)</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>| Number      | <span class="in">`trailing_digits`</span> | <span class="in">`digits`</span> | <span class="in">`omit_zero`</span> | Result                                                           |</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>|---------------|---------------|---------------|---------------|---------------|</span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>| 2           | 0                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2, trailing_digits = 0)`</span>                        |</span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>| 2           | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2, trailing_digits = 2)`</span>                        |</span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>| 2           | <span class="sc">\-</span>                | 2        | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2, digits = 2)`</span>                                 |</span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>| 2.0         | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.0, trailing_digits = 2)`</span>                      |</span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>| 2.01        | 1                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.01, trailing_digits = 1)`</span>                     |</span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>| 2.01        | -                 | 1        | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.01, digits = 1)`</span>                              |</span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>| 2.01        | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.01, trailing_digits = 2)`</span>                     |</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>| 2.013232    | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.013232, trailing_digits = 2)`</span>                 |</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>| 12.00013232 | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(12.00013232, trailing_digits = 2)`</span>              |</span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>| 12.01003232 | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(12.01003232, trailing_digits = 2)`</span>              |</span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>| 12.00120032 | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(12.00120032, trailing_digits = 2)`</span>              |</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>| 0.434       | 2                 | <span class="sc">\-</span>       | <span class="in">`TRUE`</span>      | <span class="in">`r format_number(0.434, trailing_digits = 2, omit_zero = TRUE)`</span>  |</span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>| 1.434       | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(0.434, trailing_digits = 2, omit_zero = FALSE)`</span> |</span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a><span class="fu">## Limitations</span></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>The function isn't complete yet. For example, I should also add something to deal with very large or very small numbers. The function is also not vectorized (i.e., it only accepts a single number), so there's still room for improvement. I'll update the post when I make adjustments to the function.</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## Testing it out</span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>The table below shows what kind of output is produced by the function depending on its input. It serves as an illustration of how the function works and as a test for me to see whether the function does what I want it to do.</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>| Number      | <span class="in">`trailing_digits`</span> | <span class="in">`digits`</span> | <span class="in">`omit_zero`</span> | Result                                                           |</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>|---------------|---------------|---------------|---------------|---------------|</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>| 2           | 0                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2, trailing_digits = 0)`</span>                        |</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>| 2           | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2, trailing_digits = 2)`</span>                        |</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>| 2           | <span class="sc">\-</span>                | 2        | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2, digits = 2)`</span>                                 |</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>| 2.0         | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.0, trailing_digits = 2)`</span>                      |</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>| 2.01        | 1                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.01, trailing_digits = 1)`</span>                     |</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>| 2.01        | -                 | 1        | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.01, digits = 1)`</span>                              |</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>| 2.01        | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.01, trailing_digits = 2)`</span>                     |</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>| 2.013232    | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.013232, trailing_digits = 2)`</span>                 |</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>| 12.00013232 | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(12.00013232, trailing_digits = 2)`</span>              |</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>| 12.01003232 | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(12.01003232, trailing_digits = 2)`</span>              |</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>| 12.00120032 | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(12.00120032, trailing_digits = 2)`</span>              |</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>| 0.434       | 2                 | <span class="sc">\-</span>       | <span class="in">`TRUE`</span>      | <span class="in">`r format_number(0.434, trailing_digits = 2, omit_zero = TRUE)`</span>  |</span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>| 1.434       | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(0.434, trailing_digits = 2, omit_zero = FALSE)`</span> |</span>
 <span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="fu">## Limitations</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>The function isn't complete yet. For example, I should also add something to deal with very large or very small numbers. I'll update the post when I make adjustments to the function.</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="fu">## Updates</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>The function is now vectorized, so it works when you give it multiple numbers at once.</span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

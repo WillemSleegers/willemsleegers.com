@@ -51,11 +51,15 @@ format_number <- function(
   if (!is.null(digits)) {
     output <- format(round(x, digits), nsmall = digits)
   } else {
-    trailing_digits <- ifelse(decimals_n > trailing_digits, trailing_digits + zeroes_n, trailing_digits)
-    output <- formatC(
-      round(x, digits = trailing_digits),
-      digits = trailing_digits, format = "f"
+    trailing_digits <- dplyr::if_else(
+      decimals_n > trailing_digits,
+      trailing_digits + zeroes_n,
+      trailing_digits
     )
+
+    output <- x |>
+      round(digits = trailing_digits) |>
+      purrr::map2_chr(trailing_digits, formatC, format = "f")
   }
 
   # Remove leading zero
@@ -87,6 +91,10 @@ The table below shows what kind of output is produced by the function depending 
 
 ## Limitations
 
-The function isn't complete yet. For example, I should also add something to deal with very large or very small numbers. The function is also not vectorized (i.e., it only accepts a single number), so there's still room for improvement. I'll update the post when I make adjustments to the function.
+The function isn't complete yet. For example, I should also add something to deal with very large or very small numbers. I'll update the post when I make adjustments to the function.
+
+## Updates
+
+The function is now vectorized, so it works when you give it multiple numbers at once.
 
 *This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*
