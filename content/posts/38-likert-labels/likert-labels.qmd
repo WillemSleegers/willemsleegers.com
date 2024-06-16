@@ -1,0 +1,38 @@
+---
+title: "Formatting numbers"
+description: "A showcase of the function I use to format numbers."
+date: 2024-05-17
+categories:
+  - R
+  - function
+code-tools: true
+code-fold: show
+format: 
+   html:
+     df-print: kable
+knitr:
+  opts_chunk: 
+    R.options:
+      knitr.kable.NA: ''
+draft: true
+---
+
+```{r}
+#| label: likert-labels
+#| tbl-cap: Likert labels
+#| message: false
+#| code-fold: true
+library(tidyverse)
+library(DT)
+
+labels <- read_csv("./labels.csv")
+
+labels |>
+  select(-id, -symmetrical) |>
+    mutate(options = as.character(options), option = as.character(option)) |>
+  datatable(
+    rownames = FALSE,
+    filter = "top",
+    options = list(pageLength = 10, dom = "tip")
+  )
+```
