@@ -29,10 +29,15 @@ labels <- read_csv("./labels.csv")
 
 labels |>
   select(-id, -symmetrical) |>
-    mutate(options = as.character(options), option = as.character(option)) |>
+  mutate(options = as.character(options), option = as.character(option)) |>
   datatable(
     rownames = FALSE,
     filter = "top",
-    options = list(pageLength = 10, dom = "tip")
+    options = list(
+      pageLength = 10, dom = "tip",
+      columnDefs = list(
+        list(width = "20px", targets = c(1, 2))
+      )
+    )
   )
 ```
