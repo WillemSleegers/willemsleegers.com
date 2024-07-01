@@ -1,12 +1,13 @@
 ---
-title: "Formatting numbers"
-description: "A showcase of the function I use to format numbers."
-date: 2024-05-17
+title: "Likert labels"
+description: "A collection of labels for labelling response options in Likert-type questions."
+date: 2024-06-18
 categories:
   - R
   - function
 code-tools: true
-code-fold: show
+code-fold: true
+toc: true
 format: 
    html:
      df-print: kable
@@ -18,26 +19,77 @@ draft: true
 ---
 
 ```{r}
-#| label: likert-labels
-#| tbl-cap: Likert labels
+#| label: setup
 #| message: false
-#| code-fold: true
 library(tidyverse)
 library(DT)
 
-labels <- read_csv("./labels.csv")
+labels <- read_csv("./Likert - Labels.csv")
+```
 
+## Labels table
+
+The table below shows the same labels as in the preceding section, but you can use the search filters in each column to easily narrow down to a specific set of labels.
+
+```{r}
+#| label: likert-labels-table
+#| tbl-cap: Likert labels
+#| message: false
 labels |>
   select(-id, -symmetrical) |>
-  mutate(options = as.character(options), option = as.character(option)) |>
+  mutate(
+    options = as.character(options),
+    option = as.character(option),
+    variant = as.character(variant)
+  ) |>
   datatable(
     rownames = FALSE,
     filter = "top",
     options = list(
       pageLength = 10, dom = "tip",
       columnDefs = list(
-        list(width = "20px", targets = c(1, 2))
+        list(width = "20px", targets = c(1, 2, 3))
       )
     )
   )
 ```
+
+## Labels
+```{r}
+#| label: labels
+#| results: asis
+labels_wide <- labels |>
+  pivot_wider(
+    names_from = variant,
+    names_prefix = "variant_",
+    values_from = label
+  ) |>
+  arrange(topic)
+
+topics <- pull(labels_wide, topic) |> unique()
+
+for (current_topic in topics) {
+  subset <- filter(labels_wide, topic == current_topic)
+  cat(paste("###", current_topic))
+  cat("\n\n")
+
+  options <- pull(subset, options) |> unique()
+
+  for (current_options in options) {
+    subsubset <- filter(subset, options == current_options)
+
+    cat(paste0("#### ", current_options, "-options"))
+    cat("\n\n")
+
+    for (i in 1:nrow(subsubset)) {
+      cat("\n")
+      cat(paste0(subsubset$option[i], ". ", subsubset$variant_1[i]))
+    }
+    cat("\n\n")
+  }
+}
+```
+
+## Sources
+
+

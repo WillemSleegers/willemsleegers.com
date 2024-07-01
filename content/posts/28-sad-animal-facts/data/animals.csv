@@ -14,3 +14,5 @@ id,name,latin_name,category,description,source,tags,citekey,counter,include,note
 13,Chimpanzee,Pan troglodytes,Mammals,Both male and female chimpanzees kill infants.,https://doi.org/10.1016/j.cub.2007.03.020,infanticide,townsend2007,-,1,-
 14,Sand tiger shark,Carcharias taurus,Fish,"During their pregnancy, the most developed embryo will feed on its siblings.",-,cannibalism,gilmore1983,-,1,-
 15,Mallard,Anas platyrhynchos,Birds,Mallards forcibly mate with females.,https://doi.org/10.2307/40166723,sexual coercion,mckinney1998,-,1,-
+16,Kelp gull,Larus dominicanus,Birds,"In Namibia, kelp gull pluck out the eyes of juvenile Cape fur seals and then later feast on its carcass.",https://doi.org/10.2989/1814232X.2015.1071718,predation,gallagher2015,-,1,-
+17,Northern short-tailed shrew,Blarina brevicauda,Mammals,The Northern short-tailed shrew has venomous saliva that it uses to immobilize some of its prey to eat it later.,https://doi.org/10.2307/1380494,predation,martin1981,-,1,-

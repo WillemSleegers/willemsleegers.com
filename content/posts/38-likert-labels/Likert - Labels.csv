@@ -1,0 +1,605 @@
+id,topic,options,option,variant,label,symmetrical
+89,Challenging,5,1,1,Not challenging at all,0
+89,Challenging,5,2,1,Slightly challenging,0
+89,Challenging,5,3,1,Moderately challenging,0
+89,Challenging,5,4,1,Very challenging,0
+89,Challenging,5,5,1,Extremely challenging,0
+47,Describes Me,5,1,1,Does not describe me,0
+47,Describes Me,5,2,1,Describes me slightly well,0
+47,Describes Me,5,3,1,Describes me moderately well,0
+47,Describes Me,5,4,1,Describes me very well,0
+47,Describes Me,5,5,1,Describes me extremely well,0
+46,Describes My Feelings,5,1,1,Does not describe my feelings,0
+46,Describes My Feelings,5,2,1,Slightly describes my feelings,0
+46,Describes My Feelings,5,3,1,Moderately describes my feelings,0
+46,Describes My Feelings,5,4,1,Mostly describes my feelings,0
+46,Describes My Feelings,5,5,1,Clearly describes my feelings,0
+31,Effective,5,1,1,Not effective at all,0
+31,Effective,5,2,1,Slightly effective,0
+31,Effective,5,3,1,Moderately effective,0
+31,Effective,5,4,1,Very effective,0
+31,Effective,5,5,1,Extremely effective,0
+102,Extent,5,1,1,Not at all,0
+102,Extent,5,2,1,Slightly,0
+102,Extent,5,3,1,Moderately,0
+102,Extent,5,4,1,Very,0
+102,Extent,5,4,2,Considerably,0
+102,Extent,5,5,1,Extremely,0
+102,Extent,5,5,2,A great deal,0
+102,Extent,5,5,3,Completely,0
+93,Familiar,5,1,1,Not familiar at all,0
+93,Familiar,5,2,1,Slightly familiar,0
+93,Familiar,5,3,1,Moderately familiar,0
+93,Familiar,5,4,1,Very familiar,0
+93,Familiar,5,5,1,Extremely familiar,0
+94,Frequency,5,1,1,Never,0
+94,Frequency,5,2,1,Rarely,0
+94,Frequency,5,3,1,Sometimes,0
+94,Frequency,5,3,2,Occasionally,0
+94,Frequency,5,4,1,Often,0
+94,Frequency,5,5,1,Always,0
+101,Frequency,6,1,1,Daily,0
+101,Frequency,6,2,1,Weekly,0
+101,Frequency,6,3,1,Monthly,0
+101,Frequency,6,4,1,Once a semester,0
+101,Frequency,6,5,1,Once a year,0
+101,Frequency,6,6,1,Never,0
+100,Helpful,5,1,1,Not at all helpful,0
+100,Helpful,5,2,1,Slightly helpful,0
+100,Helpful,5,3,1,Moderately helpful,0
+100,Helpful,5,4,1,Very helpful,0
+100,Helpful,5,5,1,Extremely helpful,0
+91,How accurately,5,1,1,Not accurately at all,0
+91,How accurately,5,2,1,Slightly accurately,0
+91,How accurately,5,3,1,Moderately accurately,0
+91,How accurately,5,4,1,Very accurately,0
+91,How accurately,5,5,1,Extremely accurately,0
+90,How well,5,1,1,Not well at all,0
+90,How well,5,2,1,Slightly well,0
+90,How well,5,3,1,Moderately well,0
+90,How well,5,4,1,Very well,0
+90,How well,5,5,1,Extremely well,0
+59,Ideals,5,1,1,Not close to the ideal,0
+59,Ideals,5,2,1,Slightly close to the ideal,0
+59,Ideals,5,3,1,Moderately close to the ideal,0
+59,Ideals,5,4,1,Very close to the ideal,0
+59,Ideals,5,5,1,Extremely close to the ideal,0
+45,Important,5,1,1,Not at all important,0
+45,Important,5,2,1,Slightly important,0
+45,Important,5,3,1,Moderately important,0
+45,Important,5,4,1,Very important,0
+45,Important,5,5,1,Extremely important,0
+88,Interest,5,1,1,Not interesting at all,0
+88,Interest,5,2,1,Slightly interesting,0
+88,Interest,5,3,1,Moderately interesting,0
+88,Interest,5,4,1,Very interesting,0
+88,Interest,5,5,1,Extremely interesting,0
+99,Interest,5,1,1,Not at all interested,0
+99,Interest,5,2,1,Slightly interested,0
+99,Interest,5,3,1,Moderately interested,0
+99,Interest,5,4,1,Very interested,0
+99,Interest,5,5,1,Extremely interested,0
+55,Intervals,5,1,1,Never,0
+55,Intervals,5,2,1,Once a week,0
+55,Intervals,5,3,1,2-3 times a week,0
+55,Intervals,5,4,1,4-6 times a week,0
+55,Intervals,5,5,1,Daily,0
+92,Knowledgeable,5,1,1,Not knowledgeable at all,0
+92,Knowledgeable,5,2,1,Slightly knowledgeable,0
+92,Knowledgeable,5,3,1,Moderately knowledgeable,0
+92,Knowledgeable,5,4,1,Very knowledgeable,0
+92,Knowledgeable,5,5,1,Extremely knowledgeable,0
+109,Legitimate,5,1,1,Not legitimate at all,0
+109,Legitimate,5,2,1,Slightly legitimate,0
+109,Legitimate,5,3,1,Moderately legitimate,0
+109,Legitimate,5,4,1,Very legitimate,0
+109,Legitimate,5,5,1,Extremely legitimate,0
+60,Frequency,3,1,1,Rarely,0
+60,Frequency,3,2,1,About half the time,0
+60,Frequency,3,3,1,Most of the time,0
+61,Frequency,5,1,1,Never,0
+61,Frequency,5,2,1,Sometimes,0
+61,Frequency,5,3,1,About half the time,0
+61,Frequency,5,4,1,Most of the time,0
+61,Frequency,5,5,1,Always,0
+50,Preference,5,1,1,Do not prefer,0
+50,Preference,5,2,1,Prefer slightly,0
+50,Preference,5,3,1,Prefer a moderate amount,0
+50,Preference,5,4,1,Prefer a lot,0
+50,Preference,5,5,1,Prefer a great deal,0
+62,Quantity,3,1,1,A little,0
+62,Quantity,3,2,1,A moderate amount,0
+62,Quantity,3,3,1,A lot,0
+63,Quantity,5,1,1,None at all,0
+63,Quantity,5,2,1,A little,0
+63,Quantity,5,3,1,A moderate amount,0
+63,Quantity,5,4,1,A lot,0
+63,Quantity,5,5,1,A great deal,0
+69,Quality,3,1,1,Terrible,0
+69,Quality,3,2,1,Average,0
+69,Quality,3,3,1,Excellent,0
+70,Quality,5,1,1,Terrible,0
+70,Quality,5,2,1,Poor,0
+70,Quality,5,3,1,Average,0
+70,Quality,5,4,1,Good,0
+70,Quality,5,5,1,Excellent,0
+95,Quality,5,1,1,Poor,0
+95,Quality,5,2,1,Fair,0
+95,Quality,5,3,1,Good,0
+95,Quality,5,4,1,Very good,0
+95,Quality,5,5,1,Excellent,0
+98,Quantity,3,1,1,Less than,0
+98,Quantity,3,2,1,About the same,0
+98,Quantity,3,3,1,More than,0
+107,Respectable,5,1,1,Not respectable at all,0
+107,Respectable,5,2,1,Slightly respectable,0
+107,Respectable,5,3,1,Moderately respectable,0
+107,Respectable,5,4,1,Very respectable,0
+107,Respectable,5,5,1,Extremely respectable,0
+108,Urgently,5,1,1,Not urgently at all,0
+108,Urgently,5,2,1,Slightly urgently,0
+108,Urgently,5,3,1,Moderately urgently,0
+108,Urgently,5,4,1,Very urgently,0
+108,Urgently,5,5,1,Extremely urgently,0
+43,Useful,5,1,1,Not at all useful,0
+43,Useful,5,2,1,Slightly useful,0
+43,Useful,5,3,1,Moderately useful,0
+43,Useful,5,4,1,Very useful,0
+43,Useful,5,5,1,Extremely useful,0
+86,Inadequate - Adequate,5,1,1,Extremely inadequate,1
+86,Inadequate - Adequate,5,2,1,Somewhat inadequate,1
+86,Inadequate - Adequate,5,3,1,Neither adequate nor inadequate,1
+86,Inadequate - Adequate,5,4,1,Somewhat adequate,1
+86,Inadequate - Adequate,5,5,1,Extremely adequate,1
+87,Inadequate - Adequate,7,1,1,Extremely inadequate,1
+87,Inadequate - Adequate,7,2,1,Moderately inadequate,1
+87,Inadequate - Adequate,7,3,1,Slightly inadequate,1
+87,Inadequate - Adequate,7,4,1,Neither adequate nor inadequate,1
+87,Inadequate - Adequate,7,5,1,Slightly adequate,1
+87,Inadequate - Adequate,7,6,1,Moderately adequate,1
+87,Inadequate - Adequate,7,7,1,Extremely adequate,1
+32,Bad - Good,5,1,1,Extremely bad,1
+32,Bad - Good,5,2,1,Somewhat bad,1
+32,Bad - Good,5,3,1,Neither good nor bad,1
+32,Bad - Good,5,4,1,Somewhat good,1
+32,Bad - Good,5,5,1,Extremely good,1
+33,Bad - Good,7,1,1,Extremely bad,1
+33,Bad - Good,7,2,1,Moderately bad,1
+33,Bad - Good,7,3,1,Slightly bad,1
+33,Bad - Good,7,4,1,Neither good nor bad,1
+33,Bad - Good,7,5,1,Slightly good,1
+33,Bad - Good,7,6,1,Moderately good,1
+33,Bad - Good,7,7,1,Extremely good,1
+35,Unbelievable - Believable,5,1,1,Extremely unbelievable,1
+35,Unbelievable - Believable,5,2,1,Somewhat unbelievable,1
+35,Unbelievable - Believable,5,3,1,Neither believable nor unbelievable,1
+35,Unbelievable - Believable,5,4,1,Somewhat believable,1
+35,Unbelievable - Believable,5,5,1,Extremely believable,1
+36,Unbelievable - Believable,7,1,1,Extremely unbelievable,1
+36,Unbelievable - Believable,7,2,1,Moderately unbelievable,1
+36,Unbelievable - Believable,7,3,1,Slightly unbelievable,1
+36,Unbelievable - Believable,7,4,1,Neither believable nor unbelievable,1
+36,Unbelievable - Believable,7,5,1,Slightly believable,1
+36,Unbelievable - Believable,7,6,1,Moderately believable,1
+36,Unbelievable - Believable,7,7,1,Extremely believable,1
+23,Below average - Above average,2,1,1,Below average,1
+23,Below average - Above average,2,2,1,Above average,1
+24,Below average - Above average,3,1,1,Below average,1
+24,Below average - Above average,3,2,1,Average,1
+24,Below average - Above average,3,3,1,Above average,1
+25,Below average - Above average,5,1,1,Far below average,1
+25,Below average - Above average,5,2,1,Somewhat below average,1
+25,Below average - Above average,5,3,1,Average,1
+25,Below average - Above average,5,4,1,Somewhat above average,1
+25,Below average - Above average,5,5,1,Far above average,1
+26,Below average - Above average,7,1,1,Far below average,1
+26,Below average - Above average,7,2,1,Moderately below average,1
+26,Below average - Above average,7,3,1,Slightly below average,1
+26,Below average - Above average,7,4,1,Average,1
+26,Below average - Above average,7,5,1,Slightly above average,1
+26,Below average - Above average,7,6,1,Moderately above average,1
+26,Below average - Above average,7,7,1,Far above average,1
+71,Will not - Will,5,1,1,Definitely will not,1
+71,Will not - Will,5,2,1,Probably will not,1
+71,Will not - Will,5,3,1,Might or might not,1
+71,Will not - Will,5,4,1,Probably will,1
+71,Will not - Will,5,5,1,Definitely will,1
+74,Clear - Unclear,5,1,1,Extremely clear,1
+74,Clear - Unclear,5,2,1,Somewhat clear,1
+74,Clear - Unclear,5,3,1,Neither clear nor unclear,1
+74,Clear - Unclear,5,4,1,Somewhat unclear,1
+74,Clear - Unclear,5,5,1,Extremely unclear,1
+75,Clear - Unclear,7,1,1,Extremely clear,1
+75,Clear - Unclear,7,2,1,Moderately clear,1
+75,Clear - Unclear,7,3,1,Slightly clear,1
+75,Clear - Unclear,7,4,1,Neither clear nor unclear,1
+75,Clear - Unclear,7,5,1,Slightly unclear,1
+75,Clear - Unclear,7,6,1,Moderately unclear,1
+75,Clear - Unclear,7,7,1,Extremely unclear,1
+78,Uncomfortable - Comfortable,5,1,1,Extremely uncomfortable,1
+78,Uncomfortable - Comfortable,5,2,1,Somewhat uncomfortable,1
+78,Uncomfortable - Comfortable,5,3,1,Neither comfortable nor uncomfortable,1
+78,Uncomfortable - Comfortable,5,4,1,Somewhat comfortable,1
+78,Uncomfortable - Comfortable,5,5,1,Extremely comfortable,1
+79,Uncomfortable - Comfortable,7,1,1,Extremely uncomfortable,1
+79,Uncomfortable - Comfortable,7,2,1,Moderately uncomfortable,1
+79,Uncomfortable - Comfortable,7,3,1,Slightly uncomfortable,1
+79,Uncomfortable - Comfortable,7,4,1,Neither comfortable nor uncomfortable,1
+79,Uncomfortable - Comfortable,7,5,1,Slightly comfortable,1
+79,Uncomfortable - Comfortable,7,6,1,Moderately comfortable,1
+79,Uncomfortable - Comfortable,7,7,1,Extremely comfortable,1
+82,Incompetent - Competent,5,1,1,Extremely incompetent,1
+82,Incompetent - Competent,5,2,1,Somewhat incompetent,1
+82,Incompetent - Competent,5,3,1,Neither competent nor incompetent,1
+82,Incompetent - Competent,5,4,1,Somewhat competent,1
+82,Incompetent - Competent,5,5,1,Extremely competent,1
+83,Incompetent - Competent,7,1,1,Extremely incompetent,1
+83,Incompetent - Competent,7,2,1,Moderately incompetent,1
+83,Incompetent - Competent,7,3,1,Slightly incompetent,1
+83,Incompetent - Competent,7,4,1,Neither competent nor incompetent,1
+83,Incompetent - Competent,7,5,1,Slightly competent,1
+83,Incompetent - Competent,7,6,1,Moderately competent,1
+83,Incompetent - Competent,7,7,1,Extremely competent,1
+29,Difficult - Easy,5,1,1,Extremely difficult,1
+29,Difficult - Easy,5,2,1,Somewhat difficult,1
+29,Difficult - Easy,5,3,1,Neither easy nor difficult,1
+29,Difficult - Easy,5,4,1,Somewhat easy,1
+29,Difficult - Easy,5,5,1,Extremely easy,1
+30,Difficult - Easy,7,1,1,Extremely difficult,1
+30,Difficult - Easy,7,2,1,Moderately difficult,1
+30,Difficult - Easy,7,3,1,Slightly difficult,1
+30,Difficult - Easy,7,4,1,Neither easy nor difficult,1
+30,Difficult - Easy,7,5,1,Slightly easy,1
+30,Difficult - Easy,7,6,1,Moderately easy,1
+30,Difficult - Easy,7,7,1,Extremely easy,1
+103,Difficult - Easy,9,1,1,Extremely difficult,1
+103,Difficult - Easy,9,2,1,Very difficult,1
+103,Difficult - Easy,9,3,1,Moderately difficult,1
+103,Difficult - Easy,9,4,1,Slightly difficult,1
+103,Difficult - Easy,9,5,1,Neither easy nor difficult,1
+103,Difficult - Easy,9,6,1,Slightly easy,1
+103,Difficult - Easy,9,7,1,Moderately easy,1
+103,Difficult - Easy,9,8,1,Very easy,1
+103,Difficult - Easy,9,9,1,Extremely easy,1
+1,Disagree - Agree,2,1,1,Disagree,1
+1,Disagree - Agree,2,2,1,Agree,1
+2,Disagree - Agree,3,1,1,Disagree,1
+2,Disagree - Agree,3,2,1,Neither agree nor disagree,1
+2,Disagree - Agree,3,2,2,Neutral,1
+2,Disagree - Agree,3,3,1,Agree,1
+3,Disagree - Agree,4,1,1,Strongly disagree,1
+3,Disagree - Agree,4,2,1,Disagree,1
+3,Disagree - Agree,4,3,1,Agree,1
+3,Disagree - Agree,4,4,1,Strongly agree,1
+4,Disagree - Agree,5,1,1,Strongly disagree,1
+4,Disagree - Agree,5,2,1,Disagree,1
+4,Disagree - Agree,5,3,1,Neither agree nor disagree,1
+4,Disagree - Agree,5,3,2,Neutral,1
+4,Disagree - Agree,5,4,1,Agree,1
+4,Disagree - Agree,5,5,1,Strongly agree,1
+5,Disagree - Agree,6,1,1,Strongly disagree,1
+5,Disagree - Agree,6,2,1,Disagree,1
+5,Disagree - Agree,6,3,1,Somewhat disagree,1
+5,Disagree - Agree,6,3,2,Slightly disagree	,1
+5,Disagree - Agree,6,4,1,Somewhat agree,1
+5,Disagree - Agree,6,4,2,Slightly agree,1
+5,Disagree - Agree,6,5,1,Agree,1
+5,Disagree - Agree,6,6,1,Strongly agree,1
+6,Disagree - Agree,7,1,1,Strongly disagree,1
+6,Disagree - Agree,7,2,1,Disagree,1
+6,Disagree - Agree,7,3,1,Somewhat disagree,1
+6,Disagree - Agree,7,3,2,Slightly disagree	,1
+6,Disagree - Agree,7,4,1,Neither agree nor disagree,1
+6,Disagree - Agree,7,4,2,Neutral,1
+6,Disagree - Agree,7,5,1,Somewhat agree,1
+6,Disagree - Agree,7,5,2,Slightly agree,1
+6,Disagree - Agree,7,6,1,Agree,1
+6,Disagree - Agree,7,7,1,Strongly agree,1
+7,Disagree - Agree,8,1,1,Very strongly disagree,1
+7,Disagree - Agree,8,2,1,Strongly disagree,1
+7,Disagree - Agree,8,3,1,Disagree,1
+7,Disagree - Agree,8,4,1,Somewhat disagree,1
+7,Disagree - Agree,8,4,2,Slightly disagree	,1
+7,Disagree - Agree,8,5,1,Somewhat agree,1
+7,Disagree - Agree,8,5,2,Slightly agree,1
+7,Disagree - Agree,8,6,1,Agree,1
+7,Disagree - Agree,8,7,1,Strongly agree,1
+7,Disagree - Agree,8,8,1,Very strongly agree,1
+8,Disagree - Agree,9,1,1,Very strongly disagree,1
+8,Disagree - Agree,9,2,1,Strongly disagree,1
+8,Disagree - Agree,9,3,1,Disagree,1
+8,Disagree - Agree,9,4,1,Somewhat disagree,1
+8,Disagree - Agree,9,4,2,Slightly disagree	,1
+8,Disagree - Agree,9,5,1,Neither agree nor disagree,1
+8,Disagree - Agree,9,5,2,Neutral,1
+8,Disagree - Agree,9,6,1,Somewhat agree,1
+8,Disagree - Agree,9,6,2,Slightly agree,1
+8,Disagree - Agree,9,7,1,Agree,1
+8,Disagree - Agree,9,8,1,Strongly agree,1
+8,Disagree - Agree,9,9,1,Very strongly agree,1
+9,Disagree - Agree,10,1,1,Very strongly disagree,1
+9,Disagree - Agree,10,2,1,Strongly disagree,1
+9,Disagree - Agree,10,3,1,Disagree,1
+9,Disagree - Agree,10,4,1,Mostly disagree,1
+9,Disagree - Agree,10,5,1,Somewhat disagree,1
+9,Disagree - Agree,10,5,2,Slightly disagree	,1
+9,Disagree - Agree,10,6,1,Somewhat agree,1
+9,Disagree - Agree,10,6,2,Slightly agree,1
+9,Disagree - Agree,10,7,1,Mostly agree,1
+9,Disagree - Agree,10,8,1,Agree,1
+9,Disagree - Agree,10,9,1,Strongly agree,1
+9,Disagree - Agree,10,10,1,Very strongly agree,1
+10,Disagree - Agree,11,1,1,Very strongly disagree,1
+10,Disagree - Agree,11,2,1,Strongly disagree,1
+10,Disagree - Agree,11,3,1,Disagree,1
+10,Disagree - Agree,11,4,1,Mostly disagree,1
+10,Disagree - Agree,11,5,1,Somewhat disagree,1
+10,Disagree - Agree,11,5,2,Slightly disagree	,1
+10,Disagree - Agree,11,6,1,Neither agree nor disagree,1
+10,Disagree - Agree,11,6,2,Neutral,1
+10,Disagree - Agree,11,7,1,Somewhat agree,1
+10,Disagree - Agree,11,7,2,Slightly agree,1
+10,Disagree - Agree,11,8,1,Mostly agree,1
+10,Disagree - Agree,11,9,1,Agree,1
+10,Disagree - Agree,11,10,1,Strongly agree,1
+10,Disagree - Agree,11,11,1,Very strongly agree,1
+51,Dislike - Like,2,1,1,Dislike,1
+51,Dislike - Like,2,2,1,Like,1
+52,Dislike - Like,3,1,1,Dislike,1
+52,Dislike - Like,3,2,1,Neither like nor dislike,1
+52,Dislike - Like,3,3,1,Like,1
+53,Dislike - Like,5,1,1,Dislike a great deal,1
+53,Dislike - Like,5,2,1,Dislike somewhat,1
+53,Dislike - Like,5,3,1,Neither like nor dislike,1
+53,Dislike - Like,5,4,1,Like somewhat,1
+53,Dislike - Like,5,5,1,Like a great deal,1
+54,Dislike - Like,7,1,1,Dislike a great deal,1
+54,Dislike - Like,7,2,1,Dislike a moderate amount,1
+54,Dislike - Like,7,3,1,Dislike a little,1
+54,Dislike - Like,7,4,1,Neither like nor dislike,1
+54,Dislike - Like,7,5,1,Like a little,1
+54,Dislike - Like,7,6,1,Like a moderate amount,1
+54,Dislike - Like,7,7,1,Like a great deal,1
+48,Displeased - Pleased,5,1,1,Extremely displeased,1
+48,Displeased - Pleased,5,2,1,Somewhat displeased,1
+48,Displeased - Pleased,5,3,1,Neither pleased nor displeased,1
+48,Displeased - Pleased,5,4,1,Somewhat pleased,1
+48,Displeased - Pleased,5,5,1,Extremely pleased,1
+49,Displeased - Pleased,7,1,1,Extremely displeased,1
+49,Displeased - Pleased,7,2,1,Moderately displeased,1
+49,Displeased - Pleased,7,3,1,Slightly displeased,1
+49,Displeased - Pleased,7,4,1,Neither pleased nor displeased,1
+49,Displeased - Pleased,7,5,1,Slightly pleased,1
+49,Displeased - Pleased,7,6,1,Moderately pleased,1
+49,Displeased - Pleased,7,7,1,Extremely pleased,1
+11,Dissatisfied - Satisfied,5,1,1,Extremely dissatisfied,1
+11,Dissatisfied - Satisfied,5,2,1,Somewhat dissatisfied,1
+11,Dissatisfied - Satisfied,5,3,1,Neither satisfied nor dissatisfied,1
+11,Dissatisfied - Satisfied,5,4,1,Somewhat satisfied,1
+11,Dissatisfied - Satisfied,5,5,1,Extremely satisfied,1
+12,Dissatisfied - Satisfied,7,1,1,Extremely dissatisfied,1
+12,Dissatisfied - Satisfied,7,2,1,Moderately dissatisfied,1
+12,Dissatisfied - Satisfied,7,3,1,Slightly dissatisfied,1
+12,Dissatisfied - Satisfied,7,4,1,Neither satisfied nor dissatisfied,1
+12,Dissatisfied - Satisfied,7,5,1,Slightly satisfied,1
+12,Dissatisfied - Satisfied,7,6,1,Moderately satisfied,1
+12,Dissatisfied - Satisfied,7,7,1,Extremely satisfied,1
+58,Short of expectations - Exceeds expectations,5,1,1,Far short of expectations,1
+58,Short of expectations - Exceeds expectations,5,2,1,Short of expectations,1
+58,Short of expectations - Exceeds expectations,5,3,1,Equals expectations,1
+58,Short of expectations - Exceeds expectations,5,4,1,Exceeds expectations,1
+58,Short of expectations - Exceeds expectations,5,5,1,Far exceeds expectations,1
+13,Inappropriate - Appropriate,5,1,1,Extremely inappropriate,1
+13,Inappropriate - Appropriate,5,2,1,Somewhat inappropriate,1
+13,Inappropriate - Appropriate,5,3,1,Neither appropriate nor inappropriate,1
+13,Inappropriate - Appropriate,5,4,1,Somewhat appropriate,1
+13,Inappropriate - Appropriate,5,5,1,Extremely appropriate,1
+14,Inappropriate - Appropriate,7,1,1,Extremely inappropriate,1
+14,Inappropriate - Appropriate,7,2,1,Moderately inappropriate,1
+14,Inappropriate - Appropriate,7,3,1,Slightly inappropriate,1
+14,Inappropriate - Appropriate,7,4,1,Neither appropriate nor inappropriate,1
+14,Inappropriate - Appropriate,7,5,1,Slightly appropriate,1
+14,Inappropriate - Appropriate,7,6,1,Moderately appropriate,1
+14,Inappropriate - Appropriate,7,7,1,Extremely appropriate,1
+106,Less concerned - More concerned,5,1,1,Much less concerned,1
+106,Less concerned - More concerned,5,2,1,Somewhat less concerned,1
+106,Less concerned - More concerned,5,3,1,About the same,1
+106,Less concerned - More concerned,5,4,1,Somewhat more concerned,1
+106,Less concerned - More concerned,5,5,1,Much more concerned,1
+96,Unlikely - Likely,5,1,1,Extremely unlikely,1
+96,Unlikely - Likely,5,2,1,Unlikely,1
+96,Unlikely - Likely,5,3,1,Neutral,1
+96,Unlikely - Likely,5,4,1,Likely,1
+96,Unlikely - Likely,5,5,1,Extremely likely,1
+104,Unlikely - Likely,9,1,1,Certainly not,1
+104,Unlikely - Likely,9,2,1,Very unlikely,1
+104,Unlikely - Likely,9,3,1,Unlikely,1
+104,Unlikely - Likely,9,4,1,Somewhat unlikely,1
+104,Unlikely - Likely,9,5,1,Even chance,1
+104,Unlikely - Likely,9,6,1,Somewhat likely,1
+104,Unlikely - Likely,9,7,1,Likely,1
+104,Unlikely - Likely,9,8,1,Very likely,1
+104,Unlikely - Likely,9,9,1,Certain,1
+66,Lower - Higher,5,1,1,Much lower,1
+66,Lower - Higher,5,2,1,Slightly lower,1
+66,Lower - Higher,5,3,1,About the same,1
+66,Lower - Higher,5,4,1,Slightly higher,1
+66,Lower - Higher,5,5,1,Much higher,1
+67,Lower - Higher,7,1,1,Much lower,1
+67,Lower - Higher,7,2,1,Moderately lower,1
+67,Lower - Higher,7,3,1,Slightly lower,1
+67,Lower - Higher,7,4,1,About the same,1
+67,Lower - Higher,7,5,1,Slightly higher,1
+67,Lower - Higher,7,6,1,Moderately higher,1
+67,Lower - Higher,7,7,1,Much higher,1
+80,Negative - Positive,5,1,1,Extremely negative,1
+80,Negative - Positive,5,2,1,Somewhat negative,1
+80,Negative - Positive,5,3,1,Neither positive nor negative,1
+80,Negative - Positive,5,4,1,Somewhat positive,1
+80,Negative - Positive,5,5,1,Extremely positive,1
+81,Negative - Positive,7,1,1,Extremely negative,1
+81,Negative - Positive,7,2,1,Moderately negative,1
+81,Negative - Positive,7,3,1,Slightly negative,1
+81,Negative - Positive,7,4,1,Neither positive nor negative,1
+81,Negative - Positive,7,5,1,Slightly positive,1
+81,Negative - Positive,7,6,1,Moderately positive,1
+81,Negative - Positive,7,7,1,Extremely positive,1
+84,Unprofessional - Professional,5,1,1,Extremely unprofessional,1
+84,Unprofessional - Professional,5,2,1,Somewhat unprofessional,1
+84,Unprofessional - Professional,5,3,1,Neither professional nor unprofessional,1
+84,Unprofessional - Professional,5,4,1,Somewhat professional,1
+84,Unprofessional - Professional,5,5,1,Extremely professional,1
+85,Unprofessional - Professional,7,1,1,Extremely unprofessional,1
+85,Unprofessional - Professional,7,2,1,Moderately unprofessional,1
+85,Unprofessional - Professional,7,3,1,Slightly unprofessional,1
+85,Unprofessional - Professional,7,4,1,Neither professional nor unprofessional,1
+85,Unprofessional - Professional,7,5,1,Slightly professional,1
+85,Unprofessional - Professional,7,6,1,Moderately professional,1
+85,Unprofessional - Professional,7,7,1,Extremely professional,1
+56,Much less - Much more,5,1,1,Much less,1
+56,Much less - Much more,5,2,1,Somewhat less,1
+56,Much less - Much more,5,3,1,About the same,1
+56,Much less - Much more,5,4,1,Somewhat more,1
+56,Much less - Much more,5,5,1,Much more,1
+57,Much less - Much more,7,1,1,Much less,1
+57,Much less - Much more,7,2,1,Moderately less,1
+57,Much less - Much more,7,3,1,Slightly less,1
+57,Much less - Much more,7,4,1,About the same,1
+57,Much less - Much more,7,5,1,Slightly more,1
+57,Much less - Much more,7,6,1,Moderately more,1
+57,Much less - Much more,7,7,1,Much more,1
+76,Reasonable - Unreasonable,5,1,1,Extremely reasonable,1
+76,Reasonable - Unreasonable,5,2,1,Somewhat reasonable,1
+76,Reasonable - Unreasonable,5,3,1,Neither reasonable nor unreasonable,1
+76,Reasonable - Unreasonable,5,4,1,Somewhat unreasonable,1
+76,Reasonable - Unreasonable,5,5,1,Extremely unreasonable,1
+77,Reasonable - Unreasonable,7,1,1,Extremely reasonable,1
+77,Reasonable - Unreasonable,7,2,1,Moderately reasonable,1
+77,Reasonable - Unreasonable,7,3,1,Slightly reasonable,1
+77,Reasonable - Unreasonable,7,4,1,Neither reasonable nor unreasonable,1
+77,Reasonable - Unreasonable,7,5,1,Slightly unreasonable,1
+77,Reasonable - Unreasonable,7,6,1,Moderately unreasonable,1
+77,Reasonable - Unreasonable,7,7,1,Extremely unreasonable,1
+37,Slow - Fast,5,1,1,Extremely slow,1
+37,Slow - Fast,5,2,1,Somewhat slow,1
+37,Slow - Fast,5,3,1,Average,1
+37,Slow - Fast,5,4,1,Somewhat fast,1
+37,Slow - Fast,5,5,1,Extremely fast,1
+38,Slow - Fast,7,1,1,Extremely slow,1
+38,Slow - Fast,7,2,1,Moderately slow,1
+38,Slow - Fast,7,3,1,Slightly slow,1
+38,Slow - Fast,7,4,1,Average,1
+38,Slow - Fast,7,5,1,Slightly fast,1
+38,Slow - Fast,7,6,1,Moderately fast,1
+38,Slow - Fast,7,7,1,Extremely fast,1
+105,Support - Oppose,7,1,1,Strongly support,1
+105,Support - Oppose,7,2,1,Support,1
+105,Support - Oppose,7,3,1,Slightly support,1
+105,Support - Oppose,7,4,1,Neither support nor oppose,1
+105,Support - Oppose,7,5,1,Slightly oppose,1
+105,Support - Oppose,7,6,1,Oppose,1
+105,Support - Oppose,7,7,1,Strongly oppose,1
+64,Too little - Too much,5,1,1,Far too little,1
+64,Too little - Too much,5,2,1,Slightly too little,1
+64,Too little - Too much,5,3,1,Neither too much nor too little,1
+64,Too little - Too much,5,4,1,Slightly too much,1
+64,Too little - Too much,5,5,1,Far too much,1
+65,Too little - Too much,7,1,1,Far too little,1
+65,Too little - Too much,7,2,1,Moderately too little,1
+65,Too little - Too much,7,3,1,Slightly too little,1
+65,Too little - Too much,7,4,1,Neither too much nor too little,1
+65,Too little - Too much,7,5,1,Slightly too much,1
+65,Too little - Too much,7,6,1,Moderately too much,1
+65,Too little - Too much,7,7,1,Far too much,1
+15,True - False,2,1,1,True,1
+15,True - False,2,2,1,False,1
+16,True - False,3,1,1,True,1
+16,True - False,3,2,1,Neither true nor false,1
+16,True - False,3,3,1,False,1
+17,True - False,4,1,1,Definitely false,1
+17,True - False,4,2,1,Probably false,1
+17,True - False,4,3,1,Probably true,1
+17,True - False,4,4,1,Definitely true,1
+18,True - False,5,1,1,Definitely false,1
+18,True - False,5,2,1,Probably false,1
+18,True - False,5,3,1,Neither true nor false,1
+18,True - False,5,4,1,Probably true,1
+18,True - False,5,5,1,Definitely true,1
+41,Unhappy - Happy,5,1,1,Extremely unhappy,1
+41,Unhappy - Happy,5,2,1,Somewhat unhappy,1
+41,Unhappy - Happy,5,3,1,Neither happy nor unhappy,1
+41,Unhappy - Happy,5,4,1,Somewhat happy,1
+41,Unhappy - Happy,5,5,1,Extremely happy,1
+42,Unhappy - Happy,7,1,1,Extremely unhappy,1
+42,Unhappy - Happy,7,2,1,Moderately unhappy,1
+42,Unhappy - Happy,7,3,1,Slightly unhappy,1
+42,Unhappy - Happy,7,4,1,Neither happy nor unhappy,1
+42,Unhappy - Happy,7,5,1,Slightly happy,1
+42,Unhappy - Happy,7,6,1,Moderately happy,1
+42,Unhappy - Happy,7,7,1,Extremely happy,1
+39,Unlikely - Likely,5,1,1,Extremely unlikely,1
+39,Unlikely - Likely,5,2,1,Somewhat unlikely,1
+39,Unlikely - Likely,5,3,1,Neither likely nor unlikely,1
+39,Unlikely - Likely,5,4,1,Somewhat likely,1
+39,Unlikely - Likely,5,5,1,Extremely likely,1
+40,Unlikely - Likely,7,1,1,Extremely unlikely,1
+40,Unlikely - Likely,7,2,1,Moderately unlikely,1
+40,Unlikely - Likely,7,3,1,Slightly unlikely,1
+40,Unlikely - Likely,7,4,1,Neither likely nor unlikely,1
+40,Unlikely - Likely,7,5,1,Slightly likely,1
+40,Unlikely - Likely,7,6,1,Moderately likely,1
+40,Unlikely - Likely,7,7,1,Extremely likely,1
+44,Useless - Useful,7,1,1,Extremely useless,1
+44,Useless - Useful,7,2,1,Moderately useless,1
+44,Useless - Useful,7,3,1,Slightly useless,1
+44,Useless - Useful,7,4,1,Neither useful nor useless,1
+44,Useless - Useful,7,5,1,Slightly useful,1
+44,Useless - Useful,7,6,1,Moderately useful,1
+44,Useless - Useful,7,7,1,Extremely useful,1
+72,Weak - Strong,5,1,1,Much weaker,1
+72,Weak - Strong,5,2,1,Slightly weaker,1
+72,Weak - Strong,5,3,1,No change,1
+72,Weak - Strong,5,4,1,Slightly stronger,1
+72,Weak - Strong,5,5,1,Much stronger,1
+73,Weak - Strong,7,1,1,Much weaker,1
+73,Weak - Strong,7,2,1,Moderately weaker,1
+73,Weak - Strong,7,3,1,Slightly weaker,1
+73,Weak - Strong,7,4,1,No change,1
+73,Weak - Strong,7,5,1,Slightly stronger,1
+73,Weak - Strong,7,6,1,Moderately stronger,1
+73,Weak - Strong,7,7,1,Much stronger,1
+27,Worse - Better,5,1,1,Much worse,1
+27,Worse - Better,5,2,1,Somewhat worse,1
+27,Worse - Better,5,3,1,About the same,1
+27,Worse - Better,5,4,1,Somewhat better,1
+27,Worse - Better,5,5,1,Much better,1
+28,Worse - Better,7,1,1,Much worse,1
+28,Worse - Better,7,2,1,Moderately worse,1
+28,Worse - Better,7,3,1,Slightly worse,1
+28,Worse - Better,7,4,1,About the same,1
+28,Worse - Better,7,5,1,Slightly better,1
+28,Worse - Better,7,6,1,Moderately better,1
+28,Worse - Better,7,7,1,Much better,1
+68,Worst - Best,5,1,1,One of the worst,1
+68,Worst - Best,5,2,1,Below average,1
+68,Worst - Best,5,3,1,Average,1
+68,Worst - Best,5,4,1,Above average,1
+68,Worst - Best,5,5,1,One of the best,1
+97,Would - Wouldn't,4,1,1,Definitely would,1
+97,Would - Wouldn't,4,2,1,Probably would,1
+97,Would - Wouldn't,4,3,1,Probably wouldn’t,1
+97,Would - Wouldn't,4,4,1,Definitely wouldn’t,1
+19,Yes - No,2,1,1,Yes,1
+19,Yes - No,2,2,1,No,1
+20,Yes - No,3,1,1,Yes,1
+20,Yes - No,3,2,1,Maybe,1
+20,Yes - No,3,3,1,No,1
+21,Yes - No,4,1,1,Definitely not,1
+21,Yes - No,4,2,1,Probably not,1
+21,Yes - No,4,3,1,Probably yes,1
+21,Yes - No,4,4,1,Definitely yes,1
+22,Yes - No,5,1,1,Definitely not,1
+22,Yes - No,5,2,1,Probably not,1
+22,Yes - No,5,3,1,Might or might not,1
+22,Yes - No,5,4,1,Probably yes,1
+22,Yes - No,5,5,1,Definitely yes,1
