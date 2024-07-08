@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.549">
+<meta name="generator" content="quarto-1.4.554">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -215,15 +215,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="getting-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="getting-the-data">Getting the data</h2>
-<p>We will use the <a href="https://opendata.tweedekamer.nl/documentatie/odata-api" title="OData API">OData API</a> to obtain the data. Using this API is pretty easy in theory; it’s nothing more than constructing a URL and then retrieving the data using that URL. The only tricky bit is how to set it up. In order to know how to do that, we need to understand the API. The OData API links to an <a href="https://opendata.tweedekamer.nl/documentatie/informatiemodel" title="OData API information model">information model</a> that shows what kind of data we can request. We can request different entities, such as a Zaak (case), Document, Activiteit (activity), and so on. Going through the documentation I figured out we want to request cases because they have a Besluit (decision) entity, which contain a Stemming (vote) entity. Now that we sort of know what we want, we need to figure out how to actually get it.</p>
-<p>The documentation of the API is pretty good. They explain how to set up the URL, call a query, and even provide several examples.</p>
-<p>Each query starts with the base URL: <a href="https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0"><code>https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/</code></a>. We need to append additional functions to this URL to hone in on the exact data we want.</p>
-<p>The first thing we’ll specify is that we want a Zaak (case), so we will append <code>Zaak</code> to the end of the base URL.</p>
-<p>Next, we will apply some filter functions. In the documentation they recommend that we always filter on entities that have not been removed. They keep removed entities in the database so they can track changes. In one of the examples we can see how this is done. We have to append the following to the URL: <a href="https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/Persoon?$filter=Verwijderd%20eq%20false%20and%20(Functie%20eq%20%27Eerste%20Kamerlid%27%20or%20Functie%20eq%20%27Tweede%20Kamerlid%27)"><code>?$filter=Verwijderd eq false</code></a>. The (first) filter needs to start with a question mark and a dollar sign, followed by the function name (<code>filter</code>), an equal sign, and a condition. The condition in this case is <code>Verwijderd eq false</code>, in other words: Removed equals false.</p>
-<p>Additional filters can be added using logical operators such as <code>and</code>, <code>or</code>, or <code>not</code>. We want to request only cases that are motions, so we’ll add <code>and Soort eq 'Motie'</code>. Notice that we use <code>and</code> because we want both conditions to be true. The filter itself means that we want the Soort (type) to be equal to ‘Motie’ (motion). If we were to stop here, we would get a bunch of different motions, many of which have nothing to do with animal welfare. So let’s add another filter: <code>and contains(Titel, 'Dierenwelzijn')</code>. This means we select only the motions whose title contains the word ‘Dierenwelzijn’ (animal welfare). We could run this, but then we will get a total of 250 cases. It turns out that this is the maximum number of entities you can retrieve. That’s not ideal because preferably we get all of the animal welfare-related motions and if we get 250 back it’s not clear whether we got all of them. So let’s add another filter: <code>and year(GestartOp) eq 2021</code>. This means we only want cases when they’ve started in 2021. This probably results in fewer than 250 relevant motions, meaning we obtained them all (of that year).</p>
-<p>The final function we need to add is an expand function. Right now we’re only requesting the data of motions, but not the data of the decision that was made in the motion, or the voting data. To also include that in the request we need to use the expand function. It’s a bit tricky because we need to run the expand function twice, once to expand on the decision and once on the voting. The part we need to append to the URL is: <code>&amp;$expand=Besluit($expand=Stemming)</code>.</p>
-<p>Now our URL is pretty much done. We have to paste all the parts together and request the data. We also need to replace all spaces with <code>%20</code> so that it becomes a valid URL. You don’t need to do this if you just want to paste the URL in the browser, but if you want to use R code like in the code below, we do need to do this.</p>
-<p>The data will be returned in a JSON format by the API. In R there’s the <code>jsonlite</code> package to work with JSON data, so we’ll use that package. The following code sets up the URL and retrieves the data.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -397,6 +388,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   if (showAllCode) {
     showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/www\.willemsleegers\.com\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -431,7 +440,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -730,60 +743,42 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Getting the data</span></span>
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>We will use the <span class="co">[</span><span class="ot">OData API</span><span class="co">](https://opendata.tweedekamer.nl/documentatie/odata-api "OData API")</span> to obtain the data. Using this API is pretty easy in theory; it's nothing more than constructing a URL and then retrieving the data using that URL. The only tricky bit is how to set it up. In order to know how to do that, we need to understand the API. The OData API links to an <span class="co">[</span><span class="ot">information model</span><span class="co">](https://opendata.tweedekamer.nl/documentatie/informatiemodel "OData API information model")</span> that shows what kind of data we can request. We can request different entities, such as a Zaak (case), Document, Activiteit (activity), and so on. Going through the documentation I figured out we want to request cases because they have a Besluit (decision) entity, which contain a Stemming (vote) entity. Now that we sort of know what we want, we need to figure out how to actually get it.</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>The documentation of the API is pretty good. They explain how to set up the URL, call a query, and even provide several examples.</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>Each query starts with the base URL: <span class="co">[</span><span class="ot">`https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/`</span><span class="co">](https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0)</span>. We need to append additional functions to this URL to hone in on the exact data we want.</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: get-data</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
 <span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>The first thing we'll specify is that we want a Zaak (case), so we will append <span class="in">`Zaak`</span> to the end of the base URL.</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>Next, we will apply some filter functions. In the documentation they recommend that we always filter on entities that have not been removed. They keep removed entities in the database so they can track changes. In one of the examples we can see how this is done. We have to append the following to the URL: <span class="co">[</span><span class="ot">`?$filter=Verwijderd eq false`</span><span class="co">]</span>(https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/Persoon?$filter=Verwijderd%20eq%20false%20and%20(Functie%20eq%20%27Eerste%20Kamerlid%27%20or%20Functie%20eq%20%27Tweede%20Kamerlid%27)). The (first) filter needs to start with a question mark and a dollar sign, followed by the function name (<span class="in">`filter`</span>), an equal sign, and a condition. The condition in this case is <span class="in">`Verwijderd eq false`</span>, in other words: Removed equals false.</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>Additional filters can be added using logical operators such as <span class="in">`and`</span>, <span class="in">`or`</span>, or <span class="in">`not`</span>. We want to request only cases that are motions, so we'll add <span class="in">`and Soort eq 'Motie'`</span>. Notice that we use <span class="in">`and`</span> because we want both conditions to be true. The filter itself means that we want the Soort (type) to be equal to 'Motie' (motion). If we were to stop here, we would get a bunch of different motions, many of which have nothing to do with animal welfare. So let's add another filter: <span class="in">`and contains(Titel, 'Dierenwelzijn')`</span>. This means we select only the motions whose title contains the word 'Dierenwelzijn' (animal welfare). We could run this, but then we will get a total of 250 cases. It turns out that this is the maximum number of entities you can retrieve. That's not ideal because preferably we get all of the animal welfare-related motions and if we get 250 back it's not clear whether we got all of them. So let's add another filter: <span class="in">`and year(GestartOp) eq 2021`</span>. This means we only want cases when they've started in 2021. This probably results in fewer than 250 relevant motions, meaning we obtained them all (of that year).</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>The final function we need to add is an expand function. Right now we're only requesting the data of motions, but not the data of the decision that was made in the motion, or the voting data. To also include that in the request we need to use the expand function. It's a bit tricky because we need to run the expand function twice, once to expand on the decision and once on the voting. The part we need to append to the URL is: <span class="in">`&amp;$expand=Besluit($expand=Stemming)`</span>.</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>Now our URL is pretty much done. We have to paste all the parts together and request the data. We also need to replace all spaces with <span class="in">`%20`</span> so that it becomes a valid URL. You don't need to do this if you just want to paste the URL in the browser, but if you want to use R code like in the code below, we do need to do this.</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>The data will be returned in a JSON format by the API. In R there's the <span class="in">`jsonlite`</span> package to work with JSON data, so we'll use that package. The following code sets up the URL and retrieves the data.</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: get-data</span></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Set url components</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>base_url <span class="ot">&lt;-</span> <span class="st">"https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/"</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>entity <span class="ot">&lt;-</span> <span class="st">"Zaak"</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>filter1 <span class="ot">&lt;-</span> <span class="st">"?$filter=Verwijderd eq false"</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>filter2 <span class="ot">&lt;-</span> <span class="st">" and Soort eq 'Motie'"</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>filter3 <span class="ot">&lt;-</span> <span class="st">" and contains(Titel, 'Dierenwelzijn')"</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>filter4 <span class="ot">&lt;-</span> <span class="st">" and year(GestartOp) eq 2021"</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>expand <span class="ot">&lt;-</span> <span class="st">"&amp;$expand=Besluit($expand=Stemming)"</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>base_url <span class="ot">&lt;-</span> <span class="st">"https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/"</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>entity <span class="ot">&lt;-</span> <span class="st">"Zaak"</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>filter1 <span class="ot">&lt;-</span> <span class="st">"?$filter=Verwijderd eq false"</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>filter2 <span class="ot">&lt;-</span> <span class="st">" and Nummer eq '2021Z05927'"</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>expand <span class="ot">&lt;-</span> <span class="st">"&amp;$expand=Document,Kamerstukdossier"</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Construct url</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(base_url, entity, filter1, filter2, expand)</span>
 <span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Set url components</span></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>base_url <span class="ot">&lt;-</span> <span class="st">"https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/"</span></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>entity <span class="ot">&lt;-</span> <span class="st">"Zaak"</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>filter1 <span class="ot">&lt;-</span> <span class="st">"?$filter=Verwijderd eq false"</span></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>filter2 <span class="ot">&lt;-</span> <span class="st">" and Soort eq 'Motie'"</span></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>filter3 <span class="ot">&lt;-</span> <span class="st">" and contains(Titel, 'Dierenwelzijn')"</span></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>filter4 <span class="ot">&lt;-</span> <span class="st">" and year(GestartOp) eq 2021"</span></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>expand <span class="ot">&lt;-</span> <span class="st">"&amp;$expand=Besluit($expand=Stemming)"</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Escape all spaces by replacing them with %20</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(url, <span class="st">" "</span>, <span class="st">"%20"</span>)</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Get data</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_json</span>(url)</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(data)</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json</span>(<span class="st">"https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/document/117fa98c-2e9c-464c-b0ef-6b12945ccb24/resource"</span>)</span>
 <span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>base_url <span class="ot">&lt;-</span> <span class="st">"https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/"</span></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>entity <span class="ot">&lt;-</span> <span class="st">"Zaak"</span></span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>filter1 <span class="ot">&lt;-</span> <span class="st">"?$filter=Verwijderd eq false"</span></span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>filter2 <span class="ot">&lt;-</span> <span class="st">" and Nummer eq '2021Z05927'"</span></span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>expand <span class="ot">&lt;-</span> <span class="st">"&amp;$expand=Document,Kamerstukdossier"</span></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Construct url</span></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(base_url, entity, filter1, filter2, expand)</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Escape all spaces by replacing them with %20</span></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(url, <span class="st">" "</span>, <span class="st">"%20"</span>)</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="co"># Get data</span></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_json</span>(url)</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(data)</span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json</span>(<span class="st">"https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/document/117fa98c-2e9c-464c-b0ef-6b12945ccb24/resource"</span>)</span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pdftools)</span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>pdftools<span class="sc">::</span><span class="fu">pdf_text</span>(<span class="at">pdf =</span> <span class="st">"https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/document/117fa98c-2e9c-464c-b0ef-6b12945ccb24/resource"</span>)</span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(<span class="st">"https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/document/117fa98c-2e9c-464c-b0ef-6b12945ccb24/resource"</span>, <span class="at">destfile =</span> <span class="st">"test.pdf"</span>)</span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pdftools)</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>pdftools<span class="sc">::</span><span class="fu">pdf_text</span>(<span class="at">pdf =</span> <span class="st">"https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/document/117fa98c-2e9c-464c-b0ef-6b12945ccb24/resource"</span>)</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(<span class="st">"https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/document/117fa98c-2e9c-464c-b0ef-6b12945ccb24/resource"</span>, <span class="at">destfile =</span> <span class="st">"test.pdf"</span>)</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

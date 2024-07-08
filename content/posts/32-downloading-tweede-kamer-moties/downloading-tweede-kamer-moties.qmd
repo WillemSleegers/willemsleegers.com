@@ -23,24 +23,6 @@ library(jsonlite)
 
 ## Getting the data
 
-We will use the [OData API](https://opendata.tweedekamer.nl/documentatie/odata-api "OData API") to obtain the data. Using this API is pretty easy in theory; it's nothing more than constructing a URL and then retrieving the data using that URL. The only tricky bit is how to set it up. In order to know how to do that, we need to understand the API. The OData API links to an [information model](https://opendata.tweedekamer.nl/documentatie/informatiemodel "OData API information model") that shows what kind of data we can request. We can request different entities, such as a Zaak (case), Document, Activiteit (activity), and so on. Going through the documentation I figured out we want to request cases because they have a Besluit (decision) entity, which contain a Stemming (vote) entity. Now that we sort of know what we want, we need to figure out how to actually get it.
-
-The documentation of the API is pretty good. They explain how to set up the URL, call a query, and even provide several examples.
-
-Each query starts with the base URL: [`https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/`](https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0). We need to append additional functions to this URL to hone in on the exact data we want.
-
-The first thing we'll specify is that we want a Zaak (case), so we will append `Zaak` to the end of the base URL.
-
-Next, we will apply some filter functions. In the documentation they recommend that we always filter on entities that have not been removed. They keep removed entities in the database so they can track changes. In one of the examples we can see how this is done. We have to append the following to the URL: [`?$filter=Verwijderd eq false`](https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/Persoon?$filter=Verwijderd%20eq%20false%20and%20(Functie%20eq%20%27Eerste%20Kamerlid%27%20or%20Functie%20eq%20%27Tweede%20Kamerlid%27)). The (first) filter needs to start with a question mark and a dollar sign, followed by the function name (`filter`), an equal sign, and a condition. The condition in this case is `Verwijderd eq false`, in other words: Removed equals false.
-
-Additional filters can be added using logical operators such as `and`, `or`, or `not`. We want to request only cases that are motions, so we'll add `and Soort eq 'Motie'`. Notice that we use `and` because we want both conditions to be true. The filter itself means that we want the Soort (type) to be equal to 'Motie' (motion). If we were to stop here, we would get a bunch of different motions, many of which have nothing to do with animal welfare. So let's add another filter: `and contains(Titel, 'Dierenwelzijn')`. This means we select only the motions whose title contains the word 'Dierenwelzijn' (animal welfare). We could run this, but then we will get a total of 250 cases. It turns out that this is the maximum number of entities you can retrieve. That's not ideal because preferably we get all of the animal welfare-related motions and if we get 250 back it's not clear whether we got all of them. So let's add another filter: `and year(GestartOp) eq 2021`. This means we only want cases when they've started in 2021. This probably results in fewer than 250 relevant motions, meaning we obtained them all (of that year).
-
-The final function we need to add is an expand function. Right now we're only requesting the data of motions, but not the data of the decision that was made in the motion, or the voting data. To also include that in the request we need to use the expand function. It's a bit tricky because we need to run the expand function twice, once to expand on the decision and once on the voting. The part we need to append to the URL is: `&$expand=Besluit($expand=Stemming)`.
-
-Now our URL is pretty much done. We have to paste all the parts together and request the data. We also need to replace all spaces with `%20` so that it becomes a valid URL. You don't need to do this if you just want to paste the URL in the browser, but if you want to use R code like in the code below, we do need to do this.
-
-The data will be returned in a JSON format by the API. In R there's the `jsonlite` package to work with JSON data, so we'll use that package. The following code sets up the URL and retrieves the data.
-
 ```{r}
 #| label: get-data
 #| eval: false

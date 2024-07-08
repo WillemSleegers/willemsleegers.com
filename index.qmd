@@ -3,7 +3,7 @@ title: dr. Willem Sleegers
 about:
   id: hero-heading
   template: jolla
-  image: images/avatar.png
+  image: images/avatar-500.png
   image-width: 200px
   links:
     - icon: envelope-fill
