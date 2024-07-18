@@ -55,7 +55,7 @@ format_interval <- function(x, digits = 2) {
 
 ## The problem with distributions
 
-A common problem with working with distributions is that you need to know which distribution to use for which use-case and then shape the distribution to your liking by giving the distribution's parameters the right values. In some cases this is fairly straightforward, like when you want to model something as a normal distribution with a certain mean and standard devation.
+A common problem with working with distributions is that you need to know which distribution to use for which use-case and then shape the distribution to your liking by giving the distribution's parameters the right values. In some cases this is fairly straightforward, like when you want to model something as a normal distribution with a certain mean and standard deviation.
 
 But what if you want to model, say, how long you think a particular task will take in hours? Here a normal distribution is not well suited and instead you have to use something else, perhaps a Gamma distribution or a lognormal distribution. These distributions take parameters other than a mean and standard deviation and they don't have much intuitive meaning (at least not to me).
 
@@ -63,14 +63,14 @@ But what if you want to model, say, how long you think a particular task will ta
 
 The metalog distribution changes all of that because you can simply specify the distribution by giving it a set of quantile-value pairs that are used to form the distribution.
 
-For example, let's specify three quantile-value pairs below and see how they shape the distribution. 
+For example, let's specify three quantile-value pairs below and see how they shape the distribution.
 
 We use the rmetalog package, which has a function called `metalog()` to create the distribution. We give it the values, the quantiles, and a term limit. The latter refers to how many terms are used in the distribution, with larger term distributions having more flexibility, meaning they better match the quantile-value pairs. The maximum number of terms is the number of quantile-value pairs we give it, so in the example below the maximum is 3.
 
 ```{r}
 #| label: metalog-distribution-summary
 values <- c(3, 6, 12)
-quantiles <- c(0.10, 0.5, .9)
+quantiles <- c(0.1, 0.5, 0.9)
 
 metalog <- metalog(
   x = values,
@@ -81,7 +81,7 @@ metalog <- metalog(
 summary(metalog)
 ```
 
-Using `summary()` on the output of `metalog()` gives us some information about the distribution, but it doesn't seem particularly useful to me, so let's move on to visualizing the distribution using the `plot()` function. Unfortunately, using `plot()` on the output actually returns two plots, one showing the probability density function (PDF) and the other one showing the cumulative density function (CDF). I prefer looking at the PDF, so that's the one I extract and plot below.
+Using `summary()` on the output of `metalog()` gives us some information about the distribution, but it doesn't seem particularly useful to me, so let's move on to visualizing the distribution using the `plot()` function. Unfortunately, using `plot()` on the output returns two plots—one showing the probability density function (PDF) and the other one showing the cumulative density function (CDF). I prefer looking at the PDF, so that's the one I extract and plot below.
 
 ```{r}
 #| label: metalog-distribution-plot
@@ -142,13 +142,13 @@ This is cool, though. By simply specifying three quantile-value pairs, we obtain
 
 ## Does the distribution always match the specified quantile-value pairs?
 
-Apparently, the answer is no. We can quickly check this using the `qmetalog()` function to see whether it produces the same values we provided as part of the quantile-value pairs. 
+Apparently, the answer is no. We can quickly check this using the `qmetalog()` function to see whether it produces the same values we provided as part of the quantile-value pairs. In the example below we set the values to 3, 6, and 12, and the quantiles to 0.1, 0.5, and 0.9. After running the the `metalog()` function, we can use the `qmetalog()` function to reproduce the values after giving it the output of the `metalog()` function and the quantiles.
 
 ```{r}
 #| label: metalog-distribution-match
 #| code-fold: true
 values <- c(3, 6, 12)
-quantiles <- c(0.10, 0.5, .9)
+quantiles <- c(0.1, 0.5, 0.9)
 
 metalog <- metalog(
   x = values,
@@ -159,13 +159,13 @@ metalog <- metalog(
 qmetalog(metalog, quantiles, term = 3)
 ```
 
-The qmetalog() function returns the same values we specified in the `values` variable, which means the distribution is a match. But let's slightly change the values in the quantile-value pairs and check it again.
+In this example, the function returns the same values we specified in the `values` variable, which means the distribution is a match. But let's slightly change the values in the quantile-value pairs and check it again, for example by giving it the values 3, 4, and 12.
 
 ```{r}
 #| label: metalog-distribution-mismatch
 #| code-fold: true
 values <- c(3, 4, 12)
-quantiles <- c(0.10, 0.5, .9)
+quantiles <- c(0.1, 0.5, .9)
 
 metalog <- metalog(
   x = values,
@@ -176,7 +176,7 @@ metalog <- metalog(
 qmetalog(metalog, quantiles, term = 3)
 ```
 
-Now the function returns values that are slightly different than the values we provided, so the distribution is not an exact match. This makes sense because the distribution is not fully customizable; it still has some contraints that limits its flexibility. 
+Now the function returns values that are slightly different than the values we provided, so the distribution is not an exact match. This makes sense because the distribution is not fully customizable; it still has some constraints that limits its flexibility.
 
 If you want to use a distribution that is fully flexible, you have to use other solutions. One such solution is [MakeDistribution](https://makedistribution.com/). They offer other types of distributions that can exactly match the quantile-value pairs, although it's not fully free to use. They also have an [R package](https://github.com/tadamcz/make_distribution_r_client) to access the (paid) API.
 

@@ -245,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="the-problem-with-distributions" class="level2">
 <h2 class="anchored" data-anchor-id="the-problem-with-distributions">The problem with distributions</h2>
-<p>A common problem with working with distributions is that you need to know which distribution to use for which use-case and then shape the distribution to your liking by giving the distribution’s parameters the right values. In some cases this is fairly straightforward, like when you want to model something as a normal distribution with a certain mean and standard devation.</p>
+<p>A common problem with working with distributions is that you need to know which distribution to use for which use-case and then shape the distribution to your liking by giving the distribution’s parameters the right values. In some cases this is fairly straightforward, like when you want to model something as a normal distribution with a certain mean and standard deviation.</p>
 <p>But what if you want to model, say, how long you think a particular task will take in hours? Here a normal distribution is not well suited and instead you have to use something else, perhaps a Gamma distribution or a lognormal distribution. These distributions take parameters other than a mean and standard deviation and they don’t have much intuitive meaning (at least not to me).</p>
 </section>
 <section id="using-the-metalog-distribution" class="level2">
@@ -257,7 +257,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">12</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.5</span>, .<span class="dv">9</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>metalog <span class="ot">&lt;-</span> <span class="fu">metalog</span>(</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> values,</span>
@@ -289,7 +289,7 @@ Parameters
     3   yes Linear Program</code></pre>
 </div>
 </div>
-<p>Using <code>summary()</code> on the output of <code>metalog()</code> gives us some information about the distribution, but it doesn’t seem particularly useful to me, so let’s move on to visualizing the distribution using the <code>plot()</code> function. Unfortunately, using <code>plot()</code> on the output actually returns two plots, one showing the probability density function (PDF) and the other one showing the cumulative density function (CDF). I prefer looking at the PDF, so that’s the one I extract and plot below.</p>
+<p>Using <code>summary()</code> on the output of <code>metalog()</code> gives us some information about the distribution, but it doesn’t seem particularly useful to me, so let’s move on to visualizing the distribution using the <code>plot()</code> function. Unfortunately, using <code>plot()</code> on the output returns two plots—one showing the probability density function (PDF) and the other one showing the cumulative density function (CDF). I prefer looking at the PDF, so that’s the one I extract and plot below.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -361,12 +361,12 @@ Parameters
 </section>
 <section id="does-the-distribution-always-match-the-specified-quantile-value-pairs" class="level2">
 <h2 class="anchored" data-anchor-id="does-the-distribution-always-match-the-specified-quantile-value-pairs">Does the distribution always match the specified quantile-value pairs?</h2>
-<p>Apparently, the answer is no. We can quickly check this using the <code>qmetalog()</code> function to see whether it produces the same values we provided as part of the quantile-value pairs.</p>
+<p>Apparently, the answer is no. We can quickly check this using the <code>qmetalog()</code> function to see whether it produces the same values we provided as part of the quantile-value pairs. In the example below we set the values to 3, 6, and 12, and the quantiles to 0.1, 0.5, and 0.9. After running the the <code>metalog()</code> function, we can use the <code>qmetalog()</code> function to reproduce the values after giving it the output of the <code>metalog()</code> function and the quantiles.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">12</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.5</span>, .<span class="dv">9</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>metalog <span class="ot">&lt;-</span> <span class="fu">metalog</span>(</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> values,</span>
@@ -380,12 +380,12 @@ Parameters
 <pre><code>[1]  3  6 12</code></pre>
 </div>
 </div>
-<p>The qmetalog() function returns the same values we specified in the <code>values</code> variable, which means the distribution is a match. But let’s slightly change the values in the quantile-value pairs and check it again.</p>
+<p>In this example, the function returns the same values we specified in the <code>values</code> variable, which means the distribution is a match. But let’s slightly change the values in the quantile-value pairs and check it again, for example by giving it the values 3, 4, and 12.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">12</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.5</span>, .<span class="dv">9</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>, .<span class="dv">9</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>metalog <span class="ot">&lt;-</span> <span class="fu">metalog</span>(</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> values,</span>
@@ -399,7 +399,7 @@ Parameters
 <pre><code>[1]  3.000000  4.499306 12.000000</code></pre>
 </div>
 </div>
-<p>Now the function returns values that are slightly different than the values we provided, so the distribution is not an exact match. This makes sense because the distribution is not fully customizable; it still has some contraints that limits its flexibility.</p>
+<p>Now the function returns values that are slightly different than the values we provided, so the distribution is not an exact match. This makes sense because the distribution is not fully customizable; it still has some constraints that limits its flexibility.</p>
 <p>If you want to use a distribution that is fully flexible, you have to use other solutions. One such solution is <a href="https://makedistribution.com/">MakeDistribution</a>. They offer other types of distributions that can exactly match the quantile-value pairs, although it’s not fully free to use. They also have an <a href="https://github.com/tadamcz/make_distribution_r_client">R package</a> to access the (paid) API.</p>
 </section>
 <section id="boundedness" class="level2">
@@ -470,7 +470,7 @@ Parameters
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
 <p>The metalog distribution makes it easy to specify a distribution using only quantile-value pairs. You can use the <code>metalog()</code> function from the the rmetalog package to specify the distribution, including whether the distribution is bounded or not, and then simulate values from this distribution using the <code>rmetalog()</code> function.</p>
-<p><em>This post was last updated on 2024-07-17.</em></p>
+<p><em>This post was last updated on 2024-07-18.</em></p>
 
 
 <!-- -->
@@ -1006,7 +1006,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a><span class="fu">## The problem with distributions</span></span>
 <span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>A common problem with working with distributions is that you need to know which distribution to use for which use-case and then shape the distribution to your liking by giving the distribution's parameters the right values. In some cases this is fairly straightforward, like when you want to model something as a normal distribution with a certain mean and standard devation.</span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>A common problem with working with distributions is that you need to know which distribution to use for which use-case and then shape the distribution to your liking by giving the distribution's parameters the right values. In some cases this is fairly straightforward, like when you want to model something as a normal distribution with a certain mean and standard deviation.</span>
 <span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>But what if you want to model, say, how long you think a particular task will take in hours? Here a normal distribution is not well suited and instead you have to use something else, perhaps a Gamma distribution or a lognormal distribution. These distributions take parameters other than a mean and standard deviation and they don't have much intuitive meaning (at least not to me).</span>
 <span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a></span>
@@ -1014,14 +1014,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>The metalog distribution changes all of that because you can simply specify the distribution by giving it a set of quantile-value pairs that are used to form the distribution.</span>
 <span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>For example, let's specify three quantile-value pairs below and see how they shape the distribution. </span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>For example, let's specify three quantile-value pairs below and see how they shape the distribution.</span>
 <span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>We use the rmetalog package, which has a function called <span class="in">`metalog()`</span> to create the distribution. We give it the values, the quantiles, and a term limit. The latter refers to how many terms are used in the distribution, with larger term distributions having more flexibility, meaning they better match the quantile-value pairs. The maximum number of terms is the number of quantile-value pairs we give it, so in the example below the maximum is 3.</span>
 <span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: metalog-distribution-summary</span></span>
 <span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">12</span>)</span>
-<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.5</span>, .<span class="dv">9</span>)</span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span>)</span>
 <span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>metalog <span class="ot">&lt;-</span> <span class="fu">metalog</span>(</span>
 <span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> values,</span>
@@ -1032,7 +1032,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metalog)</span>
 <span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>Using <span class="in">`summary()`</span> on the output of <span class="in">`metalog()`</span> gives us some information about the distribution, but it doesn't seem particularly useful to me, so let's move on to visualizing the distribution using the <span class="in">`plot()`</span> function. Unfortunately, using <span class="in">`plot()`</span> on the output actually returns two plots, one showing the probability density function (PDF) and the other one showing the cumulative density function (CDF). I prefer looking at the PDF, so that's the one I extract and plot below.</span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>Using <span class="in">`summary()`</span> on the output of <span class="in">`metalog()`</span> gives us some information about the distribution, but it doesn't seem particularly useful to me, so let's move on to visualizing the distribution using the <span class="in">`plot()`</span> function. Unfortunately, using <span class="in">`plot()`</span> on the output returns two plots—one showing the probability density function (PDF) and the other one showing the cumulative density function (CDF). I prefer looking at the PDF, so that's the one I extract and plot below.</span>
 <span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: metalog-distribution-plot</span></span>
@@ -1093,13 +1093,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-150"><a href="#cb12-150" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-151"><a href="#cb12-151" aria-hidden="true" tabindex="-1"></a><span class="fu">## Does the distribution always match the specified quantile-value pairs?</span></span>
 <span id="cb12-152"><a href="#cb12-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-153"><a href="#cb12-153" aria-hidden="true" tabindex="-1"></a>Apparently, the answer is no. We can quickly check this using the <span class="in">`qmetalog()`</span> function to see whether it produces the same values we provided as part of the quantile-value pairs. </span>
+<span id="cb12-153"><a href="#cb12-153" aria-hidden="true" tabindex="-1"></a>Apparently, the answer is no. We can quickly check this using the <span class="in">`qmetalog()`</span> function to see whether it produces the same values we provided as part of the quantile-value pairs. In the example below we set the values to 3, 6, and 12, and the quantiles to 0.1, 0.5, and 0.9. After running the the <span class="in">`metalog()`</span> function, we can use the <span class="in">`qmetalog()`</span> function to reproduce the values after giving it the output of the <span class="in">`metalog()`</span> function and the quantiles.</span>
 <span id="cb12-154"><a href="#cb12-154" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-157"><a href="#cb12-157" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb12-158"><a href="#cb12-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: metalog-distribution-match</span></span>
 <span id="cb12-159"><a href="#cb12-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
 <span id="cb12-160"><a href="#cb12-160" aria-hidden="true" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">12</span>)</span>
-<span id="cb12-161"><a href="#cb12-161" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.5</span>, .<span class="dv">9</span>)</span>
+<span id="cb12-161"><a href="#cb12-161" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span>)</span>
 <span id="cb12-162"><a href="#cb12-162" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-163"><a href="#cb12-163" aria-hidden="true" tabindex="-1"></a>metalog <span class="ot">&lt;-</span> <span class="fu">metalog</span>(</span>
 <span id="cb12-164"><a href="#cb12-164" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> values,</span>
@@ -1110,13 +1110,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-169"><a href="#cb12-169" aria-hidden="true" tabindex="-1"></a><span class="fu">qmetalog</span>(metalog, quantiles, <span class="at">term =</span> <span class="dv">3</span>)</span>
 <span id="cb12-170"><a href="#cb12-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb12-171"><a href="#cb12-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-172"><a href="#cb12-172" aria-hidden="true" tabindex="-1"></a>The qmetalog() function returns the same values we specified in the <span class="in">`values`</span> variable, which means the distribution is a match. But let's slightly change the values in the quantile-value pairs and check it again.</span>
+<span id="cb12-172"><a href="#cb12-172" aria-hidden="true" tabindex="-1"></a>In this example, the function returns the same values we specified in the <span class="in">`values`</span> variable, which means the distribution is a match. But let's slightly change the values in the quantile-value pairs and check it again, for example by giving it the values 3, 4, and 12.</span>
 <span id="cb12-173"><a href="#cb12-173" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-176"><a href="#cb12-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb12-177"><a href="#cb12-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: metalog-distribution-mismatch</span></span>
 <span id="cb12-178"><a href="#cb12-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
 <span id="cb12-179"><a href="#cb12-179" aria-hidden="true" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">12</span>)</span>
-<span id="cb12-180"><a href="#cb12-180" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.5</span>, .<span class="dv">9</span>)</span>
+<span id="cb12-180"><a href="#cb12-180" aria-hidden="true" tabindex="-1"></a>quantiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>, .<span class="dv">9</span>)</span>
 <span id="cb12-181"><a href="#cb12-181" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-182"><a href="#cb12-182" aria-hidden="true" tabindex="-1"></a>metalog <span class="ot">&lt;-</span> <span class="fu">metalog</span>(</span>
 <span id="cb12-183"><a href="#cb12-183" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> values,</span>
@@ -1127,7 +1127,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-188"><a href="#cb12-188" aria-hidden="true" tabindex="-1"></a><span class="fu">qmetalog</span>(metalog, quantiles, <span class="at">term =</span> <span class="dv">3</span>)</span>
 <span id="cb12-189"><a href="#cb12-189" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb12-190"><a href="#cb12-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-191"><a href="#cb12-191" aria-hidden="true" tabindex="-1"></a>Now the function returns values that are slightly different than the values we provided, so the distribution is not an exact match. This makes sense because the distribution is not fully customizable; it still has some contraints that limits its flexibility. </span>
+<span id="cb12-191"><a href="#cb12-191" aria-hidden="true" tabindex="-1"></a>Now the function returns values that are slightly different than the values we provided, so the distribution is not an exact match. This makes sense because the distribution is not fully customizable; it still has some constraints that limits its flexibility.</span>
 <span id="cb12-192"><a href="#cb12-192" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-193"><a href="#cb12-193" aria-hidden="true" tabindex="-1"></a>If you want to use a distribution that is fully flexible, you have to use other solutions. One such solution is <span class="co">[</span><span class="ot">MakeDistribution</span><span class="co">](https://makedistribution.com/)</span>. They offer other types of distributions that can exactly match the quantile-value pairs, although it's not fully free to use. They also have an <span class="co">[</span><span class="ot">R package</span><span class="co">](https://github.com/tadamcz/make_distribution_r_client)</span> to access the (paid) API.</span>
 <span id="cb12-194"><a href="#cb12-194" aria-hidden="true" tabindex="-1"></a></span>
