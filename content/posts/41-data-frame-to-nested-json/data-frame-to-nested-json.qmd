@@ -1,0 +1,31 @@
+---
+title: "Convert a data frame to a nested JSON file"
+description: "A simple method to convert a data frame to a JSON file with a nested structure."
+date: 2024-07-19
+categories:
+  - R
+toc: true
+draft: true
+---
+
+In this blog post I cover a quick way to convert a data frame to a nested JSON object. Run the code below to follow along.
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(jsonlite)
+```
+
+Take the following simple data frame:
+
+```{r}
+data <- tibble(
+  name = "Dad",
+  age = 40,
+  child = c("Son", "Daughter")
+)
+
+data_nested <- nest(data, children = c(child))
+
+toJSON(data_nested, pretty = TRUE)
+```
