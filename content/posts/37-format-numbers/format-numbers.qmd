@@ -65,6 +65,9 @@ format_number <- function(
   # Remove leading zero
   if (omit_zero) output <- stringr::str_remove(output, "^0")
 
+  # Replace NAs with NA
+  output <- dplyr::if_else(stringr::str_detect(output, "NA"), NA, output)
+
   return(output)
 }
 ```
@@ -74,20 +77,21 @@ format_number <- function(
 The table below shows what kind of output is produced by the function depending on its input. It serves as an illustration of how the function works and as a test for me to see whether the function does what I want it to do.
 
 | Number      | `trailing_digits` | `digits` | `omit_zero` | Result                                                           |
-|---------------|---------------|---------------|---------------|---------------|
-| 2           | 0                 | \-       | `FALSE`     | `r format_number(2, trailing_digits = 0)`                        |
-| 2           | 2                 | \-       | `FALSE`     | `r format_number(2, trailing_digits = 2)`                        |
-| 2           | \-                | 2        | `FALSE`     | `r format_number(2, digits = 2)`                                 |
-| 2.0         | 2                 | \-       | `FALSE`     | `r format_number(2.0, trailing_digits = 2)`                      |
-| 2.01        | 1                 | \-       | `FALSE`     | `r format_number(2.01, trailing_digits = 1)`                     |
-| 2.01        | -                 | 1        | `FALSE`     | `r format_number(2.01, digits = 1)`                              |
-| 2.01        | 2                 | \-       | `FALSE`     | `r format_number(2.01, trailing_digits = 2)`                     |
-| 2.013232    | 2                 | \-       | `FALSE`     | `r format_number(2.013232, trailing_digits = 2)`                 |
-| 12.00013232 | 2                 | \-       | `FALSE`     | `r format_number(12.00013232, trailing_digits = 2)`              |
-| 12.01003232 | 2                 | \-       | `FALSE`     | `r format_number(12.01003232, trailing_digits = 2)`              |
-| 12.00120032 | 2                 | \-       | `FALSE`     | `r format_number(12.00120032, trailing_digits = 2)`              |
-| 0.434       | 2                 | \-       | `TRUE`      | `r format_number(0.434, trailing_digits = 2, omit_zero = TRUE)`  |
-| 1.434       | 2                 | \-       | `FALSE`     | `r format_number(0.434, trailing_digits = 2, omit_zero = FALSE)` |
+|-------------|-------------------|----------|-------------|------------------------------------------------------------------|
+| 1           | 0                 | \-       | `FALSE`     | `r format_number(1, trailing_digits = 0)`                        |
+| 1           | 2                 | \-       | `FALSE`     | `r format_number(1, trailing_digits = 2)`                        |
+| 1           | \-                | 2        | `FALSE`     | `r format_number(1, digits = 2)`                                 |
+| 1.0         | 2                 | \-       | `FALSE`     | `r format_number(1.0, trailing_digits = 2)`                      |
+| 1.02        | 1                 | \-       | `FALSE`     | `r format_number(1.02, trailing_digits = 1)`                     |
+| 1.02        | -                 | 1        | `FALSE`     | `r format_number(1.02, digits = 1)`                              |
+| 1.02        | 2                 | \-       | `FALSE`     | `r format_number(1.02, trailing_digits = 2)`                     |
+| 1.0234      | 2                 | \-       | `FALSE`     | `r format_number(1.0234, trailing_digits = 2)`                   |
+| 1.00234     | 2                 | \-       | `FALSE`     | `r format_number(1.00234, trailing_digits = 2)`                  |
+| 1.00020345  | 2                 | \-       | `FALSE`     | `r format_number(1.00020345, trailing_digits = 2)`               |
+| 0.123       | 2                 | \-       | `TRUE`      | `r format_number(0.123, trailing_digits = 2, omit_zero = TRUE)`  |
+| 0.123       | 2                 | \-       | `FALSE`     | `r format_number(0.123, trailing_digits = 2, omit_zero = FALSE)` |
+| `NA`        | 2                 | \-       | `FALSE`     | `r format_number(NA, trailing_digits = 2, omit_zero = FALSE)`    |
+| 1.23, 4.56  | 1                 | \-       | `FALSE`     | `r format_number(c(1.23, 4.56), trailing_digits = 1)`            |
 
 ## Limitations
 
@@ -95,6 +99,7 @@ The function isn't complete yet. For example, I should also add something to dea
 
 ## Updates
 
-The function is now vectorized, so it works when you give it multiple numbers at once.
+- The function is now vectorized, so it works when you give it multiple numbers at once.
+- The function can now deal with missing values.
 
 *This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*

@@ -1,5 +1,5 @@
 ---
-title: "Convert a data frame to a nested JSON file"
+title: "Creating JSON files with R"
 description: "A simple method to convert a data frame to a JSON file with a nested structure."
 date: 2024-07-19
 categories:
@@ -19,13 +19,31 @@ library(jsonlite)
 Take the following simple data frame:
 
 ```{r}
-data <- tibble(
-  name = "Dad",
-  age = 40,
-  child = c("Son", "Daughter")
+trainer <- tibble(
+  trainer = "Ash",
+  age = 10,
 )
 
-data_nested <- nest(data, children = c(child))
+home_town <- tibble(
+  trainer = "Ash",
+  town = "Pallet Town",
+  population = 8
+)
 
-toJSON(data_nested, pretty = TRUE)
+pokemon <- tibble(
+  trainer = "Ash",
+  pokemon = c("Bulbasaur", "Squirtle", "Charmander"),
+  type = c("Grass", "Water", "Fire")
+)
+
+data <- full_join(trainer, home_town)
+data <- full_join(data, pokemon)
+
+data
+
+data |>
+  mutate(home_town = tibble(town, population)) |>
+  select(-town, -population) |>
+  nest(pokemon = c(pokemon, type)) |>
+  toJSON(pretty = TRUE)
 ```

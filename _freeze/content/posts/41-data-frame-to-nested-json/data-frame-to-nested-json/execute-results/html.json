@@ -1,0 +1,17 @@
+{
+  "hash": "f7aff7c78b44ee0d3eb6abf2c4d39b6c",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Creating JSON files with R\"\ndescription: \"A simple method to convert a data frame to a JSON file with a nested structure.\"\ndate: 2024-07-19\ncategories:\n  - R\ntoc: true\ndraft: true\n---\n\n\n\n\n\nIn this blog post I cover a quick way to convert a data frame to a nested JSON object. Run the code below to follow along.\n\n\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors\n```\n\n\n:::\n\n```{.r .cell-code}\nlibrary(jsonlite)\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\n\nAttaching package: 'jsonlite'\n\nThe following object is masked from 'package:purrr':\n\n    flatten\n```\n\n\n:::\n:::\n\n\n\n\n\nTake the following simple data frame:\n\n\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ntrainer <- tibble(\n  trainer = \"Ash\",\n  age = 10,\n)\n\nhome_town <- tibble(\n  trainer = \"Ash\",\n  town = \"Pallet Town\",\n  population = 8\n)\n\npokemon <- tibble(\n  trainer = \"Ash\",\n  pokemon = c(\"Bulbasaur\", \"Squirtle\", \"Charmander\"),\n  type = c(\"Grass\", \"Water\", \"Fire\")\n)\n\ndata <- full_join(trainer, home_town)\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\nJoining with `by = join_by(trainer)`\n```\n\n\n:::\n\n```{.r .cell-code}\ndata <- full_join(data, pokemon)\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\nJoining with `by = join_by(trainer)`\n```\n\n\n:::\n\n```{.r .cell-code}\ndata\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n# A tibble: 3 × 6\n  trainer   age town        population pokemon    type \n  <chr>   <dbl> <chr>            <dbl> <chr>      <chr>\n1 Ash        10 Pallet Town          8 Bulbasaur  Grass\n2 Ash        10 Pallet Town          8 Squirtle   Water\n3 Ash        10 Pallet Town          8 Charmander Fire \n```\n\n\n:::\n\n```{.r .cell-code}\ndata |>\n  mutate(home_town = tibble(town, population)) |>\n  select(-town, -population) |>\n  nest(pokemon = c(pokemon, type)) |>\n  toJSON(pretty = TRUE)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[\n  {\n    \"trainer\": \"Ash\",\n    \"age\": 10,\n    \"home_town\": {\n      \"town\": \"Pallet Town\",\n      \"population\": 8\n    },\n    \"pokemon\": [\n      {\n        \"pokemon\": \"Bulbasaur\",\n        \"type\": \"Grass\"\n      },\n      {\n        \"pokemon\": \"Squirtle\",\n        \"type\": \"Water\"\n      },\n      {\n        \"pokemon\": \"Charmander\",\n        \"type\": \"Fire\"\n      }\n    ]\n  }\n] \n```\n\n\n:::\n:::",
+    "supporting": [
+      "data-frame-to-nested-json_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -262,8 +262,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove leading zero</span></span>
 <span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (omit_zero) output <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(output, <span class="st">"^0"</span>)</span>
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(output)</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Replace NAs with NA</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">if_else</span>(stringr<span class="sc">::</span><span class="fu">str_detect</span>(output, <span class="st">"NA"</span>), <span class="cn">NA</span>, output)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(output)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -272,11 +275,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The table below shows what kind of output is produced by the function depending on its input. It serves as an illustration of how the function works and as a test for me to see whether the function does what I want it to do.</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
+<col style="width: 10%">
+<col style="width: 15%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 54%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -289,95 +292,102 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>2</td>
+<td>1</td>
 <td>0</td>
 <td>-</td>
 <td><code>FALSE</code></td>
-<td>2</td>
+<td>1</td>
 </tr>
 <tr class="even">
-<td>2</td>
+<td>1</td>
 <td>2</td>
 <td>-</td>
 <td><code>FALSE</code></td>
-<td>2.00</td>
+<td>1.00</td>
 </tr>
 <tr class="odd">
-<td>2</td>
+<td>1</td>
 <td>-</td>
 <td>2</td>
 <td><code>FALSE</code></td>
-<td>2.00</td>
+<td>1.00</td>
 </tr>
 <tr class="even">
-<td>2.0</td>
+<td>1.0</td>
 <td>2</td>
 <td>-</td>
 <td><code>FALSE</code></td>
-<td>2.00</td>
+<td>1.00</td>
 </tr>
 <tr class="odd">
-<td>2.01</td>
+<td>1.02</td>
 <td>1</td>
 <td>-</td>
 <td><code>FALSE</code></td>
-<td>2.01</td>
+<td>1.02</td>
 </tr>
 <tr class="even">
-<td>2.01</td>
+<td>1.02</td>
 <td>-</td>
 <td>1</td>
 <td><code>FALSE</code></td>
-<td>2.0</td>
+<td>1.0</td>
 </tr>
 <tr class="odd">
-<td>2.01</td>
+<td>1.02</td>
 <td>2</td>
 <td>-</td>
 <td><code>FALSE</code></td>
-<td>2.01</td>
+<td>1.02</td>
 </tr>
 <tr class="even">
-<td>2.013232</td>
+<td>1.0234</td>
 <td>2</td>
 <td>-</td>
 <td><code>FALSE</code></td>
-<td>2.013</td>
+<td>1.023</td>
 </tr>
 <tr class="odd">
-<td>12.00013232</td>
+<td>1.00234</td>
 <td>2</td>
 <td>-</td>
 <td><code>FALSE</code></td>
-<td>12.00013</td>
+<td>1.0023</td>
 </tr>
 <tr class="even">
-<td>12.01003232</td>
+<td>1.00020345</td>
 <td>2</td>
 <td>-</td>
 <td><code>FALSE</code></td>
-<td>12.010</td>
+<td>1.00020</td>
 </tr>
 <tr class="odd">
-<td>12.00120032</td>
-<td>2</td>
-<td>-</td>
-<td><code>FALSE</code></td>
-<td>12.0012</td>
-</tr>
-<tr class="even">
-<td>0.434</td>
+<td>0.123</td>
 <td>2</td>
 <td>-</td>
 <td><code>TRUE</code></td>
-<td>.43</td>
+<td>.12</td>
 </tr>
-<tr class="odd">
-<td>1.434</td>
+<tr class="even">
+<td>0.123</td>
 <td>2</td>
 <td>-</td>
 <td><code>FALSE</code></td>
-<td>0.43</td>
+<td>0.12</td>
+</tr>
+<tr class="odd">
+<td><code>NA</code></td>
+<td>2</td>
+<td>-</td>
+<td><code>FALSE</code></td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td>1.23, 4.56</td>
+<td>1</td>
+<td>-</td>
+<td><code>FALSE</code></td>
+<td>1.2, 4.6</td>
 </tr>
 </tbody>
 </table>
@@ -388,8 +398,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="updates" class="level2">
 <h2 class="anchored" data-anchor-id="updates">Updates</h2>
-<p>The function is now vectorized, so it works when you give it multiple numbers at once.</p>
-<p><em>This post was last updated on 2024-05-21.</em></p>
+<ul>
+<li>The function is now vectorized, so it works when you give it multiple numbers at once.</li>
+<li>The function can now deal with missing values.</li>
+</ul>
+<p><em>This post was last updated on 2024-08-21.</em></p>
 
 
 <!-- -->
@@ -935,39 +948,44 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove leading zero</span></span>
 <span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (omit_zero) output <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(output, <span class="st">"^0"</span>)</span>
 <span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(output)</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## Testing it out</span></span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>The table below shows what kind of output is produced by the function depending on its input. It serves as an illustration of how the function works and as a test for me to see whether the function does what I want it to do.</span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>| Number      | <span class="in">`trailing_digits`</span> | <span class="in">`digits`</span> | <span class="in">`omit_zero`</span> | Result                                                           |</span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>|---------------|---------------|---------------|---------------|---------------|</span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>| 2           | 0                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2, trailing_digits = 0)`</span>                        |</span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>| 2           | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2, trailing_digits = 2)`</span>                        |</span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>| 2           | <span class="sc">\-</span>                | 2        | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2, digits = 2)`</span>                                 |</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>| 2.0         | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.0, trailing_digits = 2)`</span>                      |</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>| 2.01        | 1                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.01, trailing_digits = 1)`</span>                     |</span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>| 2.01        | -                 | 1        | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.01, digits = 1)`</span>                              |</span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>| 2.01        | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.01, trailing_digits = 2)`</span>                     |</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>| 2.013232    | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(2.013232, trailing_digits = 2)`</span>                 |</span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>| 12.00013232 | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(12.00013232, trailing_digits = 2)`</span>              |</span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>| 12.01003232 | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(12.01003232, trailing_digits = 2)`</span>              |</span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>| 12.00120032 | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(12.00120032, trailing_digits = 2)`</span>              |</span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>| 0.434       | 2                 | <span class="sc">\-</span>       | <span class="in">`TRUE`</span>      | <span class="in">`r format_number(0.434, trailing_digits = 2, omit_zero = TRUE)`</span>  |</span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>| 1.434       | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(0.434, trailing_digits = 2, omit_zero = FALSE)`</span> |</span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="fu">## Limitations</span></span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>The function isn't complete yet. For example, I should also add something to deal with very large or very small numbers. I'll update the post when I make adjustments to the function.</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Replace NAs with NA</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">if_else</span>(stringr<span class="sc">::</span><span class="fu">str_detect</span>(output, <span class="st">"NA"</span>), <span class="cn">NA</span>, output)</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(output)</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="fu">## Testing it out</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>The table below shows what kind of output is produced by the function depending on its input. It serves as an illustration of how the function works and as a test for me to see whether the function does what I want it to do.</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>| Number      | <span class="in">`trailing_digits`</span> | <span class="in">`digits`</span> | <span class="in">`omit_zero`</span> | Result                                                           |</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>|-------------|-------------------|----------|-------------|------------------------------------------------------------------|</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>| 1           | 0                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(1, trailing_digits = 0)`</span>                        |</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>| 1           | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(1, trailing_digits = 2)`</span>                        |</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>| 1           | <span class="sc">\-</span>                | 2        | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(1, digits = 2)`</span>                                 |</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>| 1.0         | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(1.0, trailing_digits = 2)`</span>                      |</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>| 1.02        | 1                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(1.02, trailing_digits = 1)`</span>                     |</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>| 1.02        | -                 | 1        | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(1.02, digits = 1)`</span>                              |</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>| 1.02        | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(1.02, trailing_digits = 2)`</span>                     |</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>| 1.0234      | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(1.0234, trailing_digits = 2)`</span>                   |</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>| 1.00234     | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(1.00234, trailing_digits = 2)`</span>                  |</span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>| 1.00020345  | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(1.00020345, trailing_digits = 2)`</span>               |</span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>| 0.123       | 2                 | <span class="sc">\-</span>       | <span class="in">`TRUE`</span>      | <span class="in">`r format_number(0.123, trailing_digits = 2, omit_zero = TRUE)`</span>  |</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>| 0.123       | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(0.123, trailing_digits = 2, omit_zero = FALSE)`</span> |</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>| <span class="in">`NA`</span>        | 2                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(NA, trailing_digits = 2, omit_zero = FALSE)`</span>    |</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>| 1.23, 4.56  | 1                 | <span class="sc">\-</span>       | <span class="in">`FALSE`</span>     | <span class="in">`r format_number(c(1.23, 4.56), trailing_digits = 1)`</span>            |</span>
 <span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="fu">## Updates</span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="fu">## Limitations</span></span>
 <span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>The function is now vectorized, so it works when you give it multiple numbers at once.</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>The function isn't complete yet. For example, I should also add something to deal with very large or very small numbers. I'll update the post when I make adjustments to the function.</span>
 <span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*</span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="fu">## Updates</span></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The function is now vectorized, so it works when you give it multiple numbers at once.</span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The function can now deal with missing values.</span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>*This post was last updated on `r format(Sys.Date(), "%Y-%m-%d")`.*</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
