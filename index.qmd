@@ -49,7 +49,7 @@ Research Affiliate at Tilburg University
 
 ## About
 
-I'm a Senior Behavioral Scientist at [Rethink Priorities](https://rethinkpriorities.org/). I am part of the survey team, which means I conduct research on attitude assessments and attitude change, using surveys and experimental designs. Before joining Rethink Priorities, I was an assistant professor in the Department of Social Psychology at [Tilburg University](https://www.tilburguniversity.edu/), where I continue to be affiliated. On this website you can find information about some of the projects I'm involved in. I also blog about various topics related to my work.
+I'm a Senior Behavioral Scientist at [Rethink Priorities](https://rethinkpriorities.org/). I am part of the Survey and Data Analysis team, which means I conduct research on a variety of topics, using surveys, experimental designs, and other data sources. Before joining Rethink Priorities, I was an assistant professor in the Department of Social Psychology at [Tilburg University](https://www.tilburguniversity.edu/), where I continue to maintain an affiliation. On this website you can find information about some of the projects I'm involved in. I also blog about various topics related to my work.
 
 [Learn more](content/about.qmd "Learn more about me")
 
@@ -67,6 +67,6 @@ I'm a Senior Behavioral Scientist at [Rethink Priorities](https://rethinkpriori
 
 ## CV
 
-I'm an Senior Behavioral Scientist at Rethink Priorities. I'm a former academic with 10 years of research experience. I have published, and continue to publish, scientific papers in peer-reviewed journals and I also develop research-related software. My skill set consists of various research skills (e.g., experimental design, data analysis, writing) and technical skills (e.g., programming). I'm currently focused on applying my skills to topics of high impact together with my colleagues at Rethink Priorities.
+I have over 10 years of research experience. I have published, and continue to publish, scientific papers in peer-reviewed journals and I also develop research-related software. My skill set consists of various research skills (e.g., experimental design, data analysis, writing) and technical skills (e.g., programming). I'm currently focused on applying my skills to topics of high impact together with my colleagues at Rethink Priorities.
 
 [Learn more](content/cv/cv.qmd "Learn more about my CV")

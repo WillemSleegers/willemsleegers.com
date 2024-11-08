@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.willemsleegers.com/index.html</loc>
-    <lastmod>2024-08-29T11:48:40.520Z</lastmod>
+    <lastmod>2024-11-08T09:13:10.519Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/cv/cv.html</loc>
@@ -98,10 +98,14 @@
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/about.html</loc>
-    <lastmod>2022-05-17T20:52:43.830Z</lastmod>
+    <lastmod>2024-11-08T09:13:24.888Z</lastmod>
   </url>
   <url>
     <loc>https://www.willemsleegers.com/content/blog.html</loc>
     <lastmod>2022-04-13T09:02:20.106Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.willemsleegers.com/content/posts/42-useful-R-snippets/useful-r-snippets.html</loc>
+    <lastmod>2024-09-21T11:32:57.462Z</lastmod>
   </url>
 </urlset>

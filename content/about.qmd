@@ -2,16 +2,16 @@
 title: About
 ---
 
-I'm a Senior Behavioral Scientist at [Rethink Priorities](https://rethinkpriorities.org). Rethink Priorities is a research organization that houses a bunch of cool people who support and conduct research to inform policymakers and major foundations about how to best help people and nonhuman animals, in both the present and the long-term future. I am part of the survey team, which means I conduct research on attitude assessments and attitude change, using surveys and experimental studies.
+I'm a Senior Behavioral Scientist at [Rethink Priorities](https://rethinkpriorities.org). Rethink Priorities is a research organization that houses a bunch of cool people who support and conduct research to inform policymakers and major foundations about how to best help people and nonhuman animals, in both the present and the long-term future. I am part of the Survey and Data Analysis team, which means I conduct research on a variety of topics, using surveys, experimental studies, and other sources of data.
 
 Before joining Rethink Priorities, I was an assistant professor in the Department of Social Psychology at [Tilburg University](https://www.tilburguniversity.edu).
 
 On this website you can find information about some of the projects I'm involved in. Some notable projects I'm working on are [tidystats](/content/projects/tidystats/tidystats.html) and a large-scaled replication study of [cognitive dissonance](/content/projects/cognitive-dissonance/cognitive-dissonance.html). Besides writing about these projects, I also blog posts about various topics, including tutorials or opinion pieces.
 
-One of my main research interests concern animal welfare. I think animal welfare, and their lack thereof, is one of the most pressing issues in the world at this moment and as a fruitful area of research where influential theories in social psychology (such as cognitive dissonance) can be applied and tested.
+One of my main research interests concern animal welfare. I think animal welfare, and the lack thereof, is one of the most pressing issues in the world at this moment and a fruitful area of research where influential theories in social psychology (such as cognitive dissonance) can be applied and tested.
 
 I'm also interested in the methodology of psychological research and ways to improve how we conduct science. A notable project I'm working on is tidystats. This is a software solution to help researchers more easily and more reproducibly report statistics in scientific manuscripts. It's main goal is to get researchers to report more statistics with fewer errors. I'm pretty proud of this project, so please check it out on the [tidystats project](/content/projects/tidystats/tidystats.html) or the [tidystats website](https://tidystats.io).
 
-I also have teaching experience thanks to my time as an assistant professor. I'm quite experienced in teaching undergraduate courses, in both small and large groups of students. Besides course work I have also provided many R workshops (although I have less time for that now).
+I also have teaching experience thanks to my time as an assistant professor. I'm quite experienced in teaching both under- and postgraduate courses, in both small and large groups of students. Besides course work I have also provided many R workshops (although I have less time for that now).
 
 This website is created using [Quarto](https://quarto.org).
