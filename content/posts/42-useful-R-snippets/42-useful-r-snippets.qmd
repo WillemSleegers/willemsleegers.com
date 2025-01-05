@@ -1,0 +1,48 @@
+---
+title: "Useful R snippets"
+description: "A collection of useful R snippets"
+date: 2024-09-21
+updated: 2025-01-02
+categories:
+  - R
+---
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+```
+
+## Create a new column with a value from a specific cell
+
+Take the following simple data frame:
+
+```{r}
+#| label: data-column-with-cell-value
+df <- tribble(
+  ~x, ~y,
+  "A", 0.1,
+  "B", 0.4,
+  "C", 0.2,
+  "D", 0.3,
+  "E", 0.5
+)
+
+df
+```
+
+Using the following code, we can add a new column that repeats a specific value from column `y` based on a value in a column `x`.
+
+```{r}
+#| label: snippet-column-with-cell-value
+df <- mutate(df, z = nth(y, which(x == "B")))
+df
+```
+
+This can be useful if you want to do scaling based on specific values.
+
+```{r}
+#| label: usecase-column-with-cell-value
+df |>
+  mutate(y_scaled = y / z)
+```

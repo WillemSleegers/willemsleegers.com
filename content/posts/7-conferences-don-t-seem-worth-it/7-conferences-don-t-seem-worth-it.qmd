@@ -1,0 +1,60 @@
+---
+title: Conferences don't seem worth it
+description: My take on academic conferences. They're not effective, but they could be.
+date: 2024-10-21
+tags: 
+  - academia
+  - Willem Whining
+---
+
+During the summer I attended several conferences and this reminded me once again that conferences seem like a giant waste of time (and money and resources). Perhaps this is phrased a bit too negatively because there are definitely some exceptions, but I think there are several structural issues to conferences that are worth criticizing. I'm not the first to do so, and there are people actually researching this topic (see for example [here](https://www.the-scientist.com/news-opinion/opinion--why-it-is-time-to-make-conferences-worth-it-66496)), but given that conferences are still organized in the same way, I think it might be nice to remind people.
+
+## Conferences == talks
+
+Conferences, at least in the field of social psychology, consist of talks. There are several different types of talks, ranging from long keynote talks to blitz presentations. Keynote talks are usually about 45 minutes long and are followed by questions, usually 5-10 minutes long depending on whether the speaker stuck to their time limit. Blitz presentations are very short presentations and are usually less than 5 minutes, with no room for questions. In between the keynote talks and blitz presentations are submitted talks. These talks are submitted by potential attendees and selected by the organizers. The talks are put into sessions centered around a particular topic. The talks are usually 15 minutes long with about 3-5 minutes for questions.
+
+There are also poster presentations. A poster presentation is not much of a presentation. It's just people standing in front of their poster while people walk by. Sometimes this means you get questions and sometimes not so much. Either way, you're simply standing in front of your poster and hope there will be some engagement.
+
+This is mostly it. Sometimes there are networking events at a conference, like a dinner or drinks, but it's mostly just talks.
+
+## The function of talks
+
+Talks at conferences should somehow be advancing science. After all, it's a scientific conference, so stuff should be happening that's good for science. I can see that a talk serves three functions that might be useful:
+
+1.  Informing others
+2.  Discussion
+3.  Networking
+
+Informing others about the work you've done seems potentially useful. It definitely seems useful to discuss that work. What did you do wrong? What are the scientific and practical implications? These are nice things that should be discussed, which could truly advance science. Finally, networking could be nice because by informing others about what you're up to, others can join in and you can start to work together.
+
+The thing is, however, I almost always end up being disappointed after attending a talk, and more so after a conference. Why is that?
+
+Despite there being a superficial use to talks, the practical reality is that conferences don't really seem to be designed around being effective.
+
+Informing others via a talk is not efficient at all. Talks are usually about some work that has been done, which could have just as easily been written up and conveyed to others via publication or a preprint. That has many more benefits and also removes some downsides of talks. Your audience is a lot larger when you publish something online, you can go into more details, and people can read it at their own pace, rather than having to pay continuous attention. The researcher can also spend more time polishing the work and doesn't need to stick to a time constraint, which is frequently ignored or commented on ("I would go into this more, but I don't have the time.").
+
+What about discussion? There's almost none of it. Talks are 95% a one-way street where the presenter presents their work without any discussion. There may be some clarification questions during the talk itself, but a discussion can only take place at the end. But, as I indicated in the different types of talks, that means there's usually only a few minutes for discussions. A 45 minute talk usually has about 10 minutes of discussion and a 15 minute talk only has about 5 minutes. Isn't that weird? Shouldn't a setting where many researchers come together be focused on taking advantage of having multiple people in the room? Instead, a presentation is just a shittier paper presented in a shittier medium.
+
+On top of that is that the social setting of a conference seems to discourage critical discussion. It seems harder to ask really critical questions, even though they may be warranted. Potentially upsetting comments about whether the research is so underpowered it was meaningless to perform, or that the wrong analysis was used, or that the theory makes no sense whatsoever, are difficult things to comment on. They are both hard to tell and hard to hear. My cynical self believes that this is why only so little time is reserved for discussion after a talk. It means we don't have to get into it.
+
+Then there's networking. Networking is probably the number 1 reason to attend a conference because it seems the most appropriate way to start up conversations with researchers you don't know very well. It's a horribly inefficient process, however, because it's not guaranteed you'll meet someone you can collaborate with or that the social settings align well enough for you to be able to strike up a conversation and hit it off. Perhaps this is just my experience, but I feel pretty confident in saying it's common.
+
+Most of the time you'll be talking with people you already know. Which is not particularly bad because maintaining relationships is important too. It's just hard to say whether you're maintaining those relationships because they're professional relationships that you want to cultivate or because they're your friends and you like hanging out with them.
+
+So, I think conferences are actually pretty pointless because talks are a terrible way to convey information, there's almost no discussion, and networking is only randomly useful. Note that it doesn't mean that conferences aren't useful at all. Of course it sometimes pays off, but my point is that it's too inefficient to be reliably useful, and therefore I do not consider conferences to be worth it.
+
+## Solutions
+
+My criticism above applies to the typical conference and does not apply to another conference I attended several years ago, and that was SIPS. What SIPS did differently, and still does, is that they do not focus on talks. Instead, their focus is on things like hackatons and workshops. Hackatons are problem-centered meetings where a problem is introduced by those who organize the hackathon. These could be issues such as how to promote replication studies or how to preregister analyses for existing data. These meeting distinguish themselves from normal talks by being problem-focused and centered around collaboration. A problem is introduced and those who find that problem interesting stick around and start to work on it. There are no slides, except to maybe introduce the problem. It's just scientists getting together and trying to solve a problem. That sounds good to me.
+
+I'm not sure if workshops are useful during a conference. Usually the workshops cannot last more than a few hours, so you can't learn anything that takes longer than that. It's probably good for some small skills, like learning a new statistical technique, but not so good for skills that take longer, like learning R.
+
+I've also attended effective altruism conferences. One thing that stands out from these conferences is the heavy focus on one-on-one meetings. Using a service like Swapcard, you see who is attending the conference and you can just schedule meetings with them throughout the whole conference. Basically it's a more systematic approach to networking. 
+
+I think organizing one-on-one meetings this way is the solution to the random nature of networking. Instead of having to meet the right people by attending their talks or randomly via some of the social events, you make use of the norm that you can just schedule meetings with everyone. You then go to designated areas to have the meeting and there you go; networking happens.
+
+## Scientific sheep
+
+Perhaps what I like the most about SIPS and the effective altruism conferences is that they show you can actually do things differently. Scientists are, unfortunately, human and show the exact same traits that they were supposed to unlearn as part of their training. They should not do things just because others do them, yet that often explains a lot of their behavior (particularly when it comes to statistical analyses). In this case, it's the conference format. We simply hold conferences like we've held them for so long, without reflecting on whether it actually makes sense in an age where we can have easy access to publications and it's easy to network (just e-mail people).
+
+We should reflect and realize that conferences in their common form are not efficient and should change. Conferences like SIPS provide a new conference template that can become the new norm. I hope it does.
