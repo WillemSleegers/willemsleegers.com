@@ -2,7 +2,7 @@
 title: The metalog distribution
 description: A blog post on the metalog distribution using the rmetalog package.
 date: 2024-04-09T00:00:00.000Z
-updated: 2025-01-02T00:00:00.000Z
+updated: 2025-01-18T00:00:00.000Z
 categories:
   - statistics
   - distributions
@@ -99,7 +99,7 @@ quantiles <- c(0.1, 0.5, 0.9)
 
 metalog <- metalog(
   x = values,
-  prob = quantiles,
+  probs = quantiles,
   term_limit = 3,
 )
 
@@ -242,7 +242,7 @@ quantiles <- c(0.1, 0.5, 0.9)
 
 metalog <- metalog(
   x = values,
-  prob = quantiles,
+  probs = quantiles,
   term_limit = 3,
 )
 
@@ -267,7 +267,7 @@ quantiles <- c(0.1, 0.5, .9)
 
 metalog <- metalog(
   x = values,
-  prob = quantiles,
+  probs = quantiles,
   term_limit = 3,
 )
 
@@ -307,7 +307,7 @@ quantiles <- c(0.1, 0.5, 0.9)
 
 metalog <- metalog(
   x = values,
-  prob = quantiles,
+  probs = quantiles,
   term_limit = 3,
   boundedness = "sl",
   bound = 0
