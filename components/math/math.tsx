@@ -1,3 +1,5 @@
+// Original code from https://github.com/talyssonoc/react-katex
+
 import React, { useMemo } from "react"
 import KaTeX from "katex"
 
@@ -43,6 +45,7 @@ const createMathComponent = (
           displayMode,
           errorColor,
           throwOnError: !!renderError,
+          strict: false,
         })
 
         return { html, error: undefined }
