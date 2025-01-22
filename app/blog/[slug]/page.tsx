@@ -6,7 +6,7 @@ import React, { PropsWithChildren, ReactElement, ReactNode } from "react"
 import { codeToHtml } from "shiki"
 
 import "katex/dist/katex.min.css"
-import { BlockMath, InlineMath } from "react-katex"
+import { BlockMath, InlineMath } from "@/components/math/math"
 
 import { Tag } from "@/components/post/tag"
 import {
@@ -15,7 +15,11 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 
-import { formatDate, reconstructMarkdown, replaceClassWithClassName } from "@/lib/utils"
+import {
+  formatDate,
+  reconstructMarkdown,
+  replaceClassWithClassName,
+} from "@/lib/utils"
 import { Triangle } from "lucide-react"
 
 import { posts } from "#site/content"
@@ -106,7 +110,7 @@ export default async function Page(props0: {
               table: {
                 component: Table,
               },
-              math: { component: Math, },
+              math: { component: Math },
             },
           }}
         >
@@ -144,7 +148,7 @@ const CodeFold = (props: {
 
 const Pre = async (props: PropsWithChildren) => {
   const children = props.children as ReactElement
-  const code = children.props as { className?: string, children: string }
+  const code = children.props as { className?: string; children: string }
 
   const html = await codeToHtml(code.children, {
     lang: "r",
@@ -187,7 +191,6 @@ const Math = (props: PropsWithChildren) => {
     return <InlineMath>{math.replace(/\$/g, "")}</InlineMath>
   }
 }
-
 
 const MarkdownImage = (props: {
   slug: string
