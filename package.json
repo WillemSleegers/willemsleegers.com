@@ -1,6 +1,6 @@
 {
-  "name": "blog",
-  "version": "0.1.0",
+  "name": "willemsleegers.com",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "velite": "velite dev",
@@ -22,10 +22,10 @@
     "markdown-to-jsx": "^7.5.0",
     "next": "latest",
     "next-themes": "latest",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^19",
+    "react-dom": "^19",
     "react-katex": "latest",
-    "shiki": "^1.22.0",
+    "shiki": "^2.1",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7"
   },
