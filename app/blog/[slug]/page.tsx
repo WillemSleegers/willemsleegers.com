@@ -49,20 +49,22 @@ export default async function Page(props0: {
   return (
     <main className="prose dark:prose-invert container max-w-3xl mx-auto p-6">
       <article>
-        <div className="space-y-3 mb-12">
-          <h1 className="mb-0">{post.title}</h1>
+        <div className="flex flex-col gap-4">
+          <div>
+            <h1 className="mb-1">{post.title}</h1>
+            {post.description && (
+              <p className="mt-0 mb-0 text-muted-foreground">{post.description}</p>
+            )}
+          </div>
           {post.tags && post.tags.length > 0 && (
-            <div className="flex gap-2">
+            <div className="flex flex-row gap-2">
               {post.tags.map((tag: string) => (
                 <Tag tag={tag} key={tag} />
               ))}
             </div>
           )}
-          {post.description && (
-            <p className="mt-0 text-muted-foreground">{post.description}</p>
-          )}
           {post.date && (
-            <div className="not-prose flex gap-4 text-sm">
+            <div className="not-prose flex flex-row gap-4 text-sm">
               <div>
                 <span>Published</span>
                 <dl>
@@ -87,7 +89,7 @@ export default async function Page(props0: {
               )}
             </div>
           )}
-          <hr className="my-4" />
+          <hr className="mt-2 mb-0" />
         </div>
         <Markdown
           options={{
@@ -136,7 +138,7 @@ const CodeFold = (props: {
           <Triangle
             height={10}
             width={10}
-            className="rotate-90 [[data-state=open]_&]:rotate-180 transition fill-primary stroke-primary"
+            className="rotate-90 in-data-[state=open]:rotate-180 transition fill-primary stroke-primary"
           />
           Code
         </CollapsibleTrigger>
