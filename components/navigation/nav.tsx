@@ -40,25 +40,19 @@ export function Nav() {
   return (
     <NavigationMenu>
       <NavigationMenuList>
-        <NavigationMenuItem>
-          {components.map((component) => (
-            <Link
-              key={component.id}
-              href={component.href}
-              legacyBehavior
-              passHref
+        {components.map((component) => (
+          <NavigationMenuItem key={component.id}>
+            <NavigationMenuLink
+              asChild
+              className={cn(
+                navigationMenuTriggerStyle(),
+                "hover:text-primary text-foreground/60 h-auto"
+              )}
             >
-              <NavigationMenuLink
-                className={cn(
-                  navigationMenuTriggerStyle(),
-                  "hover:text-primary text-foreground/60 h-auto"
-                )}
-              >
-                {component.title}
-              </NavigationMenuLink>
-            </Link>
-          ))}
-        </NavigationMenuItem>
+              <Link href={component.href}>{component.title}</Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        ))}
       </NavigationMenuList>
     </NavigationMenu>
   )
