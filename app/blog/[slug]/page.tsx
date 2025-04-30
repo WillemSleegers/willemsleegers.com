@@ -53,7 +53,9 @@ export default async function Page(props0: {
           <div>
             <h1 className="mb-1">{post.title}</h1>
             {post.description && (
-              <p className="mt-0 mb-0 text-muted-foreground">{post.description}</p>
+              <p className="mt-0 mb-0 text-muted-foreground">
+                {post.description}
+              </p>
             )}
           </div>
           {post.tags && post.tags.length > 0 && (
