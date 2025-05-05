@@ -103,9 +103,10 @@ update_geom_defaults("col", list(alpha = .9, linewidth = .25, fill = primary))
 update_geom_defaults("label", list(size = (base_size * .8) / .pt, color = gray))
 
 geom_label <- function(
-    ...,
-    label.size = NA,
-    label.padding = unit(.25, "lines")) {
+  ...,
+  label.size = NA,
+  label.padding = unit(.25, "lines")
+) {
   ggplot2::geom_label(
     ...,
     label.size = label.size,

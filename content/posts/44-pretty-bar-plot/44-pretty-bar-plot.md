@@ -100,7 +100,7 @@ ggplot(class_props, aes(x = class, y = prop)) +
 
 </details>
 
-![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-4-1.svg)
+![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-1-1.svg)
 
 ## Step 4: Add percentages
 
@@ -116,7 +116,7 @@ ggplot(class_props, aes(x = class, y = prop)) +
 
 </details>
 
-![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-5-1.svg)
+![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-2-1.svg)
 
 ## Step 4: Add and/or remove labels
 
@@ -133,7 +133,7 @@ ggplot(class_props, aes(x = class, y = prop)) +
 
 </details>
 
-![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-6-1.svg)
+![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-3-1.svg)
 
 <details open class="code-fold">
 <summary>Code</summary>
@@ -149,7 +149,7 @@ ggplot(class_props, aes(x = class, y = prop)) +
 
 </details>
 
-![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-7-1.svg)
+![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-4-1.svg)
 
 ## Step X: Default settings
 
@@ -168,9 +168,10 @@ update_geom_defaults("col", list(alpha = .9, linewidth = .25, fill = primary))
 update_geom_defaults("label", list(size = (base_size * .8) / .pt, color = gray))
 
 geom_label <- function(
-    ...,
-    label.size = NA,
-    label.padding = unit(.25, "lines")) {
+  ...,
+  label.size = NA,
+  label.padding = unit(.25, "lines")
+) {
   ggplot2::geom_label(
     ...,
     label.size = label.size,
@@ -184,4 +185,4 @@ ggplot(class_props, aes(x = class, y = prop)) +
 
 </details>
 
-![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-8-1.svg)
+![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-5-1.svg)
