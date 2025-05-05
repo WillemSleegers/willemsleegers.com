@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils"
 export const Navbar = () => {
   const [open, setOpen] = useState(false)
   return (
-    <header className="z-10 sticky top-0 w-full bg-background">
+    <header className="w-full bg-background">
       <div className="container flex h-14 max-w-(--breakpoint-2xl) items-center px-8">
         <div className="flex gap-8 items-baseline">
           <Logo />
