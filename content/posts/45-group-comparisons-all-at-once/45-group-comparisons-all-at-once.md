@@ -1,8 +1,8 @@
 ---
 title: Group comparisons all at once
 description: >-
-  An example of how to run multiple group comparisons all at once using a
-  multi-level model.
+  An example of how to run multiple group comparisons all at once using a single
+  regression model.
 date: 2025-05-02T00:00:00.000Z
 categories:
   - R
@@ -10,17 +10,16 @@ categories:
 knitr:
   opts_chunk:
     fig.path: ../../../public/figures/45-group-comparisons-all-at-once/
-draft: true
 ---
 
 
 On multiple occasions I’ve had to analyze data and check whether one or
-more groups differ on any of multiple outcomes. When I first had to do
-this, I analyzed this mainly by running separate regressions, one for
-each outcome, to see whether there was a difference. I then realized
-it’s probably possible to test for group differences on multiple outcome
-all in the same (multi-level) model. In this post I show how to do that
-and also check whether it’s the same as running regressions separately.
+more groups differ on any of multiple outcomes. My initial approach to
+doing this consisted of simply running separate regressions, one for
+each outcome. I then realized it’s probably possible to test for group
+differences on multiple outcome all in the same model. In this post I
+show how to do that and also check whether it’s the same as running
+regressions separately.
 
 Run the following setup code if you want to follow along. Note that it
 includes a custom `rbinary()` function that generates some binary data
@@ -69,14 +68,15 @@ rbinary <- function(p, n, shuffle = TRUE) {
 
 ## Data
 
-In order to test out whether we can look at group differences for
-multiple outcomes, we need data. Let’s imagine that we’re interested in
-assessing the proportions of multiple outcomes for different groups. In
-the code below I set some parameters such as the sample size per
-condition (`n`) and the proportion per group per outcome, and then I
-generate some data using the custom `rbinary()` function. I format the
+Say that we’re interested in assessing the proportions of multiple
+outcomes for different groups. In the code below I set some parameters
+such as the sample size per condition (`n`) and the proportion per group
+per outcome. I then generate some data using the custom `rbinary()`
+function which generates a vector of 1s and 0s with the proportion of 1s
+matching the proportion given in the function. After that, I format the
 data frame to be a long format (one outcome value per row) and do some
-housekeeping such as setting the factor levels of the outcome variable.
+housekeeping such as setting the factor levels of the outcome variable
+and converting the condition letter to upper case.
 
 <details open class="code-fold">
 <summary>Code</summary>
@@ -84,7 +84,7 @@ housekeeping such as setting the factor levels of the outcome variable.
 ``` r
 n <- 100
 prop_one_a <- 0.5
-prop_one_b <- 0.5
+prop_one_b <- 0.6
 prop_two_a <- 0.25
 prop_two_b <- 0.5
 prop_three_a <- 0.25
@@ -124,22 +124,22 @@ head(data)
 
 | outcome | condition | value |
 |:--------|:----------|------:|
-| one     | A         |     0 |
-| one     | B         |     1 |
+| one     | A         |     1 |
+| one     | B         |     0 |
 | two     | A         |     0 |
-| two     | B         |     1 |
+| two     | B         |     0 |
 | three   | A         |     0 |
-| three   | B         |     1 |
+| three   | B         |     0 |
 
 And let’s also make sure the proportions are what they are supposed to
-be (e.g., the proportion of condition A should be 0.5).
+be (e.g., the proportion of condition A in outcome ‘one’ should be 0.5).
 
 <details open class="code-fold">
 <summary>Code</summary>
 
 ``` r
 data |>
-  group_by(condition, outcome) |>
+  group_by(outcome, condition) |>
   count(value) |>
   mutate(prop = n / sum(n)) |>
   filter(value == 1)
@@ -147,19 +147,18 @@ data |>
 
 </details>
 
-| condition | outcome | value |   n | prop |
-|:----------|:--------|------:|----:|-----:|
-| A         | one     |     1 |  50 | 0.50 |
-| A         | two     |     1 |  25 | 0.25 |
-| A         | three   |     1 |  25 | 0.25 |
-| B         | one     |     1 |  50 | 0.50 |
-| B         | two     |     1 |  50 | 0.50 |
-| B         | three   |     1 |  75 | 0.75 |
+| outcome | condition | value |   n | prop |
+|:--------|:----------|------:|----:|-----:|
+| one     | A         |     1 |  50 | 0.50 |
+| one     | B         |     1 |  60 | 0.60 |
+| two     | A         |     1 |  25 | 0.25 |
+| two     | B         |     1 |  50 | 0.50 |
+| three   | A         |     1 |  25 | 0.25 |
+| three   | B         |     1 |  75 | 0.75 |
 
 That looks correct. One thing we now would like to be able to do is
-reproduce these proportions using a regression technique (i.e., a
-logistic regression) and also obtain the difference in proportion
-between the two groups, by outcome.
+obtain the differences in proportions between the two groups, by
+outcome.
 
 ## Analyzing a single outcome
 
@@ -172,11 +171,11 @@ regression.
 <summary>Code</summary>
 
 ``` r
-fit_glm <- data |>
-  filter(outcome == "two") |>
+fit_one <- data |>
+  filter(outcome == "one") |>
   glm(value ~ condition, data = _, family = binomial())
 
-summary(fit_glm)
+summary(fit_one)
 ```
 
 </details>
@@ -184,32 +183,32 @@ summary(fit_glm)
 
     Call:
     glm(formula = value ~ condition, family = binomial(), data = filter(data, 
-        outcome == "two"))
+        outcome == "one"))
 
     Coefficients:
-                Estimate Std. Error z value Pr(>|z|)    
-    (Intercept)  -1.0986     0.2309  -4.757 1.96e-06 ***
-    conditionB    1.0986     0.3055   3.596 0.000323 ***
-    ---
-    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+                  Estimate Std. Error z value Pr(>|z|)
+    (Intercept) -1.015e-15  2.000e-01   0.000    1.000
+    conditionB   4.055e-01  2.858e-01   1.419    0.156
 
     (Dispersion parameter for binomial family taken to be 1)
 
-        Null deviance: 264.63  on 199  degrees of freedom
-    Residual deviance: 251.10  on 198  degrees of freedom
-    AIC: 255.1
+        Null deviance: 275.26  on 199  degrees of freedom
+    Residual deviance: 273.23  on 198  degrees of freedom
+    AIC: 277.23
 
     Number of Fisher Scoring iterations: 4
 
-Let’s use the marginaleffects package to look at the difference between
-condition A and B for this outcome.
+We can (and should) use the
+[marginaleffects](https://marginaleffects.com) package to look at the
+difference between condition A and B for this outcome, using its
+`avg_comparisons()` function.
 
 <details open class="code-fold">
 <summary>Code</summary>
 
 ``` r
 avg_comparisons(
-  fit_glm,
+  fit_one,
   variables = "condition"
 )
 ```
@@ -217,93 +216,84 @@ avg_comparisons(
 </details>
 
 
-     Estimate Std. Error    z Pr(>|z|)    S 2.5 % 97.5 %
-         0.25     0.0661 3.78   <0.001 12.6  0.12   0.38
+     Estimate Std. Error    z Pr(>|z|)   S   2.5 % 97.5 %
+          0.1       0.07 1.43    0.153 2.7 -0.0372  0.237
 
     Term: condition
     Type:  response 
     Comparison: B - A
 
-We see a difference of 0.25, which matches our parameter values (0.5 -
-0.25 = 0.25).
+We see a difference of 0.1, which matches our parameter values (0.6 -
+0.5 = 0.1).
 
-## All at once
+## Multiple outcomes all at once
 
-Now, let’s run them all at once using a multilevel logistic regression
-model. The key is how to specify the formula.
+Now, let’s run them all at once. The key is how to specify the formula.
+Using our two variables (`outcome` and `condition`), we should use the
+following formula:
+
+    value ~ 0 + outcome + outcome:condition
+
+With this formula, we:
+
+1.  Supress the global intercept so each `outcome` gets their own
+    intercept, rather than one of the outcomes becoming the reference
+    category
+2.  Include `outcome` so they get their own intercepts
+3.  Include the interaction term `outcome:condition` so we can estimate
+    separate condition effects for each outcome
+
+The code to run the model looks as follows:
 
 <details open class="code-fold">
 <summary>Code</summary>
 
 ``` r
-fit_glmer <- glmer(
-  value ~ 0 + outcome + outcome:condition + (1 | outcome:condition),
+fit_all <- glm(
+  value ~ 0 + outcome + outcome:condition,
   data = data,
   family = binomial()
 )
+
+summary(fit_all)
 ```
 
 </details>
 
-    boundary (singular) fit: see help('isSingular')
 
-<details open class="code-fold">
-<summary>Code</summary>
+    Call:
+    glm(formula = value ~ 0 + outcome + outcome:condition, family = binomial(), 
+        data = data)
 
-``` r
-summary(fit_glmer)
-```
-
-</details>
-
-    Generalized linear mixed model fit by maximum likelihood (Laplace
-      Approximation) [glmerMod]
-     Family: binomial  ( logit )
-    Formula: value ~ 0 + outcome + outcome:condition + (1 | outcome:condition)
-       Data: data
-
-          AIC       BIC    logLik -2*log(L)  df.resid 
-        767.3     798.1    -376.6     753.3       593 
-
-    Scaled residuals: 
-        Min      1Q  Median      3Q     Max 
-    -1.7321 -1.0000 -0.5774  1.0000  1.7321 
-
-    Random effects:
-     Groups            Name        Variance Std.Dev.
-     outcome:condition (Intercept) 0        0       
-    Number of obs: 600, groups:  outcome:condition, 6
-
-    Fixed effects:
-                            Estimate Std. Error z value Pr(>|z|)    
-    outcomeone                0.0000     0.2000   0.000 1.000000    
-    outcometwo               -1.0986     0.2309  -4.757 1.96e-06 ***
-    outcomethree             -1.0986     0.2309  -4.757 1.96e-06 ***
-    outcomeone:conditionB     0.0000     0.2828   0.000 1.000000    
-    outcometwo:conditionB     1.0986     0.3055   3.596 0.000323 ***
-    outcomethree:conditionB   2.1972     0.3266   6.728 1.73e-11 ***
+    Coefficients:
+                              Estimate Std. Error z value Pr(>|z|)    
+    outcomeone              -1.554e-15  2.000e-01   0.000 1.000000    
+    outcometwo              -1.099e+00  2.309e-01  -4.757 1.96e-06 ***
+    outcomethree            -1.099e+00  2.309e-01  -4.757 1.96e-06 ***
+    outcomeone:conditionB    4.055e-01  2.858e-01   1.419 0.155948    
+    outcometwo:conditionB    1.099e+00  3.055e-01   3.596 0.000323 ***
+    outcomethree:conditionB  2.197e+00  3.266e-01   6.728 1.72e-11 ***
     ---
     Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    Correlation of Fixed Effects:
-                outcmn otcmtw otcmth otcmn:B otcmtw:B
-    outcometwo   0.000                               
-    outcomethre  0.000  0.000                        
-    otcmn:cndtB -0.707  0.000  0.000                 
-    otcmtw:cndB  0.000 -0.756  0.000  0.000          
-    otcmthr:cnB  0.000  0.000 -0.707  0.000   0.000  
-    optimizer (Nelder_Mead) convergence code: 0 (OK)
-    boundary (singular) fit: see help('isSingular')
+    (Dispersion parameter for binomial family taken to be 1)
+
+        Null deviance: 831.78  on 600  degrees of freedom
+    Residual deviance: 749.26  on 594  degrees of freedom
+    AIC: 761.26
+
+    Number of Fisher Scoring iterations: 4
 
 We can again use the marginaleffects package to obtain the differences
-between the two conditions, this time for each outcome separately:
+between the two conditions, this time for each outcome separately by
+using the `by` argument in `avg_comparisons()`.
 
 <details open class="code-fold">
 <summary>Code</summary>
 
 ``` r
 avg_comparisons(
-  fit_glmer,
+  fit_all,
   variables = "condition",
   by = "outcome",
 )
@@ -312,19 +302,36 @@ avg_comparisons(
 </details>
 
 
-     outcome Estimate Std. Error    z Pr(>|z|)    S  2.5 % 97.5 %
-       one       0.00     0.0707 0.00        1 -0.0 -0.139  0.139
-       two       0.25     0.0661 3.78   <0.001 12.6  0.120  0.380
-       three     0.50     0.0612 8.16   <0.001 51.5  0.380  0.620
+     outcome Estimate Std. Error    z Pr(>|z|)    S   2.5 % 97.5 %
+       one       0.10     0.0700 1.43    0.153  2.7 -0.0372  0.237
+       two       0.25     0.0661 3.78   <0.001 12.6  0.1204  0.380
+       three     0.50     0.0612 8.16   <0.001 51.5  0.3800  0.620
 
     Term: condition
     Type:  response 
     Comparison: B - A
 
 There we go. Now we performed three logistic regression analyses using a
-single multilevel model. Note that the results for outcome two are the
-same as for the simple logistic regression we performed earlier.
+single model. Note that the results for outcome two are the same as for
+the simple logistic regression we performed earlier.
 
 Of course, with only three outcomes this might not seem particularly
 worth it, but you can use this for a larger number of outcomes as well,
-at which point this becomes quite convenient.
+at which point this becomes quite convenient. Do note that you should
+only do this if the outcomes are similar (e.g., all binary) and that you
+should not do this with widely different types of outcomes.
+
+## Dependent outcomes
+
+In cases where the outcomes are not independent (e.g., using a
+within-subjects design), you can extend this approach using a multilevel
+model. In that case, the formula would look like:
+
+    value ~ 0 + outcome + outcome:condition + (1 | outcome:condition)
+
+## Summary
+
+It’s possible to test group differences for multiple outcomes using a
+single regression model. This means all results will be stored in a
+single model object, making it easy to extract predictions and group
+comparisons all at once.
