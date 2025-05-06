@@ -51,9 +51,9 @@ export default async function Page(props0: {
       <article>
         <div className="flex flex-col gap-4">
           <div>
-            <h1 className="mb-1">{post.title}</h1>
+            <h1 className="mb-3">{post.title}</h1>
             {post.description && (
-              <p className="mt-0 mb-0 text-muted-foreground">
+              <p className="text-muted-foreground mb-0 mt-0">
                 {post.description}
               </p>
             )}
