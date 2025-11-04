@@ -1,0 +1,77 @@
+---
+title: "Sad wild animal facts"
+description: "A collection of facts about wild animals that make me sad."
+date: 2024-03-11
+updated: 2025-01-01
+categories:
+  - wild animals
+  - wild animal suffering
+---
+
+> Let us understand, once for all, that the ethical process of society depends, not on imitating the cosmic process, still less on running away from it, but in combating it.
+
+This post serves to illustrate why I agree with the quote above from Thomas Huxley. Below I list examples of what happens in nature that I think are just horrible and that I wish we could do something about.
+
+The list is not complete and I intend to continuously update it when I encounter more sad facts.
+
+```{r}
+#| label: setup
+#| message: false
+#| echo: false
+data <- readr::read_csv("./facts.csv", na = c("", "-"))
+data <- dplyr::filter(data, include == 1)
+```
+
+```{r}
+#| label: sad-animal-fact
+#| results: asis
+#| echo: false
+classes <- data |>
+  dplyr::pull(class) |>
+  unique()
+
+for (current_class in classes) {
+  class <- dplyr::filter(data, class == current_class)
+  cat("## ")
+  cat(current_class)
+  cat("\n\n")
+
+  animals <- class |>
+    dplyr::pull(animal_name) |>
+    unique()
+
+  for (current_animal in animals) {
+    animal <- dplyr::filter(class, animal_name == current_animal)
+
+    animal_latin_name <- animal$animal_name_latin[1]
+    animal_url <- animal$animal_url[1]
+
+    cat("- [")
+    cat(current_animal)
+    cat("](")
+    cat(animal_url)
+    cat(") (")
+    cat(animal_latin_name)
+    cat(") ")
+    cat("\n\n")
+
+    for (i in 1:nrow(animal)) {
+      fact <- animal$fact[i]
+      source <- animal$source[i]
+      source_url <- animal$source_url[i]
+
+      # Add the source to the fact
+      fact <- stringr::str_replace(
+        fact,
+        pattern = ".$",
+        replacement = paste0(" ([", source, "](", source_url, ")).")
+      )
+
+      cat("    - ")
+      cat(fact)
+      cat("\n\n")
+    }
+  }
+}
+```
+

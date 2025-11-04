@@ -1,0 +1,187 @@
+---
+title: Bootstrapping
+description: "A post on how to obtain p-values through bootstrapping."
+date: 2023-12-25
+categories:
+  - statistics
+  - bootstrapping
+code-fold: show
+code-tools: true
+toc: true
+toc-depth: 2
+draft: true
+---
+
+## Setup
+
+Run the following code to get started.
+
+```{r}
+#| label: setup
+#| message: false
+library(MASS)
+library(tidyverse)
+library(infer)
+
+theme_set(theme_minimal())
+```
+
+## One sample t-test
+
+```{r}
+#| label: One sample t-test data
+# Set parameters
+M <- 1
+SD <- 5
+N <- 100
+
+# Simulate data
+samples <- mvrnorm(n = N, mu = M, Sigma = SD^2, empirical = TRUE)
+colnames(samples) <- "outcome"
+data <- as_tibble(samples)
+
+# Run one sample t-test
+t.test(data$outcome)
+```
+
+```{r}
+#| label: One sample t-test bootstrapping
+set.seed(1)
+reps <- 10000
+
+obs_mean <- mean(data$outcome)
+
+null_dist <- tibble(rep = 1:reps) |>
+  group_by(rep) |>
+  reframe(draw = sample(data$outcome, size = N, replace = TRUE)) |>
+  group_by(rep) |>
+  summarize(null_stat = mean(draw) - obs_mean)
+
+p_value <- sum(abs(null_dist$null_stat) >= obs_mean) / reps
+p_value
+```
+
+## Two sample t-test
+
+```{r}
+#| label: Two sample t-test data
+# Set parameters
+Ms <- c(1, 1.25)
+SDs <- c(1, 1)
+n <- 100
+
+# Prepare parameters
+sigma <- matrix(0, nrow = length(SDs), ncol = length(SDs))
+diag(sigma) <- SDs^2
+
+# Simulate data
+samples <- mvrnorm(n = n, mu = Ms, Sigma = sigma, empirical = TRUE)
+samples <- mvrnorm(n = n, mu = Ms, Sigma = sigma, empirical = TRUE)
+
+# Prepare data
+colnames(samples) <- c("control", "treatment")
+data <- samples |>
+  as_tibble() |>
+  pivot_longer(
+    cols = everything(),
+    names_to = "condition",
+    values_to = "outcome"
+  ) |>
+  mutate(condition = factor(condition))
+
+# Run one sample t-test
+t.test(outcome ~ condition, data = data, var.equal = TRUE)
+```
+
+```{r}
+#| label: Two sample t-test bootstrapping
+reps <- 1000
+
+draw <- function(x, size) {
+  sample <- sample(x, size = size, replace = TRUE)
+  sample
+}
+
+diff <- data |>
+  group_by(condition) |>
+  summarize(mean = mean(outcome)) |>
+  pivot_wider(names_from = condition, values_from = mean) |>
+  mutate(diff = treatment - control) |>
+  pull(diff)
+
+set.seed(1)
+
+null_dist <- crossing(rep = 1:reps, condition = c("control", "treatment")) |>
+  group_by(rep, condition) |>
+  reframe(draw = draw(data$outcome, size = 100)) |>
+  group_by(rep, condition) |>
+  summarize(mean = mean(draw), .groups = "drop") |>
+  pivot_wider(names_from = condition, values_from = mean) |>
+  mutate(null_stat = treatment - control)
+
+p_value <- sum(abs(null_dist$null_stat) >= diff) / 1000
+p_value
+```
+
+```{r}
+set.seed(1)
+reps <- 1000
+
+observed_statistic <- data %>%
+  specify(outcome ~ condition) %>%
+  calculate(stat = "diff in means", order = c("treatment", "control"))
+
+null_dist <- data |>
+  specify(outcome ~ condition) |>
+  hypothesize(null = "independence") |>
+  generate(reps = reps, type = "bootstrap") |>
+  calculate(stat = "diff in means", order = c("treatment", "control"))
+
+null_dist %>%
+  visualize() +
+  shade_p_value(observed_statistic,
+    direction = "two-sided"
+  )
+
+get_p_value(
+  null_dist,
+  obs_stat = observed_statistic,
+  direction = "two-sided"
+)
+
+set.seed(1)
+
+observed_statistic <- gss %>%
+  specify(hours ~ college) %>%
+  calculate(stat = "diff in means", order = c("degree", "no degree"))
+
+observed_statistic
+
+null_dist_2_sample_bootstrap <- gss %>%
+  specify(hours ~ college) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "bootstrap") %>%
+  calculate(stat = "diff in means", order = c("degree", "no degree"))
+
+p_value_2_sample_bootstrap <- null_dist_2_sample_bootstrap %>%
+  get_p_value(
+    obs_stat = observed_statistic,
+    direction = "two-sided"
+  )
+
+null_dist_2_sample_permute <- gss %>%
+  specify(hours ~ college) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "diff in means", order = c("degree", "no degree"))
+
+p_value_2_sample_permute <- null_dist_2_sample_permute %>%
+  get_p_value(
+    obs_stat = observed_statistic,
+    direction = "two-sided"
+  )
+
+
+p_value_2_sample_bootstrap
+p_value_2_sample_permute
+```

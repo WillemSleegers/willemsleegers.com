@@ -1,6 +1,6 @@
 ---
 title: Conferences don't seem worth it
-description: 'My take on academic conferences. They''re not effective, but they could be.'
+description: My take on academic conferences. They're not effective, but they could be.
 date: 2024-10-21T00:00:00.000Z
 tags:
   - academia
