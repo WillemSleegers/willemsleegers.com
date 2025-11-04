@@ -9,11 +9,8 @@ import "katex/dist/katex.min.css"
 import { BlockMath, InlineMath } from "@/components/math/math"
 
 import { Tag } from "@/components/post/tag"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+import { CodeBlock } from "@/components/post/code-block"
+import { CodeFold as CodeFoldComponent } from "@/components/post/code-fold"
 
 import {
   formatDate,
@@ -134,19 +131,7 @@ const CodeFold = (props: {
 
   if (className == "code-fold") {
     const pre = props.children[1]
-    return (
-      <Collapsible defaultOpen={props.open} className="not-prose">
-        <CollapsibleTrigger className="flex items-center gap-2">
-          <Triangle
-            height={10}
-            width={10}
-            className="rotate-90 in-data-[state=open]:rotate-180 transition fill-primary stroke-primary"
-          />
-          Code
-        </CollapsibleTrigger>
-        <CollapsibleContent>{pre}</CollapsibleContent>
-      </Collapsible>
-    )
+    return <CodeFoldComponent defaultOpen={props.open}>{pre}</CodeFoldComponent>
   } else return
 }
 
@@ -154,8 +139,17 @@ const Pre = async (props: PropsWithChildren) => {
   const children = props.children as ReactElement
   const code = children.props as { className?: string; children: string }
 
+  // Extract language from className, handling various formats
+  let language = "r" // default
+  if (code.className) {
+    const match = code.className.match(/lang-(\w+)/)
+    if (match) {
+      language = match[1]
+    }
+  }
+
   const html = await codeToHtml(code.children, {
-    lang: "r",
+    lang: language,
     themes: { dark: "github-dark", light: "github-light" },
     colorReplacements: {
       "github-dark": {
@@ -167,7 +161,7 @@ const Pre = async (props: PropsWithChildren) => {
     },
   })
 
-  return <div dangerouslySetInnerHTML={{ __html: html }} />
+  return <CodeBlock html={html} language={language} />
 }
 
 const Code = (props: PropsWithChildren) => {

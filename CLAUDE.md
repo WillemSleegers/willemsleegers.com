@@ -47,6 +47,12 @@ npm run quarto:preview   # Preview with Quarto
 npm run build            # Production build
 ```
 
+### Important Notes for Claude Code
+
+**DO NOT start dev servers** - The user manages their own dev server.
+
+**Multiple Dev Servers Issue**: If the user reports that changes aren't appearing in the browser, check for multiple dev servers running on port 3000 using `lsof -ti:3000`. If multiple PIDs are returned, kill them all with `lsof -ti:3000 | xargs kill -9` so the user can restart cleanly.
+
 ## Project Structure
 
 ```

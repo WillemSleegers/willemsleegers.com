@@ -3,10 +3,10 @@
 ## High Priority - Blog Post Rendering
 
 ### Markdown Rendering Improvements
-- [ ] **Replace markdown-to-jsx with react-markdown + remark/rehype plugins**
-  - Current: Custom overrides with markdown-to-jsx (less flexible)
-  - Better: react-markdown ecosystem for more robust plugin support
-  - Benefits: Better AST manipulation, easier customization, better maintained
+- [x] **Keep markdown-to-jsx** (Decision: Recent updates, works well for our use case)
+  - Current implementation is optimal for Quarto → Markdown → JSX workflow
+  - Simple override system handles all needs without heavy plugin ecosystem
+  - Better performance than react-markdown for our use case
 
 - [ ] **Implement proper code block component with shadcn styling**
   - Current: Pre-styled HTML from Shiki without interactive features
