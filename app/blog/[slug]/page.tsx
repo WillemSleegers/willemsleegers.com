@@ -206,11 +206,11 @@ const MarkdownImage = (props: {
 
   return (
     <Image
-      src={JSON.parse(
-        JSON.stringify(require("/public/figures/" + slug + "/" + fileName))
-      )}
+      src={`/figures/${slug}/${fileName}`}
       className="rounded mx-auto my-4"
       alt="test"
+      width={800}
+      height={600}
     />
   )
 }

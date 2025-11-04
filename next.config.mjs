@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    reactCompiler: true,
+    turbopack: {
+        rules: {
+            '*.csv': {
+                loaders: ['csv-loader'],
+                as: '*.js',
+            },
+        },
+    },
     webpack: (config) => {
         config.module.rules.push({
             test: /\.csv$/,
