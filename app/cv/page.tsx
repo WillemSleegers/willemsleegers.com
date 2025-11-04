@@ -1,6 +1,6 @@
 import { Metadata } from "next"
 
-import data from "@/assets/data/cv.csv"
+import data from "@/assets/data/cv.json"
 import { ContactIcons } from "@/components/contact-icons"
 
 export const metadata: Metadata = {
@@ -18,41 +18,42 @@ export default async function CVPage() {
 
       <h3>Currently</h3>
       <p>
-        I’m a Senior Behavioral Scientist at Rethink Priorities. As part of the
-        survey and data analysis team, I conduct research on attitude
-        assessments and attitude change, using surveys and experimental designs.
-        Before joining Rethink Priorities, I was an assistant professor in the
-        Department of Social Psychology at Tilburg University, where I maintain
-        an academic affiliation.
+        I'm a Methodologist at Statistics Netherlands. Statistics Netherlands is the national statistical office of the Netherlands,
+        responsible for collecting, processing, and publishing statistical information
+        about Dutch society. As a methodologist, I design and evaluate surveys, through desk research and user tests.
+      </p>
+      <p>
+        I maintain an affiliation with Tilburg University as an Affiliated Researcher. I continue to be involved in several
+        academic projects and still do the things that academics do (e.g., publish
+        papers, present at conferences).
+      </p>
+      <p>
+        Previously, I was a Senior Behavioral Scientist at Rethink Priorities
+        and an assistant professor in the Department of Social Psychology at
+        Tilburg University.
       </p>
 
       <h3>Employment</h3>
       <table>
         <tbody>
-          {data
-            .filter((d) => d.section == "Employment")
-            .filter((d) => d.include)
-            .map((d, i) => (
-              <tr key={d.section.toLowerCase() + "-" + i}>
-                <td className="whitespace-nowrap">{d.year}</td>
-                <td>{d.content}</td>
-              </tr>
-            ))}
+          {data.Employment?.default?.map((d, i) => (
+            <tr key={"employment-" + i}>
+              <td className="whitespace-nowrap">{d.year}</td>
+              <td>{d.content}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
       <h3>Education</h3>
       <table>
         <tbody>
-          {data
-            .filter((d) => d.section == "Education")
-            .filter((d) => d.include)
-            .map((d, i) => (
-              <tr key={d.section.toLowerCase() + "-" + i}>
-                <td className="whitespace-nowrap">{d.year}</td>
-                <td>{d.content}</td>
-              </tr>
-            ))}
+          {data.Education?.default?.map((d, i) => (
+            <tr key={"education-" + i}>
+              <td className="whitespace-nowrap">{d.year}</td>
+              <td>{d.content}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
@@ -60,185 +61,112 @@ export default async function CVPage() {
 
       <h4>Research</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Skills")
-          .filter((d) => d.subsection == "Research")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Skills?.Research?.map((d, i) => (
+          <li key={"skills-research-" + i}>{d.content}</li>
+        ))}
       </ul>
 
       <h4>Statistics</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Skills")
-          .filter((d) => d.subsection == "Statistics")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Skills?.Statistics?.map((d, i) => (
+          <li key={"skills-statistics-" + i}>{d.content}</li>
+        ))}
       </ul>
 
       <h4>Software</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Skills")
-          .filter((d) => d.subsection == "Software")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Skills?.Software?.map((d, i) => (
+          <li key={"skills-software-" + i}>{d.content}</li>
+        ))}
       </ul>
 
       <h4>Programming</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Skills")
-          .filter((d) => d.subsection == "Programming")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Skills?.Programming?.map((d, i) => (
+          <li key={"skills-programming-" + i}>{d.content}</li>
+        ))}
       </ul>
 
       <h4>Survey platforms</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Skills")
-          .filter((d) => d.subsection == "Survey platforms")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Skills?.["Survey platforms"]?.map((d, i) => (
+          <li key={"skills-survey-" + i}>{d.content}</li>
+        ))}
       </ul>
 
       <h3>Publications</h3>
       <h4>Preprints</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Publications")
-          .filter((d) => d.subsection == "Preprints")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Publications?.Preprints?.map((d, i) => (
+          <li key={"publications-preprints-" + i}>{d.content}</li>
+        ))}
       </ul>
       <h4>Peer-reviewed journals</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Publications")
-          .filter((d) => d.subsection == "Peer-reviewed journals")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Publications?.["Peer-reviewed journals"]?.map((d, i) => (
+          <li key={"publications-journals-" + i}>{d.content}</li>
+        ))}
       </ul>
 
       <h4>Book chapters</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Publications")
-          .filter((d) => d.subsection == "Book chapters")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
-      </ul>
-
-      <h4>Book chapters</h4>
-      <ul>
-        {data
-          .filter((d) => d.section == "Publications")
-          .filter((d) => d.subsection == "Book chapters")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Publications?.["Book chapters"]?.map((d, i) => (
+          <li key={"publications-books-" + i}>{d.content}</li>
+        ))}
       </ul>
 
       <h4>Dissertation</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Publications")
-          .filter((d) => d.subsection == "Dissertation")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Publications?.Dissertation?.map((d, i) => (
+          <li key={"publications-dissertation-" + i}>{d.content}</li>
+        ))}
       </ul>
 
       <h4>Software</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Publications")
-          .filter((d) => d.subsection == "Software")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Publications?.Software?.map((d, i) => (
+          <li key={"publications-software-" + i}>{d.content}</li>
+        ))}
       </ul>
 
       <h3>Presentations</h3>
       <h4>Invited talks</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Presentations")
-          .filter((d) => d.subsection == "Invited talks")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Presentations?.["Invited talks"]?.map((d, i) => (
+          <li key={"presentations-invited-" + i}>{d.content}</li>
+        ))}
       </ul>
       <h4>Conference presentations</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Presentations")
-          .filter((d) => d.subsection == "Conference presentations")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Presentations?.["Conference presentations"]?.map((d, i) => (
+          <li key={"presentations-conference-" + i}>{d.content}</li>
+        ))}
       </ul>
       <h4>Small meetings</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Presentations")
-          .filter((d) => d.subsection == "Small meetings")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Presentations?.["Small meetings"]?.map((d, i) => (
+          <li key={"presentations-small-" + i}>{d.content}</li>
+        ))}
       </ul>
       <h4>Poster presentations</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Presentations")
-          .filter((d) => d.subsection == "Poster presentations")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Presentations?.["Poster presentations"]?.map((d, i) => (
+          <li key={"presentations-poster-" + i}>{d.content}</li>
+        ))}
       </ul>
       <h4>Valorization presentations</h4>
       <ul>
-        {data
-          .filter((d) => d.section == "Presentations")
-          .filter((d) => d.subsection == "Valorization presentations")
-          .filter((d) => d.include)
-          .map((d, i) => (
-            <li key={d.section.toLowerCase() + "-" + i}>{d.content}</li>
-          ))}
+        {data.Presentations?.["Valorization presentations"]?.map((d, i) => (
+          <li key={"presentations-valorization-" + i}>{d.content}</li>
+        ))}
       </ul>
 
       <h3>Journals</h3>
       <p>
         I have reviewed for{" "}
-        {data
-          .filter((d) => d.section == "Journals")
-          .map((d, i, j) =>
-            i == j.length - 1 ? "and " + d.content + "." : d.content + ", "
-          )}
+        {data.Journals?.default?.map((d, i, arr) =>
+          i == arr.length - 1 ? "and " + d.content + "." : d.content + ", "
+        )}
       </p>
       <p>
         I'm a consulting editor for the Psychology of Human-Animal Intergroup
@@ -250,96 +178,72 @@ export default async function CVPage() {
       <h4>Courses</h4>
       <table>
         <tbody>
-          {data
-            .filter((d) => d.section == "Teaching")
-            .filter((d) => d.subsection == "Courses")
-            .filter((d) => d.include)
-            .map((d, i) => (
-              <tr key={d.section.toLowerCase() + "-" + i}>
-                <td className="whitespace-nowrap">{d.year}</td>
-                <td>{d.content}</td>
-              </tr>
-            ))}
+          {data.Teaching?.Courses?.map((d, i) => (
+            <tr key={"teaching-courses-" + i}>
+              <td className="whitespace-nowrap">{d.year}</td>
+              <td>{d.content}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
       <h4>Seminars</h4>
       <table>
         <tbody>
-          {data
-            .filter((d) => d.section == "Teaching")
-            .filter((d) => d.subsection == "Seminars")
-            .filter((d) => d.include)
-            .map((d, i) => (
-              <tr key={d.section.toLowerCase() + "-" + i}>
-                <td className="whitespace-nowrap">{d.year}</td>
-                <td>{d.content}</td>
-              </tr>
-            ))}
+          {data.Teaching?.Seminars?.map((d, i) => (
+            <tr key={"teaching-seminars-" + i}>
+              <td className="whitespace-nowrap">{d.year}</td>
+              <td>{d.content}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
       <h4>Individual lectures</h4>
       <table>
         <tbody>
-          {data
-            .filter((d) => d.section == "Teaching")
-            .filter((d) => d.subsection == "Individual lectures")
-            .filter((d) => d.include)
-            .map((d, i) => (
-              <tr key={d.section.toLowerCase() + "-" + i}>
-                <td className="whitespace-nowrap">{d.year}</td>
-                <td>{d.content}</td>
-              </tr>
-            ))}
+          {data.Teaching?.["Individual lectures"]?.map((d, i) => (
+            <tr key={"teaching-lectures-" + i}>
+              <td className="whitespace-nowrap">{d.year}</td>
+              <td>{d.content}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
       <h4>Supervision</h4>
       <table>
         <tbody>
-          {data
-            .filter((d) => d.section == "Teaching")
-            .filter((d) => d.subsection == "Supervision")
-            .filter((d) => d.include)
-            .map((d, i) => (
-              <tr key={d.section.toLowerCase() + "-" + i}>
-                <td className="whitespace-nowrap">{d.year}</td>
-                <td>{d.content}</td>
-              </tr>
-            ))}
+          {data.Teaching?.Supervision?.map((d, i) => (
+            <tr key={"teaching-supervision-" + i}>
+              <td className="whitespace-nowrap">{d.year}</td>
+              <td>{d.content}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
       <h4>Coordination</h4>
       <table>
         <tbody>
-          {data
-            .filter((d) => d.section == "Teaching")
-            .filter((d) => d.subsection == "Coordination")
-            .filter((d) => d.include)
-            .map((d, i) => (
-              <tr key={d.section.toLowerCase() + "-" + i}>
-                <td className="whitespace-nowrap">{d.year}</td>
-                <td>{d.content}</td>
-              </tr>
-            ))}
+          {data.Teaching?.Coordination?.map((d, i) => (
+            <tr key={"teaching-coordination-" + i}>
+              <td className="whitespace-nowrap">{d.year}</td>
+              <td>{d.content}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
       <h4>Other</h4>
       <table>
         <tbody>
-          {data
-            .filter((d) => d.section == "Teaching")
-            .filter((d) => d.subsection == "Other")
-            .filter((d) => d.include)
-            .map((d, i) => (
-              <tr key={d.section.toLowerCase() + "-" + i}>
-                <td className="whitespace-nowrap">{d.year}</td>
-                <td>{d.content}</td>
-              </tr>
-            ))}
+          {data.Teaching?.Other?.map((d, i) => (
+            <tr key={"teaching-other-" + i}>
+              <td className="whitespace-nowrap">{d.year}</td>
+              <td>{d.content}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

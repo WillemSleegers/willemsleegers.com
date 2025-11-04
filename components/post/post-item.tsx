@@ -22,13 +22,13 @@ export function PostItem({
   tags,
 }: PostItemProps) {
   return (
-    <article className="flex flex-col gap-2 py-3">
+    <article className="flex flex-col gap-1 py-3 sm:py-4 md:py-5">
       <div>
         <h2 className="text-2xl font-bold">
           <Link href={"/blog/" + slug}>{title}</Link>
         </h2>
       </div>
-      <div className="flex gap-2 my-1">
+      <div className="flex gap-2">
         {tags?.map((tag) => (
           <Tag tag={tag} key={tag} />
         ))}

@@ -10,22 +10,22 @@ import { posts } from "#site/content"
 const HomePage = () => {
   return (
     <main className="space-y-16 my-16 sm:my-24 md:my-32 lg:my-40 xl:my-48 sm:space-y-24 md:space-y-32 lg:space-y-40 xl:space-y-48 p-2">
-      <section className="space-y-2 sm:space-y-4 md:space-y-6 lg:space-y-8 text-center">
+      <section className="space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-10 xl:space-y-12 text-center">
         <Hero />
       </section>
 
-      <section className="container max-w-3xl flex flex-col space-y-16">
+      <section className="container max-w-3xl flex flex-col space-y-8 sm:space-y-12 md:space-y-16 lg:space-y-20 xl:space-y-24">
         <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-center">
           Projects
         </h2>
         <Projects />
       </section>
 
-      <section className="container max-w-3xl flex flex-col space-y-16">
+      <section className="container max-w-3xl flex flex-col space-y-8 sm:space-y-12 md:space-y-16 lg:space-y-20 xl:space-y-24">
         <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-center">
           Latest Posts
         </h2>
-        <ul className="flex flex-col space-y-8">
+        <ul className="flex flex-col space-y-4">
           {posts
             .filter((post) => {
               if (

@@ -33,21 +33,6 @@
   - File: Create `components/post/callout.tsx`
 
 ### Post Metadata & Navigation
-- [ ] **Add estimated reading time to posts**
-  - Calculate: Word count / 200 WPM
-  - Display: In post header and post preview cards
-  - File: Update `lib/posts.ts` and `components/post/post-item.tsx`
-
-- [ ] **Implement "Related Posts" section**
-  - Algorithm: Shared tags weighted by recency
-  - Display: 3-4 related posts at bottom of post page
-  - Use: Existing PostItem component in grid layout
-  - File: Update `app/blog/[slug]/page.tsx`
-
-- [ ] **Add breadcrumb navigation to post pages**
-  - Path: Home > Blog > [Post Title]
-  - Use: shadcn Breadcrumb component (needs creation)
-  - File: Create `components/ui/breadcrumb.tsx`, add to post layout
 
 - [ ] **Improve post metadata display**
   - Current: Simple text display
