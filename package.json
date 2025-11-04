@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "velite": "velite dev",
-    "dev": "next dev",
+    "quarto:render": "quarto render content/posts",
+    "quarto:preview": "quarto preview content/posts --no-browser --no-watch-inputs",
+    "dev": "npm run velite & next dev",
     "build": "velite && next build",
     "start": "next start",
     "lint": "next lint"
@@ -19,6 +21,7 @@
     "class-variance-authority": "^0.7",
     "clsx": "^2.1",
     "github-slugger": "^2.0",
+    "gray-matter": "^4.0.3",
     "katex": "^0.16",
     "lucide-react": "^0",
     "markdown-to-jsx": "^8.0",
