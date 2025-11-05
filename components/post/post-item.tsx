@@ -1,5 +1,4 @@
 import Link from "next/link"
-import { Calendar } from "lucide-react"
 
 import { Tag } from "@/components/post/tag"
 import { buttonVariants } from "@/components/ui/button"
@@ -37,8 +36,7 @@ export function PostItem({
       <div className="flex justify-between items-center">
         <dl>
           <dt className="sr-only">Published On</dt>
-          <dd className="text-sm font-medium flex items-center gap-1">
-            <Calendar className="h-4 w-4" />
+          <dd className="text-sm font-medium">
             <time dateTime={date}>{formatDate(date)}</time>
           </dd>
         </dl>

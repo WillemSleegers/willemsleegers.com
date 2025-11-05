@@ -53,7 +53,7 @@ export default async function Page(props0: {
         )}
         <div className="xl:max-w-3xl xl:order-1">
           <article className="prose dark:prose-invert">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 mb-8">
           <div>
             <h1 className="mb-3">{post.title}</h1>
             {post.description && (
@@ -70,32 +70,19 @@ export default async function Page(props0: {
             </div>
           )}
           {post.date && (
-            <div className="not-prose flex flex-row gap-4 text-sm">
+            <div className="not-prose text-sm flex gap-4">
               <div>
-                <span>Published</span>
-                <dl>
-                  <dt className="sr-only">Published On</dt>
-                  <dd className="text-sm font-medium flex items-center gap-1">
-                    <time dateTime={post.date}>{formatDate(post.date)}</time>
-                  </dd>
-                </dl>
+                <div className="text-muted-foreground">Published</div>
+                <time dateTime={post.date}>{formatDate(post.date)}</time>
               </div>
               {post.updated && (
                 <div>
-                  <span>Last updated</span>
-                  <dl>
-                    <dt className="sr-only">Last Updated</dt>
-                    <dd className="text-sm font-medium flex items-center gap-1">
-                      <time dateTime={post.updated}>
-                        {formatDate(post.updated)}
-                      </time>
-                    </dd>
-                  </dl>
+                  <div className="text-muted-foreground">Last updated</div>
+                  <time dateTime={post.updated}>{formatDate(post.updated)}</time>
                 </div>
               )}
             </div>
           )}
-          <hr className="mt-2 mb-0" />
         </div>
         <Markdown
           options={{
