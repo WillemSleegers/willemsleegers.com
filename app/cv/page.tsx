@@ -164,7 +164,7 @@ export default async function CVPage() {
       <h3>Journals</h3>
       <p>
         I have reviewed for{" "}
-        {data.Journals?.default?.map((d, i, arr) =>
+        {data.Journals?.Reviewer?.map((d, i, arr) =>
           i == arr.length - 1 ? "and " + d.content + "." : d.content + ", "
         )}
       </p>
