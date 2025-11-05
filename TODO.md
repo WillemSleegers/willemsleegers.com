@@ -19,12 +19,13 @@
   - Files: `lib/markdown/reconstruction.ts`, `lib/markdown/transforms.ts`
   - Impact: Could improve performance and simplify rendering pipeline
 
-- [ ] **Implement proper code block component with shadcn styling**
+- [x] **Implement proper code block component with shadcn styling**
 
-  - Current: Pre-styled HTML from Shiki without interactive features
-  - Add: Copy-to-clipboard button, language badge, line highlighting
-  - Use: shadcn/ui Button + Tooltip for copy functionality
-  - File: Create `components/post/code-block.tsx`
+  - Created: `components/post/code-block.tsx` with interactive features
+  - Added: Copy-to-clipboard button with tooltip
+  - Added: Language badge that appears on hover
+  - Uses: shadcn/ui Button + Tooltip components
+  - Integrated: With Shiki syntax highlighting
 
 - [x] **Add table of contents component for long posts**
 
@@ -38,7 +39,6 @@
 
   - Add: Image captions from alt text or figure attributes
   - Add: Lightbox/zoom functionality for images
-  - Add: Loading skeletons with shadcn Skeleton
   - File: Enhance `components/post/markdown-image.tsx`
 
 - [ ] **Add callout/admonition components**
@@ -60,9 +60,9 @@
 
 - [ ] **Audit and replace custom components with shadcn equivalents**
 
-  - Current custom: hero.tsx, projects.tsx, contact-icons.tsx
+  - Current custom: hero.tsx, projects-list.tsx, contact-icons.tsx
   - Evaluate: Which can use shadcn Card, Button, Badge variants
-  - File: `components/hero.tsx`, `components/projects.tsx`
+  - File: `components/layout/hero.tsx`, `components/projects/projects-list.tsx`
 
 - [ ] **Add shadcn Separator component**
 
@@ -129,34 +129,40 @@
 
 ### Type Safety & Architecture
 
-- [ ] **Add explicit types for post metadata**
+- [x] **Add explicit types for post metadata**
 
-  - Current: Implicit types from Velite schema
-  - Create: Explicit TypeScript interfaces in `lib/types.ts`
-  - Use: Throughout app for better type checking
+  - Created: `lib/types.ts` with Post type inferred from Velite using typeof
+  - Added: TagCounts type for consistent tag handling
+  - Used: Throughout app for better type checking
 
 - [ ] **Extract repeated Tailwind classes to component variants**
 
   - Use: CVA more extensively for container, heading, text variants
   - File: Create `lib/component-variants.ts`
 
-- [ ] **Refactor post rendering logic**
-  - Extract: Markdown processing utilities to separate file
-  - Create: Reusable markdown renderer hook
-  - File: Create `lib/markdown-renderer.tsx`
+- [x] **Refactor post rendering logic**
+  - Extracted: Markdown processing utilities to `lib/markdown/` directory
+  - Created: `lib/markdown/reconstruction.ts` for KaTeX support
+  - Created: `lib/markdown/transforms.ts` for HTML class conversion
+  - Split: `lib/utils.ts` from 103 lines to 15 lines
 
 ### Code Organization
 
-- [ ] **Reorganize components directory**
+- [x] **Reorganize components directory**
 
-  - Current: Mixed flat and nested structure
-  - Group: ui/ (shadcn), blog/ (post-related), layout/ (nav, footer)
-  - File: Restructure `components/` directory
+  - Restructured with proper subdirectories:
+    - `components/layout/` (hero, footer, contact-icons)
+    - `components/navigation/` (hamburger-button, nav-bar, etc.)
+    - `components/post/` (all blog post components)
+    - `components/projects/` (projects-list)
+    - `components/theme/` (mode-toggle, theme-provider)
+    - `components/ui/` (shadcn components)
 
-- [ ] **Create shared constants file**
+- [x] **Create shared constants file**
 
-  - Extract: Magic numbers (pagination size, excerpt length, etc.)
-  - File: Create `lib/constants.ts`
+  - Created: `lib/constants.ts`
+  - Extracted: Pagination size, routes, Shiki config, image defaults, layout classes
+  - Used: Across 9+ files for consistent configuration
 
 - [ ] **Add component documentation**
   - Format: JSDoc comments with prop descriptions
@@ -169,16 +175,6 @@
   - Use: Native browser view transitions for page navigation
   - Fallback: For browsers without support
   - File: Update `app/layout.tsx`
-
-- [ ] **Optimize image loading strategy**
-
-  - Review: Next.js Image priority and loading attributes
-  - Add: Blur placeholders for post images
-  - File: Update `components/post/markdown-image.tsx`
-
-- [ ] **Add suspense boundaries for post content**
-  - Use: React Suspense with loading skeletons
-  - File: Update `app/blog/[slug]/page.tsx`
 
 ## Low Priority - Features & Enhancements
 
@@ -200,11 +196,6 @@
   - UI: Series navigation in post header
   - File: Update Velite schema, create series component
 
-- [ ] **Add post reactions/feedback**
-  - Simple: Emoji reactions (👍/💡/❤️)
-  - Storage: Client-side only or integrate with service
-  - File: Create `components/post/reactions.tsx`
-
 ### Analytics & SEO
 
 - [ ] **Add structured data for blog posts**
@@ -222,25 +213,6 @@
   - Track: Page views, popular posts, tag usage
   - File: Update `app/layout.tsx`
 
-### Developer Experience
-
-- [ ] **Add ESLint and Prettier configurations**
-
-  - Ensure: Consistent code formatting
-  - Add: Pre-commit hooks with husky + lint-staged
-  - File: Create `.eslintrc.js`, `.prettierrc`
-
-- [ ] **Create component templates/generators**
-
-  - Tool: Plop.js for scaffolding new components
-  - Templates: shadcn component, blog post, page
-  - File: Create `plopfile.js`
-
-- [ ] **Add unit tests for utilities**
-  - Framework: Vitest or Jest
-  - Coverage: Post sorting, date formatting, slug generation
-  - File: Create `lib/__tests__/` directory
-
 ### Accessibility
 
 - [ ] **Audit with axe DevTools**
@@ -256,11 +228,3 @@
 - [ ] **Improve focus indicators**
   - Ensure: Visible focus rings on all interactive elements
   - Use: Tailwind focus utilities consistently
-
-## Notes
-
-- **Priority**: Focus on blog post rendering improvements first (biggest UX impact)
-- **shadcn**: Gradually migrate to shadcn components for consistency
-- **Testing**: Test all changes on mobile devices (responsive design critical)
-- **Performance**: Monitor build times and bundle size as features are added
-- **Accessibility**: Keep WCAG AA compliance as minimum standard
