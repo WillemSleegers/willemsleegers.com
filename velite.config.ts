@@ -89,6 +89,7 @@ const posts = defineCollection({
       updated: s.isodate().optional(),
       tags: s.array(s.string()).optional(),
       draft: s.boolean().optional(),
+      toc: s.boolean().optional().default(false),
       content: s.raw(), // Keep content as raw markdown
     })
     .transform(computedFields),

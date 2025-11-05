@@ -11,6 +11,7 @@ import { BlockMath, InlineMath } from "@/components/math/math"
 import { Tag } from "@/components/post/tag"
 import { CodeBlock } from "@/components/post/code-block"
 import { CodeFold as CodeFoldComponent } from "@/components/post/code-fold"
+import { TableOfContents } from "@/components/post/table-of-contents"
 
 import {
   formatDate,
@@ -44,9 +45,16 @@ export default async function Page(props0: {
   const content = replaceClassWithClassName(post.content)
 
   return (
-    <main className="prose dark:prose-invert container max-w-3xl mx-auto p-6">
-      <article>
-        <div className="flex flex-col gap-4">
+    <main className="p-6">
+      <div className="mx-auto max-w-prose xl:max-w-none flex flex-col xl:flex-row xl:gap-8 xl:justify-center">
+        {post.toc !== false && (
+          <div className="mb-6 xl:mb-0 xl:w-64 xl:flex-shrink-0 xl:order-2">
+            <TableOfContents content={content} />
+          </div>
+        )}
+        <div className="xl:max-w-3xl xl:order-1">
+          <article className="prose dark:prose-invert">
+          <div className="flex flex-col gap-4">
           <div>
             <h1 className="mb-3">{post.title}</h1>
             {post.description && (
@@ -117,7 +125,9 @@ export default async function Page(props0: {
         >
           {content}
         </Markdown>
-      </article>
+          </article>
+        </div>
+      </div>
     </main>
   )
 }

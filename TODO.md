@@ -14,11 +14,12 @@
   - Use: shadcn/ui Button + Tooltip for copy functionality
   - File: Create `components/post/code-block.tsx`
 
-- [ ] **Add table of contents component for long posts**
+- [x] **Add table of contents component for long posts**
   - Generate TOC from markdown headings (h2, h3)
-  - Sticky sidebar on desktop, collapsible on mobile
-  - Use: shadcn Collapsible + ScrollArea
-  - File: Create `components/post/table-of-contents.tsx`
+  - Sticky sidebar on desktop, shows at top on mobile
+  - Respects Quarto `toc: false` frontmatter setting
+  - File: `components/post/table-of-contents.tsx`
+  - **Future enhancement**: Support additional Quarto TOC settings (`toc-depth`, `toc-title`, `toc-location`)
 
 - [ ] **Improve image handling in blog posts**
   - Add: Image captions from alt text or figure attributes

@@ -53,6 +53,16 @@ npm run build            # Production build
 
 **Multiple Dev Servers Issue**: If the user reports that changes aren't appearing in the browser, check for multiple dev servers running on port 3000 using `lsof -ti:3000`. If multiple PIDs are returned, kill them all with `lsof -ti:3000 | xargs kill -9` so the user can restart cleanly.
 
+**Working Systematically on Complex Changes**: Any non-trivial task (layout, refactoring, multi-file changes, etc.) requires a systematic approach to avoid scattered, incremental edits that compound confusion. Always follow this process:
+1. Use TodoWrite to track multi-step tasks - no exceptions
+2. Read and document current state of ALL affected files
+3. Write desired behavior in plain English
+4. Design the complete solution before coding
+5. Implement in ONE coherent edit per file
+6. Verify the result
+
+**Updating CLAUDE.md**: When you discover important patterns, gotchas, or workflow improvements during a session, proactively suggest adding them to this file. Future Claude sessions will benefit from documented lessons learned.
+
 ## Project Structure
 
 ```
