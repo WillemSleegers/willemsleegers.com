@@ -1,8 +1,8 @@
 import Link from "next/link"
 
-import { Hero } from "@/components/hero"
+import { Hero } from "@/components/layout/hero"
 import { Button } from "@/components/ui/button"
-import { Projects } from "@/components/projects"
+import { Projects } from "@/components/projects/projects-list"
 import { PostItem } from "@/components/post/post-item"
 
 import { posts } from "#site/content"
@@ -57,7 +57,7 @@ const HomePage = () => {
             })}
         </ul>
         <Button asChild className="w-fit mx-auto">
-          <Link href="/blog/">Older posts</Link>
+          <Link href="/blog">Older posts</Link>
         </Button>
       </section>
     </main>

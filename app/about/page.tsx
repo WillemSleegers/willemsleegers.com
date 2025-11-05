@@ -2,7 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Metadata } from "next"
 
-import { ContactIcons } from "@/components/contact-icons"
+import { ContactIcons } from "@/components/layout/contact-icons"
 
 import { siteConfig } from "@/config/site"
 

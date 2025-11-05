@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 
 import data from "@/assets/data/cv.json"
-import { ContactIcons } from "@/components/contact-icons"
+import { ContactIcons } from "@/components/layout/contact-icons"
 
 export const metadata: Metadata = {
   title: "CV",

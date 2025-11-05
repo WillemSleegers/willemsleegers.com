@@ -13,11 +13,10 @@ import { CodeBlock } from "@/components/post/code-block"
 import { CodeFold as CodeFoldComponent } from "@/components/post/code-fold"
 import { TableOfContents } from "@/components/post/table-of-contents"
 
-import {
-  formatDate,
-  reconstructMarkdown,
-  replaceClassWithClassName,
-} from "@/lib/utils"
+import { SHIKI_CONFIG, IMAGE_DEFAULTS } from "@/lib/constants"
+import { formatDate } from "@/lib/utils"
+import { reconstructMarkdown } from "@/lib/markdown/reconstruction"
+import { replaceClassWithClassName } from "@/lib/markdown/transforms"
 import { Triangle } from "lucide-react"
 
 import { posts } from "#site/content"
@@ -160,15 +159,8 @@ const Pre = async (props: PropsWithChildren) => {
 
   const html = await codeToHtml(code.children, {
     lang: language,
-    themes: { dark: "github-dark", light: "github-light" },
-    colorReplacements: {
-      "github-dark": {
-        "#1f1f1f": "#1f2937",
-      },
-      "github-light": {
-        "#fff": "#f3f4f6",
-      },
-    },
+    themes: SHIKI_CONFIG.themes,
+    colorReplacements: SHIKI_CONFIG.colorReplacements,
   })
 
   return <CodeBlock html={html} language={language} />
@@ -213,8 +205,8 @@ const MarkdownImage = (props: {
       src={`/figures/${slug}/${fileName}`}
       className="rounded mx-auto my-4"
       alt="test"
-      width={800}
-      height={600}
+      width={IMAGE_DEFAULTS.POST_WIDTH}
+      height={IMAGE_DEFAULTS.POST_HEIGHT}
     />
   )
 }

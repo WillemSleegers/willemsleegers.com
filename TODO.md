@@ -3,18 +3,31 @@
 ## High Priority - Blog Post Rendering
 
 ### Markdown Rendering Improvements
+
 - [x] **Keep markdown-to-jsx** (Decision: Recent updates, works well for our use case)
+
   - Current implementation is optimal for Quarto → Markdown → JSX workflow
   - Simple override system handles all needs without heavy plugin ecosystem
   - Better performance than react-markdown for our use case
 
+- [ ] **Investigate markdown processing inefficiencies**
+
+  - Current: Runtime `replaceClassWithClassName()` converts Quarto's `class=` to `className=`
+  - Current: `reconstructMarkdown()` converts React elements back to markdown strings for KaTeX
+  - Consider: Processing `class` → `className` during Velite build step instead of runtime
+  - Consider: Alternative math rendering that doesn't require markdown reconstruction
+  - Files: `lib/markdown/reconstruction.ts`, `lib/markdown/transforms.ts`
+  - Impact: Could improve performance and simplify rendering pipeline
+
 - [ ] **Implement proper code block component with shadcn styling**
+
   - Current: Pre-styled HTML from Shiki without interactive features
   - Add: Copy-to-clipboard button, language badge, line highlighting
   - Use: shadcn/ui Button + Tooltip for copy functionality
   - File: Create `components/post/code-block.tsx`
 
 - [x] **Add table of contents component for long posts**
+
   - Generate TOC from markdown headings (h2, h3)
   - Sticky sidebar on desktop, shows at top on mobile
   - Respects Quarto `toc: false` frontmatter setting
@@ -22,6 +35,7 @@
   - **Future enhancement**: Support additional Quarto TOC settings (`toc-depth`, `toc-title`, `toc-location`)
 
 - [ ] **Improve image handling in blog posts**
+
   - Add: Image captions from alt text or figure attributes
   - Add: Lightbox/zoom functionality for images
   - Add: Loading skeletons with shadcn Skeleton
@@ -37,32 +51,32 @@
 
 - [ ] **Improve post metadata display**
   - Current: Simple text display
-  - Add: Icons from lucide-react (Calendar, Clock, Tag)
   - Use: shadcn Badge for tags with hover effects
   - File: Update `app/blog/[slug]/page.tsx`
 
 ## High Priority - UI/UX Improvements
 
 ### Component Migration to shadcn
+
 - [ ] **Audit and replace custom components with shadcn equivalents**
+
   - Current custom: hero.tsx, projects.tsx, contact-icons.tsx
   - Evaluate: Which can use shadcn Card, Button, Badge variants
   - File: `components/hero.tsx`, `components/projects.tsx`
 
 - [ ] **Add shadcn Separator component**
+
   - Replace: Custom dividers and borders throughout site
   - Use: Consistent separator styling
   - File: Create `components/ui/separator.tsx`
 
-- [ ] **Add shadcn Skeleton component**
-  - Use: Loading states for images, post previews
-  - File: Create `components/ui/skeleton.tsx`
-
 - [ ] **Add shadcn Tooltip component**
+
   - Use: Social media icons, action buttons, code blocks
   - File: Create `components/ui/tooltip.tsx`
 
 - [ ] **Implement shadcn Dialog component**
+
   - Use: Image lightbox, full post preview modal
   - File: Create `components/ui/dialog.tsx`
 
@@ -71,12 +85,15 @@
   - File: Create `components/ui/input.tsx`, `components/ui/textarea.tsx`
 
 ### Navigation Improvements
+
 - [ ] **Enhance mobile navigation with shadcn Sheet**
+
   - Current: Custom hamburger menu
   - Replace: shadcn Sheet (slide-out drawer) for better UX
   - File: Update `components/navigation/nav-bar.tsx`
 
 - [ ] **Add search functionality to blog**
+
   - UI: shadcn Command (⌘K menu) for fuzzy search
   - Index: Post titles, descriptions, tags, content
   - File: Create `components/blog/search-command.tsx`
@@ -88,13 +105,16 @@
   - File: Update `app/blog/page.tsx`, create `components/post/tag-cloud.tsx`
 
 ### Layout & Responsive Design
+
 - [ ] **Improve blog list layout with grid system**
+
   - Current: Single column list
   - Add: Responsive grid (1 col mobile, 2 col tablet, 3 col desktop)
   - Use: Tailwind grid with consistent spacing
   - File: Update `app/blog/page.tsx`
 
 - [ ] **Add sticky navigation on scroll**
+
   - Behavior: Navbar becomes compact/sticky when scrolling down
   - Use: IntersectionObserver or scroll event
   - File: Update `components/navigation/nav-bar.tsx`
@@ -108,12 +128,15 @@
 ## Medium Priority - Codebase Quality
 
 ### Type Safety & Architecture
+
 - [ ] **Add explicit types for post metadata**
+
   - Current: Implicit types from Velite schema
   - Create: Explicit TypeScript interfaces in `lib/types.ts`
   - Use: Throughout app for better type checking
 
 - [ ] **Extract repeated Tailwind classes to component variants**
+
   - Use: CVA more extensively for container, heading, text variants
   - File: Create `lib/component-variants.ts`
 
@@ -123,12 +146,15 @@
   - File: Create `lib/markdown-renderer.tsx`
 
 ### Code Organization
+
 - [ ] **Reorganize components directory**
+
   - Current: Mixed flat and nested structure
   - Group: ui/ (shadcn), blog/ (post-related), layout/ (nav, footer)
   - File: Restructure `components/` directory
 
 - [ ] **Create shared constants file**
+
   - Extract: Magic numbers (pagination size, excerpt length, etc.)
   - File: Create `lib/constants.ts`
 
@@ -137,12 +163,15 @@
   - Tool: Consider Storybook for component showcase
 
 ### Performance Optimizations
+
 - [ ] **Implement view transitions API**
+
   - Use: Native browser view transitions for page navigation
   - Fallback: For browsers without support
   - File: Update `app/layout.tsx`
 
 - [ ] **Optimize image loading strategy**
+
   - Review: Next.js Image priority and loading attributes
   - Add: Blur placeholders for post images
   - File: Update `components/post/markdown-image.tsx`
@@ -154,15 +183,19 @@
 ## Low Priority - Features & Enhancements
 
 ### Content Features
+
 - [ ] **Add RSS feed generation**
+
   - Use: next-rss or custom feed generation
   - File: Create `app/feed.xml/route.ts`
 
 - [ ] **Add sitemap generation**
+
   - Use: next-sitemap package
   - File: Update `next.config.mjs`
 
 - [ ] **Implement post series/collections**
+
   - Group: Multi-part posts (e.g., "Understanding Regression" series)
   - UI: Series navigation in post header
   - File: Update Velite schema, create series component
@@ -173,11 +206,14 @@
   - File: Create `components/post/reactions.tsx`
 
 ### Analytics & SEO
+
 - [ ] **Add structured data for blog posts**
+
   - Use: JSON-LD schema for BlogPosting
   - File: Update `app/blog/[slug]/page.tsx` metadata
 
 - [ ] **Improve Open Graph images**
+
   - Generate: Dynamic OG images per post with Next.js ImageResponse
   - File: Create `app/blog/[slug]/opengraph-image.tsx`
 
@@ -187,12 +223,15 @@
   - File: Update `app/layout.tsx`
 
 ### Developer Experience
+
 - [ ] **Add ESLint and Prettier configurations**
+
   - Ensure: Consistent code formatting
   - Add: Pre-commit hooks with husky + lint-staged
   - File: Create `.eslintrc.js`, `.prettierrc`
 
 - [ ] **Create component templates/generators**
+
   - Tool: Plop.js for scaffolding new components
   - Templates: shadcn component, blog post, page
   - File: Create `plopfile.js`
@@ -203,11 +242,14 @@
   - File: Create `lib/__tests__/` directory
 
 ### Accessibility
+
 - [ ] **Audit with axe DevTools**
+
   - Fix: Any contrast, heading hierarchy, or ARIA issues
   - Ensure: Keyboard navigation works throughout
 
 - [ ] **Add skip-to-content link**
+
   - Use: Hidden link for keyboard users
   - File: Update `app/layout.tsx`
 

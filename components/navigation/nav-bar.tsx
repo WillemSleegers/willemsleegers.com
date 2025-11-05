@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Nav } from "@/components/navigation/nav"
 import { Logo } from "@/components/navigation/logo"
 import { ModeToggle } from "@/components/theme/mode-toggle"
-import { HamburgerButton } from "@/components/hamburger-button"
+import { HamburgerButton } from "@/components/navigation/hamburger-button"
 
 import { cn } from "@/lib/utils"
 

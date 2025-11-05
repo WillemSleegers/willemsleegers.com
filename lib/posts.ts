@@ -1,14 +1,6 @@
 import { slug } from "github-slugger"
+import type { Post, TagCounts } from "@/lib/types"
 
-type Post = {
-  slug: string
-  title: string
-  description?: string
-  tags?: string[]
-  date: string
-  updated?: string
-  draft?: boolean
-}
 export function sortPosts(posts: Array<Post>) {
   return posts.sort((a, b) => {
     if (a.date > b.date) return -1
@@ -17,8 +9,8 @@ export function sortPosts(posts: Array<Post>) {
   })
 }
 
-export function getAllTags(posts: Array<Post>) {
-  const tags: Record<string, number> = {}
+export function getAllTags(posts: Array<Post>): TagCounts {
+  const tags: TagCounts = {}
   posts.forEach((post) => {
     if (!post.draft) {
       post.tags?.forEach((tag) => {
@@ -30,7 +22,7 @@ export function getAllTags(posts: Array<Post>) {
   return tags
 }
 
-export function sortTagsByCount(tags: Record<string, number>) {
+export function sortTagsByCount(tags: TagCounts): string[] {
   return Object.keys(tags).sort((a, b) => tags[b] - tags[a])
 }
 

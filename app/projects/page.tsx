@@ -1,4 +1,5 @@
-import { Projects } from "@/components/projects"
+import { LAYOUT_CLASSES } from "@/lib/constants"
+import { Projects } from "@/components/projects/projects-list"
 
 export default function ProjectsPage() {
   return (
