@@ -2,44 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
-
-interface TocItem {
-  id: string
-  text: string
-  level: number
-}
+import type { TocItem } from "@/lib/markdown/transforms"
 
 interface TableOfContentsProps {
-  content: string
+  items: TocItem[]
 }
 
-export function TableOfContents({ content }: TableOfContentsProps) {
-  const [toc, setToc] = useState<TocItem[]>([])
+export function TableOfContents({ items }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("")
-
-  useEffect(() => {
-    // Wait for DOM to be ready, then extract headings from the rendered page
-    const extractHeadings = () => {
-      const headingElements = document.querySelectorAll("article h2, article h3")
-      const headings: TocItem[] = []
-
-      headingElements.forEach((heading) => {
-        const level = heading.tagName === "H2" ? 2 : 3
-        const text = heading.textContent || ""
-        const id = heading.id
-
-        if (id && text) {
-          headings.push({ id, text, level })
-        }
-      })
-
-      setToc(headings)
-    }
-
-    // Run after a short delay to ensure markdown is rendered
-    const timer = setTimeout(extractHeadings, 100)
-    return () => clearTimeout(timer)
-  }, [content])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -61,9 +31,9 @@ export function TableOfContents({ content }: TableOfContentsProps) {
     return () => {
       headings.forEach((heading) => observer.unobserve(heading))
     }
-  }, [toc])
+  }, [items])
 
-  if (toc.length === 0) {
+  if (items.length === 0) {
     return null
   }
 
@@ -71,7 +41,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
     <nav className="xl:sticky xl:top-20 xl:max-h-[calc(100vh-8rem)] xl:overflow-auto p-4 border rounded-lg bg-muted/50">
       <h3 className="font-semibold text-sm mb-4">On this page</h3>
       <ul className="space-y-2 text-sm">
-        {toc.map((item) => (
+        {items.map((item) => (
           <li
             key={item.id}
             className={cn(item.level === 3 && "ml-4")}

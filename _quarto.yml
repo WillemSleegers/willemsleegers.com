@@ -1,7 +1,6 @@
 format:
   gfm:
     variant: +yaml_metadata_block
-    df-print: kable
 
 fig-format: svg
 code-fold: show

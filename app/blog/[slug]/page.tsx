@@ -16,7 +16,7 @@ import { TableOfContents } from "@/components/post/table-of-contents"
 import { SHIKI_CONFIG, IMAGE_DEFAULTS } from "@/lib/constants"
 import { formatDate } from "@/lib/utils"
 import { reconstructMarkdown } from "@/lib/markdown/reconstruction"
-import { replaceClassWithClassName } from "@/lib/markdown/transforms"
+import { replaceClassWithClassName, extractQuartoToc } from "@/lib/markdown/transforms"
 import { Triangle } from "lucide-react"
 
 import { posts } from "#site/content"
@@ -41,14 +41,17 @@ export default async function Page(props0: {
   const params = await props0.params
   const slug = params.slug
   const post = posts.find((post) => post.slug == slug)!
-  const content = replaceClassWithClassName(post.content)
+
+  // Extract Quarto's TOC and remove it from content
+  const { toc, content: contentWithoutToc } = extractQuartoToc(post.content)
+  const content = replaceClassWithClassName(contentWithoutToc)
 
   return (
     <main className="p-6">
       <div className="mx-auto max-w-prose xl:max-w-none flex flex-col xl:flex-row xl:gap-8 xl:justify-center">
-        {post.toc !== false && (
+        {post.toc !== false && toc.length > 0 && (
           <div className="mb-6 xl:mb-0 xl:w-64 xl:flex-shrink-0 xl:order-2">
-            <TableOfContents content={content} />
+            <TableOfContents items={toc} />
           </div>
         )}
         <div className="xl:max-w-3xl xl:order-1">
@@ -184,12 +187,11 @@ const MarkdownImage = (props: {
   src: string
   className?: string
 }) => {
-  const slug = props.slug
-  const fileName = path.basename(props.src)
-
+  // Velite already rewrites paths to /figures/[slug]/[filename]
+  // So we can use props.src directly
   return (
     <Image
-      src={`/figures/${slug}/${fileName}`}
+      src={props.src}
       className="rounded mx-auto my-4"
       alt="test"
       width={IMAGE_DEFAULTS.POST_WIDTH}

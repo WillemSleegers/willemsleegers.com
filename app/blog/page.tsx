@@ -16,7 +16,11 @@ interface BlogPageProps {
 export default async function BlogPage(props: BlogPageProps) {
   const searchParams = await props.searchParams
   const currentPage = Number(searchParams?.page) || 1
-  const sortedPosts = sortPosts(posts.filter((post) => !post.draft))
+  const sortedPosts = sortPosts(
+    posts.filter((post) =>
+      process.env.NODE_ENV === "development" || !post.draft
+    )
+  )
   const totalPages = Math.ceil(sortedPosts.length / POSTS_PER_PAGE)
 
   const displayPosts = sortedPosts.slice(

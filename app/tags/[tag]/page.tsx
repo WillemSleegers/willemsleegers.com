@@ -26,7 +26,9 @@ export default async function TagPage(props: TagPageProps) {
 
   const title = tag.split("-").join(" ")
   const allPosts = getPostsByTagSlug(posts, tag)
-  const displayPosts = allPosts.filter((post) => !post.draft)
+  const displayPosts = allPosts.filter((post) =>
+    process.env.NODE_ENV === "development" || !post.draft
+  )
   const tags = getAllTags(posts)
 
   return (
