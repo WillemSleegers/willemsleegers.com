@@ -1,0 +1,164 @@
+---
+title: "Understanding regression (part 3)"
+description: "We've chosen the normal distribution to describe heights. Now we need to estimate its parameters μ and σ from our sample. This post shows that lm() does exactly this: the intercept estimates μ (the mean) and the residual standard error estimates σ."
+date: 2025-01-17
+tags:
+  - statistics
+  - tutorial
+  - regression
+code-fold: true
+toc: true
+draft: true
+---
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+library(here)
+
+# Theme settings
+primary <- "#16a34a"
+
+theme_set(theme_minimal(base_size = 16))
+update_geom_defaults(
+  "histogram",
+  aes(fill = primary, color = "white")
+)
+```
+
+## Recap
+
+In Part 2, I argued that the normal distribution is a reasonable, parsimonious choice for modeling heights. The normal distribution is the maximum entropy distribution when all you know is the mean and variance—it makes the fewest additional claims.
+
+Now we need to estimate the parameters of this distribution from our data.
+
+## The normal distribution's parameters
+
+The normal distribution is defined by two parameters:
+
+- **μ (mu)**: the mean—where the center of the distribution is
+- **σ (sigma)**: the standard deviation—how spread out the distribution is
+
+If we can estimate these two parameters from our sample, we've characterized the entire distribution.
+
+## The data
+
+Let me load the same height data we've been working with:
+
+```{r}
+#| label: data
+data <- read_csv("Howell1.csv")
+data <- filter(data, age >= 18)
+```
+
+## Natural estimators
+
+Since the normal distribution is defined by its mean and standard deviation, the natural estimators from our sample are:
+
+- The **sample mean** to estimate μ
+- The **sample standard deviation** to estimate σ
+
+Let me calculate these:
+
+```{r}
+#| label: sample-stats
+sample_mean <- mean(data$height)
+sample_sd <- sd(data$height)
+```
+
+- **Sample mean**: `r round(sample_mean, 2)` cm
+- **Sample SD**: `r round(sample_sd, 2)` cm
+
+These are our estimates of the population parameters μ and σ.
+
+## What lm() is doing
+
+Now let's run the same regression model from Part 1:
+
+```{r}
+#| label: model
+model <- lm(height ~ 1, data = data)
+summary(model)
+```
+
+Look at the output:
+
+- The **intercept** is `r round(coef(model)[[1]], 2)` cm
+- The **residual standard error** is `r round(sigma(model), 2)` cm
+
+Compare these to what we calculated:
+
+- Intercept (`r round(coef(model)[[1]], 2)`) = Sample mean (`r round(sample_mean, 2)`)
+- Residual SE (`r round(sigma(model), 2)`) = Sample SD (`r round(sample_sd, 2)`)
+
+They're the same (within rounding).
+
+**This is what `lm(height ~ 1)` is doing**: it's estimating the parameters of a normal distribution.
+
+- The intercept estimates μ (the mean)
+- The residual standard error estimates σ (the standard deviation)
+
+## Visualizing the estimated distribution
+
+Let me overlay the distribution with our estimated parameters on the histogram:
+
+```{r}
+#| label: fig-estimated-distribution
+#| fig-cap: "Heights with normal distribution using estimated parameters"
+
+ggplot(data, aes(x = height)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 5) +
+  stat_function(
+    fun = dnorm,
+    args = list(mean = sample_mean, sd = sample_sd),
+    linewidth = 1,
+    color = "black",
+    linetype = "dashed"
+  ) +
+  labs(
+    x = "Height (cm)",
+    y = "Density",
+    title = paste0(
+      "Normal distribution: μ = ",
+      round(sample_mean, 1),
+      " cm, σ = ",
+      round(sample_sd, 1),
+      " cm"
+    )
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+```
+
+This is our model: heights follow a normal distribution with mean `r round(sample_mean, 1)` cm and standard deviation `r round(sample_sd, 1)` cm.
+
+## What we've accomplished
+
+We started with a question: what distribution describes heights?
+
+We proposed an answer: the normal distribution.
+
+Now we've estimated that distribution's parameters from our sample:
+- μ ≈ `r round(sample_mean, 1)` cm
+- σ ≈ `r round(sample_sd, 1)` cm
+
+When we run `lm(height ~ 1)`, we're estimating these same parameters. The regression output gives us both values, along with additional information (like uncertainty about our estimates, which we'll explore later).
+
+## Questions this raises
+
+This simple story raises several important questions:
+
+1. **Why use the mean specifically?** Could we use the median or mode instead?
+2. **Why is this optimal?** What makes the sample mean and SD the "best" estimates?
+3. **How certain are we?** Our sample is just one possible draw from the population—how much would our estimates vary if we drew a different sample?
+
+We'll tackle these questions in the next posts. For now, the key takeaway is: **when you run a regression model, you're estimating the parameters of a distribution.**
+
+## Key insight
+
+The normal distribution has two parameters: μ (mean) and σ (standard deviation). When we run `lm(height ~ 1)`, we're estimating both:
+
+- The **intercept** estimates μ (the population mean)
+- The **residual standard error** estimates σ (the population standard deviation)
+
+These natural estimators—sample mean and sample SD—characterize the entire distribution. In the next post, we'll explore why the mean specifically is the right choice for normal data.

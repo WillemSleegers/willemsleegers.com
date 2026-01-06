@@ -5,6 +5,7 @@ format:
 fig-format: svg
 code-fold: show
 
+
 execute:
   echo: true
   warning: false

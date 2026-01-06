@@ -1,0 +1,173 @@
+---
+title: "Understanding regression (part 2)"
+description: "In Part 1, I asked what distribution might describe our height data. Now I answer that question by introducing the normal distribution—not because 'data is normal,' but because it's a reasonable, parsimonious choice given what we know about heights."
+date: 2025-01-16
+tags:
+  - statistics
+  - tutorial
+  - regression
+code-fold: true
+toc: true
+draft: true
+---
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+library(here)
+
+# Theme settings
+primary <- "#16a34a"
+
+theme_set(theme_minimal(base_size = 16))
+update_geom_defaults(
+  "histogram",
+  aes(fill = primary, color = "white")
+)
+```
+
+## Recap
+
+In Part 1, I introduced a shift in perspective: instead of asking "how do I summarize this data?" I asked: **What distribution might describe this data?**
+
+I looked at heights from adults in the !Kung San census and ran an intercept-only regression model. The model gave us an estimate (154.6 cm) and a standard error (0.64 cm). But what do these numbers mean?
+
+I argued that we should think of statistical modeling as choosing and fitting distributions. When we run `lm(height ~ 1)`, we're proposing that heights follow a normal distribution and estimating its parameters (μ and σ).
+
+But this raises a question: Why the normal distribution? That's what this post is about.
+
+## The data
+
+Let me load the same height data from Part 1:
+
+```{r}
+#| label: data
+data <- read_csv("Howell1.csv")
+data <- filter(data, age >= 18)
+```
+
+Here's what the heights look like:
+
+```{r}
+#| label: histogram
+ggplot(data, aes(x = height)) +
+  geom_histogram(binwidth = 5)
+```
+
+When we look at this data, we see a pattern:
+
+- Most heights cluster around some central value (around 155 cm)
+- Heights spread out in both directions from that center
+- Extreme values (very short or very tall) are less common
+- The pattern looks roughly symmetric
+
+We can describe this pattern mathematically using a **probability distribution**.
+
+## The normal distribution
+
+The distribution that captures this pattern is called the **normal distribution** (also called the Gaussian distribution).
+
+Here's what a normal distribution looks like:
+
+```{r}
+#| label: fig-normal
+#| fig-cap: "The normal distribution"
+
+x <- seq(100, 210, length.out = 200)
+y <- dnorm(x, mean = 155, sd = 8)
+
+ggplot() +
+  geom_line(aes(x = x, y = y), color = primary, linewidth = 1) +
+  labs(
+    x = "Height (cm)",
+    y = "Density"
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+```
+
+This curve represents a mathematical model. The height of the curve at any point tells you how plausible that value is. Values near the center (around 155 cm) are most plausible. Values far from the center (like 120 cm or 190 cm) are less plausible but still possible.
+
+## Why the normal distribution?
+
+You might be wondering: "Why should I use the normal distribution for heights? What if it's wrong?"
+
+Good question. Let me be clear: I'm not claiming that heights in reality follow a perfect normal distribution. No real data ever does.
+
+Instead, I'm making a pragmatic modeling choice. Here's the reasoning:
+
+**It matches what we observe**
+
+Heights cluster around a center and spread out symmetrically. The normal distribution captures this pattern.
+
+**It's parsimonious**
+
+The normal distribution is defined by just two parameters:
+- μ (mu): the mean, where the center is
+- σ (sigma): the standard deviation, how spread out the values are
+
+That's it. Two numbers describe the entire distribution.
+
+This matters because of a principle from information theory: when you only know the mean and standard deviation, the normal distribution is the **maximum entropy distribution**. It makes the fewest additional claims.
+
+Put differently: if all you know is "heights cluster around 155 cm with some spread," the normal distribution is the most honest model. Any other distribution would be adding claims you don't have evidence for.
+
+**We can check if it's wrong**
+
+If the normal distribution doesn't fit our data well, we can detect that. We can compare what the model predicts to what we actually observe. And if they don't match, we can choose a different distribution.
+
+But we have to start somewhere, and the normal distribution is a reasonable starting point.
+
+## Does the normal distribution fit?
+
+Let's check if the normal distribution is a reasonable model for our heights.
+
+I'll overlay the theoretical normal distribution on top of a histogram of the data:
+
+```{r}
+#| label: fig-histogram-with-normal
+#| fig-cap: "Heights with normal distribution overlay"
+
+# Calculate sample mean and SD
+sample_mean <- mean(data$height)
+sample_sd <- sd(data$height)
+
+ggplot(data, aes(x = height)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 5) +
+  stat_function(
+    fun = dnorm,
+    args = list(mean = sample_mean, sd = sample_sd),
+    linewidth = 1,
+    color = "black",
+    linetype = "dashed"
+  ) +
+  labs(
+    x = "Height (cm)",
+    y = "Density"
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+```
+
+The dashed line shows what we'd expect if heights followed a normal distribution with mean `r round(sample_mean, 1)` cm and standard deviation `r round(sample_sd, 1)` cm.
+
+Does it fit perfectly? No. But the key question is: does the normal distribution capture the general pattern? It seems to.
+
+## What we've gained
+
+By proposing that heights come from a normal distribution, we've done something powerful: we've moved from individual data points to a **model of the distribution** that describes them.
+
+This model has two parameters: μ and σ. If we can estimate these parameters from our data, we can:
+
+- Describe the distribution that generated the heights
+- Predict what height a new person might have
+- Quantify how uncertain we are about those predictions
+
+But this raises a new question: **How do we estimate μ and σ from our sample?**
+
+We know the sample mean is `r round(sample_mean, 1)` cm and the sample standard deviation is `r round(sample_sd, 1)` cm. Are these good estimates of μ and σ? Why? How certain can we be?
+
+These are the questions we'll tackle in Part 3.
+
+## Key insight
+
+The normal distribution isn't a claim about reality—it's a parsimonious modeling choice. When all you know is that data clusters around a mean with some variance, the normal distribution makes the fewest additional claims. It's defined by just two parameters (μ and σ), which means once we estimate those, we've characterized the entire distribution.

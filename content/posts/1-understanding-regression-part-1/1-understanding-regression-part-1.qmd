@@ -1,253 +1,173 @@
 ---
-title: Understanding regression (part 1)
-description: This is Part 1 of a series on understanding regression. Using simulated data, we explore where the intercept estimate comes from in a simple regression model and discover why it equals the mean when we minimize squared residuals.
-date: 2020-08-01
-updated: 2025-01-10
+title: "Understanding regression (part 1)"
+description: "This is the first post in a series on understanding regression. I start with a brief introduction to the importance of understanding regression well and then discuss some data and ask the question what we should ask of this data, as the first step to understanding regression."
+date: 2025-01-15
 tags:
   - statistics
   - tutorial
   - regression
 code-fold: true
 toc: true
+draft: true
 ---
-
-Statistical regression techniques are an important tool in data analysis. As a behavioral scientist, I use it to test hypotheses by comparing differences between groups of people or testing relationships between variables. While it is easy to run regression analyses using popular software tools, like SPSS or R, it often remains a black box that is not well understood. In fact, I do not believe I actually understand regression. Not fully understanding the mechanics of regression could be okay, though. After all, you also don't need to know exactly how car engines work in order to drive a car. However, I think many users of regression have isolated themselves too much from the mechanics of regression. This may be a source of some mistakes researchers make, such as including every available variable into a model without understanding what the regression is actually doing. If you're using regression to try and make inferences about the world, it's probably a good idea to know what you're doing.
-
-In this series of posts, I'll work through the mechanics of regression to build a genuine intuition for how it works. This is Part 1.
-
-Feel free to follow me along by copy-pasting the code from each step.
-
-## Setup
-
-To figure out regression, we need data. For this tutorial, I'll use simulated data that could represent many different scenarios---test scores (like IQ or standardized tests), measurements of a physical trait (like height or reaction time), or ratings on a psychological scale. The key is that the data follows a pattern commonly seen in nature and social sciences.
-
-In case you're following along, start by loading the required packages and a custom function to calculate the mode. You can also copy the styling options I use, such as my ggplot2 defaults.
 
 ```{r}
 #| label: setup
 #| message: false
 library(tidyverse)
 library(here)
-library(gt)
-
-# A custom function to calculate the mode
-mode <- function(x) {
-  ux <- unique(x)
-  ux[which.max(tabulate(match(x, ux)))]
-}
 
 # Theme settings
-theme_set(theme_minimal(base_size = 16))
 primary <- "#16a34a"
 
-# Set seed for reproducibility
-set.seed(42)
-
-# Generate simulated data (mean = 100, sd = 15, like IQ scores)
-n <- 25
-scores <- rnorm(n, mean = 100, sd = 15) |> round(1)
-data <- tibble(
-  id = 1:n,
-  score = scores
+theme_set(theme_minimal(base_size = 16))
+update_geom_defaults(
+  "histogram",
+  aes(fill = primary, color = "white")
 )
 ```
 
-Let's visualize our data. We have 25 observations, and you can think of these as scores on some measure. Below I've plotted each observation.
+## Introduction
+
+This is the first blog post on a series of blog posts about understanding regression. 
+
+I'm a behavioral scientist, and to be honest, I don't really feel like I understand regression. I know *how* to use it—I can run models and report the results. But there are times where I'm just running code because I've been told "that's how you do it." When things get complicated, and sometimes not even that complicated, I find myself relying almost entirely on conventions rather than understanding it myself.
+
+If you work with data, you might feel the same way. This shouldn't be surprising. Regression is often taught as a black box: you run the code or click the buttons and copy the output. The focus is on performing statistics rather than on building a conceptual understanding. This can lead to confusion about what the results actually mean.
+
+The other approach I often see is to focus on the mechanics of statistics. It consists of showing formula's or on manually calculating some part of statistics. While they help to some extent in building an understanding of statistics, they are still often limited in that they are either too simple (like calculating some small part of statistics yourself) or too complicated (like many formula's are, to me at least). 
+
+What I need, and what I suspect many others need, is an approach that is more about creating a conceptual understanding that makes regression make sense. That's what this series is about.
+
+## An example
+
+To build this conceptual understanding, I'll work through examples using real data. I'll use data from Richard McElreath's excellent book *Statistical Rethinking*. The data is a partial census of the !Kung San people, compiled from interviews conducted by Nancy Howell in the late 1960s. We'll focus on heights of adults (18 years or older).
 
 ```{r}
-#| label: fig-data
-#| fig-width: 10
-ggplot(data, aes(x = id, y = score)) +
-  geom_bar(stat = "identity", fill = primary) +
-  labs(x = "Observation", y = "Score") +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
-  scale_x_continuous(breaks = seq(0, 25, by = 5)) +
-  theme(
-    panel.grid.major.x = element_blank()
-  )
+#| label: data
+data <- read_csv("Howell1.csv")
+data <- filter(data, age >= 18)
+
+head(data)
 ```
 
-We see that the lowest score is `r min(data$score)` and the highest is `r max(data$score)`. The average score is `r round(mean(data$score), 1)`.
-
-## The simplest model
-
-In order to understand these scores, we need to come up with a statistical model. In a way, this can be considered a description problem. How can we best describe the different scores that we have observed? The simplest description is a single number. We can say that all observations have a score of, say, 90. In other words:
-
-`score = 90`
-
-Of course, this is just one among many possible models. Below I plot three different models, including our `score = 90` model.
+Here's what the heights look like:
 
 ```{r}
-#| label: fig-three-models
-#| fig-width: 11
-#| fig-height: 6
-ggplot(data, aes(x = id, y = score)) +
-  geom_bar(stat = "identity", fill = primary) +
-  geom_abline(intercept = c(90, 100, 110), slope = 0, linetype = "dashed") +
-  annotate(
-    geom = "label",
-    label = c("score = 90", "score = 100", "score = 110"),
-    x = 24,
-    y = c(92, 102, 112),
-    hjust = 1,
-    vjust = 0,
-    size = 5
+#| label: histogram
+ggplot(data, aes(x = height)) +
+  geom_histogram()
+```
+
+We can run a regression model on this data. Since we're just looking at heights without any predictors, this is called an **intercept-only model**—it estimates a single value that represents the data:
+
+```{r}
+#| label: model
+model <- lm(height ~ 1, data = data)
+
+summary(model)
+```
+
+We get an estimate of `r round(coef(model)[[1]], 2)` cm with a standard error of `r round(summary(model)$coefficients[, "Std. Error"], 2)` cm. 
+
+## The question
+
+Here's where I want to pause and ask some questions:
+
+- What do these numbers actually *mean*? The estimate is 154.6 cm—but what is that estimating? Just the average of our sample, or something more?
+- Why do they have these particular values? The estimate turns out to be the mean of the sample, but why is it the mean? Why not the median or some other number?
+- **What perspective helps us understand what we're doing?** Different people might run this model for different reasons—to describe the sample, to estimate a population parameter, to make predictions. What framework ties these goals together?
+
+When we run a regression model, we're typically interested in one or both of these goals:
+
+1. **Estimation**: What are the model parameters (like the mean) and how uncertain are we about them?
+2. **Prediction**: What would we expect to observe in new data?
+
+Most researchers focus on estimation—reporting means, coefficients, standard errors, confidence intervals. Prediction is valuable too, though perhaps less commonly emphasized.
+
+Both of these goals can be understood through a single unifying question:
+
+**What distribution might have generated this data?**
+
+This might seem abstract, so let me explain what I mean. When we look at our height data, we see variation—some people are taller, some shorter. This variation follows some pattern. We can describe that pattern mathematically using a **probability distribution**.
+
+A distribution is a pragmatic tool. When we say heights follow a normal distribution, we're not making a deep claim about biology. We're saying: "Given what we know about heights (they cluster around a central value, they vary in a certain way, they have natural limits), the normal distribution is a reasonable, parsimonious choice for describing the pattern."
+
+The normal distribution says: "heights vary around some central value (μ), with some amount of spread (σ), following this specific mathematical pattern." That's it—just two numbers (μ and σ) characterize the entire distribution.
+
+Once we think this way, everything else follows:
+
+- **Estimation**: We estimate the parameters (μ and σ) that define the process
+- **Uncertainty**: We quantify how uncertain we are about those parameters (because our sample is just one possible outcome from the process)
+- **Prediction**: We can predict new observations by drawing from the distribution with our estimated parameters
+- **Model checking**: We can evaluate whether our assumed process matches the actual data
+
+## The roadmap ahead
+
+In this series, I'm going to build up an understanding of regression from this foundation. The core question will always be: **What distribution describes this data?**
+
+For our height data, this means we'll work through several steps:
+
+1. **Choose a distribution**: What distribution might describe heights? (We'll start with the normal distribution and explore why it's a reasonable, parsimonious choice given what we know about heights)
+2. **Estimate parameters**: Once we've chosen a distribution, how do we estimate its parameters (μ and σ) from our data?
+3. **Quantify uncertainty**: How certain can we be about those estimates?
+4. **Check the model**: Does the distribution we chose actually match the data?
+5. **Add predictors**: What happens when we think the distribution's parameters depend on other variables (like height depending on sex or age)?
+
+Each post in the series will tackle one of these steps, building up our understanding gradually.
+
+## A preview: Where we're headed
+
+Here are the heights again, but now with a proposed model overlaid:
+
+```{r}
+#| label: distribution
+#| fig-cap: "Heights with normal distribution overlay"
+
+sample_mean <- mean(data$height)
+sample_sd <- sd(data$height)
+
+ggplot(data, aes(x = height)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 5) +
+  stat_function(
+    fun = dnorm,
+    args = list(mean = sample_mean, sd = sample_sd),
+    linewidth = 1,
+    color = "black",
+    linetype = "dashed"
   ) +
-  labs(x = "Observation", y = "Score", linetype = "") +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
-  scale_x_continuous(breaks = seq(0, 25, by = 5)) +
-  scale_linetype_manual(values = c("dashed", "dotted", "dotdash")) +
-  coord_cartesian(clip = "off") +
-  theme(
-    panel.grid.major.x = element_blank()
+  labs(
+    x = "Height (cm)",
+    y = "Density"
   )
 ```
 
-While a model like `score = 90` is a valid model, it is not a very good model. It may perfectly describe one or two observations, but it inaccurately describes most of the others. The other models might be better or worse, depending on the actual data. How do we decide which model is the better model? In order to answer that question, we need to consider the model's error.
+The dashed line represents a **normal distribution**—a specific mathematical process that could generate heights like these. We're proposing that heights are drawn from this process, which is defined by just two parameters: a mean (μ) and a standard deviation (σ).
 
-## The error of models
+Our `lm()` model was estimating these parameters. The intercept (`r round(coef(model)[[1]], 2)`) is our estimate of μ, and the residual standard error is our estimate of σ.
 
-The error of a model is the degree to which the model inaccurately describes the data. There are several ways to calculate that error, depending on how you define error. We will cover three of them.
+But here's the key: we're not just "fitting a curve to data." We're proposing a distribution and estimating its parameters. This lets us:
 
-The first definition of error is simply the number of times the model inaccurately describes the data. For each observation we check whether the model correctly describes it or not. We then sum the number of misses and consider that the amount of error for that model. For our `score = 90` model, we would count how many observations have a score different from 90.
+- Answer questions about the typical height (μ)
+- Quantify our uncertainty about that estimate (the standard error tells us how uncertain we are about μ)
+- Predict the range of heights we'd expect in a new sample (using both μ and σ)
 
-We can now compare different models to one another by calculating the error for a range of models. Below I plot the number of errors for many different models, starting with `score = 70`, up to `score = 130`, in steps of 0.1.
+There's also a critical meta-question we need to ask:
 
-```{r}
-#| label: fig-error-sum
-errors_binary <- expand_grid(
-  model = seq(from = 70, to = 130, by = 0.1),
-  score = data$score
-) |>
-  mutate(error = if_else(abs(score - model) == 0, 0, 1)) |>
-  group_by(model) |>
-  summarize(error_sum = sum(error))
+- **Is the normal distribution appropriate for this data?** A normal distribution spans from negative infinity to positive infinity, but heights have a clear minimum (you can't be -50 cm tall). Part of understanding regression is understanding when our chosen distribution might not be appropriate—and what to do about it.
 
-ggplot(errors_binary, aes(x = model, y = error_sum)) +
-  geom_line(color = primary, linewidth = 1.25) +
-  coord_cartesian(ylim = c(0, 25)) +
-  labs(x = "Model (score = x)", y = "Error (sum of errors)")
-```
+## Summary
 
-We see that almost all models perform poorly. The number of errors range from `r min(pull(errors_binary, error_sum))` to `r max(pull(errors_binary, error_sum))` and most models have a sum of `r mode(pull(errors_binary, error_sum))` errors, which means they do not accurately describe any of the observations. The best models might correctly describe one or two observations, but that still leaves 23 or 24 errors.
+This post introduces the core perspective that will guide this entire series: **statistical modeling is about choosing and fitting distributions to data.**
 
-Despite there being a best model, it's still a pretty poor model. After all, it is wrong most of the time. Perhaps there are some models that outperform this model, but it's unlikely. That's because we're defining error here in a very crude way. The model needs to exactly match the observed score, or else it counts as an error. Saying a score is 90, while it is in fact 95, is as wrong as saying the score is 50.
+When you run `lm(height ~ 1)`, you're not just calculating a mean and standard error. You're proposing that heights follow a specific distribution (the normal distribution), and you're estimating that distribution's parameters (μ and σ).
 
-Instead of defining error in this way, we can redefine it so that it takes into account the *degree* of error. We can define error as the difference between the actual data point and the model's value. So, in the case of our `score = 90` model, an actual score of 95 would have an error of 95 - 90 = 5. This definition of error is often referred to as the residual.
+Those parameters are what let you answer questions. You can use them to:
+- Estimate what the typical value is and how uncertain that estimate is
+- Test hypotheses (does the mean differ from some value?)
+- Predict new observations
 
-Below I plot the residuals for our `score = 90` model.
+This distribution-focused perspective provides a unified framework for understanding regression.
 
-```{r}
-#| label: fig-residuals
-#| fig-width: 10
-ggplot(data, aes(x = id, y = score)) +
-  geom_bar(stat = "identity", fill = primary) +
-  geom_segment(aes(xend = id, y = 90, yend = score), linetype = 2) +
-  geom_point() +
-  geom_abline(intercept = 90, slope = 0) +
-  labs(x = "Observation", y = "Score") +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
-  scale_x_continuous(breaks = seq(0, 25, by = 5)) +
-  theme(
-    panel.grid.major.x = element_blank()
-  )
-```
+In the next post, we'll dig deeper into this idea by exploring distributions as models. Why do we use a normal distribution for heights? What makes it a reasonable, parsimonious choice? 
 
-We can add up all of the (absolute) residuals to determine the model's error. Just like with the binary definition of error, we can then compare multiple models. This is what you see in the graph below. For each model, from `score = 70` to `score = 130`, we calculated the absolute residuals and added them together.
-
-```{r}
-#| label: fig-error-residuals
-errors_residuals <- expand_grid(
-  model = seq(from = 70, to = 130, by = 0.1),
-  score = data$score
-) |>
-  mutate(error = abs(score - model)) |>
-  group_by(model) |>
-  summarize(error_sum = sum(error))
-
-ggplot(errors_residuals, aes(x = model, y = error_sum)) +
-  geom_line(color = primary, linewidth = 1.25) +
-  labs(x = "Model (score = x)", y = "Error (sum of residuals)")
-```
-
-This graph looks very different compared to the graph where we calculated the error defined as the sum of misses. Now we see that a minimum appears. Unlike the binary definition of error, it looks like there are fewer *best* models. More importantly, though, we have defined error in a less crude manner, meaning that the better models indeed capture the data much better than before.
-
-But we might still not be entirely happy with this new definition of error either. Calculating the sum of absolute residuals for each model comes with another conceptual problem.
-
-When you sum the absolute errors, four errors of 1 are equal to a single error of 4. In other words, you could have a model that is slightly off multiple times or one that might make fewer, but larger, errors. Both would be counted as equally wrong. That seems problematic. Conceptually speaking, we might find it more problematic when a model is very wrong than when the model is slightly off multiple times. If we think that, we need another definition of error.
-
-To address this issue, we can square the residuals before adding them together. That way, larger errors become relatively larger compared to smaller errors. Using our previous example, summing four residuals of 1 remains 4, but a single residual of 4 becomes 4² = 16. The model now gets punished more severely for making large mistakes.
-
-Using this new definition of error, we again plot the error for each model, from 70 to 130.
-
-```{r}
-#| label: fig-error-squared-residuals
-errors_squared_residuals <- expand_grid(
-  model = seq(from = 70, to = 130, by = 0.1),
-  score = data$score
-) |>
-  mutate(error = abs(score - model)^2) |>
-  group_by(model) |>
-  summarize(error_sum = sum(error))
-
-ggplot(errors_squared_residuals, aes(x = model, y = error_sum)) +
-  geom_line(color = primary, linewidth = 1.25) +
-  geom_vline(xintercept = mean(data$score), linetype = 2) +
-  labs(x = "Model (score = x)", y = "Error (sum of squared residuals)")
-```
-
-We see a smooth curve, with a clear minimum indicated by the vertical dashed line. This vertical line indicates the model that best describes the data. What is the value of the best model exactly? In this case, the answer is `r round(mean(data$score), 1)`. And it turns out, there is an easy way to determine this value.
-
-## The data-driven model
-
-Rather than setting a specific value and seeing how it fits the data, we can also use the data to determine the best-fitting value. In the previous graph we saw that the best fitting model is one where the score is equal to `r round(mean(data$score), 1)`. This value turns out to be the mean of the different scores we have observed in our sample. Had we defined error as simply the sum of absolute residuals, this would be a different value. In fact, the best fitting value would then be equal to `r round(median(data$score), 1)`, or the median. And had we used the binary definition of error, the best fitting value would be the mode, which in our case is: `r mode(data$score)`.
-
-Note that there is not always a unique answer to which model is the best fitting model, depending on the error definition. For example, it is possible that there are multiple modes. If you use the binary definition of error, that would mean there are multiple equally plausible models. This can be another argument to not define a model's error in such a crude way.
-
-The table below shows an overview of which technique can be used to find the best fitting value, depending on the error definition.
-
-```{r}
-#| label: tbl-errors
-tibble(
-  error_definition = c(
-    "sum of errors",
-    "sum of absolute residuals",
-    "sum of squared residuals"
-  ),
-  estimation_technique = c("mode", "median", "mean")
-) |>
-  gt() |>
-  cols_label(
-    error_definition = "Error definition",
-    estimation_technique = "Estimation technique"
-  )
-```
-
-We can now update our model to refer to the estimation technique, rather than a fixed value. Given that the third definition of error seems to be most suitable, both pragmatically and conceptually, we'll use the mean:
-
-`score = mean(score)`
-
-This is also the value you get when you perform a regression analysis in R.
-
-```{r}
-#| label: lm-score-intercept-model
-lm(score ~ 1, data = data)
-```
-
-By regressing score onto 1 we are telling R to run an intercept-only model. This means that R will estimate which value will best fit all the values in the outcome variable, just like we have done ourselves earlier by testing different models such as `score = 90`.
-
-The result is an intercept value of `r round(mean(data$score), 1)`, which matches the mean of the scores.
-
-## Conclusion
-
-So, we now know where the intercept comes from when we run an intercept-only model: it is the mean of the data we are trying to model.
-
-Note that it is the mean because we defined the model's error as the sum of *squared* residuals. Had we defined the error differently, the intercept would be different. With the sum of *absolute* residuals, the intercept would be the median. With the sum of errors, it would be the mode.
-
-Why did we use the sum of squared residuals? We had a conceptual reason: we wanted to punish larger residuals relatively more than several smaller errors. But it turns out there is another reason to favor squared residuals, which has to do with a nice property of the mean compared to the median. This will be covered in Part 2 of 'Understanding Regression'.
-
-## References
-
-- Fox, J., & Weisberg, S. (2019). *An R Companion to Applied Regression* (3rd ed.). Sage.
-
-- James, G., Witten, D., Hastie, T., & Tibshirani, R. (2021). *An Introduction to Statistical Learning with Applications in R* (2nd ed.). Springer.
