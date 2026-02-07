@@ -4,16 +4,13 @@ description: >-
   The third of a series of tutorial posts on Bayesian analyses. In this post I
   focus on using brms to model a correlation.
 date: 2023-02-12T00:00:00.000Z
-updated: 2024-12-30T00:00:00.000Z
+updated: 2026-02-08T00:00:00.000Z
 categories:
   - statistics
   - tutorial
   - Bayesian statistics
   - regression
 code-fold: true
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/19-bayesian-tutorial-correlations/
 ---
 
 
@@ -54,8 +51,8 @@ data <- read_csv("Howell1.csv")
 data <- data |>
   filter(age >= 18) |>
   mutate(
-    height_z  = (height - mean(height)) / sd(height),
-    weight_z  = (weight - mean(weight)) / sd(weight)
+    height_z = (height - mean(height)) / sd(height),
+    weight_z = (weight - mean(weight)) / sd(weight)
   )
 ```
 
@@ -83,11 +80,14 @@ get_prior(height_z ~ 0 + weight_z, data = data)
 
 </details>
 
-| prior                | class | coef     | group | resp | dpar | nlpar | lb  | ub  | source  |
-|:---------------------|:------|:---------|:------|:-----|:-----|:------|:----|:----|:--------|
-|                      | b     |          |       |      |      |       |     |     | default |
-|                      | b     | weight_z |       |      |      |       |     |     | default |
-| student_t(3, 0, 2.5) | sigma |          |       |      |      |       | 0   |     | default |
+                    prior class     coef group resp dpar nlpar lb ub tag
+                   (flat)     b                                         
+                   (flat)     b weight_z                                
+     student_t(3, 0, 2.5) sigma                                 0       
+           source
+          default
+     (vectorized)
+          default
 
 Indeed, we’re left with a prior for <math>$\sigma$</math> and one for
 `weight_z`, which we can specify either via class `b` or the specific
@@ -133,7 +133,7 @@ ggplot(prior, aes(x = r, y = prob)) +
 
 </details>
 
-![](../../../public/figures/19-bayesian-tutorial-correlations/slope-prior-1.svg)
+![](19-bayesian-tutorial-correlations_files/figure-commonmark/slope-prior-1.svg)
 
 What should the prior for <math>$\sigma$</math> be? With the variables
 standardized, <math>$\sigma$</math> is limited to range from 0 to 1. If
@@ -167,7 +167,9 @@ model <- brm(
     prior(uniform(0, 1), class = "sigma", ub = 1),
     prior(
       skew_normal(.7, .4, -3),
-      class = "b", lb = -1, ub = 1
+      class = "b",
+      lb = -1,
+      ub = 1
     )
   ),
   sample_prior = TRUE,
@@ -181,7 +183,7 @@ model
 </details>
 
      Family: gaussian 
-      Links: mu = identity; sigma = identity 
+      Links: mu = identity 
     Formula: height_z ~ 0 + weight_z 
        Data: data (Number of observations: 352) 
       Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
@@ -212,7 +214,9 @@ draws <- model |>
   ungroup() |>
   mutate(
     distribution = if_else(
-      str_detect(.variable, "prior"), "prior", "posterior"
+      str_detect(.variable, "prior"),
+      "prior",
+      "posterior"
     ),
     distribution = fct_relevel(distribution, "prior")
   )
@@ -225,7 +229,7 @@ ggplot(draws, aes(x = .value, fill = distribution)) +
 
 </details>
 
-![](../../../public/figures/19-bayesian-tutorial-correlations/correlation-1.svg)
+![](19-bayesian-tutorial-correlations_files/figure-commonmark/correlation-1.svg)
 
 It looks like we can update towards a higher correlation and also be
 more certain about it because the range of the posterior is much
@@ -260,7 +264,7 @@ ggplot(prior, aes(x = r, y = prob)) +
 
 </details>
 
-![](../../../public/figures/19-bayesian-tutorial-correlations/weakly-informative-slope-prior-1.svg)
+![](19-bayesian-tutorial-correlations_files/figure-commonmark/weakly-informative-slope-prior-1.svg)
 
 It’s a very broad prior and centered at 0. Does it being centered around
 0 push the final estimate closer to a null effect? Let’s see by running
@@ -290,7 +294,7 @@ model_generic_prior
 </details>
 
      Family: gaussian 
-      Links: mu = identity; sigma = identity 
+      Links: mu = identity 
     Formula: height_z ~ 0 + weight_z 
        Data: data (Number of observations: 352) 
       Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
@@ -318,7 +322,8 @@ model_generic_prior |>
   mutate(
     distribution = if_else(
       str_detect(.variable, "prior"),
-      "prior", "posterior"
+      "prior",
+      "posterior"
     ),
     distribution = fct_relevel(distribution, "prior")
   ) |>
@@ -329,7 +334,7 @@ model_generic_prior |>
 
 </details>
 
-![](../../../public/figures/19-bayesian-tutorial-correlations/model-generic-prior-1.svg)
+![](19-bayesian-tutorial-correlations_files/figure-commonmark/model-generic-prior-1.svg)
 
 The previous estimate of the correlation was 0.74 and now it’s 0.75.
 Apparently the prior did not influence the final estimate. This
@@ -427,11 +432,12 @@ bind_rows(
 
 </details>
 
-| Pair            |   Estimate | Est.Error |       Q2.5 |      Q97.5 |
-|:----------------|-----------:|----------:|-----------:|-----------:|
-| height - weight |  0.7545178 | 0.0353659 |  0.6869373 |  0.8250272 |
-| height - age    | -0.1027416 | 0.0520592 | -0.2060662 |  0.0006455 |
-| weight - age    | -0.1722622 | 0.0513209 | -0.2722212 | -0.0697330 |
+    # A tibble: 3 × 5
+      Pair            Estimate Est.Error   Q2.5     Q97.5
+      <chr>              <dbl>     <dbl>  <dbl>     <dbl>
+    1 height - weight    0.755    0.0354  0.687  0.825   
+    2 height - age      -0.103    0.0521 -0.206  0.000645
+    3 weight - age      -0.172    0.0513 -0.272 -0.0697  
 
 And in the graph below, to show their entire posterior distribution.
 
@@ -463,7 +469,7 @@ ggplot(correlation_draws, aes(x = r)) +
 
 </details>
 
-![](../../../public/figures/19-bayesian-tutorial-correlations/correlations-plot-1.svg)
+![](19-bayesian-tutorial-correlations_files/figure-commonmark/correlations-plot-1.svg)
 
 ### Simultaneous solution
 
@@ -492,7 +498,8 @@ model <- brm(
   formula = bf(
     mvbind(height_z, weight_z, age_z) ~ 0,
     sigma ~ 0
-  ) + set_rescor(TRUE),
+  ) +
+    set_rescor(TRUE),
   data = data,
   family = gaussian(),
   prior = prior(lkj(2), class = rescor),
@@ -549,7 +556,9 @@ Let’s also plot the posteriors, including their prior.
 ``` r
 draws <- model |>
   gather_draws(
-    prior_rescor, rescor__heightz__weightz, rescor__heightz__agez,
+    prior_rescor,
+    rescor__heightz__weightz,
+    rescor__heightz__agez,
     rescor__weightz__agez
   ) |>
   ungroup() |>
@@ -572,7 +581,7 @@ ggplot(draws, aes(x = .value)) +
 
 </details>
 
-![](../../../public/figures/19-bayesian-tutorial-correlations/simultaneous-correlations-plot-1.svg)
+![](19-bayesian-tutorial-correlations_files/figure-commonmark/simultaneous-correlations-plot-1.svg)
 
 It looks like we used a relatively wide prior centered around 0. That’s
 good to know because I had no idea what the `lkj()` prior was doing.

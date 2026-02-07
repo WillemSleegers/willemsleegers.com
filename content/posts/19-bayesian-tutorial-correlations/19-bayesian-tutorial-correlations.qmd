@@ -3,7 +3,7 @@ title: "Bayesian tutorial: Correlation"
 description: "The third of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model a correlation."
 date: 2023-02-12
 updated: 2026-02-08
-tags:
+categories:
   - statistics
   - tutorial
   - Bayesian statistics

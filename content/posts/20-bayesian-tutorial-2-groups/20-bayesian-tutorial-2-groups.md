@@ -4,16 +4,13 @@ description: >-
   The fourth of a series of tutorial posts on Bayesian analyses. In this post I
   focus on using brms to model the difference between two groups.
 date: 2023-04-24T00:00:00.000Z
-updated: 2024-12-30T00:00:00.000Z
+updated: 2026-02-08T00:00:00.000Z
 categories:
   - statistics
   - tutorial
   - Bayesian statistics
   - regression
 code-fold: true
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/20-bayesian-tutorial-2-groups/
 ---
 
 
@@ -75,12 +72,16 @@ get_prior(height ~ male, data = data)
 
 </details>
 
-| prior                    | class     | coef | group | resp | dpar | nlpar | lb  | ub  | source  |
-|:-------------------------|:----------|:-----|:------|:-----|:-----|:------|:----|:----|:--------|
-|                          | b         |      |       |      |      |       |     |     | default |
-|                          | b         | male |       |      |      |       |     |     | default |
-| student_t(3, 154.3, 8.5) | Intercept |      |       |      |      |       |     |     | default |
-| student_t(3, 0, 8.5)     | sigma     |      |       |      |      |       | 0   |     | default |
+                        prior     class coef group resp dpar nlpar lb ub tag
+                       (flat)         b                                     
+                       (flat)         b male                                
+     student_t(3, 154.3, 8.5) Intercept                                     
+         student_t(3, 0, 8.5)     sigma                             0       
+           source
+          default
+     (vectorized)
+          default
+          default
 
 The output shows we need to set a prior on sigma, the Intercept, and on
 the male coefficient. The intercept refers to the heights of female
@@ -125,7 +126,7 @@ model_dummy_priors_default
 </details>
 
      Family: gaussian 
-      Links: mu = identity; sigma = identity 
+      Links: mu = identity 
     Formula: height ~ male 
        Data: data (Number of observations: 352) 
       Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
@@ -184,7 +185,7 @@ model_dummy_priors
 </details>
 
      Family: gaussian 
-      Links: mu = identity; sigma = identity 
+      Links: mu = identity 
     Formula: height ~ 0 + Intercept + male 
        Data: data (Number of observations: 352) 
       Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
@@ -222,10 +223,11 @@ tibble(male = c(0, 1)) |>
 
 </details>
 
-| male | .row |   .epred |   .lower |   .upper | .width | .point | .interval |    width |
-|-----:|-----:|---------:|---------:|---------:|-------:|:-------|:----------|---------:|
-|    0 |    1 | 164.9975 | 155.3517 | 174.6780 |   0.95 | median | qi        | 19.32630 |
-|    1 |    2 | 174.8570 | 161.3155 | 188.7264 |   0.95 | median | qi        | 27.41087 |
+    # A tibble: 2 × 9
+       male  .row .epred .lower .upper .width .point .interval width
+      <dbl> <int>  <dbl>  <dbl>  <dbl>  <dbl> <chr>  <chr>     <dbl>
+    1     0     1   165.   155.   175.   0.95 median qi         19.3
+    2     1     2   175.   161.   189.   0.95 median qi         27.4
 
 We see that the width for males is slightly wider than that for females.
 If you run the model multiple times at different seeds, you’ll see that
@@ -275,12 +277,16 @@ get_prior(height ~ 0 + sex, data = data)
 
 </details>
 
-| prior                | class | coef      | group | resp | dpar | nlpar | lb  | ub  | source  |
-|:---------------------|:------|:----------|:------|:-----|:-----|:------|:----|:----|:--------|
-|                      | b     |           |       |      |      |       |     |     | default |
-|                      | b     | sexfemale |       |      |      |       |     |     | default |
-|                      | b     | sexmale   |       |      |      |       |     |     | default |
-| student_t(3, 0, 8.5) | sigma |           |       |      |      |       | 0   |     | default |
+                    prior class      coef group resp dpar nlpar lb ub tag
+                   (flat)     b                                          
+                   (flat)     b sexfemale                                
+                   (flat)     b   sexmale                                
+     student_t(3, 0, 8.5) sigma                                  0       
+           source
+          default
+     (vectorized)
+     (vectorized)
+          default
 
 As you can see, we need a prior for `sexfemale` and `sexmale`, as well
 as sigma.
@@ -325,7 +331,7 @@ model_index_prior
 </details>
 
      Family: gaussian 
-      Links: mu = identity; sigma = identity 
+      Links: mu = identity 
     Formula: height ~ 0 + sex 
        Data: data (Number of observations: 352) 
       Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
@@ -359,10 +365,11 @@ tibble(sex = c("male", "female")) |>
 
 </details>
 
-| sex    | .row |   .epred |   .lower |   .upper | .width | .point | .interval |    width |
-|:-------|-----:|---------:|---------:|---------:|-------:|:-------|:----------|---------:|
-| female |    2 | 164.9030 | 155.3948 | 175.0191 |   0.95 | median | qi        | 19.62428 |
-| male   |    1 | 175.0955 | 165.3998 | 184.6581 |   0.95 | median | qi        | 19.25822 |
+    # A tibble: 2 × 9
+      sex     .row .epred .lower .upper .width .point .interval width
+      <chr>  <int>  <dbl>  <dbl>  <dbl>  <dbl> <chr>  <chr>     <dbl>
+    1 female     2   165.   155.   175.   0.95 median qi         19.6
+    2 male       1   175.   165.   185.   0.95 median qi         19.3
 
 They are. This means we can now run the model and also sample from the
 posterior.
@@ -392,7 +399,7 @@ model_index
 </details>
 
      Family: gaussian 
-      Links: mu = identity; sigma = identity 
+      Links: mu = identity 
     Formula: height ~ 0 + sex 
        Data: data (Number of observations: 352) 
       Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
@@ -431,7 +438,7 @@ ggplot(draws, aes(x = .value, fill = sex)) +
 
 </details>
 
-![](../../../public/figures/20-bayesian-tutorial-2-groups/groups-plot-1.svg)
+![](20-bayesian-tutorial-2-groups_files/figure-commonmark/groups-plot-1.svg)
 
 ## Calculating a difference score
 
@@ -460,9 +467,8 @@ model_index |>
 
 </details>
 
-|       y |    ymin |   ymax | .width | .point | .interval |
-|--------:|--------:|-------:|-------:|:-------|:----------|
-| 10.8645 | 9.68385 | 12.056 |   0.95 | median | qi        |
+            y    ymin   ymax .width .point .interval
+    1 10.8645 9.68385 12.056   0.95 median        qi
 
 Alternatively, we can also plot it as a distribution.
 
@@ -481,7 +487,7 @@ ggplot(draws, aes(x = difference)) +
 
 </details>
 
-![](../../../public/figures/20-bayesian-tutorial-2-groups/difference-score-plot-1.svg)
+![](20-bayesian-tutorial-2-groups_files/figure-commonmark/difference-score-plot-1.svg)
 
 ## Summary
 

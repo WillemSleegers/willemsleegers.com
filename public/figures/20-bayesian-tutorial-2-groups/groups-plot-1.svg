@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="504" height="360" viewBox="0 0 504 360">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="504pt" height="360pt" viewBox="0 0 504 360">
 <defs>
 <g>
 <g id="glyph-0-0">
@@ -135,6 +135,7 @@
 <path clip-rule="nonzero" d="M 336 7.96875 L 338 7.96875 L 338 311.871094 L 336 311.871094 Z M 336 7.96875 "/>
 </clipPath>
 </defs>
+<rect x="-50.4" y="-36" width="604.8" height="432" fill="rgb(100%, 100%, 100%)" fill-opacity="1"/>
 <rect x="-50.4" y="-36" width="604.8" height="432" fill="rgb(100%, 100%, 100%)" fill-opacity="1"/>
 <g clip-path="url(#clip-0)">
 <path fill="none" stroke-width="0.775984" stroke-linecap="butt" stroke-linejoin="round" stroke="rgb(92.156863%, 92.156863%, 92.156863%)" stroke-opacity="1" stroke-miterlimit="10" d="M 56.128906 262.085938 L 399.898438 262.085938 "/>
@@ -312,8 +313,8 @@
 <use xlink:href="#glyph-1-3" x="434.808594" y="143.976562"/>
 <use xlink:href="#glyph-1-12" x="443.808594" y="143.976562"/>
 </g>
-<path fill-rule="nonzero" fill="rgb(8.627451%, 63.921569%, 29.019608%)" fill-opacity="1" d="M 424.519531 171.199219 L 440.382812 171.199219 L 440.382812 155.335938 L 424.519531 155.335938 Z M 424.519531 171.199219 "/>
-<path fill-rule="nonzero" fill="rgb(63.921569%, 8.627451%, 43.529412%)" fill-opacity="1" d="M 424.519531 188.476562 L 440.382812 188.476562 L 440.382812 172.613281 L 424.519531 172.613281 Z M 424.519531 188.476562 "/>
+<path fill-rule="nonzero" fill="rgb(8.627451%, 63.921569%, 29.019608%)" fill-opacity="1" d="M 424.839844 170.875 L 440.058594 170.875 L 440.058594 155.65625 L 424.839844 155.65625 Z M 424.839844 170.875 "/>
+<path fill-rule="nonzero" fill="rgb(63.921569%, 8.627451%, 43.529412%)" fill-opacity="1" d="M 424.839844 188.15625 L 440.058594 188.15625 L 440.058594 172.9375 L 424.839844 172.9375 Z M 424.839844 188.15625 "/>
 <g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
 <use xlink:href="#glyph-0-9" x="449.058594" y="168.12207"/>
 <use xlink:href="#glyph-0-10" x="453.058594" y="168.12207"/>
