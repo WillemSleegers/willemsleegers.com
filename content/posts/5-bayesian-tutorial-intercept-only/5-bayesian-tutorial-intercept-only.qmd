@@ -9,9 +9,6 @@ categories:
   - Bayesian statistics
   - regression
 code-fold: true
-knitr:
-  opts_chunk:
-    fig.path: "../../../public/figures/5-bayesian-tutorial-intercept-only/"
 ---
 
 This post is the first of a series of tutorial posts on Bayesian statistics. I'm not an expert on this topic, so this tutorial is partly, if not mostly, a way for me to figure it out myself.

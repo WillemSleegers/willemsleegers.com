@@ -11,9 +11,6 @@ categories:
   - Bayesian statistics
   - regression
 code-fold: true
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/5-bayesian-tutorial-intercept-only/
 ---
 
 
@@ -101,14 +98,15 @@ head(data)
 
 </details>
 
-|  height |   weight | age | male |
-|--------:|---------:|----:|-----:|
-| 151.765 | 47.82561 |  63 |    1 |
-| 139.700 | 36.48581 |  63 |    0 |
-| 136.525 | 31.86484 |  65 |    0 |
-| 156.845 | 53.04191 |  41 |    1 |
-| 145.415 | 41.27687 |  51 |    0 |
-| 163.830 | 62.99259 |  35 |    1 |
+    # A tibble: 6 × 4
+      height weight   age  male
+       <dbl>  <dbl> <dbl> <dbl>
+    1   152.   47.8    63     1
+    2   140.   36.5    63     0
+    3   137.   31.9    65     0
+    4   157.   53.0    41     1
+    5   145.   41.3    51     0
+    6   164.   63.0    35     1
 
 ## An intercept-only model
 
@@ -134,10 +132,12 @@ get_prior(height ~ 1, data = data)
 
 </details>
 
-| prior                    | class     | coef | group | resp | dpar | nlpar | lb  | ub  | source  |
-|:-------------------------|:----------|:-----|:------|:-----|:-----|:------|:----|:----|:--------|
-| student_t(3, 154.3, 8.5) | Intercept |      |       |      |      |       |     |     | default |
-| student_t(3, 0, 8.5)     | sigma     |      |       |      |      |       | 0   |     | default |
+                        prior     class coef group resp dpar nlpar lb ub tag
+     student_t(3, 154.3, 8.5) Intercept                                     
+         student_t(3, 0, 8.5)     sigma                             0       
+      source
+     default
+     default
 
 The output shows us that we need to set two priors, one for the
 Intercept and one for sigma. brms already determined a default prior for
@@ -242,7 +242,7 @@ ggplot(
 
 </details>
 
-![](../../../public/figures/5-bayesian-tutorial-intercept-only/height-mu-prior-1.svg)
+![](5-bayesian-tutorial-intercept-only_files/figure-commonmark/height-mu-prior-1.svg)
 
 My prior indicates that I believe the average height to be higher than
 the default prior. In terms of the standard deviation, we both seem to
@@ -324,7 +324,7 @@ ggplot(
 
 </details>
 
-![](../../../public/figures/5-bayesian-tutorial-intercept-only/height-sigma-prior-1.svg)
+![](5-bayesian-tutorial-intercept-only_files/figure-commonmark/height-sigma-prior-1.svg)
 
 As you can see, both distributions have longish tails, allowing for the
 possibility of high standard deviations. There are some notable
@@ -420,7 +420,7 @@ ggplot(heights_prior, aes(x = height)) +
 
 </details>
 
-![](../../../public/figures/5-bayesian-tutorial-intercept-only/prior-predictive-1.svg)
+![](5-bayesian-tutorial-intercept-only_files/figure-commonmark/prior-predictive-1.svg)
 
 Our priors result in a normal distribution of heights with the bulk of
 the observations ranging from about 120 cm to 205 cm. That seems fairly
@@ -476,7 +476,7 @@ model_height |>
 
 </details>
 
-![](../../../public/figures/5-bayesian-tutorial-intercept-only/chains-1.svg)
+![](5-bayesian-tutorial-intercept-only_files/figure-commonmark/chains-1.svg)
 
 The chains look good.
 
@@ -497,7 +497,7 @@ summary(model_height)
 </details>
 
      Family: gaussian 
-      Links: mu = identity; sigma = identity 
+      Links: mu = identity 
     Formula: height ~ 1 
        Data: data (Number of observations: 352) 
       Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
@@ -561,7 +561,7 @@ ggplot(draws, aes(x = b_Intercept, color = distribution, fill = distribution)) +
 
 </details>
 
-![](../../../public/figures/5-bayesian-tutorial-intercept-only/prior-posterior-mu-1.svg)
+![](5-bayesian-tutorial-intercept-only_files/figure-commonmark/prior-posterior-mu-1.svg)
 
 Here we see that the posterior distribution of average heights is much
 more narrow and centered around 155 cm. So not only should we switch
@@ -589,7 +589,7 @@ ggplot(draws, aes(x = sigma, color = distribution, fill = distribution)) +
 
 </details>
 
-![](../../../public/figures/5-bayesian-tutorial-intercept-only/prior-posterior-sigma-1.svg)
+![](5-bayesian-tutorial-intercept-only_files/figure-commonmark/prior-posterior-sigma-1.svg)
 
 Similarly, we see that the posterior for sigma is also much more narrow
 and around 8.
@@ -624,7 +624,7 @@ ggplot(heights, aes(x = height, color = distribution, fill = distribution)) +
 
 </details>
 
-![](../../../public/figures/5-bayesian-tutorial-intercept-only/prior-posterior-predictive-check-1.svg)
+![](5-bayesian-tutorial-intercept-only_files/figure-commonmark/prior-posterior-predictive-check-1.svg)
 
 This is one of my favorite plots. It shows how we started with a belief
 about heights and what our new belief should be, after seeing the data.

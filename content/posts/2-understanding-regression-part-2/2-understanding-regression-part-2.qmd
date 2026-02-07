@@ -29,11 +29,9 @@ update_geom_defaults(
 
 ## Recap
 
-In Part 1, I introduced a shift in perspective: instead of asking "how do I summarize this data?" I asked: **What distribution might describe this data?**
+In Part 1, I introduced the core perspective to use when analyzing data: **What distribution might generate this data?**
 
-I looked at heights from adults in the !Kung San census and ran an intercept-only regression model. The model gave us an estimate (154.6 cm) and a standard error (0.64 cm). But what do these numbers mean?
-
-I argued that we should think of statistical modeling as choosing and fitting distributions. When we run `lm(height ~ 1)`, we're proposing that heights follow a normal distribution and estimating its parameters (μ and σ).
+I argued that we should think of statistical modeling as choosing and fitting distributions. When we run `lm(height ~ 1)`, we're proposing that heights follow a normal distribution and estimatate its parameters (μ and σ).
 
 But this raises a question: Why the normal distribution? That's what this post is about.
 
@@ -62,7 +60,7 @@ When we look at this data, we see a pattern:
 - Extreme values (very short or very tall) are less common
 - The pattern looks roughly symmetric
 
-We can describe this pattern mathematically using a **probability distribution**.
+So, looking at this data, it might be reasonable to conclude it a process described by the normal distribution might generate this data. However, we
 
 ## The normal distribution
 
@@ -92,7 +90,7 @@ This curve represents a mathematical model. The height of the curve at any point
 
 You might be wondering: "Why should I use the normal distribution for heights? What if it's wrong?"
 
-Good question. Let me be clear: I'm not claiming that heights in reality follow a perfect normal distribution. No real data ever does.
+Good question. Let me be clear: I'm not claiming that heights in reality follow a perfect normal distribution. 
 
 Instead, I'm making a pragmatic modeling choice. Here's the reasoning:
 
