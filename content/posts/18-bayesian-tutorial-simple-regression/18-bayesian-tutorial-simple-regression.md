@@ -4,16 +4,13 @@ description: >-
   The second of a series of tutorial posts on Bayesian analyses. In this post I
   focus on using brms to run a regression with a single predictor.
 date: 2023-02-02T00:00:00.000Z
-updated: 2024-12-30T00:00:00.000Z
+updated: 2026-02-08T00:00:00.000Z
 categories:
   - statistics
   - tutorial
   - Bayesian statistics
   - regression
 code-fold: true
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/18-bayesian-tutorial-simple-regression/
 ---
 
 
@@ -42,7 +39,6 @@ library(modelr)
 theme_set(theme_minimal(base_size = 16))
 primary <- "#16a34a"
 secondary <- "#A3166F"
-palette <- c(primary, "#138d40", "#107636", "#0d602b")
 
 options(
   mc.cores = 4,
@@ -72,12 +68,16 @@ get_prior(height ~ weight, data = data)
 
 </details>
 
-| prior                    | class     | coef   | group | resp | dpar | nlpar | lb  | ub  | source  |
-|:-------------------------|:----------|:-------|:------|:-----|:-----|:------|:----|:----|:--------|
-|                          | b         |        |       |      |      |       |     |     | default |
-|                          | b         | weight |       |      |      |       |     |     | default |
-| student_t(3, 154.3, 8.5) | Intercept |        |       |      |      |       |     |     | default |
-| student_t(3, 0, 8.5)     | sigma     |        |       |      |      |       | 0   |     | default |
+                        prior     class   coef group resp dpar nlpar lb ub tag
+                       (flat)         b                                       
+                       (flat)         b weight                                
+     student_t(3, 154.3, 8.5) Intercept                                       
+         student_t(3, 0, 8.5)     sigma                               0       
+           source
+          default
+     (vectorized)
+          default
+          default
 
 The output is a bit trickier compared to the intercept-only model
 output. There’s the Intercept and sigma priors again, as well as two
@@ -199,7 +199,8 @@ ever).
 ``` r
 draws <- spread_draws(
   model_height_weight_prior,
-  b_Intercept, b_weight_mc,
+  b_Intercept,
+  b_weight_mc,
   ndraws = 100
 )
 
@@ -212,7 +213,8 @@ ggplot(data, aes(x = weight_mc, y = height)) +
   geom_abline(
     data = draws,
     mapping = aes(intercept = b_Intercept, slope = b_weight_mc),
-    color = primary, alpha = .5
+    color = primary,
+    alpha = .5
   ) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   geom_hline(yintercept = 272, linetype = "dashed") +
@@ -222,7 +224,7 @@ ggplot(data, aes(x = weight_mc, y = height)) +
 
 </details>
 
-![](../../../public/figures/18-bayesian-tutorial-simple-regression/prior-predictive-check-weight-1.svg)
+![](18-bayesian-tutorial-simple-regression_files/figure-commonmark/prior-predictive-check-weight-1.svg)
 
 The plot shows a wide range of possible slopes, some of which are
 definitely unlikely because they lead to heights that are smaller than 0
@@ -269,7 +271,9 @@ Let’s inspect the lines again.
 
 ``` r
 draws <- spread_draws(
-  model_height_weight_prior_2, b_Intercept, b_weight_mc,
+  model_height_weight_prior_2,
+  b_Intercept,
+  b_weight_mc,
   ndraws = 100
 )
 
@@ -280,7 +284,8 @@ ggplot(data, aes(x = weight_mc, y = height)) +
   geom_abline(
     data = draws,
     mapping = aes(intercept = b_Intercept, slope = b_weight_mc),
-    color = primary, alpha = .5
+    color = primary,
+    alpha = .5
   ) +
   labs(x = "Weight", y = "Height") +
   scale_x_continuous(labels = function(x) round(x + weight_mean))
@@ -288,7 +293,7 @@ ggplot(data, aes(x = weight_mc, y = height)) +
 
 </details>
 
-![](../../../public/figures/18-bayesian-tutorial-simple-regression/prior-predictive-check-weight-update-1.svg)
+![](18-bayesian-tutorial-simple-regression_files/figure-commonmark/prior-predictive-check-weight-update-1.svg)
 
 This looks a lot better, so let’s run the model for real now.
 `sample_prior` is now set to `TRUE` so we obtain samples of both prior
@@ -319,7 +324,7 @@ model_height_weight
 </details>
 
      Family: gaussian 
-      Links: mu = identity; sigma = identity 
+      Links: mu = identity 
     Formula: height ~ weight_mc 
        Data: data (Number of observations: 352) 
       Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
@@ -358,7 +363,9 @@ draws <- model_height_weight |>
   gather_draws(prior_b, b_weight_mc) |>
   mutate(
     distribution = if_else(
-      str_detect(.variable, "prior"), "prior", "posterior"
+      str_detect(.variable, "prior"),
+      "prior",
+      "posterior"
     )
   )
 
@@ -371,7 +378,7 @@ ggplot(draws, aes(x = .value, fill = fct_rev(distribution))) +
 
 </details>
 
-![](../../../public/figures/18-bayesian-tutorial-simple-regression/weight-prior-posterior-1.svg)
+![](18-bayesian-tutorial-simple-regression_files/figure-commonmark/weight-prior-posterior-1.svg)
 
 Apparently our prior was still very uninformed because the posterior
 shows we can be confident in a much narrower range of slopes!
@@ -411,7 +418,8 @@ ggplot() +
   geom_point(
     mapping = aes(x = weight, y = height),
     data = data,
-    color = primary, shape = 21
+    color = primary,
+    shape = 21
   ) +
   geom_ribbon(
     mapping = aes(ymin = .lower, ymax = .upper, x = weight),
@@ -427,7 +435,7 @@ ggplot() +
 
 </details>
 
-![](../../../public/figures/18-bayesian-tutorial-simple-regression/weight-slope-1.svg)
+![](18-bayesian-tutorial-simple-regression_files/figure-commonmark/weight-slope-1.svg)
 
 This graph is great because it shows us how confident we can be in the
 regression line. It does omit one source of uncertainty, though. The
@@ -450,7 +458,8 @@ ggplot() +
   geom_point(
     aes(x = weight, y = height),
     data = data,
-    color = primary, shape = 21
+    color = primary,
+    shape = 21
   ) +
   geom_ribbon(
     aes(ymin = .lower, ymax = .upper, x = weight),
@@ -466,7 +475,7 @@ ggplot() +
 
 </details>
 
-![](../../../public/figures/18-bayesian-tutorial-simple-regression/weight-slope-predicted-1.svg)
+![](18-bayesian-tutorial-simple-regression_files/figure-commonmark/weight-slope-predicted-1.svg)
 
 While this graph is pretty cool, I haven’t ever seen one in a social
 psychology paper, probably because academic psychologists are mostly

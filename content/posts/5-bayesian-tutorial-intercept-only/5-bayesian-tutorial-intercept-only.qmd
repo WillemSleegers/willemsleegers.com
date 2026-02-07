@@ -2,7 +2,7 @@
 title: "Bayesian tutorial: Intercept-only model"
 description: "The first of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to run an intercept-only regression model."
 date: 2023-02-01
-updated: 2024-1-14
+updated: 2026-02-08
 categories:
   - statistics
   - tutorial
@@ -76,9 +76,7 @@ The output shows us that we need to set two priors, one for the Intercept and on
 
 Also, using the `get_prior()` function is not the best way to think about which priors we need. Using the function will give us the answer, but it doesn't really improve our understanding of why these two priors are needed. In this case I also omitted an important specification of the heights, which is that they are normally distributed (the default in `get_prior()`). So let's instead write down the model in a different way, which explicitly specifies how we think the heights are distributed and which parameters we need to set priors on. If we think the heights are normally distributed, we define our model like this:
 
-<math>
-$$heights_i ∼ Normal(\mu, \sigma)$$
-</math>
+<math> $$heights_i ∼ Normal(\mu, \sigma)$$ </math>
 
 We explicitly note that the individual heights come from a normal distribution, which is determined by the parameters <math>$\mu$</math> and <math>$\sigma$</math>. This then also immediately tells us that we need to set two priors, one on <math>$\mu$</math> and one on <math>$\sigma$</math>.
 

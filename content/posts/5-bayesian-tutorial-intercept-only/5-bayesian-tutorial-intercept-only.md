@@ -4,7 +4,7 @@ description: >-
   The first of a series of tutorial posts on Bayesian analyses. In this post I
   focus on using brms to run an intercept-only regression model.
 date: 2023-02-01T00:00:00.000Z
-updated: 2024-1-14
+updated: 2026-02-07T00:00:00.000Z
 categories:
   - statistics
   - tutorial

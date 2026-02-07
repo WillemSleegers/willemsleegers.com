@@ -2,16 +2,13 @@
 title: "Bayesian tutorial: Two groups"
 description: "The fourth of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model the difference between two groups."
 date: 2023-04-24
-updated: 2024-12-30
+updated: 2026-02-08
 categories:
   - statistics
   - tutorial
   - Bayesian statistics
   - regression
 code-fold: true
-knitr:
-  opts_chunk:
-    fig.path: "../../../public/figures/20-bayesian-tutorial-2-groups/"
 ---
 
 In this blog post I will cover how to use brms to analyze the difference between two groups. Interestingly, this might seem like a very simple analysis, but there are actually multiple ways to go about this. I'll try to cover a few here.

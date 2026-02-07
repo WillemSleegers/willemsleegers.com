@@ -16,7 +16,7 @@ import { TableOfContents } from "@/components/post/table-of-contents"
 import { SHIKI_CONFIG, IMAGE_DEFAULTS } from "@/lib/constants"
 import { formatDate } from "@/lib/utils"
 import { reconstructMarkdown } from "@/lib/markdown/reconstruction"
-import { replaceClassWithClassName, extractQuartoToc } from "@/lib/markdown/transforms"
+import { extractQuartoToc } from "@/lib/markdown/transforms"
 import { Triangle } from "lucide-react"
 
 import { posts } from "#site/content"
@@ -44,7 +44,7 @@ export default async function Page(props0: {
 
   // Extract Quarto's TOC and remove it from content
   const { toc, content: contentWithoutToc } = extractQuartoToc(post.content)
-  const content = replaceClassWithClassName(contentWithoutToc)
+  const content = contentWithoutToc
 
   return (
     <main className="p-6">

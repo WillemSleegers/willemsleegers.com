@@ -2,16 +2,13 @@
 title: "Bayesian tutorial: Single predictor regression"
 description: "The second of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to run a regression with a single predictor."
 date: 2023-02-02
-updated: 2024-12-30
+updated: 2026-02-08
 categories:
   - statistics
   - tutorial
   - Bayesian statistics
   - regression
 code-fold: true
-knitr:
-  opts_chunk:
-    fig.path: "../../../public/figures/18-bayesian-tutorial-simple-regression/"
 ---
 
 In my previous [blog post](/blog/5-bayesian-tutorial-intercept-only) I showed how to use brms and tidybayes to run an intercept-only model. Now let's extend that model by adding a predictor.
@@ -110,7 +107,8 @@ To help make sense of the sensibility of the slopes I've added the average weigh
 #| message: false
 draws <- spread_draws(
   model_height_weight_prior,
-  b_Intercept, b_weight_mc,
+  b_Intercept,
+  b_weight_mc,
   ndraws = 100
 )
 
@@ -123,7 +121,8 @@ ggplot(data, aes(x = weight_mc, y = height)) +
   geom_abline(
     data = draws,
     mapping = aes(intercept = b_Intercept, slope = b_weight_mc),
-    color = primary, alpha = .5
+    color = primary,
+    alpha = .5
   ) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   geom_hline(yintercept = 272, linetype = "dashed") +
@@ -158,7 +157,9 @@ Let's inspect the lines again.
 ```{r}
 #| label: prior-predictive-check-weight-update
 draws <- spread_draws(
-  model_height_weight_prior_2, b_Intercept, b_weight_mc,
+  model_height_weight_prior_2,
+  b_Intercept,
+  b_weight_mc,
   ndraws = 100
 )
 
@@ -169,7 +170,8 @@ ggplot(data, aes(x = weight_mc, y = height)) +
   geom_abline(
     data = draws,
     mapping = aes(intercept = b_Intercept, slope = b_weight_mc),
-    color = primary, alpha = .5
+    color = primary,
+    alpha = .5
   ) +
   labs(x = "Weight", y = "Height") +
   scale_x_continuous(labels = function(x) round(x + weight_mean))
@@ -208,7 +210,9 @@ draws <- model_height_weight |>
   gather_draws(prior_b, b_weight_mc) |>
   mutate(
     distribution = if_else(
-      str_detect(.variable, "prior"), "prior", "posterior"
+      str_detect(.variable, "prior"),
+      "prior",
+      "posterior"
     )
   )
 
@@ -238,7 +242,8 @@ ggplot() +
   geom_point(
     mapping = aes(x = weight, y = height),
     data = data,
-    color = primary, shape = 21
+    color = primary,
+    shape = 21
   ) +
   geom_ribbon(
     mapping = aes(ymin = .lower, ymax = .upper, x = weight),
@@ -265,7 +270,8 @@ ggplot() +
   geom_point(
     aes(x = weight, y = height),
     data = data,
-    color = primary, shape = 21
+    color = primary,
+    shape = 21
   ) +
   geom_ribbon(
     aes(ymin = .lower, ymax = .upper, x = weight),

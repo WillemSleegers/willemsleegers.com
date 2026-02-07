@@ -61,6 +61,7 @@ const quartoMarkdownLoader: Loader = {
       return {
         data: {
           ...data,
+          tags: data.tags ?? data.categories,
           content: content,
         }
       }

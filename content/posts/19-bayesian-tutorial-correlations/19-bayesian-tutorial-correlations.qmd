@@ -2,16 +2,13 @@
 title: "Bayesian tutorial: Correlation"
 description: "The third of a series of tutorial posts on Bayesian analyses. In this post I focus on using brms to model a correlation."
 date: 2023-02-12
-updated: 2024-12-30
-categories:
+updated: 2026-02-08
+tags:
   - statistics
   - tutorial
   - Bayesian statistics
   - regression
 code-fold: true
-knitr:
-  opts_chunk:
-    fig.path: "../../../public/figures/19-bayesian-tutorial-correlations/"
 ---
 
 In my previous [blog post](/blog/18-bayesian-tutorial-simple-regression/), I showed how to use brms and tidybayes to run a simple regression, i.e., a regression with a single predictor. This analysis required us to set three priors: an intercept prior, a sigma prior, and a slope prior. We can simplify this analysis by turning it into a correlational analysis. This will remove the intercept prior and lets us think about the prior for the slope as a standardized effect size, i.e., the correlation. 
@@ -41,8 +38,8 @@ data <- read_csv("Howell1.csv")
 data <- data |>
   filter(age >= 18) |>
   mutate(
-    height_z  = (height - mean(height)) / sd(height),
-    weight_z  = (weight - mean(weight)) / sd(weight)
+    height_z = (height - mean(height)) / sd(height),
+    weight_z = (weight - mean(weight)) / sd(weight)
   )
 ```
 
@@ -95,7 +92,9 @@ model <- brm(
     prior(uniform(0, 1), class = "sigma", ub = 1),
     prior(
       skew_normal(.7, .4, -3),
-      class = "b", lb = -1, ub = 1
+      class = "b",
+      lb = -1,
+      ub = 1
     )
   ),
   sample_prior = TRUE,
@@ -116,7 +115,9 @@ draws <- model |>
   ungroup() |>
   mutate(
     distribution = if_else(
-      str_detect(.variable, "prior"), "prior", "posterior"
+      str_detect(.variable, "prior"),
+      "prior",
+      "posterior"
     ),
     distribution = fct_relevel(distribution, "prior")
   )
@@ -172,7 +173,8 @@ model_generic_prior |>
   mutate(
     distribution = if_else(
       str_detect(.variable, "prior"),
-      "prior", "posterior"
+      "prior",
+      "posterior"
     ),
     distribution = fct_relevel(distribution, "prior")
   ) |>
@@ -288,7 +290,8 @@ model <- brm(
   formula = bf(
     mvbind(height_z, weight_z, age_z) ~ 0,
     sigma ~ 0
-  ) + set_rescor(TRUE),
+  ) +
+    set_rescor(TRUE),
   data = data,
   family = gaussian(),
   prior = prior(lkj(2), class = rescor),
@@ -309,7 +312,9 @@ Let's also plot the posteriors, including their prior.
 #| label: simultaneous-correlations-plot
 draws <- model |>
   gather_draws(
-    prior_rescor, rescor__heightz__weightz, rescor__heightz__agez,
+    prior_rescor,
+    rescor__heightz__weightz,
+    rescor__heightz__agez,
     rescor__weightz__agez
   ) |>
   ungroup() |>
