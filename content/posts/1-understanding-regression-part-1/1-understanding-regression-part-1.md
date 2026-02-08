@@ -5,7 +5,7 @@ description: >-
   post I focus on what the main question is that we should be asking when we
   think we should use regression.
 date: 2025-01-15T00:00:00.000Z
-tags:
+categories:
   - statistics
   - tutorial
   - regression
@@ -94,7 +94,7 @@ head(data)
 
 </details>
 
-    # A tibble: 6 × 4
+    # A tibble: 6 x 4
       height weight   age  male
        <dbl>  <dbl> <dbl> <dbl>
     1   152.   47.8    63     1
@@ -274,8 +274,8 @@ is our estimate of μ, and the residual standard error is our estimate of
 This lets us:
 
 - Answer questions about the typical height (μ)
-- Quantify our uncertainty about that estimate (the standard error tells
-  us how uncertain we are about μ)
+- Quantify our uncertainty about that estimate (the standard error of
+  the μ tells us how uncertain we are about μ)
 - Predict the range of heights we’d expect in a new sample (using both μ
   and σ)
 - Check whether the normal distribution is appropriate (Does it match

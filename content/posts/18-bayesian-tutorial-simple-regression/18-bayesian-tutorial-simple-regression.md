@@ -69,14 +69,14 @@ get_prior(height ~ weight, data = data)
 </details>
 
                         prior     class   coef group resp dpar nlpar lb ub tag
+     student_t(3, 154.3, 8.5) Intercept                                       
                        (flat)         b                                       
                        (flat)         b weight                                
-     student_t(3, 154.3, 8.5) Intercept                                       
          student_t(3, 0, 8.5)     sigma                               0       
            source
           default
-     (vectorized)
           default
+     (vectorized)
           default
 
 The output is a bit trickier compared to the intercept-only model

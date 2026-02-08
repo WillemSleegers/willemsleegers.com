@@ -8,13 +8,9 @@ categories:
 code-tools: true
 code-fold: true
 toc: true
-format: 
+format:
    html:
      df-print: kable
-knitr:
-  opts_chunk: 
-    R.options:
-      knitr.kable.NA: ''
 draft: true
 ---
 
@@ -23,6 +19,8 @@ draft: true
 #| message: false
 library(tidyverse)
 library(DT)
+
+options(knitr.kable.NA = "")
 
 labels <- read_csv("./Likert - Labels.csv")
 ```
@@ -46,7 +44,8 @@ labels |>
     rownames = FALSE,
     filter = "top",
     options = list(
-      pageLength = 10, dom = "tip",
+      pageLength = 10,
+      dom = "tip",
       columnDefs = list(
         list(width = "20px", targets = c(1, 2, 3))
       )

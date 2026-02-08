@@ -7,7 +7,7 @@ description: >-
   so.
 date: 2021-07-08T00:00:00.000Z
 updated: 2024-10-21T00:00:00.000Z
-tags:
+categories:
   - academia
   - writing
   - statistics

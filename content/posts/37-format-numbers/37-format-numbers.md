@@ -2,6 +2,7 @@
 title: Formatting numbers
 description: A showcase of the function I use to format numbers.
 date: 2024-05-17T00:00:00.000Z
+updated: 2025-01-02T00:00:00.000Z
 categories:
   - R
   - function
@@ -126,5 +127,3 @@ post when I make adjustments to the function.
 - The function is now vectorized, so it works when you give it multiple
   numbers at once.
 - The function can now deal with missing values.
-
-*This post was last updated on 2025-01-03.*

@@ -7,9 +7,6 @@ date: 2025-02-11T00:00:00.000Z
 categories:
   - R
   - visualization
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/44-pretty-bar-plot/
 draft: true
 ---
 
@@ -38,14 +35,15 @@ head(mpg)
 
 </details>
 
-| manufacturer | model | displ | year | cyl | trans      | drv | cty | hwy | fl  | class   |
-|:-------------|:------|------:|-----:|----:|:-----------|:----|----:|----:|:----|:--------|
-| audi         | a4    |   1.8 | 1999 |   4 | auto(l5)   | f   |  18 |  29 | p   | compact |
-| audi         | a4    |   1.8 | 1999 |   4 | manual(m5) | f   |  21 |  29 | p   | compact |
-| audi         | a4    |   2.0 | 2008 |   4 | manual(m6) | f   |  20 |  31 | p   | compact |
-| audi         | a4    |   2.0 | 2008 |   4 | auto(av)   | f   |  21 |  30 | p   | compact |
-| audi         | a4    |   2.8 | 1999 |   6 | auto(l5)   | f   |  16 |  26 | p   | compact |
-| audi         | a4    |   2.8 | 1999 |   6 | manual(m5) | f   |  18 |  26 | p   | compact |
+    # A tibble: 6 x 11
+      manufacturer model displ  year   cyl trans      drv     cty   hwy fl    class 
+      <chr>        <chr> <dbl> <int> <int> <chr>      <chr> <int> <int> <chr> <chr> 
+    1 audi         a4      1.8  1999     4 auto(l5)   f        18    29 p     compa~
+    2 audi         a4      1.8  1999     4 manual(m5) f        21    29 p     compa~
+    3 audi         a4      2    2008     4 manual(m6) f        20    31 p     compa~
+    4 audi         a4      2    2008     4 auto(av)   f        21    30 p     compa~
+    5 audi         a4      2.8  1999     6 auto(l5)   f        16    26 p     compa~
+    6 audi         a4      2.8  1999     6 manual(m5) f        18    26 p     compa~
 
 ## Step 1: Basic bar plot
 
@@ -59,7 +57,7 @@ ggplot(mpg, aes(x = class)) +
 
 </details>
 
-![](../../../public/figures/44-pretty-bar-plot/step-1-1.svg)
+![](44-pretty-bar-plot_files/figure-commonmark/step-1-1.svg)
 
 ## Step 2: Prepare the data
 
@@ -100,7 +98,7 @@ ggplot(class_props, aes(x = class, y = prop)) +
 
 </details>
 
-![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-1-1.svg)
+![](44-pretty-bar-plot_files/figure-commonmark/unnamed-chunk-1-1.svg)
 
 ## Step 4: Add percentages
 
@@ -116,7 +114,7 @@ ggplot(class_props, aes(x = class, y = prop)) +
 
 </details>
 
-![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-2-1.svg)
+![](44-pretty-bar-plot_files/figure-commonmark/unnamed-chunk-2-1.svg)
 
 ## Step 4: Add and/or remove labels
 
@@ -133,7 +131,7 @@ ggplot(class_props, aes(x = class, y = prop)) +
 
 </details>
 
-![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-3-1.svg)
+![](44-pretty-bar-plot_files/figure-commonmark/unnamed-chunk-3-1.svg)
 
 <details open class="code-fold">
 <summary>Code</summary>
@@ -149,7 +147,7 @@ ggplot(class_props, aes(x = class, y = prop)) +
 
 </details>
 
-![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-4-1.svg)
+![](44-pretty-bar-plot_files/figure-commonmark/unnamed-chunk-4-1.svg)
 
 ## Step X: Default settings
 
@@ -185,4 +183,4 @@ ggplot(class_props, aes(x = class, y = prop)) +
 
 </details>
 
-![](../../../public/figures/44-pretty-bar-plot/unnamed-chunk-5-1.svg)
+![](44-pretty-bar-plot_files/figure-commonmark/unnamed-chunk-5-1.svg)

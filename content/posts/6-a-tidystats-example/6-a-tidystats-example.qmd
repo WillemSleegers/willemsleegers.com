@@ -9,9 +9,6 @@ categories:
   - tutorial
 code-fold: show
 draft: true
-knitr:
-  opts_chunk:
-    fig.path: "../../../public/figures/6-a-tidystats-example/"
 ---
 
 ## Introduction

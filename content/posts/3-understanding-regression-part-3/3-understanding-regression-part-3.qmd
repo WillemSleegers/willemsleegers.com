@@ -2,7 +2,7 @@
 title: "Understanding regression (part 3)"
 description: "We've chosen the normal distribution to describe heights. Now we need to estimate its parameters μ and σ from our sample. This post shows that lm() does exactly this: the intercept estimates μ (the mean) and the residual standard error estimates σ."
 date: 2025-01-17
-tags:
+categories:
   - statistics
   - tutorial
   - regression

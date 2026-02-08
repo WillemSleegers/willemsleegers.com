@@ -7,9 +7,6 @@ date: 2025-05-02T00:00:00.000Z
 categories:
   - R
   - statistics
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/45-group-comparisons-all-at-once/
 ---
 
 
@@ -122,14 +119,15 @@ head(data)
 
 </details>
 
-| outcome | condition | value |
-|:--------|:----------|------:|
-| one     | A         |     1 |
-| one     | B         |     0 |
-| two     | A         |     0 |
-| two     | B         |     0 |
-| three   | A         |     0 |
-| three   | B         |     0 |
+    # A tibble: 6 x 3
+      outcome condition value
+      <fct>   <chr>     <dbl>
+    1 one     A             1
+    2 one     B             0
+    3 two     A             0
+    4 two     B             1
+    5 three   A             1
+    6 three   B             1
 
 And let’s also make sure the proportions are what they are supposed to
 be (e.g., the proportion of condition A in outcome ‘one’ should be 0.5).
@@ -147,14 +145,16 @@ data |>
 
 </details>
 
-| outcome | condition | value |   n | prop |
-|:--------|:----------|------:|----:|-----:|
-| one     | A         |     1 |  50 | 0.50 |
-| one     | B         |     1 |  60 | 0.60 |
-| two     | A         |     1 |  25 | 0.25 |
-| two     | B         |     1 |  50 | 0.50 |
-| three   | A         |     1 |  25 | 0.25 |
-| three   | B         |     1 |  75 | 0.75 |
+    # A tibble: 6 x 5
+    # Groups:   outcome, condition [6]
+      outcome condition value     n  prop
+      <fct>   <chr>     <dbl> <int> <dbl>
+    1 one     A             1    50  0.5 
+    2 one     B             1    60  0.6 
+    3 two     A             1    25  0.25
+    4 two     B             1    50  0.5 
+    5 three   A             1    25  0.25
+    6 three   B             1    75  0.75
 
 That looks correct. One thing we now would like to be able to do is
 obtain the differences in proportions between the two groups, by
@@ -187,7 +187,7 @@ summary(fit_one)
 
     Coefficients:
                   Estimate Std. Error z value Pr(>|z|)
-    (Intercept) -1.015e-15  2.000e-01   0.000    1.000
+    (Intercept) -1.301e-15  2.000e-01   0.000    1.000
     conditionB   4.055e-01  2.858e-01   1.419    0.156
 
     (Dispersion parameter for binomial family taken to be 1)
@@ -220,7 +220,7 @@ avg_comparisons(
           0.1       0.07 1.43    0.153 2.7 -0.0372  0.237
 
     Term: condition
-    Type:  response 
+    Type: response
     Comparison: B - A
 
 We see a difference of 0.1, which matches our parameter values (0.6 -
@@ -267,7 +267,7 @@ summary(fit_all)
 
     Coefficients:
                               Estimate Std. Error z value Pr(>|z|)    
-    outcomeone              -1.554e-15  2.000e-01   0.000 1.000000    
+    outcomeone              -6.979e-16  2.000e-01   0.000 1.000000    
     outcometwo              -1.099e+00  2.309e-01  -4.757 1.96e-06 ***
     outcomethree            -1.099e+00  2.309e-01  -4.757 1.96e-06 ***
     outcomeone:conditionB    4.055e-01  2.858e-01   1.419 0.155948    
@@ -308,7 +308,7 @@ avg_comparisons(
        three     0.50     0.0612 8.16   <0.001 51.5  0.3800  0.620
 
     Term: condition
-    Type:  response 
+    Type: response
     Comparison: B - A
 
 There we go. Now we performed three logistic regression analyses using a

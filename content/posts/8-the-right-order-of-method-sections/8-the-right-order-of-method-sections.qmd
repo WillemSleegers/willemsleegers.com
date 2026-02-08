@@ -3,7 +3,7 @@ title: The right order of method sections
 description: "Method sections in academic (social psychology) papers usually consist of the following sections: Participants, Design, Procedure, and Materials. They also tend to be presented in this order. But is this the right order? I don't think so."
 date: 2021-07-08
 updated: 2024-10-21
-tags:
+categories:
   - academia
   - writing
   - statistics

@@ -3,15 +3,12 @@ title: Animals slaughtered in the Netherlands
 description: I take a look at how many animals are slaughtered in the Netherlands.
 date: 2022-09-18T00:00:00.000Z
 updated: 2024-11-01T00:00:00.000Z
-tags:
+categories:
   - animal welfare
   - data cleaning
   - data visualization
 code-tools: true
 code-fold: true
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/16-animals-slaughtered-netherlands/
 ---
 
 
@@ -79,14 +76,15 @@ head(data)
 
 </details>
 
-| Slachtdieren     | Perioden      | Aantal slachtingen (x 1 000) |
-|:-----------------|:--------------|-----------------------------:|
-| Rundvee (totaal) | 1990 januari  |                        193.7 |
-| Rundvee (totaal) | 1990 februari |                        160.2 |
-| Rundvee (totaal) | 1990 maart    |                        189.9 |
-| Rundvee (totaal) | 1990 april    |                        174.3 |
-| Rundvee (totaal) | 1990 mei      |                        201.4 |
-| Rundvee (totaal) | 1990 juni     |                        172.3 |
+    # A tibble: 6 x 3
+      Slachtdieren     Perioden      `Aantal slachtingen (x 1 000)`
+      <chr>            <chr>                                  <dbl>
+    1 Rundvee (totaal) 1990 januari                            194.
+    2 Rundvee (totaal) 1990 februari                           160.
+    3 Rundvee (totaal) 1990 maart                              190.
+    4 Rundvee (totaal) 1990 april                              174.
+    5 Rundvee (totaal) 1990 mei                                201.
+    6 Rundvee (totaal) 1990 juni                               172.
 
 It should be no surprise, but the data is in Dutch. Let’s translate the
 data, starting with the columns. One of the columns is called
@@ -123,14 +121,15 @@ count(data, period) |> head()
 
 </details>
 
-| period        |   n |
-|:--------------|----:|
-| 1990          |  17 |
-| 1990 april    |  17 |
-| 1990 augustus |  17 |
-| 1990 december |  17 |
-| 1990 februari |  17 |
-| 1990 januari  |  17 |
+    # A tibble: 6 x 2
+      period            n
+      <chr>         <int>
+    1 1990             17
+    2 1990 april       17
+    3 1990 augustus    17
+    4 1990 december    17
+    5 1990 februari    17
+    6 1990 januari     17
 
 Curiously, not all rows in the data contain both the year *and* the
 month. Some only have the year. This is important because that means we
@@ -149,14 +148,15 @@ count(data, period) |> tail()
 
 </details>
 
-| period          |   n |
-|:----------------|----:|
-| 2022 april\*    |  17 |
-| 2022 februari\* |  17 |
-| 2022 januari\*  |  17 |
-| 2022 juni\*     |  17 |
-| 2022 maart\*    |  17 |
-| 2022 mei\*      |  17 |
+    # A tibble: 6 x 2
+      period             n
+      <chr>          <int>
+    1 2022 april*       17
+    2 2022 februari*    17
+    3 2022 januari*     17
+    4 2022 juni*        17
+    5 2022 maart*       17
+    6 2022 mei*         17
 
 The last several months have an asterisk in the month name. This
 asterisk indicates that the data for these months has not yet been
@@ -213,25 +213,26 @@ count(data, animal)
 
 </details>
 
-| animal                               |   n |
-|:-------------------------------------|----:|
-| Eenhoevigen                          | 422 |
-| Geiten (totaal)                      | 422 |
-| Kalkoenen                            | 422 |
-| Kalveren jonger dan 9 maanden        | 422 |
-| Kalveren van 9 tot en met 12 maanden | 422 |
-| Koeien                               | 422 |
-| Overig pluimvee                      | 422 |
-| Overige kippen                       | 422 |
-| Rundvee (totaal)                     | 422 |
-| Schapen incl. lammeren               | 422 |
-| Schapenlammeren                      | 422 |
-| Stieren                              | 422 |
-| Totaal kalveren                      | 422 |
-| Totaal volwassen runderen            | 422 |
-| Vaarzen                              | 422 |
-| Varkens (totaal)                     | 422 |
-| Vleeskuikens                         | 422 |
+    # A tibble: 17 x 2
+       animal                                   n
+       <chr>                                <int>
+     1 Eenhoevigen                            422
+     2 Geiten (totaal)                        422
+     3 Kalkoenen                              422
+     4 Kalveren jonger dan 9 maanden          422
+     5 Kalveren van 9 tot en met 12 maanden   422
+     6 Koeien                                 422
+     7 Overig pluimvee                        422
+     8 Overige kippen                         422
+     9 Rundvee (totaal)                       422
+    10 Schapen incl. lammeren                 422
+    11 Schapenlammeren                        422
+    12 Stieren                                422
+    13 Totaal kalveren                        422
+    14 Totaal volwassen runderen              422
+    15 Vaarzen                                422
+    16 Varkens (totaal)                       422
+    17 Vleeskuikens                           422
 
 Hmm… it looks like there are a few challenges here. First, we seem to
 have both total values and non-total values, so we should take care to
@@ -316,17 +317,18 @@ count(data, animal)
 
 </details>
 
-| animal                    |   n |
-|:--------------------------|----:|
-| broilers                  | 422 |
-| cattle                    | 422 |
-| chicken (mostly layers)   | 422 |
-| goats                     | 422 |
-| pigs                      | 422 |
-| poultry (misc)            | 422 |
-| sheep                     | 422 |
-| turkeys                   | 422 |
-| ungulates (mostly horses) | 422 |
+    # A tibble: 9 x 2
+      animal                        n
+      <chr>                     <int>
+    1 broilers                    422
+    2 cattle                      422
+    3 chicken (mostly layers)     422
+    4 goats                       422
+    5 pigs                        422
+    6 poultry (misc)              422
+    7 sheep                       422
+    8 turkeys                     422
+    9 ungulates (mostly horses)   422
 
 This looks fine to me, which means we are almost done with the data
 cleaning. At this point I want to create two separate data frames: one
@@ -387,7 +389,7 @@ ggplot(data, aes(x = year_month, y = count)) +
 
 </details>
 
-![](../../../public/figures/16-animals-slaughtered-netherlands/plot-monthly-data-1.svg)
+![](16-animals-slaughtered-netherlands_files/figure-commonmark/plot-monthly-data-1.svg)
 
 The monthly numbers seem to fluctuate quite a bit, so let’s plot annual
 data instead.
@@ -403,7 +405,7 @@ ggplot(data_annual, aes(x = year, y = count)) +
 
 </details>
 
-![](../../../public/figures/16-animals-slaughtered-netherlands/plot-annual-data-1.svg)
+![](16-animals-slaughtered-netherlands_files/figure-commonmark/plot-annual-data-1.svg)
 
 That’s clearer.
 
@@ -439,17 +441,18 @@ data_annual |>
 
 </details>
 
-| animal                    |     count |
-|:--------------------------|----------:|
-| broilers                  | 500732500 |
-| chicken (mostly layers)   |  20079200 |
-| pigs                      |  17236800 |
-| cattle                    |   2093300 |
-| sheep                     |    672400 |
-| goats                     |    218700 |
-| poultry (misc)            |      4800 |
-| ungulates (mostly horses) |      1800 |
-| turkeys                   |         0 |
+    # A tibble: 9 x 2
+      animal                        count
+      <chr>                         <dbl>
+    1 broilers                  500732500
+    2 chicken (mostly layers)    20079200
+    3 pigs                       17236800
+    4 cattle                      2093300
+    5 sheep                        672400
+    6 goats                        218700
+    7 poultry (misc)                 4800
+    8 ungulates (mostly horses)      1800
+    9 turkeys                           0
 
 Oof. That’s over 500 million chickens! For reference, the Netherlands
 had a population of 17.17 million people in 2021.

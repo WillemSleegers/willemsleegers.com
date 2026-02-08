@@ -7,14 +7,11 @@ description: >-
   post I present code to simulate data for a range of different scenarios.
 date: 2021-10-23T00:00:00.000Z
 updated: 2024-10-21T00:00:00.000Z
-tags:
+categories:
   - statistics
   - power analysis
   - simulation
 code-fold: show
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/9-simulation-based-power-analyses/
 ---
 
 
@@ -185,9 +182,16 @@ ggplot(data, aes(x = DV)) +
 ```
 
 </details>
+
+<div id="fig-one-sample-t-test">
+
 <img
-src="../../../public/figures/9-simulation-based-power-analyses/fig-one-sample-t-test-1.svg"
+src="9-simulation-based-power-analyses_files/figure-commonmark/fig-one-sample-t-test-1.svg"
 id="fig-one-sample-t-test" />
+
+Figure 1
+
+</div>
 
 The histogram roughly shows that we have a mean of 0.75 and a standard
 deviation of 5. We also calculated the Cohen’s *d* as a measure of the
@@ -240,7 +244,7 @@ power <- sum(p_values <= .05) / s * 100
 </details>
 
 With the current parameters (N = 90, Cohen’s *d* = 0.15), we obtain a
-power of 27.2%. The power is simply how often we find a significant
+power of 29.6%. The power is simply how often we find a significant
 result, divided by the number of times we looped, multiplied by 100 to
 give a percentage. You can adjust the sample size parameter and re-run
 the code until you know which sample size gives you the desired power.
@@ -327,7 +331,14 @@ ggplot(data, aes(x = condition, y = DV)) +
 ```
 
 </details>
-![](../../../public/figures/9-simulation-based-power-analyses/fig-welch-t-test-1.svg)
+
+<div id="fig-welch-t-test">
+
+![](9-simulation-based-power-analyses_files/figure-commonmark/fig-welch-t-test-1.svg)
+
+Figure 2: Two groups visualization (unequal variance)
+
+</div>
 
 The difference between the two groups is equal to a Cohen’s d of 0.42.
 
@@ -372,7 +383,7 @@ power <- sum(p_values <= .05) / s * 100
 
 </details>
 
-This produces a power of 47.9% with the current parameters.
+This produces a power of 45.6% with the current parameters.
 
 ## Two sample *t*-test
 
@@ -451,9 +462,16 @@ ggplot(data_long, aes(x = condition, y = DV)) +
 ```
 
 </details>
+
+<div id="fig-two-sample-t-test">
+
 <img
-src="../../../public/figures/9-simulation-based-power-analyses/fig-two-sample-t-test-1.svg"
+src="9-simulation-based-power-analyses_files/figure-commonmark/fig-two-sample-t-test-1.svg"
 id="fig-two-sample-t-test" />
+
+Figure 3
+
+</div>
 
 We see a difference between the two conditions with a Cohen’s *d* of
 0.5.
@@ -496,7 +514,7 @@ power <- sum(p_values <= .05) / s * 100
 
 </details>
 
-This produces a power of 64.1% with the current parameters.
+This produces a power of 61.4% with the current parameters.
 
 ## Paired *t*-test
 
@@ -558,16 +576,7 @@ impression of the standardized effect size.
 ``` r
 # Calculate a standardized effect size
 effect_size <- cohens_d(data$pre, data$post, paired = TRUE)
-```
 
-</details>
-
-    For paired samples, 'repeated_measures_d()' provides more options.
-
-<details open class="code-fold">
-<summary>Code</summary>
-
-``` r
 # Visualize the data
 ggplot(data_long, aes(x = condition, y = DV)) +
   geom_jitter(color = primary, height = 0, width = .25, shape = 21, size = 2) +
@@ -584,9 +593,16 @@ ggplot(data_long, aes(x = condition, y = DV)) +
 ```
 
 </details>
+
+<div id="fig-paired-t-test">
+
 <img
-src="../../../public/figures/9-simulation-based-power-analyses/fig-paired-t-test-1.svg"
+src="9-simulation-based-power-analyses_files/figure-commonmark/fig-paired-t-test-1.svg"
 id="fig-paired-t-test" />
+
+Figure 4
+
+</div>
 
 The difference between the two groups is equal to a Cohen’s d of 0.71.
 
@@ -631,7 +647,7 @@ power <- sum(p_values <= .05) / s * 100
 
 </details>
 
-This produces a power of 99.1% with the current parameters.
+This produces a power of 99.4% with the current parameters.
 
 ## Correlation
 
@@ -684,9 +700,16 @@ ggplot(data, aes(x = var1, y = var2)) +
 ```
 
 </details>
+
+<div id="fig-correlation">
+
 <img
-src="../../../public/figures/9-simulation-based-power-analyses/fig-correlation-1.svg"
+src="9-simulation-based-power-analyses_files/figure-commonmark/fig-correlation-1.svg"
 id="fig-correlation" />
+
+Figure 5
+
+</div>
 
 To perform the statistical test, we run `cor.test()`.
 
@@ -726,7 +749,7 @@ power <- sum(p_values <= .05) / s * 100
 
 </details>
 
-This produces a power of 91.1% with the current parameters.
+This produces a power of 91.7% with the current parameters.
 
 ## 2 *t*-tests
 
@@ -840,9 +863,16 @@ ggplot(data, aes(x = condition, y = DV)) +
 ```
 
 </details>
+
+<div id="fig-two-t-tests">
+
 <img
-src="../../../public/figures/9-simulation-based-power-analyses/fig-two-t-tests-1.svg"
+src="9-simulation-based-power-analyses_files/figure-commonmark/fig-two-t-tests-1.svg"
 id="fig-two-t-tests" />
+
+Figure 6
+
+</div>
 
 The treatment condition differs from the two control conditions with a
 difference equal to a Cohen’s *d* of -0.52.
@@ -894,9 +924,9 @@ power <- sum(p_values1 <= .05 & p_values2 <= .05) / s * 100
 
 </details>
 
-The resulting power is 55.1%. Note that this is very different from the
+The resulting power is 53.8%. Note that this is very different from the
 power of finding a significant effect of only one of the two tests;
-which would be equal to a power of 78.3%. An important lesson to learn
+which would be equal to a power of 78%. An important lesson to learn
 here is that with multiple tests, your power may quickly go down,
 depending on the power for each individual test. You can also calculate
 the overall power if you know the power of each individual test. If you
@@ -1017,9 +1047,16 @@ ggplot(data, aes(x = condition, y = DV)) +
 ```
 
 </details>
+
+<div id="fig-lm-2-by-2">
+
 <img
-src="../../../public/figures/9-simulation-based-power-analyses/fig-lm-2-by-2-1.svg"
+src="9-simulation-based-power-analyses_files/figure-commonmark/fig-lm-2-by-2-1.svg"
 id="fig-lm-2-by-2" />
+
+Figure 7
+
+</div>
 
 The graph shows that the difference between the control and treatment
 condition indeed seems to be larger in Germany than in the Netherlands.
@@ -1105,8 +1142,8 @@ power <- sum(p_values_NL <= .05 & p_values_DE <= .05 &
 
 </details>
 
-The overall power for this scenario is 8.5%. If you instead only look at
-the power of the interaction test, you get a power of 33.9%. The
+The overall power for this scenario is 9.2%. If you instead only look at
+the power of the interaction test, you get a power of 34.6%. The
 difference shows that it matters whether you follow up your interaction
 test with the analyses that confirm the exact pattern of the interaction
 test. Also note that these analyses are not independent, so it’s not
@@ -1202,9 +1239,16 @@ ggplot(data, aes(x = measure, y = outcome)) +
 ```
 
 </details>
+
+<div id="fig-lm-2-by-1">
+
 <img
-src="../../../public/figures/9-simulation-based-power-analyses/fig-lm-2-by-1-1.svg"
+src="9-simulation-based-power-analyses_files/figure-commonmark/fig-lm-2-by-1-1.svg"
 id="fig-lm-2-by-1" />
+
+Figure 8
+
+</div>
 
 Looks correct.
 
@@ -1272,8 +1316,8 @@ power <- sum(p_values_control > .05 & p_values_treatment <= .05 &
 
 </details>
 
-The overall power for this scenario is 46.4%. It matters less now
-whether we power for the whole set of analyses or just the slope in the
+The overall power for this scenario is 41%. It matters less now whether
+we power for the whole set of analyses or just the slope in the
 treatment condition because the interaction effect is wholly driven by
 this slope.
 

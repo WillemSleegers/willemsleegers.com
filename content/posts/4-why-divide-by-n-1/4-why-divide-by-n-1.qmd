@@ -3,12 +3,9 @@ title: Why divide by n - 1 to calculate the variance of a sample?
 description: In a recent tweet I asked the question why we use n - 1 to calculate the variance of a sample. Many people contributed an answer, but many of them were of the type I feared. Most consisted of some statistical jargon that confuses me more, rather than less. Other responses were very useful, though, so I recommend checking out the replies to the tweet. In this post, I will try to describe my favorite way of looking at the issue.
 date: 2020-08-05
 updated: 2024-10-06
-tags:
+categories:
   - statistics
 code-fold: true
-knitr:
-  opts_chunk:
-    fig.path: "../../../public/figures/4-why-divide-by-n-1/"
 ---
 
 Many thanks to the people who replied to my [tweet](https://twitter.com/willemsleegers/status/1290388221394849803?s=20 "tweet about n-1") about why you should divide by n - 1. Below I try to show the intuition behind why this is necessary. If you want to follow along in R, you can copy the code from each code section; beginning with some setup code.

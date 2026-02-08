@@ -432,7 +432,7 @@ bind_rows(
 
 </details>
 
-    # A tibble: 3 × 5
+    # A tibble: 3 x 5
       Pair            Estimate Est.Error   Q2.5     Q97.5
       <chr>              <dbl>     <dbl>  <dbl>     <dbl>
     1 height - weight    0.755    0.0354  0.687  0.825   

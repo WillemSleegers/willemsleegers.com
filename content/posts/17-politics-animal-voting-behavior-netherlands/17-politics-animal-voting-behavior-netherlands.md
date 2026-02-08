@@ -13,9 +13,6 @@ categories:
 df-print: paged
 code-tools: true
 code-fold: show
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/17-politics-animal-voting-behavior-netherlands/
 ---
 
 
@@ -446,7 +443,7 @@ ggplot(voting, aes(x = aye_pct, y = reorder(party, aye_pct))) +
 
 </details>
 
-![](../../../public/figures/17-politics-animal-voting-behavior-netherlands/plot-voting-all-years-1.svg)
+![](17-politics-animal-voting-behavior-netherlands_files/figure-commonmark/plot-voting-all-years-1.svg)
 
 It seems like the heuristic might be somewhat justified. I don’t know
 much about Van Kooten-Arissen or Group Krol/vKA, but PvdD stands for
@@ -508,7 +505,7 @@ ggplot(vote_matches_PvdD, aes(x = match_pct, y = reorder(party, match_pct))) +
 
 </details>
 
-![](../../../public/figures/17-politics-animal-voting-behavior-netherlands/PvdD-benchmark-1.svg)
+![](17-politics-animal-voting-behavior-netherlands_files/figure-commonmark/PvdD-benchmark-1.svg)
 
 It looks like the two graphs are fairly consistent. Van Kooten-Arissen
 and Groep Krol/vKA are still at the top. The same goes for the bigger
@@ -550,7 +547,7 @@ ggplot(
 
 </details>
 
-![](../../../public/figures/17-politics-animal-voting-behavior-netherlands/voting-across-years-1.svg)
+![](17-politics-animal-voting-behavior-netherlands_files/figure-commonmark/voting-across-years-1.svg)
 
 Looks like most parties are fairly consistent. There’s some variation
 from year to year, but for most parties you can tell whether they are

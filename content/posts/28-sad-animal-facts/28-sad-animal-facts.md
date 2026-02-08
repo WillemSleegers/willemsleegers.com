@@ -85,9 +85,10 @@ encounter more sad facts.
   canorus)
 
   - The common cuckoo female lays one egg is the nest of other birds and
-    usually removes and eats one of the host’s eggs. In general, the
-    cuckoo egg hatches before those of the host and the cuckoo chicks
-    start evicting host offspring from the nest ([Martín-Gálvez et al.,
+    usually removes and eats one of the host\<U+2019\>s eggs. In
+    general, the cuckoo egg hatches before those of the host and the
+    cuckoo chicks start evicting host offspring from the nest
+    ([Mart\<U+00ED\>n-G\<U+00E1\>lvez et al.,
     2005](https://doi.org/10.1016/j.anbehav.2005.03.031)).
 
 - [Mallard](https://en.wikipedia.org/wiki/Mallard) (Anas platyrhynchos)
@@ -108,9 +109,9 @@ encounter more sad facts.
   (Forelius pusillus)
 
   - In the Brazilian ant Forelius pusillus, the nest entrance is closed
-    at sunset. One to eight workers ﬁnish the job from the outside and,
-    in doing so, sacriﬁce their lives ([Tofilski et al.,
-    2008](https://doi.org/10.1086/591688)).
+    at sunset. One to eight workers \<U+FB01\>nish the job from the
+    outside and, in doing so, sacri\<U+FB01\>ce their lives ([Tofilski
+    et al., 2008](https://doi.org/10.1086/591688)).
 
 ## Arachnids
 

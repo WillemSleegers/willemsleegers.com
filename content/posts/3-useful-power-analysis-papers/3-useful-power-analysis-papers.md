@@ -7,7 +7,7 @@ description: >-
   correctly. Here I list some papers on power analyses that I hope help in
   improving the way we do them.
 date: 2020-08-01T00:00:00.000Z
-tags:
+categories:
   - statistics
   - power analysis
 ---

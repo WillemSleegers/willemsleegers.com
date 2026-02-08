@@ -4,7 +4,7 @@ description: >-
   The first of a series of tutorial posts on Bayesian analyses. In this post I
   focus on using brms to run an intercept-only regression model.
 date: 2023-02-01T00:00:00.000Z
-updated: 2026-02-07T00:00:00.000Z
+updated: 2026-02-08T00:00:00.000Z
 categories:
   - statistics
   - tutorial
@@ -98,7 +98,7 @@ head(data)
 
 </details>
 
-    # A tibble: 6 × 4
+    # A tibble: 6 x 4
       height weight   age  male
        <dbl>  <dbl> <dbl> <dbl>
     1   152.   47.8    63     1

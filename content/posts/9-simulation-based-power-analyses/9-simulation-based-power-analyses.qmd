@@ -3,14 +3,11 @@ title: Simulation-based power analyses
 description: "Simulation-based power analyses make it easy to understand what power is: Power is simply counting how often you find the results you expect to find. Running simulation-based power analyses might be new for some, so in this blog post I present code to simulate data for a range of different scenarios."
 date: 2021-10-23
 updated: 2024-10-21
-tags:
+categories:
   - statistics
   - power analysis
   - simulation
 code-fold: show
-knitr:
-  opts_chunk:
-    fig.path: "../../../public/figures/9-simulation-based-power-analyses/"
 ---
 
 ## Introduction

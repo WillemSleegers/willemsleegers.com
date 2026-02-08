@@ -11,9 +11,6 @@ categories:
 df-print: paged
 code-tools: true
 code-fold: show
-knitr:
-  opts_chunk:
-    fig.path: "../../../public/figures/17-politics-animal-voting-behavior-netherlands/"
 ---
 
 Not too long ago the House of Representatives of The Netherlands released a public [portal](https://opendata.tweedekamer.nl "Open Data Portal House of Representatives") to a lot of their data. The portal contains data on law proposals, motions, rapports, etc. I've been interested in this kind of data for a while now because I want to know more about the voting behavior of political parties. Specifically, I want to know which parties consistently vote in favor of improving animal rights. It's relatively easy for a political party to *say* that they care about animal rights, but that doesn't mean they consistently vote in favor of motions that improve animal welfare. So let's figure out how the open data portal works and which party to vote for.

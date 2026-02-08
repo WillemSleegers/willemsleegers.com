@@ -9,9 +9,6 @@ categories:
   - statistics
 code-fold: show
 code-tools: true
-knitr:
-  opts_chunk:
-    fig.path: "../../../public/figures/10-simulation-based-power-curves/"
 ---
 
 In a previous post I covered how to perform simulation-based power analyses. A limitation in that post is that usually the question is not what our power is, but rather which sample size gives us the desired power. With the code from my previous post you can get to the right sample size by changing the sample size parameters and then checking whether this gives you enough power. It's fine, but it's a little bit of a hassle.

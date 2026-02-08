@@ -11,10 +11,6 @@ categories:
   - statistics
 code-fold: show
 code-tools: true
-include-in-header: script.js
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/10-simulation-based-power-curves/
 ---
 
 
@@ -145,9 +141,16 @@ ggplot(data, aes(x = condition, y = DV)) +
 ```
 
 </details>
+
+<div id="fig-two-t-tests">
+
 <img
-src="../../../public/figures/10-simulation-based-power-curves/fig-two-t-tests-1.svg"
+src="10-simulation-based-power-curves_files/figure-commonmark/fig-two-t-tests-1.svg"
 id="fig-two-t-tests" />
+
+Figure 1
+
+</div>
 
 The effect size is a Cohen’s *d* -0.3922323 and although the Cohen’s *d*
 is negative (due to the ordering the levels in the condition column),
@@ -277,9 +280,16 @@ ggplot(power, aes(x = n, y = power)) +
 ```
 
 </details>
+
+<div id="fig-two-t-tests-power-curve">
+
 <img
-src="../../../public/figures/10-simulation-based-power-curves/fig-two-t-tests-power-curve-1.svg"
+src="10-simulation-based-power-curves_files/figure-commonmark/fig-two-t-tests-power-curve-1.svg"
 id="fig-two-t-tests-power-curve" />
+
+Figure 2
+
+</div>
 
 That’s it. We can see at which point we have enough power (e.g., 80% or
 95%). Do note that we calculated the sample size *per condition*. In the

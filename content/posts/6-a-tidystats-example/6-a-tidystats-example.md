@@ -11,9 +11,6 @@ categories:
   - tutorial
 code-fold: show
 draft: true
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/6-a-tidystats-example/
 ---
 
 
@@ -90,9 +87,16 @@ ggplot(quote_source, aes(x = source, y = response)) +
 ```
 
 </details>
+
+<div id="fig-quote-source">
+
 <img
-src="../../../public/figures/6-a-tidystats-example/fig-quote-source-1.svg"
+src="6-a-tidystats-example_files/figure-commonmark/fig-quote-source-1.svg"
 id="fig-quote-source" />
+
+Figure 1
+
+</div>
 
 This looks like the effect is in the expected direction. Participants
 agreed more with the quotation when they believed the quote to be from
@@ -122,10 +126,20 @@ quote_source |>
 
 </details>
 
+<div id="tbl-response-descriptives">
+
+Table 1
+
+<div class="cell-output-display">
+
 | Source     | Missing |    N |   M |  SD |   SE | Min | Max | Range | Median | Mode |  Skew | Kurtosis |
 |:-----------|--------:|-----:|----:|----:|-----:|----:|----:|------:|-------:|-----:|------:|---------:|
 | Bin Laden  |      18 | 3083 | 5.2 | 2.1 | 0.04 |   1 |   9 |     8 |      5 |    5 | -0.08 |      2.6 |
 | Washington |       0 | 3242 | 5.9 | 2.2 | 0.04 |   1 |   9 |     8 |      6 |    5 | -0.23 |      2.2 |
+
+</div>
+
+</div>
 
 To test whether the difference in agreement between the two sources is
 statistically significant, we perform a *t*-test. Normally, we would
@@ -203,11 +217,16 @@ summary(us_moderation_test)
     -5.005 -1.228 -0.228  1.772  3.772 
 
     Coefficients:
-                                           Estimate Std. Error t value Pr(>|t|)    
-    (Intercept)                              5.2488     0.0849   61.83  < 2e-16 ***
-    sourceWashington                         0.4052     0.1172    3.46  0.00055 ***
-    us_or_internationalUS                   -0.0210     0.0955   -0.22  0.82589    
-    sourceWashington:us_or_internationalUS   0.3717     0.1323    2.81  0.00497 ** 
+                                                      Estimate Std. Error t value
+    (Intercept)                                         5.2278     0.0437  119.50
+    sourceWashington                                    0.7769     0.0613   12.67
+    us_or_internationalinternational                    0.0210     0.0955    0.22
+    sourceWashington:us_or_internationalinternational  -0.3717     0.1323   -2.81
+                                                      Pr(>|t|)    
+    (Intercept)                                         <2e-16 ***
+    sourceWashington                                    <2e-16 ***
+    us_or_internationalinternational                     0.826    
+    sourceWashington:us_or_internationalinternational    0.005 ** 
     ---
     Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -236,9 +255,16 @@ ggplot(
 ```
 
 </details>
+
+<div id="fig-interaction">
+
 <img
-src="../../../public/figures/6-a-tidystats-example/fig-interaction-1.svg"
+src="6-a-tidystats-example_files/figure-commonmark/fig-interaction-1.svg"
 id="fig-interaction" />
+
+Figure 2
+
+</div>
 
 We see that the effect of the source appears to be larger in the US.
 Given that the positive source was George Washington, this makes sense.

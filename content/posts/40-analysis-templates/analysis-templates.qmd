@@ -39,17 +39,22 @@ library(gt)
 # Load custom functions
 #| label: function
 format_number <- function(
-    x,
-    trailing_digits = 2,
-    digits = NULL,
-    omit_zero = FALSE) {
+  x,
+  trailing_digits = 2,
+  digits = NULL,
+  omit_zero = FALSE
+) {
   # Convert the number to a string to use regex to extract different parts
   # of the number (e.g., decimals)
   string <- as.character(x)
 
   # Extract and count decimals
   decimals <- stringr::str_extract(string, "(?<=\\.).+")
-  decimals_n <- dplyr::if_else(is.na(decimals), 0, stringr::str_length(decimals))
+  decimals_n <- dplyr::if_else(
+    is.na(decimals),
+    0,
+    stringr::str_length(decimals)
+  )
 
   # Count number of leading zeroes in the decimals
   zeroes <- stringr::str_extract(string, "(?<=\\.)0+")
@@ -71,13 +76,22 @@ format_number <- function(
   }
 
   # Remove leading zero
-  if (omit_zero) output <- stringr::str_remove(output, "^0")
+  if (omit_zero) {
+    output <- stringr::str_remove(output, "^0")
+  }
 
   return(output)
 }
 
 format_interval <- function(x, lower, upper) {
-  paste0(format_number(x), " [", format_number(lower), ", ", format_number(upper), "]")
+  paste0(
+    format_number(x),
+    " [",
+    format_number(lower),
+    ", ",
+    format_number(upper),
+    "]"
+  )
 }
 
 # Theme
@@ -154,7 +168,13 @@ ggplot(predictions, aes(x = estimate, y = condition)) +
 comparisons <- avg_comparisons(model, variable = "condition")
 comparisons |>
   select(
-    contrast, estimate, conf.low, conf.high, std.error, statistic, p.value
+    contrast,
+    estimate,
+    conf.low,
+    conf.high,
+    std.error,
+    statistic,
+    p.value
   ) |>
   as_tibble() |>
   gt()

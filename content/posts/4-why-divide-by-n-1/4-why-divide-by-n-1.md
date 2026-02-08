@@ -9,12 +9,9 @@ description: >-
   describe my favorite way of looking at the issue.
 date: 2020-08-05T00:00:00.000Z
 updated: 2024-10-06T00:00:00.000Z
-tags:
+categories:
   - statistics
 code-fold: true
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/4-why-divide-by-n-1/
 ---
 
 
@@ -116,9 +113,16 @@ ggplot(tibble(population = population), mapping = aes(x = population)) +
 ```
 
 </details>
+
+<div id="fig-population">
+
 <img
-src="../../../public/figures/4-why-divide-by-n-1/fig-population-1.svg"
+src="4-why-divide-by-n-1_files/figure-commonmark/fig-population-1.svg"
 id="fig-population" />
+
+Figure 1
+
+</div>
 
 The variance is 8.76. Note that this is our population variance (often
 denoted as <math>$\sigma^2$</math>). We want to estimate this value
@@ -175,9 +179,16 @@ ggplot(samples, aes(x = n, y = var_biased)) +
 ```
 
 </details>
+
+<div id="fig-variance-biased">
+
 <img
-src="../../../public/figures/4-why-divide-by-n-1/fig-variance-biased-1.svg"
+src="4-why-divide-by-n-1_files/figure-commonmark/fig-variance-biased-1.svg"
 id="fig-variance-biased" />
+
+Figure 2
+
+</div>
 
 We see that the biased measure of variance is indeed biased. The average
 variance is lower than the true variance (indicated by the dashed line),
@@ -196,9 +207,16 @@ ggplot(samples, aes(x = n, y = var_unbiased)) +
 ```
 
 </details>
+
+<div id="fig-variance-unbiased">
+
 <img
-src="../../../public/figures/4-why-divide-by-n-1/fig-variance-unbiased-1.svg"
+src="4-why-divide-by-n-1_files/figure-commonmark/fig-variance-unbiased-1.svg"
 id="fig-variance-unbiased" />
+
+Figure 3
+
+</div>
 
 And indeed, the unbiased variance is indeed unbiased. On average, the
 sample variance matches that of the population variance.
@@ -269,9 +287,16 @@ ggplot(sample1, aes(y = index, x = value, color = sample)) +
 ```
 
 </details>
+
+<div id="fig-bias-illustration-1-1">
+
 <img
-src="../../../public/figures/4-why-divide-by-n-1/fig-bias-illustration-1-1-1.svg"
+src="4-why-divide-by-n-1_files/figure-commonmark/fig-bias-illustration-1-1-1.svg"
 id="fig-bias-illustration-1-1" />
+
+Figure 4
+
+</div>
 
 The next graph shows the deviations from the population mean.
 
@@ -299,9 +324,16 @@ ggplot(sample1, aes(y = index, x = value, color = sample)) +
 ```
 
 </details>
+
+<div id="fig-bias-illustration-1-2">
+
 <img
-src="../../../public/figures/4-why-divide-by-n-1/fig-bias-illustration-1-2-1.svg"
+src="4-why-divide-by-n-1_files/figure-commonmark/fig-bias-illustration-1-2-1.svg"
 id="fig-bias-illustration-1-2" />
+
+Figure 5
+
+</div>
 
 We see that in the first graph the sum of squared deviations is much
 smaller than in the second graph. The sum is (8 - 9)² + (10 - 9)² = 2 in
@@ -356,9 +388,16 @@ ggplot(sample2, aes(y = index, x = value, color = sample)) +
 ```
 
 </details>
+
+<div id="fig-bias-illustration-2-1">
+
 <img
-src="../../../public/figures/4-why-divide-by-n-1/fig-bias-illustration-2-1-1.svg"
+src="4-why-divide-by-n-1_files/figure-commonmark/fig-bias-illustration-2-1-1.svg"
 id="fig-bias-illustration-2-1" />
+
+Figure 6
+
+</div>
 
 And the deviations from the population mean look like this:
 
@@ -394,9 +433,16 @@ ggplot(sample2, aes(y = index, x = value, color = sample)) +
 ```
 
 </details>
+
+<div id="fig-bias-illustration-2-2">
+
 <img
-src="../../../public/figures/4-why-divide-by-n-1/fig-bias-illustration-2-2-1.svg"
+src="4-why-divide-by-n-1_files/figure-commonmark/fig-bias-illustration-2-2-1.svg"
 id="fig-bias-illustration-2-2" />
+
+Figure 7
+
+</div>
 
 The sum of deviations in the first graph is (2 - 6)² + (10 - 6)² = 32
 and the sum in the second graph is (2 - 5.8)² + (10 - 5.8)² = 32.08. The
@@ -482,9 +528,16 @@ ggplot(variance_sources, aes(x = n, fill = variance_source, y = variance)) +
 ```
 
 </details>
+
+<div id="fig-sources-of-variance">
+
 <img
-src="../../../public/figures/4-why-divide-by-n-1/fig-sources-of-variance-1.svg"
+src="4-why-divide-by-n-1_files/figure-commonmark/fig-sources-of-variance-1.svg"
 id="fig-sources-of-variance" />
+
+Figure 8
+
+</div>
 
 Indeed, we see that the variance of the sample and the variance of the
 mean of the sample together form the population variance.

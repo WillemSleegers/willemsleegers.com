@@ -58,14 +58,15 @@ head(data)
 
 </details>
 
-|     id | date       | vegan |
-|-------:|:-----------|------:|
-| 800009 | 02-07-2018 |     0 |
-| 800015 | 02-07-2018 |     0 |
-| 800054 | 02-07-2018 |     0 |
-| 800057 | 04-07-2018 |     0 |
-| 800073 | 03-07-2018 |     0 |
-| 800085 | 03-07-2018 |     0 |
+    # A tibble: 6 x 3
+          id date       vegan
+       <dbl> <chr>      <dbl>
+    1 800009 02-07-2018     0
+    2 800015 02-07-2018     0
+    3 800054 02-07-2018     0
+    4 800057 04-07-2018     0
+    5 800073 03-07-2018     0
+    6 800085 03-07-2018     0
 
 ## Frequentist
 
@@ -99,8 +100,7 @@ avg_predictions(model)
      Estimate Std. Error    z Pr(>|z|)    S  2.5 % 97.5 %
         0.012    0.00144 8.36   <0.001 53.8 0.0092 0.0148
 
-    Type:  response 
-    Columns: estimate, std.error, statistic, p.value, s.value, conf.low, conf.high 
+    Type: response
 
 Alternatively, you can also use the `predictions()` function. By
 default, this function calculates the regression-adjusted predicted
@@ -127,8 +127,7 @@ predictions(model, newdata = data_grid(.model = model))
      Estimate Pr(>|z|)     S  2.5 % 97.5 %
         0.012   <0.001 961.6 0.0095 0.0152
 
-    Type:  invlink(link) 
-    Columns: rowid, estimate, p.value, s.value, conf.low, conf.high, vegan 
+    Type: invlink(link)
 
 Note that this gives slightly different results (which, I believe, is
 explained
@@ -179,9 +178,10 @@ data_grid(.model = model) |>
 
 </details>
 
-| .row |  .epred |   .lower |    .upper | .width | .point | .interval |
-|-----:|--------:|---------:|----------:|-------:|:-------|:----------|
-|    1 | 0.01211 | 0.009547 | 0.0150998 |   0.95 | median | qi        |
+    # A tibble: 1 x 7
+       .row .epred  .lower .upper .width .point .interval
+      <int>  <dbl>   <dbl>  <dbl>  <dbl> <chr>  <chr>    
+    1     1 0.0121 0.00955 0.0151   0.95 median qi       
 
 We could also create the data frame ourselves without using
 `data_grid()`.
@@ -197,9 +197,10 @@ tibble(.rows = 1) |>
 
 </details>
 
-| .row |  .epred |   .lower |    .upper | .width | .point | .interval |
-|-----:|--------:|---------:|----------:|-------:|:-------|:----------|
-|    1 | 0.01211 | 0.009547 | 0.0150998 |   0.95 | median | qi        |
+    # A tibble: 1 x 7
+       .row .epred  .lower .upper .width .point .interval
+      <int>  <dbl>   <dbl>  <dbl>  <dbl> <chr>  <chr>    
+    1     1 0.0121 0.00955 0.0151   0.95 median qi       
 
 But it looks weird to me to create a data frame with 1 row and no values
 in it (although technically that’s what the data grid functions also

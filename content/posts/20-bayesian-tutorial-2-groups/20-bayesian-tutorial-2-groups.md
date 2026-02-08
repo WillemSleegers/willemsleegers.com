@@ -73,14 +73,14 @@ get_prior(height ~ male, data = data)
 </details>
 
                         prior     class coef group resp dpar nlpar lb ub tag
+     student_t(3, 154.3, 8.5) Intercept                                     
                        (flat)         b                                     
                        (flat)         b male                                
-     student_t(3, 154.3, 8.5) Intercept                                     
          student_t(3, 0, 8.5)     sigma                             0       
            source
           default
-     (vectorized)
           default
+     (vectorized)
           default
 
 The output shows we need to set a prior on sigma, the Intercept, and on
@@ -223,7 +223,7 @@ tibble(male = c(0, 1)) |>
 
 </details>
 
-    # A tibble: 2 × 9
+    # A tibble: 2 x 9
        male  .row .epred .lower .upper .width .point .interval width
       <dbl> <int>  <dbl>  <dbl>  <dbl>  <dbl> <chr>  <chr>     <dbl>
     1     0     1   165.   155.   175.   0.95 median qi         19.3
@@ -365,7 +365,7 @@ tibble(sex = c("male", "female")) |>
 
 </details>
 
-    # A tibble: 2 × 9
+    # A tibble: 2 x 9
       sex     .row .epred .lower .upper .width .point .interval width
       <chr>  <int>  <dbl>  <dbl>  <dbl>  <dbl> <chr>  <chr>     <dbl>
     1 female     2   165.   155.   175.   0.95 median qi         19.6

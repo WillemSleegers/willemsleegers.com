@@ -2,7 +2,7 @@
 title: "Understanding regression (part 2)"
 description: "In Part 1, I asked what distribution might describe our height data. Now I answer that question by introducing the normal distribution—not because 'data is normal,' but because it's a reasonable, parsimonious choice given what we know about heights."
 date: 2025-01-16
-tags:
+categories:
   - statistics
   - tutorial
   - regression

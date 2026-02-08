@@ -9,9 +9,6 @@ categories:
   - simulation
 code-tools: true
 code-fold: show
-knitr:
-  opts_chunk:
-    fig.path: "../../../public/figures/35-metalog-distribution/"
 ---
 
 I recently discovered the metalog distribution via [MakeDistribution](https://makedistribution.com/). According to [Wikipedia](https://en.wikipedia.org/wiki/Metalog_distribution), the metalog distribution "is a flexible continuous probability distribution designed for ease of use in practice". A distribution that was designed to be easy to use peaked my interest, so in this blog post I try to figure out how to use it and determine whether it is indeed a useful and easy to use distribution.

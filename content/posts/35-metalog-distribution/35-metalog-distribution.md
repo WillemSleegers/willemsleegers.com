@@ -9,9 +9,6 @@ categories:
   - simulation
 code-tools: true
 code-fold: show
-knitr:
-  opts_chunk:
-    fig.path: ../../../public/figures/35-metalog-distribution/
 ---
 
 
@@ -148,7 +145,7 @@ p
 
 </details>
 
-![](../../../public/figures/35-metalog-distribution/metalog-distribution-plot-1.svg)
+![](35-metalog-distribution_files/figure-commonmark/metalog-distribution-plot-1.svg)
 
 This shows us two PDF plots. By default the metalog function creates
 multiple distributions with a different number of terms. In this case,
@@ -206,7 +203,7 @@ ggplot(df, aes(x = quantile_value, y = pdf_value)) +
 
 </details>
 
-![](../../../public/figures/35-metalog-distribution/metalog-distribution-check-1.svg)
+![](35-metalog-distribution_files/figure-commonmark/metalog-distribution-check-1.svg)
 
 The points show what the PDF values are at each of the quantiles we
 specified (0.10, 0.50, and 0.90). The lines show the correct
@@ -324,7 +321,7 @@ df |>
 
 </details>
 
-![](../../../public/figures/35-metalog-distribution/metalog-distribution-bounded-1.svg)
+![](35-metalog-distribution_files/figure-commonmark/metalog-distribution-bounded-1.svg)
 
 The distribution now starts at 0, perfect.
 
@@ -354,7 +351,7 @@ ggplot(df, aes(x = hour)) +
 
 </details>
 
-![](../../../public/figures/35-metalog-distribution/metalog-distribution-simulation-1.svg)
+![](35-metalog-distribution_files/figure-commonmark/metalog-distribution-simulation-1.svg)
 
 Excellent, we now have a distribution that you could say represents the
 number of hours to complete a task. We could use this to model how long

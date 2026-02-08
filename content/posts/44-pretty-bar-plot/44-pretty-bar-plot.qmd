@@ -5,9 +5,6 @@ date: 2025-02-11
 categories:
   - R
   - visualization
-knitr:
-  opts_chunk:
-    fig.path: "../../../public/figures/44-pretty-bar-plot/"
 draft: true
 ---
 
