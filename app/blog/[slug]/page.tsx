@@ -1,12 +1,14 @@
-import path from "path"
 import Image from "next/image"
-import Markdown from "markdown-to-jsx"
+import { MarkdownAsync } from "react-markdown"
+import rehypeRaw from "rehype-raw"
+import rehypeKatex from "rehype-katex"
+import remarkGfm from "remark-gfm"
+import remarkMath from "remark-math"
 import React, { PropsWithChildren, ReactElement, ReactNode } from "react"
 
 import { codeToHtml } from "shiki"
 
 import "katex/dist/katex.min.css"
-import { BlockMath, InlineMath } from "@/components/math/math"
 
 import { Tag } from "@/components/post/tag"
 import { CodeBlock } from "@/components/post/code-block"
@@ -15,9 +17,7 @@ import { TableOfContents } from "@/components/post/table-of-contents"
 
 import { SHIKI_CONFIG, IMAGE_DEFAULTS } from "@/lib/constants"
 import { formatDate } from "@/lib/utils"
-import { reconstructMarkdown } from "@/lib/markdown/reconstruction"
 import { extractQuartoToc } from "@/lib/markdown/transforms"
-import { Triangle } from "lucide-react"
 
 import { posts } from "#site/content"
 
@@ -44,7 +44,12 @@ export default async function Page(props0: {
 
   // Extract Quarto's TOC and remove it from content
   const { toc, content: contentWithoutToc } = extractQuartoToc(post.content)
+
+  // Strip Quarto's <math> wrapper tags — remark-math handles $...$ and $$...$$ natively
   const content = contentWithoutToc
+    .replaceAll("/<math>", "</math>") // fix typo in source first
+    .replace(/<math>\s*/g, "")
+    .replace(/\s*<\/math>/g, "")
 
   return (
     <main className="p-6">
@@ -87,33 +92,19 @@ export default async function Page(props0: {
             </div>
           )}
         </div>
-        <Markdown
-          options={{
-            overrides: {
-              img: {
-                component: MarkdownImage,
-                props: {
-                  slug: slug,
-                },
-              },
-              details: {
-                component: CodeFold,
-              },
-              pre: {
-                component: Pre,
-              },
-              code: {
-                component: Code,
-              },
-              table: {
-                component: Table,
-              },
-              math: { component: Math },
-            },
+        <MarkdownAsync
+          remarkPlugins={[remarkGfm, remarkMath]}
+          rehypePlugins={[rehypeRaw, rehypeKatex]}
+          components={{
+            img: Img,
+            details: Details,
+            pre: Pre,
+            code: Code,
+            table: Table,
           }}
         >
           {content}
-        </Markdown>
+        </MarkdownAsync>
           </article>
         </div>
       </div>
@@ -121,31 +112,61 @@ export default async function Page(props0: {
   )
 }
 
-const CodeFold = (props: {
-  open: boolean
-  className?: string
-  children: ReactNode[]
-}) => {
-  const className = props.className
+const Img = (props: { src?: string | Blob; alt?: string }) => {
+  if (!props.src || typeof props.src !== "string") return null
 
-  if (className == "code-fold") {
-    const pre = props.children[1]
-    return <CodeFoldComponent defaultOpen={props.open}>{pre}</CodeFoldComponent>
-  } else return
+  return (
+    <Image
+      src={props.src}
+      className="rounded mx-auto my-4"
+      alt={props.alt || ""}
+      width={IMAGE_DEFAULTS.POST_WIDTH}
+      height={IMAGE_DEFAULTS.POST_HEIGHT}
+    />
+  )
+}
+
+const Details = (props: {
+  open?: boolean
+  className?: string
+  children?: ReactNode
+  node?: unknown
+}) => {
+  if (props.className !== "code-fold") return null
+
+  // Filter out summary element and whitespace, keep the code content
+  const children = React.Children.toArray(props.children)
+  const codeContent = children.filter((child) => {
+    if (typeof child === "string" && child.trim() === "") return false
+    if (React.isValidElement(child) && (child as ReactElement).type === "summary")
+      return false
+    return true
+  })
+
+  return (
+    <CodeFoldComponent defaultOpen={props.open ?? false}>
+      {codeContent}
+    </CodeFoldComponent>
+  )
 }
 
 const Pre = async (props: PropsWithChildren) => {
   const children = props.children as ReactElement
   const code = children.props as { className?: string; children: string }
 
-  // Extract language from className, handling various formats
-  let language = "r" // default
-  if (code.className) {
-    const match = code.className.match(/lang-(\w+)/)
-    if (match) {
-      language = match[1]
-    }
+  // Only apply syntax highlighting to code blocks with a language class.
+  // Indented code blocks (e.g. R output) have no class and should render plain.
+  const match = code.className?.match(/language-(\w+)/)
+
+  if (!match) {
+    return (
+      <pre className="bg-muted rounded p-4 overflow-x-auto my-4 text-sm">
+        <code>{code.children}</code>
+      </pre>
+    )
   }
+
+  const language = match[1]
 
   const html = await codeToHtml(code.children, {
     lang: language,
@@ -156,7 +177,12 @@ const Pre = async (props: PropsWithChildren) => {
   return <CodeBlock html={html} language={language} />
 }
 
-const Code = (props: PropsWithChildren) => {
+const Code = (props: { className?: string; children?: ReactNode }) => {
+  // Code blocks have language-* className — pass through for Pre to handle
+  if (props.className) {
+    return <code className={props.className}>{props.children}</code>
+  }
+  // Inline code
   return (
     <code className="not-prose bg-muted p-1 rounded">{props.children}</code>
   )
@@ -169,33 +195,5 @@ const Table = (props: PropsWithChildren) => {
         {props.children}
       </table>
     </div>
-  )
-}
-
-const Math = (props: PropsWithChildren) => {
-  const math = reconstructMarkdown(props.children)
-
-  if (math.startsWith("$$")) {
-    return <BlockMath>{math.replace(/\$\$/g, "")}</BlockMath>
-  } else {
-    return <InlineMath>{math.replace(/\$/g, "")}</InlineMath>
-  }
-}
-
-const MarkdownImage = (props: {
-  slug: string
-  src: string
-  className?: string
-}) => {
-  // Velite already rewrites paths to /figures/[slug]/[filename]
-  // So we can use props.src directly
-  return (
-    <Image
-      src={props.src}
-      className="rounded mx-auto my-4"
-      alt="test"
-      width={IMAGE_DEFAULTS.POST_WIDTH}
-      height={IMAGE_DEFAULTS.POST_HEIGHT}
-    />
   )
 }
