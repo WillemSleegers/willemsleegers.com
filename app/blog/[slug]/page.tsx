@@ -50,6 +50,11 @@ export default async function Page(props0: {
     .replaceAll("/<math>", "</math>") // fix typo in source first
     .replace(/<math>\s*/g, "")
     .replace(/\s*<\/math>/g, "")
+    // Ensure $$ display math starts on its own line (Quarto's text wrapping can merge it with text)
+    .replace(/^(.+?)\s*(\$\$)\s*$/gm, (match, prefix, dollars) => {
+      if (prefix.trim().startsWith("$$")) return match
+      return prefix + "\n" + dollars
+    })
 
   return (
     <main className="p-6">

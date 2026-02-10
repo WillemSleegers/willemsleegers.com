@@ -4,20 +4,12 @@
 
 ### Markdown Rendering Improvements
 
-- [x] **Keep markdown-to-jsx** (Decision: Recent updates, works well for our use case)
+- [x] **Switched from markdown-to-jsx to react-markdown**
 
-  - Current implementation is optimal for Quarto → Markdown → JSX workflow
-  - Simple override system handles all needs without heavy plugin ecosystem
-  - Better performance than react-markdown for our use case
-
-- [ ] **Investigate markdown processing inefficiencies**
-
-  - Current: Runtime `replaceClassWithClassName()` converts Quarto's `class=` to `className=`
-  - Current: `reconstructMarkdown()` converts React elements back to markdown strings for KaTeX
-  - Consider: Processing `class` → `className` during Velite build step instead of runtime
-  - Consider: Alternative math rendering that doesn't require markdown reconstruction
-  - Files: `lib/markdown/reconstruction.ts`, `lib/markdown/transforms.ts`
-  - Impact: Could improve performance and simplify rendering pipeline
+  - react-markdown v10 (MarkdownAsync) with remark-gfm, remark-math, rehype-raw, rehype-katex
+  - Fixes RSC compatibility issues with React 19
+  - Math handled natively by remark-math + rehype-katex (no more custom `<math>` element workaround)
+  - R code output distinguished from R code by language class presence
 
 - [x] **Implement proper code block component with shadcn styling**
 
@@ -40,6 +32,14 @@
   - Add: Image captions from alt text or figure attributes
   - Add: Lightbox/zoom functionality for images
   - File: Enhance `components/post/markdown-image.tsx`
+
+- [ ] **Add dark mode support for blog post figures**
+  - Quarto's GFM output has no built-in light/dark figure support
+  - Options to investigate:
+    1. Transparent SVGs with CSS (use `svglite` device, style via CSS variables)
+    2. Dual rendering (generate both light and dark figures, swap with theme-aware component)
+    3. CSS filter inversion (apply `filter: invert()` on dark mode, works for simple plots)
+  - Transparent SVGs + CSS is likely the cleanest approach
 
 - [ ] **Add callout/admonition components**
   - Create: Info, Warning, Tip, Note callout boxes

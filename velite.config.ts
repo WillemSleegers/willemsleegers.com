@@ -9,10 +9,9 @@ const quartoMarkdownLoader: Loader = {
   load: async (file) => {
     const mdPath = file.path
 
-    // Extract post slug from path (e.g., "posts/99-test-workflow/file.md" -> "99-test-workflow")
+    // Extract post slug from filename (e.g., "1-understanding-regression-part-1.md" -> "1-understanding-regression-part-1")
     const relativePath = path.relative(path.join(process.cwd(), 'content'), mdPath)
-    const pathParts = relativePath.split(path.sep)
-    const postSlug = pathParts[1] // posts/[THIS-PART]/file.md
+    const postSlug = path.basename(mdPath, '.md')
 
     try {
       // Read the markdown file (should already be rendered by Quarto)
@@ -38,13 +37,13 @@ const quartoMarkdownLoader: Loader = {
           fs.copyFileSync(sourcePath, targetPath)
         }
 
-        // Update paths in markdown
-        const oldPath = `${mdBasename}_files/figure-commonmark/`
-        const newPath = `/figures/${postSlug}/`
-        mdContent = mdContent.replaceAll(oldPath, newPath)
-
         console.log(`✓ Copied figures for ${relativePath}`)
       }
+
+      // Always rewrite figure paths (figures may already exist in public/figures/ from previous builds)
+      const oldPath = `${mdBasename}_files/figure-commonmark/`
+      const newPath = `/figures/${postSlug}/`
+      mdContent = mdContent.replaceAll(oldPath, newPath)
 
       // Parse frontmatter and content
       const { data, content } = matter(mdContent)
@@ -75,7 +74,7 @@ const quartoMarkdownLoader: Loader = {
 
 const computedFields = <T extends { slug: string }>(data: T) => ({
   ...data,
-  slug: data.slug.split("/").slice(2).join("/"),
+  slug: data.slug.substring(data.slug.lastIndexOf("/") + 1),
 })
 
 const posts = defineCollection({
