@@ -28,6 +28,7 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 - Build from intercept-only → simple regression → multiple regression
 - Mention theorems by name but don't prove them (keep current style)
 - **Distributions first** - start with the distribution concept, not error functions
+- **Distinguish from bootstrapping** - our framework is about modeling the data-generating distribution (parametric), not estimating sampling distributions of statistics (bootstrapping). Bootstrapping is a tool that can appear within the framework (Part 8) but doesn't replace it.
 - Target audience: behavioral scientists who've used regression but want conceptual understanding
 
 **Critical Terminology Guidelines**:
@@ -91,33 +92,37 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 
 **Content** (ACTUAL):
 
-- **Recap**: Reference Part 1's shift in perspective from "summarize data" to "what distribution describes this data?"
-  - Mentions intercept-only model gave estimate (154.6 cm) and SE (0.64 cm)
-  - Question: Why the normal distribution?
-- **The data**: Load same height data from Part 1, show histogram
-  - Describe pattern: clusters around center, spreads symmetrically, extremes less common
-  - "We can describe this pattern mathematically using a probability distribution"
-- **The normal distribution**: Visualize it
-  - Show what a normal distribution curve looks like
-  - "This curve represents a mathematical model"
-  - "The height of the curve at any point tells you how plausible that value is"
-- **Why the normal distribution?** Three reasons with bold headers:
-  - **It matches what we observe**: Heights cluster around center, spread symmetrically
-  - **It's parsimonious**: Only two parameters (μ and σ), maximum entropy distribution
-    - "When you only know the mean and standard deviation, the normal distribution is the maximum entropy distribution. It makes the fewest additional claims"
-    - "Any other distribution would be adding claims you don't have evidence for"
-  - **We can check if it's wrong**: Can compare model to data, choose different distribution if needed
-- **Does the normal distribution fit?**: Overlay on histogram
-  - Shows dashed line with sample mean and SD
-  - "Does it fit perfectly? No. But the key question is: does the normal distribution capture the general pattern? It seems to."
-- **What we've gained**: Moving from individual data points to model of distribution
-  - Can describe, predict, quantify uncertainty
-  - Raises question: How do we estimate μ and σ?
-- **Key insight**: "The normal distribution isn't a claim about reality—it's a parsimonious modeling choice"
+- **Recap**: Core question from Part 1 (what distribution might have generated this data?), question: why normal?
+- **The ubiquity of the normal distribution**: General, data-independent section
+  - Normal shows up everywhere: heights, blood pressure, measurement errors, test scores
+  - Many small independent factors adding up → bell-shaped
+  - First argument: it's a sensible default for continuous data
+  - But "it shows up a lot" isn't fully satisfying — can we do better?
+- **What do we actually know?**: Set up the constraints (general, not heights-specific)
+  - We know two things: there's a mean (μ) and a standard deviation (σ)
+  - We don't have theoretical reasons to claim a specific shape, multiple groups, or tail behavior
+  - Question: given just a mean and SD, what distribution should we choose?
+- **Many distributions, same facts**: KEY VISUALIZATION
+  - Show four distributions (normal, skewed/gamma, bimodal/mixture, uniform) all with mean = 155 and SD = 8
+  - Each non-normal distribution is making additional claims beyond mean/SD (asymmetry, two groups, hard boundaries)
+  - The normal distribution adds nothing extra
+- **The most parsimonious choice**: Maximum entropy argument (the bulk of the post)
+  - Maximum entropy distribution = fewest additional claims given constraints
+  - For fixed mean and variance, the maximum entropy distribution is the normal
+  - Entropy intuition: high entropy = noncommittal, low entropy = making specific claims
+  - Walk through each alternative: skewed (claims asymmetry), bimodal (claims two groups), uniform (claims hard boundaries)
+  - The normal says: "I know the mean and the spread. I'm not going to pretend I know anything else."
+  - Parsimony = not just simplicity, but adding nothing beyond what we know
+  - Personal note: "I find this a genuinely compelling reason"
+- **Applying this to our heights**: NOW bring in the data (load + overlay)
+  - Overlay normal distribution on histogram
+  - Honest assessment: not perfect, but captures the general pattern
+  - If it clearly didn't fit, we'd reconsider — formal model checking comes later
+- **Summary**: Two reasons (ubiquity + parsimony), defined by two parameters, bridge to Part 3 (how to estimate μ and σ)
 
 **Dataset**: !Kung San heights from Howell1.csv
 **Status**: File at `/Users/willem/GitHub/willemsleegers.com/content/posts/2-understanding-regression-part-2/2-understanding-regression-part-2.qmd` - still being edited
-**Length**: ~174 lines
+**Length**: ~167 lines
 
 ---
 
@@ -284,10 +289,17 @@ Complete redesign of the Understanding Regression blog post series to teach stat
   - Relationship: SE = σ/√n
 - Calculate confidence intervals
 - Verify with `summary(lm(height ~ 1))`
-- **Key insight**: Our estimates have uncertainty that decreases with sample size; we typically focus on uncertainty about μ, but σ also has uncertainty we often ignore
+- **Bootstrapping as an alternative approach to uncertainty**:
+  - Introduce bootstrapping: resample from observed data to build empirical sampling distribution
+  - Compare to the parametric approach used throughout the series
+  - Key distinction: bootstrapping estimates the sampling distribution of a *statistic* (nonparametric); our framework models the *data-generating distribution* (parametric)
+  - Bootstrapping sidesteps distributional assumptions — useful when you're unsure about the distribution choice
+  - But: doesn't replace the modeling framework (no distributional choice, limited prediction, doesn't address conditional distributions in regression)
+  - Position bootstrapping as a *tool within* the framework, not an alternative to it
+- **Key insight**: Our estimates have uncertainty that decreases with sample size; we typically focus on uncertainty about μ, but σ also has uncertainty we often ignore. Bootstrapping offers a nonparametric alternative for quantifying uncertainty, but doesn't replace the need to model the data-generating distribution.
 
 **Dataset**: Heights + repeated sampling simulations (all simulation-based, no equations)
-**Length estimate**: ~350 lines (expanded to cover both parameters)
+**Length estimate**: ~400 lines (expanded to cover both parameters + bootstrapping comparison)
 
 ---
 
@@ -429,4 +441,37 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 - **Key insight**: The distribution family should match your outcome type; normal/OLS is just one option among many
 
 **Dataset**: Binary or count outcome example
+**Length estimate**: ~300 lines
+
+---
+
+### Optional Part 15: Frequentist and Bayesian — More Alike Than You Think
+
+**Goal**: Show that the frequentist approach already involves subjective modeling decisions, and that Bayesian statistics extends (rather than replaces) this framework
+
+**Content**:
+
+- Recap the series' core move: choosing a distribution is a subjective, knowledge-informed decision
+  - We chose the normal distribution for heights based on what we know about heights (symmetric, continuous, clustered)
+  - This isn't "letting the data speak" — it's bringing prior knowledge to the modeling process
+  - Every `lm()` call embeds a subjective choice (normal errors)
+- The frequentist/Bayesian divide is narrower than often presented:
+  - **Both approaches** choose a distributional form (the likelihood) based on domain knowledge
+  - **Frequentist**: Estimates parameters from data alone
+  - **Bayesian**: Adds explicit prior distributions on the parameters, then combines with data to get posteriors
+  - The distributional choice (likelihood) is shared — it's not unique to either tradition
+- The distributional choice is technically the *likelihood*, not a prior in the Bayesian sense
+  - But in the colloquial sense, it IS prior reasoning — you're making a decision before looking at the data
+  - Bayesian statistics just extends this subjectivity explicitly to the parameters
+- Implications:
+  - The frequentist approach isn't as purely "objective" as sometimes presented
+  - The Bayesian approach isn't as purely "subjective" as sometimes criticized — frequentists make subjective choices too, they just don't call them that
+  - Both are making modeling decisions informed by knowledge
+- Practical comparison: fit the same heights model using both approaches
+  - Show that with weak/uninformative priors, Bayesian results ≈ frequentist results
+  - Show how informative priors shift the estimates
+  - This reinforces that the distributional choice matters in both traditions
+- **Key insight**: Choosing a distribution is a subjective modeling decision that both frequentist and Bayesian approaches share. Bayesian statistics makes additional subjective decisions explicit (priors on parameters), but the core act of modeling — proposing a distribution for the data — is common to both.
+
+**Dataset**: !Kung San heights (same data, frequentist vs Bayesian comparison)
 **Length estimate**: ~300 lines

@@ -1,6 +1,6 @@
 ---
-title: "Understanding regression (part 2)"
-description: "In Part 1, I asked what distribution might describe our height data. Now I answer that question by introducing the normal distribution—not because 'data is normal,' but because it's a reasonable, parsimonious choice given what we know about heights."
+title: "Understanding Regression: Why the Normal Distribution?"
+description: "In Part 1, I proposed that regression is about choosing and fitting distributions to data. In this post, I explain why the normal distribution is often a reasonable choice."
 date: 2025-01-16
 categories:
   - statistics
@@ -29,109 +29,148 @@ update_geom_defaults(
 
 ## Recap
 
-In Part 1, I introduced the core perspective to use when analyzing data: **What distribution might generate this data?**
+In Part 1, I introduced the core question to help us understand regression: **What distribution might have generated this data?**
 
-I argued that we should think of statistical modeling as choosing and fitting distributions. When we run `lm(height ~ 1)`, we're proposing that heights follow a normal distribution and estimatate its parameters (μ and σ).
+When we run `lm(height ~ 1)`, we're saying that heights follow a normal distribution and we estimate its parameters (μ and σ). But this raises a question: why the normal distribution? 
 
-But this raises a question: Why the normal distribution? That's what this post is about.
+## The ubiquity of the normal distribution
 
-## The data
+Many natural phenomena follow an approximately normal distribution: heights, blood pressure, test scores. This is because outcomes that are influenced by many small, independent factors tend to look bell-shaped when those factors add up. Heights, for example, are shaped by many genes and environmental influences, each contributing a small amount.
 
-Let me load the same height data from Part 1:
-
-```{r}
-#| label: data
-data <- read_csv("Howell1.csv")
-data <- filter(data, age >= 18)
-```
-
-Here's what the heights look like:
+We can see this with a simple simulation. Imagine a variable that is the sum of 20 small, independent effects. Each effect is a random number, drawn uniformly between -1 and 1. On their own, these individual effects look nothing like a normal distribution. They come from a uniform (flat) distribution. But when we add up 20 of them together and repeat this 1000 times, the result looks remarkably bell-shaped:
 
 ```{r}
-#| label: histogram
-ggplot(data, aes(x = height)) +
-  geom_histogram(binwidth = 5)
-```
+#| label: fig-small-effects
+#| fig-cap: "Summing many small effects produces a bell-shaped distribution"
 
-When we look at this data, we see a pattern:
+set.seed(42)
 
-- Most heights cluster around some central value (around 155 cm)
-- Heights spread out in both directions from that center
-- Extreme values (very short or very tall) are less common
-- The pattern looks roughly symmetric
+n_observations <- 1000
+n_effects <- 20
 
-So, looking at this data, it might be reasonable to conclude it a process described by the normal distribution might generate this data. However, we
+sums <- replicate(n_observations, sum(runif(n_effects, min = -1, max = 1)))
 
-## The normal distribution
-
-The distribution that captures this pattern is called the **normal distribution** (also called the Gaussian distribution).
-
-Here's what a normal distribution looks like:
-
-```{r}
-#| label: fig-normal
-#| fig-cap: "The normal distribution"
-
-x <- seq(100, 210, length.out = 200)
-y <- dnorm(x, mean = 155, sd = 8)
-
-ggplot() +
-  geom_line(aes(x = x, y = y), color = primary, linewidth = 1) +
+ggplot(tibble(x = sums), aes(x = x)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 0.5) +
+  stat_function(
+    fun = dnorm,
+    args = list(mean = mean(sums), sd = sd(sums)),
+    linewidth = 1,
+    color = "black",
+    linetype = "dashed"
+  ) +
   labs(
-    x = "Height (cm)",
+    x = "Sum of 20 small effects",
     y = "Density"
   ) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 ```
 
-This curve represents a mathematical model. The height of the curve at any point tells you how plausible that value is. Values near the center (around 155 cm) are most plausible. Values far from the center (like 120 cm or 190 cm) are less plausible but still possible.
+No single effect is normally distributed, but their sum is. This is a general pattern: whenever an outcome is shaped by many small, additive influences, the result tends toward a normal distribution. Since many things we measure in the real world (heights, blood pressure, test scores) are plausibly the sum of many small factors, the normal distribution shows up a lot.
 
-## Why the normal distribution?
+So one reason to use the normal distribution is simply that it's a reasonable description of many things we measure. If you're modeling something that is likely the result of many small additions, there's a good chance it can be modelled by the normal distribution.
 
-You might be wondering: "Why should I use the normal distribution for heights? What if it's wrong?"
+Because the normal distribution shows up so often, it's natural to describe data in terms of the normal distribution's two parameters: a mean and a standard deviation. And once we've decided to think about data that way, something interesting follows.
 
-Good question. Let me be clear: I'm not claiming that heights in reality follow a perfect normal distribution. 
+## The fewest assumptions
 
-Instead, I'm making a pragmatic modeling choice. Here's the reasoning:
+Often, we're willing to claim two things:
 
-**It matches what we observe**
+1. The data has some average value
+2. The data varies around that average
 
-Heights cluster around a center and spread out symmetrically. The normal distribution captures this pattern.
+That's typically all we're willing to claim. We might see in a histogram that the data looks roughly symmetric, with some variation. Maybe it looks slightly skewed, but we don't want to make a strong claim that the data comes from a skewed distribution. We're not even willing to say what the exact mean is or what the exact standard deviation is. But we are willing to say that a mean and a standard deviation are enough to describe the data.
 
-**It's parsimonious**
+If that is all we are willing to say, that the data comes from something with a mean and a standard deviation, what does that say about which distribution to choose?
 
-The normal distribution is defined by just two parameters:
-- μ (mu): the mean, where the center is
-- σ (sigma): the standard deviation, how spread out the values are
+## Many distributions, same constraints
 
-That's it. Two numbers describe the entire distribution.
+There are many distributions that are consistent with a given mean and standard deviation. Let me show you three, all with a mean of 155 and a standard deviation of 8:
 
-This matters because of a principle from information theory: when you only know the mean and standard deviation, the normal distribution is the **maximum entropy distribution**. It makes the fewest additional claims.
+```{r}
+#| label: fig-distributions
+#| fig-cap: "Three distributions, all with mean = 155 and SD = 8"
 
-Put differently: if all you know is "heights cluster around 155 cm with some spread," the normal distribution is the most honest model. Any other distribution would be adding claims you don't have evidence for.
+x <- seq(120, 190, length.out = 500)
 
-**We can check if it's wrong**
+distributions <- bind_rows(
+  tibble(
+    x = x, density = dnorm(x, mean = 155, sd = 8),
+    distribution = "Normal"
+  ),
+  tibble(
+    x = x, density = ifelse(x >= 139, dgamma(x - 139, shape = 4, scale = 4), 0),
+    distribution = "Skewed"
+  ),
+  tibble(
+    x = x, density = 0.5 * dnorm(x, 148, sqrt(15)) + 0.5 * dnorm(x, 162, sqrt(15)),
+    distribution = "Bimodal"
+  )
+) |>
+  mutate(
+    distribution = factor(distribution,
+      levels = c("Normal", "Skewed", "Bimodal")
+    )
+  )
 
-If the normal distribution doesn't fit our data well, we can detect that. We can compare what the model predicts to what we actually observe. And if they don't match, we can choose a different distribution.
+ggplot(distributions, aes(x = x, y = density, color = distribution)) +
+  geom_line(linewidth = 1) +
+  labs(
+    x = "Value",
+    y = "Density"
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+```
 
-But we have to start somewhere, and the normal distribution is a reasonable starting point.
+All three distributions agree on the same two facts: the mean is 155 and the standard deviation is 8. But look at how different they are. Each one is making different claims about the shape of the data:
 
-## Does the normal distribution fit?
+- The **skewed** distribution claims the data is asymmetric, with a longer tail on one side and a hard lower bound
+- The **bimodal** distribution claims there are two distinct clusters
+- The **normal** distribution claims a single most common value and variation around that single value
 
-Let's check if the normal distribution is a reasonable model for our heights.
+This is the key observation. The skewed and bimodal distributions are both *adding* claims about what the distribution looks like. One says the distribution is asymmetric, the other says there are multiple groups. These are stronger claims than simply saying there's a mean and some spread. We didn't say anything about skewness or two peaks.
 
-I'll overlay the theoretical normal distribution on top of a histogram of the data:
+The normal distribution is the one that keeps it simple. It only specifies a center and some spread, nothing more.
+
+## The most parsimonious choice
+
+There's a formal way to express this idea. In information theory, the **maximum entropy distribution** for a given set of constraints is the distribution that is the most "spread out," the least structured, while still satisfying those constraints. It's the distribution that makes the fewest additional claims beyond what you know.
+
+When the only things you know are the mean and the variance, the maximum entropy distribution is the normal distribution.
+
+What does "maximum entropy" mean intuitively? Entropy measures how much uncertainty a distribution contains. High entropy means the distribution is being as noncommittal as possible. Low entropy means it's making specific claims about where values will fall.
+
+The skewed distribution has lower entropy than the normal distribution because it's making a specific claim about asymmetry. The bimodal distribution has lower entropy too, because it's claiming there are two groups.
+
+The normal distribution is the one that only commits to a mean and a spread, without pretending to know anything else.
+
+This is what makes it parsimonious. Not just that it's simple (though it is, just two parameters), but that it adds nothing beyond what we're willing to say. Every other distribution with the same mean and variance is smuggling in additional structure that we'd need evidence to justify.
+
+Part of what makes the normal distribution uncommitted is that it doesn't claim any boundaries. Its tails extend infinitely in both directions, with values becoming less and less likely as you move away from the center. You might object: heights can't be negative, so doesn't the normal distribution get that wrong? Technically yes, but a normal distribution with mean 155 and SD 8 assigns essentially zero probability to negative values. The boundary exists in reality, but it's so far from where the data lives that it's irrelevant for modeling. We'll see later that when boundaries *are* close to the data, we need a different distribution.
+
+Note that this parsimony argument depends on our choice to describe data in terms of a mean and standard deviation. If we'd chosen to describe data by, say, its minimum and maximum, then the uniform distribution would be the most parsimonious choice. This is where the two arguments work together: the normal distribution is so common in nature that describing data by its mean and standard deviation is a natural default. And once we've adopted that framing, the normal distribution is the one that adds the least on top.
+
+I find this a genuinely compelling reason to use the normal distribution. It's not that it's "correct" or that data "really is" normally distributed. It's that the normal distribution is the most parsimonious choice given how we've chosen to describe the data. If we later find evidence for skewness or multiple groups, we can update our model. But until then, the normal distribution is the reasonable starting point.
+
+## Applying this to our heights
+
+Let's return to our height data and see how well the normal distribution fits.
+
+```{r}
+#| label: data
+data <- read_csv(here("assets", "data", "Howell1.csv"))
+data <- filter(data, age >= 18)
+
+sample_mean <- mean(data$height)
+sample_sd <- sd(data$height)
+```
 
 ```{r}
 #| label: fig-histogram-with-normal
 #| fig-cap: "Heights with normal distribution overlay"
 
-# Calculate sample mean and SD
-sample_mean <- mean(data$height)
-sample_sd <- sd(data$height)
-
 ggplot(data, aes(x = height)) +
-  geom_histogram(aes(y = after_stat(density)), binwidth = 5) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 2) +
   stat_function(
     fun = dnorm,
     args = list(mean = sample_mean, sd = sample_sd),
@@ -146,26 +185,26 @@ ggplot(data, aes(x = height)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 ```
 
-The dashed line shows what we'd expect if heights followed a normal distribution with mean `r round(sample_mean, 1)` cm and standard deviation `r round(sample_sd, 1)` cm.
+The dashed line shows a normal distribution with mean `r round(sample_mean, 1)` cm and standard deviation `r round(sample_sd, 1)` cm.
 
-Does it fit perfectly? No. But the key question is: does the normal distribution capture the general pattern? It seems to.
+Does it fit perfectly? No. You can see places where the histogram bars don't quite match the curve. But no model fits data perfectly. The question is whether the normal distribution captures the general pattern well enough to be useful: roughly symmetric, peaked near the center, tapering off at the extremes. It seems to.
 
-## What we've gained
+If it clearly didn't fit, if the data were obviously skewed or had two peaks, we'd want to reconsider our distributional choice. We'll explore how to formally check model fit later in the series.
 
-By proposing that heights come from a normal distribution, we've done something powerful: we've moved from individual data points to a **model of the distribution** that describes them.
+## When the normal distribution doesn't apply
 
-This model has two parameters: μ and σ. If we can estimate these parameters from our data, we can:
+The normal distribution is a good starting point, but it's not always appropriate. Sometimes we know enough about what we're measuring to rule it out.
 
-- Describe the distribution that generated the heights
-- Predict what height a new person might have
-- Quantify how uncertain we are about those predictions
+The clearest case is when the outcome has hard boundaries. If you're measuring reaction times, values can't be negative, so there's a floor at zero. If you're measuring proportions, values are bounded between 0 and 1. The normal distribution extends infinitely in both directions, so it doesn't respect these constraints. For bounded or strictly positive outcomes, other distributions (like the log-normal or beta distribution) are better choices.
 
-But this raises a new question: **How do we estimate μ and σ from our sample?**
+Similarly, if the outcome is a count (number of errors, number of children), it can only take whole numbers. A normal distribution is continuous and can take any value, including fractions and negatives. Count data calls for distributions like the Poisson or negative binomial.
 
-We know the sample mean is `r round(sample_mean, 1)` cm and the sample standard deviation is `r round(sample_sd, 1)` cm. Are these good estimates of μ and σ? Why? How certain can we be?
+The point isn't that you need to get the distribution exactly right. It's that when you know something about the structure of your data (hard boundaries, discrete values, strong skew) you should use that knowledge. The normal distribution is the parsimonious choice when all you know is a mean and a standard deviation. But if you know more than that, use a distribution that reflects what you know.
 
-These are the questions we'll tackle in Part 3.
+We'll return to alternative distributions later in the series when we discuss generalized linear models.
 
-## Key insight
+## Summary
 
-The normal distribution isn't a claim about reality—it's a parsimonious modeling choice. When all you know is that data clusters around a mean with some variance, the normal distribution makes the fewest additional claims. It's defined by just two parameters (μ and σ), which means once we estimate those, we've characterized the entire distribution.
+Why the normal distribution? The normal distribution is so common in nature, arising whenever many small effects add up, that it's natural to describe data in terms of its mean and standard deviation. And once we adopt that framing, the normal distribution is the most parsimonious choice: it captures a center and some spread without adding any claims about asymmetry, multiple groups, or hard boundaries.
+
+This model is defined by just two parameters: μ and σ. But how do we estimate these from our sample? We know the sample mean is `r round(sample_mean, 1)` cm and the sample standard deviation is `r round(sample_sd, 1)` cm. Are these good estimates? Why? That's what we'll tackle in Part 3.
