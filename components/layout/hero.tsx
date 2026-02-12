@@ -6,12 +6,12 @@ export const Hero = () => {
   return (
     <>
       <Image
-        className="rounded-full m-auto mb-2 sm:mb-4 md:mb-6 lg:mb-8 xl:mb-10"
+        className="rounded-full m-auto mb-(--fluid-sm)"
         src={avatar}
         alt="Avatar"
         width={150}
       />
-      <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-balance">
+      <h1 className="text-[length:var(--fluid-title)] font-black text-balance">
         <span className="text-primary">dr.</span> Willem Sleegers
       </h1>
       <div className="mx-auto text-muted-foreground text-base sm:text-lg text-balance">

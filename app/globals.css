@@ -81,6 +81,7 @@
   text-wrap: balance;
 }
 
+
 @layer utilities {
   body {
     font-family: Arial, Helvetica, sans-serif;
@@ -89,6 +90,12 @@
 
 @layer base {
   :root {
+    --fluid-sm: clamp(1rem, 2.5vw, 3rem);
+    --fluid-md: clamp(2rem, 5vw, 6rem);
+    --fluid-lg: clamp(4rem, 10vw, 12rem);
+    --fluid-heading: clamp(1.5rem, 4vw, 3rem);
+    --fluid-title: clamp(1.875rem, 5vw, 3rem);
+
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;

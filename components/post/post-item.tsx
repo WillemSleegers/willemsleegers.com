@@ -21,7 +21,7 @@ export function PostItem({
   tags,
 }: PostItemProps) {
   return (
-    <article className="flex flex-col gap-1 py-3 sm:py-4 md:py-5">
+    <li className="flex flex-col gap-2">
       <div>
         <h2 className="text-2xl font-bold">
           <Link href={`/blog/${slug}`}>{title}</Link>
@@ -47,6 +47,6 @@ export function PostItem({
           Read more →
         </Link>
       </div>
-    </article>
+    </li>
   )
 }

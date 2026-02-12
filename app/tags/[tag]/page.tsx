@@ -38,19 +38,18 @@ export default async function TagPage(props: TagPageProps) {
         <div className={LAYOUT_CLASSES.GRID_MAIN}>
           <hr />
           {displayPosts?.length > 0 ? (
-            <ul className="flex flex-col">
+            <ul className="flex flex-col space-y-(--fluid-sm)">
               {displayPosts.map((post) => {
                 const { slug, date, title, description, tags } = post
                 return (
-                  <li key={slug}>
-                    <PostItem
-                      slug={slug}
-                      date={date}
-                      title={title}
-                      description={description}
-                      tags={tags}
-                    />
-                  </li>
+                  <PostItem
+                    key={slug}
+                    slug={slug}
+                    date={date}
+                    title={title}
+                    description={description}
+                    tags={tags}
+                  />
                 )
               })}
             </ul>
