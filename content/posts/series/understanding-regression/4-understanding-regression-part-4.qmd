@@ -1,0 +1,245 @@
+---
+title: "Understanding Regression: How Certain Are We?"
+description: "We've estimated the parameters of a normal distribution from our sample. But how much would those estimates change if we'd measured different people? This post explores uncertainty through simulation."
+date: 2025-01-18
+categories:
+  - statistics
+  - tutorial
+  - regression
+code-fold: true
+toc: true
+draft: true
+---
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+
+# Theme settings
+primary <- "#16a34a"
+
+theme_set(theme_minimal(base_size = 16))
+update_geom_defaults(
+  "histogram",
+  aes(fill = primary, color = "white")
+)
+```
+
+## Recap
+
+In Part 3, we estimated the parameters of a normal distribution for heights: μ ≈ 154.6 cm and σ ≈ 7.7 cm. We saw that `lm(height ~ 1)` does exactly this: the intercept estimates μ and the residual standard error estimates σ.
+
+But these estimates are based on one sample of 352 people. If we'd measured a different group of !Kung San adults, we'd get slightly different numbers. How different? How certain can we be about our estimates?
+
+## One sample, many possibilities
+
+```{r}
+#| label: data
+data <- read_csv("Howell1.csv")
+data <- filter(data, age >= 18)
+
+sample_mean <- mean(data$height)
+sample_sd <- sd(data$height)
+```
+
+Our sample mean is `r round(sample_mean, 1)` cm. But imagine we could go back in time and collect a different sample of the same size. We'd measure different individuals, and the sample mean would come out slightly different. Maybe 154.2 cm, or 155.1 cm, or 153.9 cm.
+
+We can't actually do this, but we can simulate it. We've proposed that heights follow a normal distribution with mean `r round(sample_mean, 1)` and standard deviation `r round(sample_sd, 1)`. So let's draw many samples from that distribution and see how much the sample mean varies.
+
+```{r}
+#| label: fig-sampling-simulation
+#| fig-cap: "Distribution of sample means from 1000 simulated samples"
+
+set.seed(42)
+
+n <- nrow(data)
+n_simulations <- 1000
+
+sample_means <- replicate(n_simulations, {
+  simulated_sample <- rnorm(n, mean = sample_mean, sd = sample_sd)
+  mean(simulated_sample)
+})
+
+ggplot(tibble(means = sample_means), aes(x = means)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 0.1) +
+  geom_vline(
+    xintercept = sample_mean,
+    linetype = "dashed",
+    linewidth = 1
+  ) +
+  labs(
+    x = "Sample mean (cm)",
+    y = "Density"
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+```
+
+Each bar represents how often a particular sample mean came up across 1000 simulated samples. They cluster tightly around `r round(sample_mean, 1)` cm, but there's some spread. Most sample means fall within about 1 cm of the true value, though some are further out.
+
+This distribution of sample means has a name: the **sampling distribution**. It shows us how much an estimate would vary if we repeated the study over and over.
+
+Notice that the sampling distribution is itself a normal distribution. Why? Recall from Part 2 that when you add up many independent effects, the result is normally distributed. The sample mean is exactly that: a sum of independent observations (divided by n). The same principle that makes heights normally distributed (many small biological effects adding up) also makes the sampling distribution of the mean normal (many independent observations being averaged).^[If the data came from a non-normal distribution, the sampling distribution of the mean would only be *approximately* normal, with the approximation improving as the sample size increases. This is known as the **central limit theorem**. But since we're working within a normal model, the sampling distribution is exactly normal regardless of sample size.]
+
+## What affects uncertainty?
+
+The sampling distribution we just saw was for samples of n = `r n`, the same size as our actual data. But what happens with smaller or larger samples?
+
+```{r}
+#| label: fig-sample-sizes
+#| fig-cap: "Sampling distributions at different sample sizes"
+
+set.seed(42)
+
+sample_sizes <- c(10, 50, 352)
+
+sampling_distributions_n <- map_dfr(sample_sizes, function(size) {
+  means <- replicate(n_simulations, {
+    mean(rnorm(size, mean = sample_mean, sd = sample_sd))
+  })
+  tibble(
+    sample_mean_sim = means,
+    n = paste("n =", size)
+  )
+}) |>
+  mutate(n = factor(n, levels = paste("n =", sample_sizes)))
+
+ggplot(sampling_distributions_n, aes(x = sample_mean_sim, fill = n)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 0.2, alpha = 0.7) +
+  facet_wrap(~n, ncol = 1, scales = "free_y") +
+  geom_vline(
+    xintercept = sample_mean,
+    linetype = "dashed",
+    linewidth = 0.5
+  ) +
+  labs(
+    x = "Sample mean (cm)",
+    y = "Density"
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+  theme(legend.position = "none")
+```
+
+With n = 10, the sample means are all over the place. Some are as low as 150 cm, others as high as 160 cm. You'd have very little confidence in any single estimate. With n = 50, the spread narrows considerably. And with n = 352 (our actual sample), the estimates are tightly packed.
+
+This makes intuitive sense: more data means more precision.
+
+But sample size isn't the only thing that matters. The variability of the data itself also plays a role. If individual heights barely varied from person to person, you wouldn't need a large sample to pin down the mean. But if heights were wildly variable, even a large sample would leave you uncertain.
+
+We can see this by running the same simulation with different values of σ, keeping the sample size fixed at n = `r n`:
+
+```{r}
+#| label: fig-sd-values
+#| fig-cap: "Sampling distributions at different levels of variability"
+
+set.seed(42)
+
+sd_values <- c(4, 8, 16)
+
+sampling_distributions_sd <- map_dfr(sd_values, function(sd_val) {
+  means <- replicate(n_simulations, {
+    mean(rnorm(n, mean = sample_mean, sd = sd_val))
+  })
+  tibble(
+    sample_mean_sim = means,
+    sd_label = paste("σ =", sd_val)
+  )
+}) |>
+  mutate(sd_label = factor(sd_label, levels = paste("σ =", sd_values)))
+
+ggplot(sampling_distributions_sd, aes(x = sample_mean_sim, fill = sd_label)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 0.2, alpha = 0.7) +
+  facet_wrap(~sd_label, ncol = 1, scales = "free_y") +
+  geom_vline(
+    xintercept = sample_mean,
+    linetype = "dashed",
+    linewidth = 0.5
+  ) +
+  labs(
+    x = "Sample mean (cm)",
+    y = "Density"
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+  theme(legend.position = "none")
+```
+
+When individual heights vary less (σ = 4), the sample means are tightly clustered. When they vary more (σ = 16), even with the same sample size, our estimates of the mean are much more spread out. More variability in the data means more uncertainty about the mean.
+
+## The standard error
+
+The spread of the sampling distribution has a name: the **standard error** (SE). It tells us, roughly, how far a typical sample mean is from the true population mean.
+
+We've seen that the SE depends on both σ and n. But how exactly? We can measure the SE directly from our simulations by calculating the standard deviation of the sample means at each sample size:
+
+```{r}
+#| label: fig-se-vs-n
+#| fig-cap: "Standard error decreases with sample size, but not linearly"
+
+set.seed(42)
+
+many_sample_sizes <- c(10, 25, 50, 100, 200, 352, 500, 1000)
+
+se_by_n <- map_dfr(many_sample_sizes, function(size) {
+  means <- replicate(n_simulations, {
+    mean(rnorm(size, mean = sample_mean, sd = sample_sd))
+  })
+  tibble(
+    n = size,
+    simulated_se = sd(means)
+  )
+}) |>
+  mutate(formula_se = sample_sd / sqrt(n))
+
+ggplot(se_by_n, aes(x = n)) +
+  geom_point(aes(y = simulated_se), size = 3, color = primary) +
+  geom_line(
+    aes(y = formula_se),
+    linetype = "dashed",
+    linewidth = 1
+  ) +
+  labs(
+    x = "Sample size (n)",
+    y = "Standard error (cm)"
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+```
+
+The dots are the standard errors measured from our simulations. The dashed line is σ / √n. They match up nicely, confirming the formula:
+
+$$SE = \frac{\sigma}{\sqrt{n}}$$
+
+Let's be precise about what SE means. It is the standard deviation of the sampling distribution. If you could draw many independent samples of the same size, calculate the mean each time, and then take the standard deviation of all those means, that's the SE. Our simulation did exactly this, and the SE we measured matches σ / √n.^[Why √n rather than n? The short version: when you average n independent observations, their variances add (giving n × σ²) and then dividing by n shrinks the variance by n², yielding σ²/n. Taking the square root to get back to the original scale gives σ/√n. The square root appears because we have to work with variances (squared deviations) for the math to work out, and then convert back.]
+
+Because the sampling distribution is normal, the SE is all we need to fully characterize it. A normal distribution is defined by its mean and standard deviation, and we already know the mean (it's μ). So the SE, as the standard deviation of that normal distribution, tells us everything about how the sample mean varies from study to study.
+
+One practical consequence of this formula: there are diminishing returns to collecting more data. Doubling the sample size doesn't halve the SE. It only reduces it by a factor of about 1.4 (since √2 ≈ 1.4). To halve the SE, you'd need four times as many observations.
+
+For our heights: SE = `r round(sample_sd, 1)` / √`r n` ≈ `r round(sample_sd / sqrt(n), 2)` cm.
+
+That's tiny relative to σ (`r round(sample_sd, 1)` cm). We're quite certain about the mean, even though individual heights vary a lot. This is because we have a reasonably large sample.
+
+## Back to lm()
+
+Let's return to the `lm()` output:
+
+```{r}
+#| label: model
+model <- lm(height ~ 1, data = data)
+summary(model)
+```
+
+Look at the "Std. Error" column: `r round(summary(model)$coefficients[, "Std. Error"], 2)`. Now we know what it means: it's the standard deviation of the sampling distribution, telling us how much the intercept estimate would vary from sample to sample.
+
+## What about σ?
+
+We've focused entirely on uncertainty about μ. But look at the SE formula: σ / √n. It uses σ, the population standard deviation. And σ is also estimated from our sample. If we'd drawn a different sample, we'd get a different estimate of σ too.
+
+How much does σ vary? And does it matter? That's what we'll explore in Part 5.
+
+## Summary
+
+Our estimates of μ and σ are based on one sample. A different sample would give different estimates. The **sampling distribution** describes how much those estimates would vary, and the **standard error** measures its spread.
+
+For our heights data, we're quite certain about the mean (SE ≈ `r round(sample_sd / sqrt(n), 2)` cm), because the sample is large. The `lm()` output already reports this uncertainty in the "Std. Error" column.
+
+But we've only explored uncertainty in one of our two parameters. What about the other one? That's next.

@@ -30,7 +30,7 @@ update_geom_defaults(
 
 This is the first post of a series of blog posts about understanding regression.
 
-I'm a behavioral scientist with several scientific publications to my name in which I've used statistical tools like regression to answer questions. Yet, despite my experience, I admittedly don't feel like I *really* understand regression. I know *how* to use it—I can run models and report the results. But there are times when I'm just running code because I've been told "that's how you do it." When things get complicated, and sometimes not even that complicated, I find myself relying almost entirely on conventions rather than understanding it myself.
+I'm a behavioral scientist with several scientific publications to my name in which I've used statistical tools like regression to answer questions. Yet, despite my experience, I admittedly don't feel like I *really* understand regression. I know *how* to use it—I can run models and report the results. But there are times when I'm just running code because I've been told that's how you do it. When things get complicated, and sometimes not even that complicated, I find myself relying almost entirely on conventions rather than understanding it myself.
 
 You might feel the same way. Regression is often taught as a black box: you run the code or click the buttons and copy the output. The focus is on performing statistics rather than on building a conceptual understanding.
 
@@ -88,20 +88,20 @@ When we run a regression model, we're typically interested in one or both of the
 
 Most researchers focus on estimation. In the papers I'm familiar with, authors often report coefficients, standard errors, and confidence intervals, which suggests a focus on estimation. Prediction is often what we want too, though it is less emphasized in papers (authors rarely report prediction intervals).
 
-I don't want to assume one of these goals, though. I think both are often what's of interest, so I want to take a perspective that encompasses both of these goals.
+I don't want to assume one of these goals, though. I think both goals are often what's of interest, so I want to take a perspective that encompasses both.
 
-I think both of these goals can be understood through a single unifying question:
+My current thinking is that both goals can best be understood through a single unifying question:
 
 **What distribution might have generated this data?**
 
-For our height data, we might propose that heights follow a normal distribution—a bell-shaped curve defined by two parameters: μ (the mean) and σ (the standard deviation).
+For our height data, we can propose that heights follow a normal distribution—a bell-shaped curve defined by two parameters: μ (the mean) and σ (the standard deviation).
 
 These two parameters give us everything we need for both estimation and prediction:
 
 -   **For estimation**: μ tells us the typical height, and we can quantify how uncertain we are about that estimate
 -   **For prediction**: Both μ and σ together describe the full distribution, which we can use to predict what heights we'd expect in new individuals
 
-Here are the heights again, but now with a proposed normal distribution overlaid:
+Here are the heights again, but now with a normal distribution on top of the data points:
 
 ```{r}
 #| label: distribution
@@ -125,9 +125,9 @@ ggplot(data, aes(x = height)) +
   )
 ```
 
-The dashed line represents a **normal distribution**. We're proposing that heights are drawn from this distribution, which is defined by just two parameters: a mean (μ) and a standard deviation (σ).
+The dashed line represents the normal distribution. We're proposing that heights are drawn from this distribution.
 
-Our `lm()` model was estimating these parameters. The intercept (`r round(coef(model)[[1]], 2)`) is our estimate of μ, and the residual standard error is our estimate of σ.
+Our `lm()` model estimated the parameters that define the distribution. The intercept (`r round(coef(model)[[1]], 2)`) is our estimate of μ, and the residual standard error is our estimate of σ.
 
 ## What's ahead
 
@@ -135,7 +135,7 @@ In this series, I'm going to build up an understanding of regression from this f
 
 Here are the main steps we'll tackle:
 
-1.  **Choose a distribution**: What distribution might describe heights?
+1.  **Choose a distribution**: What distribution might describe the data?
 2.  **Estimate parameters**: Once we've chosen a distribution, how do we estimate its parameters (μ and σ) from our data?
 3.  **Quantify uncertainty**: How certain can we be about those estimates?
 4.  **Check the model**: Does the distribution we chose actually match the data?

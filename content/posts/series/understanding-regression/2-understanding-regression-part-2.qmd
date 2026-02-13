@@ -30,17 +30,17 @@ update_geom_defaults(
 
 In Part 1, I introduced the core question to help us understand regression: **What distribution might have generated this data?**
 
-When we run `lm(height ~ 1)`, we're saying that heights follow a normal distribution and we estimate its parameters (μ and σ). But this raises a question: why the normal distribution? 
+When we run a model like `lm(height ~ 1)`, we're saying that heights follow a normal distribution and we estimate its parameters (μ and σ). But this raises a question: why pick the normal distribution? 
 
 ## The ubiquity of the normal distribution
 
-Many natural phenomena follow an approximately normal distribution: heights, blood pressure, test scores. This is because outcomes that are influenced by many small, independent factors tend to look bell-shaped when those factors add up. Heights, for example, are shaped by many genes and environmental influences, each contributing a small amount.
+Many natural phenomena follow an approximately normal distribution: heights (of adults), blood pressure, test scores. This is because outcomes that are influenced by many small, independent factors tend to look bell-shaped when those factors add up. Heights, for example, are shaped by many genes and environmental influences, each contributing a small amount.
 
-We can see this with a simple simulation. Imagine a variable that is the sum of 20 small, independent effects. Each effect is a random number, drawn uniformly between -1 and 1. On their own, these individual effects look nothing like a normal distribution. They come from a uniform (flat) distribution. But when we add up 20 of them together and repeat this 1000 times, the result looks remarkably bell-shaped:
+We can use a simple simulation to demonstrate that a normal distribution is formed when many small effects add up. Imagine a variable that is the sum of 20 small, independent effects. Each effect is a random number, drawn uniformly between -1 and 1. On their own, these individual effects look nothing like a normal distribution. They come from a uniform (flat) distribution. But when we add up 20 of them together and repeat this 1000 times, the result looks like a normal distribution:
 
 ```{r}
 #| label: fig-small-effects
-#| fig-cap: "Summing many small effects produces a bell-shaped distribution"
+#| fig-cap: "Summing many small effects produces a normal distribution"
 
 set.seed(42)
 
@@ -69,7 +69,9 @@ No single effect is normally distributed, but their sum is. This is a general pa
 
 So one reason to use the normal distribution is simply that it's a reasonable description of many things we measure. If you're modeling something that is likely the result of many small additions, there's a good chance it can be modelled by the normal distribution.
 
-Because the normal distribution shows up so often, it's natural to describe data in terms of the normal distribution's two parameters: a mean and a standard deviation. And once we've decided to think about data that way, something interesting follows.
+In my own education I often heard that the normal distribution is an assumption. It's something you assume when modelling and then you are supposed to verify that assumption. However, I want to push back against that idea a little bit because it sounds as if you don't have good reasons to assume a normal distribution. However, we can often use prior knowledge about a phenomena to argue plausibly that a normal distribution is a good description of the data (e.g., when you know it is the result of many small effects). 
+
+Another argument to push back against the idea of the normal distribution being an assumption is that it's a very conservative model.
 
 ## The fewest assumptions
 
@@ -94,20 +96,24 @@ x <- seq(120, 190, length.out = 500)
 
 distributions <- bind_rows(
   tibble(
-    x = x, density = dnorm(x, mean = 155, sd = 8),
+    x = x,
+    density = dnorm(x, mean = 155, sd = 8),
     distribution = "Normal"
   ),
   tibble(
-    x = x, density = ifelse(x >= 139, dgamma(x - 139, shape = 4, scale = 4), 0),
+    x = x,
+    density = ifelse(x >= 139, dgamma(x - 139, shape = 4, scale = 4), 0),
     distribution = "Skewed"
   ),
   tibble(
-    x = x, density = 0.5 * dnorm(x, 148, sqrt(15)) + 0.5 * dnorm(x, 162, sqrt(15)),
+    x = x,
+    density = 0.5 * dnorm(x, 148, sqrt(15)) + 0.5 * dnorm(x, 162, sqrt(15)),
     distribution = "Bimodal"
   )
 ) |>
   mutate(
-    distribution = factor(distribution,
+    distribution = factor(
+      distribution,
       levels = c("Normal", "Skewed", "Bimodal")
     )
   )
@@ -133,23 +139,15 @@ The normal distribution is the one that keeps it simple. It only specifies a cen
 
 ## The most parsimonious choice
 
-There's a formal way to express this idea. In information theory, the **maximum entropy distribution** for a given set of constraints is the distribution that is the most "spread out," the least structured, while still satisfying those constraints. It's the distribution that makes the fewest additional claims beyond what you know.
-
-When the only things you know are the mean and the variance, the maximum entropy distribution is the normal distribution.
-
-What does "maximum entropy" mean intuitively? Entropy measures how much uncertainty a distribution contains. High entropy means the distribution is being as noncommittal as possible. Low entropy means it's making specific claims about where values will fall.
-
-The skewed distribution has lower entropy than the normal distribution because it's making a specific claim about asymmetry. The bimodal distribution has lower entropy too, because it's claiming there are two groups.
-
-The normal distribution is the one that only commits to a mean and a spread, without pretending to know anything else.
+Among all distributions with the same mean and variance, the normal distribution is the one that adds the least structure beyond those two facts. It only commits to a center and some spread, without pretending to know anything else.^[There's a formal way to express this. In information theory, the **maximum entropy distribution** for a given set of constraints is the distribution that is the most spread out while still satisfying those constraints. Entropy measures how much uncertainty a distribution contains: high entropy means the distribution is as noncommittal as possible. When the only constraints are a mean and a variance, the maximum entropy distribution is the normal distribution.]
 
 This is what makes it parsimonious. Not just that it's simple (though it is, just two parameters), but that it adds nothing beyond what we're willing to say. Every other distribution with the same mean and variance is smuggling in additional structure that we'd need evidence to justify.
 
-Part of what makes the normal distribution uncommitted is that it doesn't claim any boundaries. Its tails extend infinitely in both directions, with values becoming less and less likely as you move away from the center. You might object: heights can't be negative, so doesn't the normal distribution get that wrong? Technically yes, but a normal distribution with mean 155 and SD 8 assigns essentially zero probability to negative values. The boundary exists in reality, but it's so far from where the data lives that it's irrelevant for modeling. We'll see later that when boundaries *are* close to the data, we need a different distribution.
+Part of what makes the normal distribution uncommitted is that it doesn't claim any boundaries. Its tails extend infinitely in both directions, with values becoming less and less likely as you move away from the center. You might object: heights can't be negative, so doesn't the normal distribution get that wrong? Technically yes, but a normal distribution with mean 155 and SD 8 assigns essentially zero probability to negative values. The boundary exists in reality, but it's so far from where the data lives that it's irrelevant for modeling. We'll see later that boundaries can become relevant, in which case we need a different distribution.
 
-Note that this parsimony argument depends on our choice to describe data in terms of a mean and standard deviation. If we'd chosen to describe data by, say, its minimum and maximum, then the uniform distribution would be the most parsimonious choice. This is where the two arguments work together: the normal distribution is so common in nature that describing data by its mean and standard deviation is a natural default. And once we've adopted that framing, the normal distribution is the one that adds the least on top.
+Note that the parsimony argument depends on our choice to describe data in terms of a mean and standard deviation. If we'd chosen to describe data by, say, its minimum and maximum, then the uniform distribution would be the most parsimonious choice. This is where the two arguments work together: the normal distribution is so common in nature that describing data by its mean and standard deviation is a natural default. And once we've adopted that framing, the normal distribution is the one that adds the least on top.
 
-I find this a genuinely compelling reason to use the normal distribution. It's not that it's "correct" or that data "really is" normally distributed. It's that the normal distribution is the most parsimonious choice given how we've chosen to describe the data. If we later find evidence for skewness or multiple groups, we can update our model. But until then, the normal distribution is the reasonable starting point.
+I find this a genuinely compelling reason to use the normal distribution. It's not that it's "correct" or that data "really is" normally distributed. It's that the normal distribution is the most parsimonious choice fow how we are willing to describe the data. If we later find evidence for skewness or multiple groups, we can update our model. But until then, the normal distribution is a reasonable starting point.
 
 ## Applying this to our heights
 

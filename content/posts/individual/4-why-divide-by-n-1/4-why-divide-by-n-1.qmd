@@ -58,6 +58,7 @@ We simulate a population of 1000 data points from a uniform distribution with a 
 
 ```{r}
 #| label: fig-population
+#| fig-cap: Population
 
 # Set the seed for reproducibility
 set.seed(1212)
@@ -91,6 +92,7 @@ Now let's do that many many times. Below I show the results of draws from our po
 
 ```{r}
 #| label: fig-variance-biased
+#| fig-cap: Average biased variance by sample size
 
 # Create an empty data frame with the simulation parameters
 samples <- crossing(
@@ -120,6 +122,7 @@ We see that the biased measure of variance is indeed biased. The average varianc
 
 ```{r}
 #| label: fig-variance-unbiased
+#| fig-cap: Average unbiased variance by sample size
 ggplot(samples, aes(x = n, y = var_unbiased)) +
   geom_hline(yintercept = sigma, linetype = "dashed", alpha = .5) +
   stat_summary(fun = "mean", geom = "point", color = primary, size = 2.5) +
@@ -140,6 +143,7 @@ Let's illustrate this with a few graphs. Below is a graph in which I show 10 dat
 
 ```{r}
 #| label: fig-bias-illustration-1-1
+#| fig-cap: Deviations from the sample mean (sample 1)
 
 # Create the population
 x <- c(1, 2, 4, 4, 4, 6, 8, 9, 10, 10)
@@ -178,6 +182,7 @@ The next graph shows the deviations from the population mean.
 
 ```{r}
 #| label: fig-bias-illustration-1-2
+#| fig-cap: Deviations from the population mean (sample 1)
 ggplot(sample1, aes(y = index, x = value, color = sample)) +
   geom_point(size = 2.5) +
   geom_vline(xintercept = mean_sample, linetype = "dashed") +
@@ -203,6 +208,7 @@ This is true for any sample you draw from the population (again, except when the
 
 ```{r}
 #| label: fig-bias-illustration-2-1
+#| fig-cap: Deviations from the sample mean (sample 2)
 mean_sample <- mean(c(2, 10))
 mean_population <- mean(x)
 
@@ -251,6 +257,7 @@ And the deviations from the population mean look like this:
 
 ```{r}
 #| label: fig-bias-illustration-2-2
+#| fig-cap: Deviations from the population mean (sample 2)
 ggplot(sample2, aes(y = index, x = value, color = sample)) +
   geom_point(size = 2.5) +
   geom_vline(xintercept = mean_sample, linetype = "dashed") +
@@ -300,7 +307,9 @@ In other words, besides the variance of the data points around the sample mean, 
 
 The population variance is thus the sum of two variances:
 
-$$\sigma^2\_{sample} + \sigma^2\_{mean}=\sigma^2\_{population}$$
+$$
+\sigma^2_{sample} + \sigma^2_{mean}=\sigma^2_{population}
+$$
 
 Let's confirm that this is true. For that we need to know how to calculate the variance of the sample mean around the population mean. This is relatively simple; it's the variance of the population divided by n ($\frac{\sigma^2}n$). This makes sense because the greater the variance in the population, the more the mean can jump around, but the more data you sample, the closer you get to the population mean.
 
@@ -312,6 +321,7 @@ Below I show a graph in which I again sampled from our population with varying s
 
 ```{r}
 #| label: fig-sources-of-variance
+#| fig-cap: Sources of variance by sample size
 
 # Calculate the variance sources per sample size
 variance_sources <- samples |>
@@ -378,5 +388,5 @@ $$\frac{\sum(x_i - \overline{x})^2}{n-1}$$
 
 ## Summary
 
-We calculate the variance of a sample by summing the squared deviations of each data point from the sample mean and dividing it by n - 1. The n - 1 actually comes from a correction factor $\frac n{n-1}$ that is needed to correct for a bias caused by taking the deviations from the sample mean rather than the population mean. Taking the deviations from the sample mean only constitutes the variance around the sample mean, but ignores the variation of the sample mean around the population mean, producing an underestimation equal to the size of the variance of the sample mean: $\frac{\sigma^2}{n}$. The correction factor corrects for this underestimation, producing an unbiased estimate of the population variance.
+We calculate the variance of a sample by summing the squared deviations of each data point from the sample mean and dividing it by n - 1. The n - 1 comes from a correction factor $\frac n{n-1}$ that is needed to correct for a bias caused by taking the deviations from the sample mean rather than the population mean. Taking the deviations from the sample mean only constitutes the variance around the sample mean, but ignores the variation of the sample mean around the population mean, producing an underestimation equal to the size of the variance of the sample mean: $\frac{\sigma^2}{n}$. The correction factor corrects for this underestimation, producing an unbiased estimate of the population variance.
 

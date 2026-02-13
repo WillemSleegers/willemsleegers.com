@@ -16,9 +16,10 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 
 1. What question are we trying to answer? (Understanding distributions, not summarizing data)
 2. What distribution best represents the data?
-3. Given that distribution, what parameters define it?
-4. What's the optimal way to estimate those parameters?
+3. Given that distribution, what parameters define it? (The computer estimates these for us)
+4. How certain are we about those estimates?
 5. How well does the model fit?
+6. Can we add predictors to explain variation?
 
 **Pedagogical Approach**:
 
@@ -28,7 +29,7 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 - Build from intercept-only → simple regression → multiple regression
 - Mention theorems by name but don't prove them (keep current style)
 - **Distributions first** - start with the distribution concept, not error functions
-- **Distinguish from bootstrapping** - our framework is about modeling the data-generating distribution (parametric), not estimating sampling distributions of statistics (bootstrapping). Bootstrapping is a tool that can appear within the framework (Part 8) but doesn't replace it.
+- **Distinguish from bootstrapping** - our framework is about modeling the data-generating distribution (parametric), not estimating sampling distributions of statistics (bootstrapping). Bootstrapping is a tool that can appear within the framework but doesn't replace it.
 - Target audience: behavioral scientists who've used regression but want conceptual understanding
 
 **Critical Terminology Guidelines**:
@@ -106,11 +107,10 @@ Complete redesign of the Understanding Regression blog post series to teach stat
   - Show four distributions (normal, skewed/gamma, bimodal/mixture, uniform) all with mean = 155 and SD = 8
   - Each non-normal distribution is making additional claims beyond mean/SD (asymmetry, two groups, hard boundaries)
   - The normal distribution adds nothing extra
-- **The most parsimonious choice**: Maximum entropy argument (the bulk of the post)
-  - Maximum entropy distribution = fewest additional claims given constraints
-  - For fixed mean and variance, the maximum entropy distribution is the normal
-  - Entropy intuition: high entropy = noncommittal, low entropy = making specific claims
-  - Walk through each alternative: skewed (claims asymmetry), bimodal (claims two groups), uniform (claims hard boundaries)
+- **The most parsimonious choice**: Parsimony argument (the bulk of the post)
+  - The normal adds the least structure beyond mean and variance
+  - Maximum entropy argument relegated to footnote
+  - Walk through each alternative: skewed (claims asymmetry), bimodal (claims two groups)
   - The normal says: "I know the mean and the spread. I'm not going to pretend I know anything else."
   - Parsimony = not just simplicity, but adding nothing beyond what we know
   - Personal note: "I find this a genuinely compelling reason"
@@ -143,9 +143,9 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 - **Visualizing the estimated distribution**: Histogram with normal distribution overlay using estimated parameters
 - **What we've accomplished**: We proposed normal distribution and estimated μ and σ
 - **Questions this raises**: Preview future posts
-  1. Why use the mean specifically?
-  2. Why is this optimal?
-  3. How certain are we?
+  1. How certain are we about these estimates?
+  2. What can we do with this model?
+  3. Does the model actually fit?
 - **Key insight**: When you run lm(), you're estimating distribution parameters (intercept = μ, residual SE = σ)
 
 **Dataset**: !Kung San heights from Howell1.csv
@@ -154,79 +154,130 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 
 ---
 
-### Part 4: Error Functions and Estimation
+### Part 4: Uncertainty and the Standard Error (COMPLETED)
 
-**Goal**: Show how different error definitions lead to different parameter estimates
+**Goal**: Understanding parameter uncertainty through the sampling distribution
 
-**Content**:
+**Content** (ACTUAL):
 
-- We need to measure how well different values of μ fit our data
-- Three error definitions:
-  1. Binary (correct/incorrect) → leads to mode
-  2. Sum of absolute residuals → leads to median
-  3. Sum of squared residuals → leads to mean
-- For each, visualize residuals and calculate error for range of μ values
-- Show which value of μ minimizes error under each definition
-- Explain why squared residuals is commonly used:
-  - Punishes larger errors more heavily
-  - Has nice mathematical properties (differentiable)
-  - Connects to maximum likelihood under normal distribution
-- **Key insight**: The error function you choose determines which parameter value you estimate; squared errors lead to the mean
+- **Recap**: In Part 3 we estimated μ and σ. But these are based on one sample of 352 people. How much would they vary with a different sample?
+- **One sample, many possibilities**: Simulation — draw 1000 samples from N(μ, σ), calculate the mean of each
+  - Histogram of sample means, clustered around the true mean
+  - Name it: the **sampling distribution**
+  - Explain why it's normal: same principle from Part 2 (adding independent things → normal). The sample mean is a sum of independent observations divided by n. CLT in footnote.
+- **What affects uncertainty?**: Two factors
+  - Sample size: sampling distributions at n = 10, 50, 352 (faceted plot)
+  - Data variability: sampling distributions at σ = 4, 8, 16 (faceted plot)
+- **The standard error**:
+  - Measure SE from simulations (SD of sample means at each n)
+  - Plot simulated SEs against σ/√n formula — they match
+  - SE is the SD of the sampling distribution
+  - Because the sampling distribution is normal, SE fully characterizes it (along with the mean μ)
+  - √n derivation in footnote (variance addition → σ²/n → take square root)
+  - Diminishing returns: doubling n only reduces SE by factor √2
+  - For our data: SE ≈ 0.41 cm, tiny relative to σ (7.7 cm)
+- **Back to lm()**: The "Std. Error" column is exactly this
+- **What about σ?**: σ also has uncertainty, but standard practice doesn't report it. Partly convention, partly because μ is usually the research question. But σ matters for prediction.
+- **Summary**: Sampling distribution describes estimate variability, SE measures its spread, lm() reports it
 
-**Dataset**: !Kung San heights
-**Length estimate**: ~300 lines
-
----
-
-### Part 5: Why OLS and Normal Pair Well
-
-**Goal**: Explain why minimizing squared residuals is optimal for normal distributions
-
-**Content**:
-
-- We've seen that squared residuals lead to estimating the mean
-- But why use squared residuals for normal data specifically?
-- Demonstrate efficiency advantage (simulation-based):
-  - Simulate drawing repeated samples (show sampling distribution)
-  - Compare precision of mean vs median estimates for normal data
-  - Show that mean uses all information, median uses only rank
-  - Calculate relative efficiency (~57% more efficient)
-- Connect to maximum likelihood: squared residuals = MLE for normal distribution
-- Introduce OLS as the method that estimates μ by minimizing squared residuals
-- Verify with `lm(height ~ 1)` - the intercept equals the mean
-- Mention Gauss-Markov theorem (optimal among unbiased estimators)
-- **Key insight**: For normally distributed data, OLS (minimizing squared residuals) is optimal because the mean is the natural location parameter and OLS estimates it most efficiently
-
-**Dataset**: Heights + repeated sampling simulation
-**Length estimate**: ~300 lines (includes efficiency simulation)
+**Dataset**: !Kung San heights + simulations
+**Status**: Completed, ~245 lines
+**Note**: Part 4 now bridges to Part 5 (σ's uncertainty).
 
 ---
 
-### Part 6: When the Distribution Choice Is Wrong
+### Part 5: What About σ?
 
-**Goal**: Show what happens when you choose the wrong distribution
+**Goal**: Show that σ is also uncertain, setting up the t-distribution in Part 6
 
 **Content**:
 
-- So far we've chosen the normal distribution for heights
-- But what if that's not a good choice?
-- Generate or use skewed data (income data, reaction times)
-- Visualize the skewness
-- Fit normal model anyway (OLS) - show mean, median, mode
-- Show the problem: mean is pulled by tail, doesn't represent "typical" value
-- Demonstrate this isn't an "outlier problem" - it's a distribution mismatch
-- Two solutions:
-  1. Transform the data (log-transform to make it closer to normal)
-  2. Use a different distribution family (preview of GLMs)
-- Show both approaches with data
-- **Key insight**: Extreme values often signal wrong distributional choice, not bad data; fix the model, not the data
+- **Recap**: In Part 4 we quantified μ's uncertainty with the SE = σ / √n. But the formula uses σ, which we also estimated.
+- **σ varies from sample to sample**: Simulation — draw 1000 samples, calculate SD of each
+  - Histogram of sample SDs, clustered around the true SD
+  - Parallel to Part 4's simulation for the mean
+- **Different sample sizes**: Sampling distributions of σ at n = 10, 50, 352
+  - At n = 10, σ's estimate is very imprecise
+  - At n = 352, fairly precise
+- **A different shape**: σ's sampling distribution is skewed (right tail), unlike μ's symmetric normal
+  - SD can't go below zero but can be arbitrarily large
+  - Skew is most visible at small n, fades with large n
+- **Why this matters**: The SE uses σ. Since we estimate σ, the SE itself is uncertain.
+  - If σ's estimate is too low → SE is too low → we underestimate uncertainty about μ
+  - If σ's estimate is too high → SE is too high → we overestimate uncertainty about μ
+  - The "ruler" for measuring uncertainty is itself imprecise
+- **Back to lm()**: The residual standard error has no "Std. Error" next to it — lm() doesn't report σ's uncertainty
+- **Summary**: Bridge to Part 6 — dividing the estimate by the SE will produce a ratio whose distribution is affected by σ's uncertainty
 
-**Dataset**: Skewed data + transformations
-**Length estimate**: ~300 lines
+**Dataset**: !Kung San heights + simulations
+**Length estimate**: ~150 lines
 
 ---
 
-### Part 7: Using the Model for Prediction
+### Part 6: The t-Value and the t-Distribution
+
+**Goal**: Explain what the t-value in the lm() output means and why the t-distribution exists
+
+**Content**:
+
+- **Recap**: Parts 4 and 5 — we have an estimate with SE, but the SE is uncertain because σ is estimated. The next column in the lm() output is the t value.
+- **What question is the t-value answering?**: Is the estimate compatible with some reference value (by default, zero)?
+  - For heights, testing against zero is silly, but the same machinery tests whether predictor effects are zero
+- **Measuring distance in the right units**: t = (Estimate - 0) / SE
+  - Explicitly show the subtraction of 0 in the formula
+  - Walk through the intuition: if the true mean were 0, the SE tells us how much estimates bounce around. Getting 154.6 when estimates only move ~0.41 cm is an enormous discrepancy.
+  - Signal-to-noise ratio framing
+- **What t-values would we expect?**: Simulation under the null
+  - Draw many samples from N(0, σ), compute t for each
+  - Distribution clusters around 0, rarely beyond ±3
+  - Our observed t-value (~377) is off the charts
+- **Why the t-distribution?**: The distribution of t-values has heavier tails than the normal
+  - Because the denominator uses the sample SD (which varies from sample to sample, as we saw in Part 5)
+  - Simulation comparing known σ vs estimated σ at n = 10 — shows heavier tails
+  - Connects directly to Part 5's observation about σ's uncertainty
+- **Convergence**: The t-distribution converges to the standard normal as n grows
+  - Convergence plot at n = 10, 30, 352, and standard normal
+  - Degrees of freedom (df = n - 1) as the t-distribution's parameter
+- **Back to lm()**: The t value column
+- **Key insight**: The t-value standardizes the estimate relative to its uncertainty. The t-distribution (not the normal) is the right reference because we estimate σ rather than knowing it.
+
+**Dataset**: !Kung San heights + simulations
+**Length estimate**: ~250 lines
+
+---
+
+### Part 7: The p-Value
+
+**Goal**: Explain what the p-value means using the t-distribution from Part 6
+
+**Content**:
+
+- **Recap**: We have a t-value and know it follows a t-distribution. The last column in the lm() output is Pr(>|t|). What is this?
+- **The question hypothesis testing asks**: If the true parameter were zero, how surprising would our observed t-value be?
+  - This is a specific, narrow question. Not "is the mean zero?" but "if the mean WERE zero, would we see data like ours?"
+- **Simulation**: Build the null distribution
+  - Draw many samples from N(0, σ), compute t for each
+  - This gives the distribution of t-values we'd expect if the null were true
+  - Plot this distribution and mark where our observed t falls
+  - The p-value: the proportion of simulated t-values as extreme as (or more extreme than) ours
+- **For heights, this is trivially small**: Of course the mean height isn't zero. The t-value is enormous (hundreds of SEs away from zero). The p-value is essentially zero.
+  - Acknowledge this test is uninteresting for the intercept-only model
+  - Preview: when we add predictors, the null hypothesis (slope = 0) becomes a meaningful question ("does this predictor matter?")
+- **What the p-value does and doesn't tell you**:
+  - It IS: the probability of seeing data this extreme if the null were true
+  - It is NOT: the probability that the null is true
+  - It is NOT: a measure of effect size (a tiny effect can have a tiny p-value with enough data)
+  - It is NOT: a measure of practical importance
+- **Back to lm()**: The Pr(>|t|) column, the significance stars
+- **Summary**: The p-value answers a specific question about compatibility with the null. For the intercept, this test is trivial, but the same machinery becomes central when testing whether predictors have effects.
+- **Key insight**: The p-value uses the t-distribution to ask how surprising our estimate would be if the true value were zero. It's a measure of compatibility with the null hypothesis, not a measure of importance or truth.
+
+**Dataset**: !Kung San heights + simulations
+**Length estimate**: ~250 lines
+
+---
+
+### Part 8: Using the Model for Prediction
 
 **Goal**: Demonstrate different ways to use the estimated distribution for prediction
 
@@ -258,48 +309,6 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 
 **Dataset**: !Kung San heights
 **Length estimate**: ~250 lines
-
----
-
-### Part 8: Uncertainty and Inference
-
-**Goal**: Understanding parameter uncertainty through the sampling distribution
-
-**Content**:
-
-- Return to heights data
-- Population vs sample distinction
-- We've estimated μ from our sample, but how certain are we?
-- **Sampling distribution of the mean** (simulation-based):
-  - Simulate drawing many samples of different sizes
-  - Show how sampling distribution narrows with larger n
-  - Visualize with density plots at n=10, 25, 50, 100
-- **Sampling distribution of the standard deviation** (simulation-based):
-  - Same simulation approach but for sample SD
-  - Show that σ also has uncertainty
-  - Visualize how it varies across samples
-- **Compare the two**:
-  - Both parameters have uncertainty
-  - Standard practice: we report SE for μ but not for σ
-  - This asymmetry is partly conventional (μ is usually the research question)
-  - Bayesian approaches treat both symmetrically
-- Variance decomposition for the mean:
-  - Variance of the data (how spread out heights are: σ²)
-  - Variance of the estimator (how uncertain our estimate is: σ²/n)
-  - Relationship: SE = σ/√n
-- Calculate confidence intervals
-- Verify with `summary(lm(height ~ 1))`
-- **Bootstrapping as an alternative approach to uncertainty**:
-  - Introduce bootstrapping: resample from observed data to build empirical sampling distribution
-  - Compare to the parametric approach used throughout the series
-  - Key distinction: bootstrapping estimates the sampling distribution of a *statistic* (nonparametric); our framework models the *data-generating distribution* (parametric)
-  - Bootstrapping sidesteps distributional assumptions — useful when you're unsure about the distribution choice
-  - But: doesn't replace the modeling framework (no distributional choice, limited prediction, doesn't address conditional distributions in regression)
-  - Position bootstrapping as a *tool within* the framework, not an alternative to it
-- **Key insight**: Our estimates have uncertainty that decreases with sample size; we typically focus on uncertainty about μ, but σ also has uncertainty we often ignore. Bootstrapping offers a nonparametric alternative for quantifying uncertainty, but doesn't replace the need to model the data-generating distribution.
-
-**Dataset**: Heights + repeated sampling simulations (all simulation-based, no equations)
-**Length estimate**: ~400 lines (expanded to cover both parameters + bootstrapping comparison)
 
 ---
 
@@ -350,7 +359,7 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 
 ---
 
-### Part 11: Multiple Predictors - The Basics
+### Part 11: Multiple Predictors
 
 **Goal**: Extend to multiple regression (Y ~ X1 + X2)
 
@@ -422,9 +431,34 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 
 ---
 
-### Optional Part 14: Beyond Normal - Other Distribution Families
+### Supplementary: Under the Hood — How lm() Calculates Parameters
 
-**Goal**: Brief introduction to generalized linear models (optional extension)
+**Goal**: For curious readers, explain the mechanics of how parameter estimates are actually computed
+
+**Framing**: "You don't need this to use regression, but if you want to understand what the computer is doing..."
+
+**Content**:
+
+- Three error definitions and what they estimate:
+  1. Binary (correct/incorrect) → mode
+  2. Sum of absolute residuals → median
+  3. Sum of squared residuals → mean
+- For each, visualize residuals and calculate error for range of μ values
+- Why squared residuals pair well with the normal distribution:
+  - Minimizing squared residuals = maximum likelihood estimation for normal data
+  - The mean is the most efficient estimator (simulation comparing mean vs median)
+  - Gauss-Markov theorem (mentioned, not proven)
+- OLS as the name for minimizing squared residuals
+- **Key insight**: The distribution choice drives the estimation method, not the other way around. For a normal distribution, the sample mean is the maximum likelihood estimate, and OLS is the method that finds it.
+
+**Dataset**: !Kung San heights + efficiency simulation
+**Length estimate**: ~400 lines
+
+---
+
+### Supplementary: Beyond Normal — Other Distribution Families
+
+**Goal**: Brief introduction to generalized linear models
 
 **Content**:
 
@@ -445,7 +479,45 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 
 ---
 
-### Optional Part 15: Frequentist and Bayesian — More Alike Than You Think
+### Supplementary: The Forgotten Parameter — Uncertainty in σ
+
+**Goal**: Explore why σ's uncertainty is typically ignored, why it matters, and how different frameworks handle it
+
+**Content**:
+
+- **σ has a sampling distribution too**:
+  - Simulation: draw many samples, calculate SD each time
+  - Show that σ's sampling distribution is skewed (not normal), unlike the mean's
+  - It follows a chi-related distribution — bounded below by zero, with a right tail
+  - SE of σ ≈ σ / √(2n), so it shrinks with sample size, but more slowly than SE of the mean
+- **Why isn't this commonly reported?**:
+  - Convention: researchers focus on μ because it answers questions about typical values and predictor effects
+  - The lm() output reports SE for coefficients but not for the residual standard error
+  - This creates a blind spot, especially for prediction (where σ directly determines prediction interval width)
+- **The t-distribution as the frequentist solution**:
+  - When we estimate μ, we don't know the true σ — we use the sample SD instead
+  - The t-distribution accounts for this: it's wider than the normal, with heavier tails
+  - With large n, the t-distribution converges to the normal (because σ's uncertainty shrinks)
+  - Mathematically, the t-distribution is the exact, complete solution for confidence and prediction intervals
+  - But it handles σ's uncertainty implicitly — you never see σ's sampling distribution or its confidence interval
+  - This makes it conceptually opaque: the uncertainty is baked in without being visible
+- **Bayesian approaches make σ explicit**:
+  - In a Bayesian framework, both μ and σ get posterior distributions
+  - You can directly visualize and summarize uncertainty about σ
+  - Prediction naturally incorporates uncertainty in both parameters
+  - This is more transparent, even if the conclusions are similar
+- **When does σ's uncertainty matter most?**:
+  - Small samples: the t-distribution is noticeably wider than the normal
+  - Prediction: prediction intervals depend directly on σ, so underestimating σ's uncertainty means overconfident predictions
+  - Comparing groups: if you're comparing variability across groups, σ's uncertainty is the research question
+- **Key insight**: σ is a full parameter of the model with its own uncertainty. The frequentist framework handles this implicitly through the t-distribution. Bayesian approaches make it explicit. Both get the math right, but they differ in transparency.
+
+**Dataset**: !Kung San heights + simulations
+**Length estimate**: ~300 lines
+
+---
+
+### Supplementary: Frequentist and Bayesian — More Alike Than You Think
 
 **Goal**: Show that the frequentist approach already involves subjective modeling decisions, and that Bayesian statistics extends (rather than replaces) this framework
 

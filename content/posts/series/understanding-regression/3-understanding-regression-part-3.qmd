@@ -144,21 +144,8 @@ Now we've estimated that distribution's parameters from our sample:
 
 When we run `lm(height ~ 1)`, we're estimating these same parameters. The regression output gives us both values, along with additional information (like uncertainty about our estimates, which we'll explore later).
 
-## Questions this raises
+## What comes next
 
-This simple story raises several important questions:
+But these estimates are based on just one sample of 352 people. If we'd measured a different group, we'd get different numbers. How much would they vary? How certain can we be about our estimates?
 
-1. **Why use the mean specifically?** Could we use the median or mode instead?
-2. **Why is this optimal?** What makes the sample mean and SD the "best" estimates?
-3. **How certain are we?** Our sample is just one possible draw from the population—how much would our estimates vary if we drew a different sample?
-
-We'll tackle these questions in the next posts. For now, the key takeaway is: **when you run a regression model, you're estimating the parameters of a distribution.**
-
-## Key insight
-
-The normal distribution has two parameters: μ (mean) and σ (standard deviation). When we run `lm(height ~ 1)`, we're estimating both:
-
-- The **intercept** estimates μ (the population mean)
-- The **residual standard error** estimates σ (the population standard deviation)
-
-These natural estimators—sample mean and sample SD—characterize the entire distribution. In the next post, we'll explore why the mean specifically is the right choice for normal data.
+That's what we'll tackle in Part 4.
