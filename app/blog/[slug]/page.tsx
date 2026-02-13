@@ -55,6 +55,31 @@ export default async function Page(props0: {
       if (prefix.trim().startsWith("$$")) return match
       return prefix + "\n" + dollars
     })
+    // Convert Quarto figure divs to semantic <figure>/<figcaption> HTML.
+    // Blank lines inside the div cause CommonMark to split it into multiple
+    // HTML blocks, which makes rehype-raw produce duplicate elements.
+    .replace(
+      /<div id="(fig-[^"]+)">([\s\S]*?)<\/div>/g,
+      (_, id, inner) => {
+        // Convert markdown images to HTML
+        let processed = inner.replace(
+          /!\[([^\]]*)\]\(([^)]+)\)/g,
+          '<img src="$2" alt="$1" />'
+        )
+        // Extract img tag (handles multi-line <img\nsrc="..."\n/>)
+        const imgMatch = processed.match(/<img[\s\S]*?\/>/)
+        const imgTag = imgMatch ? imgMatch[0].replace(/\s+/g, " ") : ""
+        // Caption is the remaining non-HTML text
+        const afterImg = processed.slice(
+          (imgMatch?.index ?? 0) + (imgMatch?.[0].length ?? 0)
+        )
+        const caption = afterImg.replace(/<[^>]*>/g, "").trim()
+
+        return caption
+          ? `<figure id="${id}">${imgTag}<figcaption>${caption}</figcaption></figure>`
+          : `<figure id="${id}">${imgTag}</figure>`
+      }
+    )
 
   return (
     <main className="p-6">
@@ -64,44 +89,47 @@ export default async function Page(props0: {
             <TableOfContents items={toc} />
           </div>
         )}
-        <div className="xl:max-w-3xl xl:order-1">
+        <div className="xl:max-w-3xl">
           <article className="prose dark:prose-invert">
-          <div className="flex flex-col gap-3 mb-8">
-          <div>
-            <h1 className="mb-3">{post.title}</h1>
+            <div className="space-y-4">
+            
+            {post.date && (
+              <div className="not-prose text-sm text-muted-foreground">
+                <time dateTime={post.date}>{formatDate(post.date)}</time>
+                {post.updated && (
+                  <>
+                    <span className="mx-2">·</span>
+                    <span>Updated <time dateTime={post.updated}>{formatDate(post.updated)}</time></span>
+                  </>
+                )}
+              </div>
+            )}
+            
+            <h1 className="mb-4 mt-2">{post.title}</h1>
+            
             {post.description && (
-              <p className="text-muted-foreground mb-0 mt-0">
+              <p className="text-muted-foreground">
                 {post.description}
               </p>
             )}
-          </div>
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex flex-row gap-2">
-              {post.tags.map((tag: string) => (
-                <Tag tag={tag} key={tag} />
-              ))}
-            </div>
-          )}
-          {post.date && (
-            <div className="not-prose text-sm flex gap-4">
-              <div>
-                <div className="text-muted-foreground">Published</div>
-                <time dateTime={post.date}>{formatDate(post.date)}</time>
+
+            {post.tags && post.tags.length > 0 && (
+              <div className="flex flex-row gap-2">
+                {post.tags.map((tag: string) => (
+                  <Tag tag={tag} key={tag} />
+                ))}
               </div>
-              {post.updated && (
-                <div>
-                  <div className="text-muted-foreground">Last updated</div>
-                  <time dateTime={post.updated}>{formatDate(post.updated)}</time>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+            
+          
         <MarkdownAsync
           remarkPlugins={[remarkGfm, remarkMath]}
           rehypePlugins={[rehypeRaw, rehypeKatex]}
           components={{
             img: Img,
+            figure: Figure,
+            figcaption: Figcaption,
             details: Details,
             pre: Pre,
             code: Code,
@@ -123,11 +151,27 @@ const Img = (props: { src?: string | Blob; alt?: string }) => {
   return (
     <Image
       src={props.src}
-      className="rounded mx-auto my-4"
+      className="rounded mx-auto"
       alt={props.alt || ""}
       width={IMAGE_DEFAULTS.POST_WIDTH}
       height={IMAGE_DEFAULTS.POST_HEIGHT}
     />
+  )
+}
+
+const Figure = (props: { id?: string; children?: ReactNode }) => {
+  return (
+    <figure className="not-prose my-6" id={props.id}>
+      {props.children}
+    </figure>
+  )
+}
+
+const Figcaption = (props: { children?: ReactNode }) => {
+  return (
+    <figcaption className="text-center text-sm text-muted-foreground mt-2">
+      {props.children}
+    </figcaption>
   )
 }
 
