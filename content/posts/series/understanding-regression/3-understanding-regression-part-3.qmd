@@ -1,5 +1,5 @@
 ---
-title: "Understanding regression (part 3)"
+title: "Understanding Regression (Part 3): Estimating Parameters"
 description: "We've chosen the normal distribution to describe heights. Now we need to estimate its parameters μ and σ from our sample. This post shows that lm() does exactly this: the intercept estimates μ (the mean) and the residual standard error estimates σ."
 date: 2025-01-17
 categories:
@@ -15,7 +15,6 @@ draft: true
 #| label: setup
 #| message: false
 library(tidyverse)
-library(here)
 
 # Theme settings
 primary <- "#16a34a"
@@ -29,40 +28,24 @@ update_geom_defaults(
 
 ## Recap
 
-In Part 2, I argued that the normal distribution is a reasonable, parsimonious choice for modeling heights. The normal distribution is the maximum entropy distribution when all you know is the mean and variance—it makes the fewest additional claims.
+In Part 2, I argued that the normal distribution is often the correct distribution for outcomes like heights, which are shaped by many small additive effects. It's also parsimonious: defined by just two parameters, it captures a center and some spread without adding claims about skewness, multiple groups, or hard boundaries.
 
-Now we need to estimate the parameters of this distribution from our data.
+Now we need to estimate those two parameters from our data.
 
-## The normal distribution's parameters
+## Estimating the parameters
 
 The normal distribution is defined by two parameters:
 
-- **μ (mu)**: the mean—where the center of the distribution is
-- **σ (sigma)**: the standard deviation—how spread out the distribution is
+- **μ (mu)**: the mean, where the center of the distribution is
+- **σ (sigma)**: the standard deviation, how spread out the distribution is
 
-If we can estimate these two parameters from our sample, we've characterized the entire distribution.
-
-## The data
-
-Let me load the same height data we've been working with:
-
-```{r}
-#| label: data
-data <- read_csv("Howell1.csv")
-data <- filter(data, age >= 18)
-```
-
-## Natural estimators
-
-Since the normal distribution is defined by its mean and standard deviation, the natural estimators from our sample are:
-
-- The **sample mean** to estimate μ
-- The **sample standard deviation** to estimate σ
-
-Let me calculate these:
+If we can estimate these from our sample, we've characterized the entire distribution. The sample mean estimates μ and the sample standard deviation estimates σ. Let me calculate these using the same height data we've been working with:
 
 ```{r}
 #| label: sample-stats
+data <- read_csv("Howell1.csv")
+data <- filter(data, age >= 18)
+
 sample_mean <- mean(data$height)
 sample_sd <- sd(data$height)
 ```
@@ -70,7 +53,7 @@ sample_sd <- sd(data$height)
 - **Sample mean**: `r round(sample_mean, 2)` cm
 - **Sample SD**: `r round(sample_sd, 2)` cm
 
-These are our estimates of the population parameters μ and σ.
+These are our estimates of μ and σ.
 
 ## What lm() is doing
 
@@ -92,12 +75,11 @@ Compare these to what we calculated:
 - Intercept (`r round(coef(model)[[1]], 2)`) = Sample mean (`r round(sample_mean, 2)`)
 - Residual SE (`r round(sigma(model), 2)`) = Sample SD (`r round(sample_sd, 2)`)
 
-They're the same (within rounding).
+They're identical. When there are no predictors, the residual standard error is the same as the sample standard deviation.
 
-**This is what `lm(height ~ 1)` is doing**: it's estimating the parameters of a normal distribution.
+The name "residual standard error" hints at what's going on. A **residual** is the difference between an observed value and the model's estimate. For our intercept-only model, the estimate is the mean, so each residual is just a height minus the mean. The residual standard error then squares those residuals, sums them, divides by n − 1, and takes the square root. But that's exactly how the sample standard deviation is calculated: take each value, subtract the mean, square the differences, sum them, divide by n − 1, and take the square root. They're the same computation.
 
-- The intercept estimates μ (the mean)
-- The residual standard error estimates σ (the standard deviation)
+So `lm()` isn't doing anything exotic. The intercept is the sample mean (our estimate of μ) and the residual standard error is the sample standard deviation (our estimate of σ). 
 
 ## Visualizing the estimated distribution
 
@@ -118,34 +100,17 @@ ggplot(data, aes(x = height)) +
   ) +
   labs(
     x = "Height (cm)",
-    y = "Density",
-    title = paste0(
-      "Normal distribution: μ = ",
-      round(sample_mean, 1),
-      " cm, σ = ",
-      round(sample_sd, 1),
-      " cm"
-    )
+    y = "Density"
   ) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 ```
 
-This is our model: heights follow a normal distribution with mean `r round(sample_mean, 1)` cm and standard deviation `r round(sample_sd, 1)` cm.
+This is our regression model: heights follow a normal distribution with mean `r round(sample_mean, 1)` cm and standard deviation `r round(sample_sd, 1)` cm.
 
-## What we've accomplished
+## Summary
 
-We started with a question: what distribution describes heights?
-
-We proposed an answer: the normal distribution.
-
-Now we've estimated that distribution's parameters from our sample:
-- μ ≈ `r round(sample_mean, 1)` cm
-- σ ≈ `r round(sample_sd, 1)` cm
+We started with a question: what distribution might have generated our height data? We proposed the normal distribution, and now we've estimated its parameters from our sample: μ ≈ `r round(sample_mean, 1)` cm and σ ≈ `r round(sample_sd, 1)` cm.
 
 When we run `lm(height ~ 1)`, we're estimating these same parameters. The regression output gives us both values, along with additional information (like uncertainty about our estimates, which we'll explore later).
 
-## What comes next
-
-But these estimates are based on just one sample of 352 people. If we'd measured a different group, we'd get different numbers. How much would they vary? How certain can we be about our estimates?
-
-That's what we'll tackle in Part 4.
+But these estimates are based on just one sample of 352 people. If we'd measured a different group, we'd get different numbers. How much would they vary? How certain can we be about our estimates? That's what we'll tackle in Part 4.

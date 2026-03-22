@@ -1,5 +1,5 @@
 ---
-title: "Understanding Regression: The t-Value"
+title: "Understanding Regression (Part 6): The t-Value"
 description: "We know the estimate and its standard error. The next column in the lm() output is the t value. This post explains what question the t-value answers, why we compute it, and why it follows a t-distribution."
 date: 2025-01-20
 categories:
@@ -53,7 +53,7 @@ t_val <- model_summary$coefficients[, "t value"]
 
 We have an estimate (`r round(estimate, 2)` cm) and we know how uncertain it is (SE = `r round(se, 2)` cm). Now what? What do we do with these numbers?
 
-One thing we can do is evaluate whether the estimate is compatible with some specific value. For instance: is the population mean height compatible with zero?
+One thing we can do is evaluate whether the estimate is compatible with some specific value. For instance: is the mean height compatible with zero?
 
 For heights, this is a silly question. Obviously the mean height isn't zero. But the same machinery will later let us ask much more interesting questions, like "does height depend on sex?" or "does this treatment have an effect?" In those cases, asking "is this coefficient compatible with zero?" is exactly the question we care about. So let's understand how it works now, even though our example makes the answer obvious.
 
@@ -61,7 +61,7 @@ For heights, this is a silly question. Obviously the mean height isn't zero. But
 
 Our estimate is `r round(estimate, 2)` cm. How far is that from zero? In absolute terms, `r round(estimate, 2)` cm. But that number alone doesn't tell us whether the estimate is *surprisingly* far from zero. It depends on how much uncertainty there is.
 
-To see why, think about what the SE means. It tells us how much the sample mean bounces around from study to study. Our SE is `r round(se, 2)` cm. So if we repeated this study many times, most sample means would land within about `r round(se, 2)` cm of the true population mean.
+To see why, think about what the SE means. It tells us how much the sample mean bounces around from study to study. Our SE is `r round(se, 2)` cm. So if we repeated this study many times, most sample means would land within about `r round(se, 2)` cm of μ.
 
 Now imagine the true mean *were* zero. Then most sample means would land within about `r round(se, 2)` cm of zero. Getting an estimate of `r round(estimate, 2)` would mean the sample mean landed `r round(estimate, 2)` cm away from where we'd expect it, when it typically only moves about `r round(se, 2)` cm. That's an enormous discrepancy.
 
@@ -83,7 +83,7 @@ You can also think of the t-value as a signal-to-noise ratio. The numerator is t
 
 A t-value of `r round(t_val, 0)` seems huge. But to say it's huge with any precision, we need a reference: what do t-values typically look like when the true mean actually *is* zero?
 
-We can find out with a simulation. Let's draw many samples from a population where the true mean is 0, compute the t-value for each sample, and see what distribution we get.
+We can find out with a simulation. Let's draw many samples from a distribution where μ is 0, compute the t-value for each sample, and see what distribution we get.
 
 ```{r}
 #| label: fig-t-null

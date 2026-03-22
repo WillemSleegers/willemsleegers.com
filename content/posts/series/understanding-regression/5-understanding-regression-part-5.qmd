@@ -1,5 +1,5 @@
 ---
-title: "Understanding Regression: What About σ?"
+title: "Understanding Regression (Part 5): What About σ?"
 description: "We explored how much our estimate of μ varies from sample to sample. But σ is also estimated from our sample. How much does it vary, and why does this matter?"
 date: 2025-01-19
 categories:
@@ -30,7 +30,7 @@ update_geom_defaults(
 
 In Part 4, we explored the uncertainty of our estimate of μ. We saw that the sample mean varies from study to study, and we quantified that variation with the standard error: SE = σ / √n.
 
-But look at that formula. It uses σ, the population standard deviation. We don't know σ. We estimated it from our sample, just like we estimated μ. So how much does our estimate of σ vary?
+But look at that formula. It uses σ. We don't know σ. We estimated it from our sample, just like we estimated μ. So how much does our estimate of σ vary?
 
 ```{r}
 #| label: data

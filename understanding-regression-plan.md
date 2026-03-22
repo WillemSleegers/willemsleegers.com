@@ -517,6 +517,48 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 
 ---
 
+### Supplementary: Bootstrapping — Uncertainty Without Distributions
+
+**Goal**: Show how bootstrapping provides an alternative route to uncertainty and testing that doesn't require committing to a specific distribution
+
+**Content**:
+
+- **Recap**: Throughout the series, we've built uncertainty from a distributional model. We proposed a normal distribution, estimated its parameters, and derived SEs, t-values, and p-values from that model. But what if we don't want to commit to a specific distribution?
+- **The core idea**: Instead of simulating from a proposed distribution (as we did in Parts 4-7), resample from the actual data with replacement
+  - Draw a bootstrap sample (same size as original, with replacement)
+  - Calculate the statistic of interest (e.g., the mean)
+  - Repeat many times to build up a distribution of the statistic
+- **Bootstrap sampling distribution**: Simulation with the heights data
+  - Draw 1000 bootstrap samples, calculate the mean each time
+  - Histogram of bootstrap means
+  - Compare to the parametric sampling distribution from Part 4 — they look very similar
+- **Bootstrap SEs and confidence intervals**:
+  - The SD of the bootstrap means is the bootstrap SE
+  - Compare to the formula-based SE (σ / √n) — nearly identical for our data
+  - Bootstrap confidence intervals (percentile method): just take the 2.5th and 97.5th percentiles
+- **Bootstrap testing**:
+  - Can also construct a null distribution by centering the bootstrap
+  - Compare to the t-distribution approach from Parts 6-7
+- **When does bootstrapping shine?**:
+  - When you're not sure the normal distribution is right
+  - For statistics where the sampling distribution is hard to derive analytically (e.g., medians, ratios, correlations)
+  - When data is skewed or has outliers
+- **When does the parametric approach win?**:
+  - When the distributional choice is well-justified, parametric methods are more efficient (tighter intervals with same data)
+  - Parametric models give you a complete generative model (you can simulate new data, not just resample existing data)
+  - With very small samples, bootstrapping can be unreliable because resampling from a small dataset doesn't capture the full population variability
+- **They're not as different as they seem**:
+  - Both are trying to estimate the same thing: the sampling distribution of a statistic
+  - Parametric: derives it from a distributional model
+  - Bootstrap: approximates it by resampling from the data
+  - With large samples and well-behaved data, they converge to the same answer
+- **Key insight**: Bootstrapping trades distributional commitments for computational effort. It's a powerful alternative when you're uncertain about the distribution, but the parametric approach gives you more when the distributional choice is justified.
+
+**Dataset**: !Kung San heights + bootstrap simulations
+**Length estimate**: ~300 lines
+
+---
+
 ### Supplementary: Frequentist and Bayesian — More Alike Than You Think
 
 **Goal**: Show that the frequentist approach already involves subjective modeling decisions, and that Bayesian statistics extends (rather than replaces) this framework
