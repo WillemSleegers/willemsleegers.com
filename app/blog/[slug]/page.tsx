@@ -82,7 +82,7 @@ export default async function Page(props0: {
     )
 
   return (
-    <main className="p-6">
+    <main className="px-6 py-6 lg:py-10">
       <div className="mx-auto max-w-prose xl:max-w-none flex flex-col xl:flex-row xl:gap-8 xl:justify-center">
         {post.toc !== false && toc.length > 0 && (
           <div className="mb-6 xl:mb-0 xl:w-64 xl:flex-shrink-0 xl:order-2">

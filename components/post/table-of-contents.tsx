@@ -49,7 +49,7 @@ export function TableOfContents({ items }: TableOfContentsProps) {
             <a
               href={`#${item.id}`}
               className={cn(
-                "block py-1 transition-colors hover:text-primary",
+                "block transition-colors hover:text-primary",
                 activeId === item.id
                   ? "text-primary font-medium"
                   : "text-muted-foreground"
