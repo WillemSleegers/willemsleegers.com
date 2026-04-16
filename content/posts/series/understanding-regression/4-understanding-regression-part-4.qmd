@@ -19,7 +19,7 @@ library(tidyverse)
 # Theme settings
 primary <- "#16a34a"
 
-theme_set(theme_minimal(base_size = 16))
+theme_set(theme_minimal(base_size = 14))
 update_geom_defaults(
   "histogram",
   aes(fill = primary, color = "white")
@@ -214,15 +214,9 @@ ggplot(se_by_n, aes(x = n)) +
 
 The dots are the standard errors measured from our simulations. The pattern is clear: the SE decreases as n increases, but with diminishing returns. Doubling the sample size doesn't halve the SE. To halve it, you'd need four times as many observations.
 
-Let's be precise about what SE means. It is the standard deviation of the sampling distribution. If you could draw many independent samples of the same size, calculate the mean each time, and then take the standard deviation of all those means, that's the SE. Our simulation did exactly this.
+The dashed line in the plot shows the formula that captures this relationship: SE = σ / √n.
 
-Because the sampling distribution is normal, the SE is all we need to fully characterize it. A normal distribution is defined by its mean and standard deviation, and we already know the mean (it's μ). So the SE, as the standard deviation of that normal distribution, tells us everything about how the sample mean varies from study to study.
-
-The dashed line in the plot shows the formula that captures this relationship: SE = σ / √n.^[The √n reflects the diminishing returns we see in the plot. But where does it come from? Think about drawing n heights from our normal distribution and computing their mean. Each height varies with standard deviation σ. How much does the mean vary?
-
-To answer this, we need to work with variances (σ²) rather than standard deviations (σ). The reason is that variances of independent draws add up, while standard deviations don't (the next footnote explains why).
-
-So: each height has variance σ². Adding them together means we multiply by the sample size: n × σ². To get the mean, we divide by n. Because variance is on a squared scale, dividing by n shrinks the variance by n² (not n), giving n × σ² / n² = σ² / n. Taking the square root to get back to the original scale (centimeters, not centimeters squared): √(σ² / n) = σ / √n. The √n in the denominator is why doubling the sample size doesn't halve the SE. You'd need to quadruple it.]^[But why do variances add while standard deviations don't? Imagine just two heights, each varying by σ around the mean. There are four equally likely scenarios: both above average (sum is 2σ above expected), first above and second below (they cancel out), first below and second above (they cancel out again), and both below average (sum is 2σ below expected). If deviations always pointed the same direction, the sum would vary by 2σ. But half the time they point in opposite directions and cancel out. Work out the standard deviation of those four scenarios and you get σ√2, not 2σ. That's the pattern. With n independent heights, the sum varies by σ√n, not nσ. The cancellation is why adding standard deviations overshoots. Variances are the quantity where this cancellation is already accounted for, so they simply add up.]
+Why diminishing returns? Think about how much each new observation can actually change your estimate of the mean. With just 1 observation, a 2nd one can shift the sample mean by half the distance between them — it has a lot of influence. With 100 observations, the 101st can only nudge the mean by 1/101 of the distance between the current estimate and the new value. Each additional observation has less and less leverage to move the estimate, which is why the gains are front-loaded and the relationship is curved rather than linear.^[The exact shape of the curve comes from how uncertainty combines mathematically. Each observation has variance σ². The variance of the sum of n independent observations is n·σ², and the mean is the sum divided by n, so its variance is σ²/n. The standard error is the square root of this: √(σ²/n) = σ/√n. Variance adds linearly with n, but the SE is on the square root scale, which is why n times more data gives only √n times less uncertainty.]
 
 For our heights: SE = `r round(sample_sd, 1)` / √`r n` = `r round(sample_sd / sqrt(n), 2)` cm.
 

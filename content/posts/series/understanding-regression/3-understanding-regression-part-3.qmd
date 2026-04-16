@@ -19,7 +19,7 @@ library(tidyverse)
 # Theme settings
 primary <- "#16a34a"
 
-theme_set(theme_minimal(base_size = 16))
+theme_set(theme_minimal(base_size = 14))
 update_geom_defaults(
   "histogram",
   aes(fill = primary, color = "white")
