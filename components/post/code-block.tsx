@@ -1,6 +1,6 @@
 "use client"
 
-import { Check, Copy } from "lucide-react"
+import { CheckIcon, CopyIcon } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -49,9 +49,9 @@ export function CodeBlock({ html, language = "r" }: CodeBlockProps) {
                 onClick={handleCopy}
               >
                 {copied ? (
-                  <Check className="h-4 w-4 text-green-600 animate-in fade-in zoom-in duration-150" />
+                  <CheckIcon className="h-4 w-4 text-green-600 animate-in fade-in zoom-in duration-150" />
                 ) : (
-                  <Copy className="h-4 w-4" />
+                  <CopyIcon className="h-4 w-4" />
                 )}
                 <span className="sr-only">
                   {copied ? "Copied" : "Copy code"}

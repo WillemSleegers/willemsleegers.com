@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, ReactNode } from "react"
-import { Triangle } from "lucide-react"
+import { TriangleIcon } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -23,7 +23,7 @@ export function CodeFold({ defaultOpen, children }: CodeFoldProps) {
       className="not-prose my-4"
     >
       <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-        <Triangle
+        <TriangleIcon
           height={10}
           width={10}
           className={`transition-transform duration-200 fill-primary stroke-primary ${
