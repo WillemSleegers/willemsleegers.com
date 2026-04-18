@@ -15,7 +15,7 @@ interface TagPageProps {
 }
 
 export const generateStaticParams = () => {
-  const tags = getAllTags(posts)
+  const tags = getAllTags(posts, process.env.NODE_ENV === "development")
   const paths = Object.keys(tags).map((tag) => ({ tag: slug(tag) }))
   return paths
 }
@@ -29,7 +29,7 @@ export default async function TagPage(props: TagPageProps) {
   const displayPosts = allPosts.filter((post) =>
     process.env.NODE_ENV === "development" || !post.draft
   )
-  const tags = getAllTags(posts)
+  const tags = getAllTags(posts, process.env.NODE_ENV === "development")
 
   return (
     <div className={LAYOUT_CLASSES.CONTAINER}>
@@ -38,7 +38,7 @@ export default async function TagPage(props: TagPageProps) {
         <div className={LAYOUT_CLASSES.GRID_MAIN}>
           <hr />
           {displayPosts?.length > 0 ? (
-            <ul className="flex flex-col space-y-(--fluid-sm)">
+            <ul className="flex flex-col space-y-(--fluid-ml)">
               {displayPosts.map((post) => {
                 const { slug, date, title, description, tags } = post
                 return (

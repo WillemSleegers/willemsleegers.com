@@ -5,7 +5,7 @@ import { getAllTags, sortTagsByCount } from "@/lib/posts"
 import { posts } from "#site/content"
 
 export default async function TagsPage() {
-  const tags = getAllTags(posts)
+  const tags = getAllTags(posts, process.env.NODE_ENV === "development")
   const sortedTags = sortTagsByCount(tags)
 
   return (

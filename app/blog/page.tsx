@@ -28,7 +28,8 @@ export default async function BlogPage(props: BlogPageProps) {
     POSTS_PER_PAGE * currentPage
   )
 
-  const tags = getAllTags(posts)
+  const isDev = process.env.NODE_ENV === "development"
+  const tags = getAllTags(posts, isDev)
 
   return (
     <div className={LAYOUT_CLASSES.CONTAINER}>

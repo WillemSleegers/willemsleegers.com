@@ -9,10 +9,13 @@ export function sortPosts(posts: Array<Post>) {
   })
 }
 
-export function getAllTags(posts: Array<Post>): TagCounts {
+export function getAllTags(
+  posts: Array<Post>,
+  includeDrafts = false
+): TagCounts {
   const tags: TagCounts = {}
   posts.forEach((post) => {
-    if (!post.draft) {
+    if (includeDrafts || !post.draft) {
       post.tags?.forEach((tag) => {
         tags[tag] = (tags[tag] ?? 0) + 1
       })
