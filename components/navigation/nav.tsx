@@ -30,6 +30,11 @@ const components: { id: string; title: string; href: string }[] = [
     href: "/projects",
   },
   {
+    id: "apps",
+    title: "Apps",
+    href: "/apps",
+  },
+  {
     id: "cv",
     title: "CV",
     href: "/cv",
