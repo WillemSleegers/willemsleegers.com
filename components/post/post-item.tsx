@@ -1,9 +1,7 @@
 import Link from "next/link"
 
 import { Tag } from "@/components/post/tag"
-import { buttonVariants } from "@/components/ui/button"
-
-import { cn, formatDate } from "@/lib/utils"
+import { formatDate } from "@/lib/utils"
 
 interface PostItemProps {
   slug: string
@@ -40,12 +38,7 @@ export function PostItem({
             <time dateTime={date}>{formatDate(date)}</time>
           </dd>
         </dl>
-        <Link
-          href={`/blog/${slug}`}
-          className={cn(buttonVariants({ variant: "link" }), "py-0")}
-        >
-          Read more →
-        </Link>
+        <Link href={`/blog/${slug}`} className="text-sm text-primary hover:underline">Read more</Link>
       </div>
     </li>
   )

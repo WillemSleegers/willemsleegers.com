@@ -8,7 +8,7 @@ import { posts } from "#site/content"
 export const LatestPosts = () => {
   return (
     <>
-      <ul className="flex flex-col space-y-(--fluid-sm)">
+      <ul className="flex flex-col space-y-(--fluid-ml)">
         {posts
           .filter((post) => {
             if (
@@ -38,7 +38,7 @@ export const LatestPosts = () => {
             )
           })}
       </ul>
-      <Button asChild className="w-fit mx-auto">
+      <Button asChild className="w-fit mx-auto mt-(--fluid-sm)">
         <Link href="/blog">Older posts</Link>
       </Button>
     </>

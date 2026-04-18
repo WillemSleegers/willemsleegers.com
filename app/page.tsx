@@ -1,5 +1,6 @@
 import { Hero } from "@/components/layout/hero"
 import { Projects } from "@/components/projects/projects-list"
+import { Apps } from "@/components/apps/apps-list"
 import { LatestPosts } from "@/components/post/latest-posts"
 
 const HomePage = () => {
@@ -14,6 +15,13 @@ const HomePage = () => {
           Projects
         </h2>
         <Projects />
+      </section>
+
+      <section className="container max-w-3xl flex flex-col space-y-(--fluid-sm)">
+        <h2 className="text-[length:var(--fluid-heading)] font-black text-center">
+          Apps
+        </h2>
+        <Apps />
       </section>
 
       <section className="container max-w-3xl flex flex-col space-y-(--fluid-sm)">

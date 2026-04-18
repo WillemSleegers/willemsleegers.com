@@ -92,8 +92,9 @@
   :root {
     --fluid-sm: clamp(1rem, 2.5vw, 3rem);
     --fluid-md: clamp(2rem, 5vw, 6rem);
+    --fluid-ml: clamp(3rem, 7.5vw, 4rem);
     --fluid-lg: clamp(4rem, 10vw, 12rem);
-    --fluid-heading: clamp(1.5rem, 4vw, 3rem);
+    --fluid-heading: clamp(2rem, 4vw, 3rem);
     --fluid-title: clamp(1.875rem, 5vw, 3rem);
 
     --background: 0 0% 100%;
