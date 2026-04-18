@@ -36,7 +36,7 @@ export default async function BlogPage(props: BlogPageProps) {
       <div className="grid grid-cols-12 gap-6 mt-8">
         <div className={LAYOUT_CLASSES.GRID_MAIN}>
           {displayPosts?.length > 0 ? (
-            <ul className="flex flex-col space-y-(--fluid-sm)">
+            <ul className="flex flex-col space-y-(--fluid-ml)">
               {displayPosts.map((post) => {
                 const { slug, date, title, description, tags } = post
                 return (

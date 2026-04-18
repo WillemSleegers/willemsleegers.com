@@ -19,18 +19,16 @@ export function PostItem({
   tags,
 }: PostItemProps) {
   return (
-    <li className="flex flex-col gap-2">
-      <div>
-        <h2 className="text-2xl font-bold">
-          <Link href={`/blog/${slug}`}>{title}</Link>
-        </h2>
-      </div>
+    <li className="flex flex-col gap-3">
+      <h2 className="text-2xl font-bold">
+        <Link href={`/blog/${slug}`}>{title}</Link>
+      </h2>
       <div className="flex gap-2">
         {tags?.map((tag) => (
           <Tag tag={tag} key={tag} />
         ))}
       </div>
-      <div className="max-w-none text-muted-foreground">{description}</div>
+      <p className="text-muted-foreground">{description}</p>
       <div className="flex justify-between items-center">
         <dl>
           <dt className="sr-only">Published On</dt>

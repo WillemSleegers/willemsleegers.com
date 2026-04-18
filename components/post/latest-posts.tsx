@@ -39,7 +39,7 @@ export const LatestPosts = () => {
           })}
       </ul>
       <Button asChild className="w-fit mx-auto mt-(--fluid-sm)">
-        <Link href="/blog">Older posts</Link>
+        <Link href="/blog">All posts</Link>
       </Button>
     </>
   )

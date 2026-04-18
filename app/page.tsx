@@ -11,21 +11,21 @@ const HomePage = () => {
       </section>
 
       <section className="container max-w-3xl flex flex-col space-y-(--fluid-sm)">
-        <h2 className="text-[length:var(--fluid-heading)] font-black text-center">
+        <h2 className="text-(length:--fluid-heading) font-black text-center">
           Projects
         </h2>
         <Projects />
       </section>
 
       <section className="container max-w-3xl flex flex-col space-y-(--fluid-sm)">
-        <h2 className="text-[length:var(--fluid-heading)] font-black text-center">
-          Apps
+        <h2 className="text-(length:--fluid-heading) font-black text-center">
+          Latest Apps
         </h2>
-        <Apps />
+        <Apps limit={3} />
       </section>
 
       <section className="container max-w-3xl flex flex-col space-y-(--fluid-sm)">
-        <h2 className="text-[length:var(--fluid-heading)] font-black text-center">
+        <h2 className="text-(length:--fluid-heading) font-black text-center">
           Latest Posts
         </h2>
         <LatestPosts />
