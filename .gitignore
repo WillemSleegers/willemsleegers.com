@@ -42,7 +42,6 @@ next-env.d.ts
 
 # quarto generated files
 **/*.quarto_ipynb
-content/posts/**/*.md
 content/posts/**/*_files/
 content/posts/**/.gitignore
 content/posts/**/.quarto/

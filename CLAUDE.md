@@ -14,6 +14,8 @@ Personal website and blog for Willem Sleegers (Senior Behavioral Scientist). Bui
 
 **Complex changes**: Use TodoWrite, read all affected files first, implement in one coherent edit per file.
 
+**Debugging**: Ask clarifying questions before diving into code inspection. A quick "what exactly do you see?" saves time.
+
 **Writing style**: Do not suggest em dashes unless asked. The user finds them overused.
 
 ## Project Structure
