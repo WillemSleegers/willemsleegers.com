@@ -12,7 +12,7 @@
     "default": [
       {
         "year": "",
-        "content": "Senior Behavioral Scientist at Rethink Priorities\nResearch Affiliate at Tilburg University",
+        "content": "Methodologist at CBS\nResearch Affiliate at Tilburg University",
         "link": ""
       }
     ]
@@ -22,7 +22,7 @@
       {
         "year": "",
         "content": "E-mail",
-        "link": "mailto:w.w.a.sleegers@tilburguniversity.edu"
+        "link": "mailto:w.sleegers@me.com"
       },
       {
         "year": "",
@@ -36,15 +36,20 @@
       },
       {
         "year": "",
-        "content": "Twitter",
-        "link": "http://twitter.com/willemsleegers"
+        "content": "Bluesky",
+        "link": "https://bsky.app/profile/willemsleegers.bsky.social"
       }
     ]
   },
   "Employment": {
     "default": [
       {
-        "year": "2021-current",
+        "year": "2025-current",
+        "content": "Methodologist at CBS",
+        "link": ""
+      },
+      {
+        "year": "2021-2025",
         "content": "Senior Behavioral Scientist at Rethink Priorities",
         "link": ""
       },
@@ -119,7 +124,7 @@
         "link": ""
       },
       {
-        "year": "2024",
+        "year": "2023",
         "content": "Kip, A., Erle, T. M., Sleegers, W. W. A., & Van Beest, I. (2023). Emotions and behavioral intentions in response to ostracism attributed to a perceived lack of warmth versus competence. Group Processes & Intergroup Relations, 13684302231212853. https://doi.org/10.1177/13684302231212853",
         "link": ""
       },
@@ -170,7 +175,7 @@
       },
       {
         "year": "2021",
-        "content": "Pronk, T. M., Bogaers, R. I., Verheijen, M. S., Sleegers, W. W. A. (2021). Pupil size predicts partner choices in online dating. Social Cognition.",
+        "content": "Pronk, T. M., Bogaers, R. I., Verheijen, M. S., & Sleegers, W. W. A. (2021). Pupil size predicts partner choices in online dating. Social Cognition, 39(6), 773–786. https://doi.org/10.1521/soco.2021.39.6.773",
         "link": ""
       },
       {
@@ -185,7 +190,7 @@
       },
       {
         "year": "2021",
-        "content": "Brandt, M., Sleegers, W. W. A. (2021) Evaluating belief system networks as a theory of political belief system dynamics, 25(2), 159-185. https://doi.org/10.1177/1088868321993751",
+        "content": "Brandt, M., Sleegers, W. W. A. (2021) Evaluating belief system networks as a theory of political belief system dynamics. Personality and Social Psychology Review, 25(2), 159-185. https://doi.org/10.1177/1088868321993751",
         "link": ""
       },
       {
@@ -249,13 +254,6 @@
         "link": ""
       }
     ],
-    "Stage-1 accepted manuscripts": [
-      {
-        "year": "2021",
-        "content": "Sleegers, W. W. A., Vaidis, D. (shared first author) et al. (2021). A multi-lab replication of the induced compliance paradigm of cognitive dissonance. Advances in Methods and Practices in Psychological Science. https://osf.io/52wpj",
-        "link": ""
-      }
-    ],
     "Book chapters": [
       {
         "year": "2019",
@@ -285,12 +283,12 @@
     "Websites": [
       {
         "year": "",
-        "content": "My personal website where I blog about (some of) my research.https://www.willemsleegers.com",
+        "content": "My personal website where I blog about (some of) my research. https://www.willemsleegers.com",
         "link": ""
       },
       {
         "year": "",
-        "content": "The tidystats website, a support website for my tidystats software.https://www.tidystats.io",
+        "content": "The tidystats website, a support website for my tidystats software. https://www.tidystats.io",
         "link": ""
       }
     ]
@@ -757,6 +755,11 @@
       },
       {
         "year": "",
+        "content": "Qualitative research (interview design, data collection, and analysis)",
+        "link": ""
+      },
+      {
+        "year": "",
         "content": "Lab and online participant recruitment",
         "link": ""
       }
@@ -778,84 +781,27 @@
         "link": ""
       }
     ],
-    "Software": [
+    "Tools & platforms": [
       {
         "year": "",
-        "content": "R",
+        "content": "Development tools (RStudio, VS Code, Positron, SPSS)",
         "link": ""
       },
       {
         "year": "",
-        "content": "RStudio",
-        "link": ""
-      },
-      {
-        "year": "",
-        "content": "VS Code",
-        "link": ""
-      },
-      {
-        "year": "",
-        "content": "Positron",
-        "link": ""
-      },
-      {
-        "year": "",
-        "content": "SPSS",
+        "content": "Survey platforms (Qualtrics, SurveyMonkey, oTree, Inquisit)",
         "link": ""
       }
     ],
     "Programming": [
       {
         "year": "",
-        "content": "HTML, CSS, JavaScript, React, WebR, Python",
+        "content": "Web development (HTML, CSS, JavaScript, React, WebR)",
         "link": ""
       },
       {
         "year": "",
-        "content": "CSS",
-        "link": ""
-      },
-      {
-        "year": "",
-        "content": "JavaScript",
-        "link": ""
-      },
-      {
-        "year": "",
-        "content": "React",
-        "link": ""
-      },
-      {
-        "year": "",
-        "content": "WebR",
-        "link": ""
-      },
-      {
-        "year": "",
-        "content": "Python",
-        "link": ""
-      }
-    ],
-    "Survey platforms": [
-      {
-        "year": "",
-        "content": "Qualtrics",
-        "link": ""
-      },
-      {
-        "year": "",
-        "content": "SurveyMonkey",
-        "link": ""
-      },
-      {
-        "year": "",
-        "content": "oTree",
-        "link": ""
-      },
-      {
-        "year": "",
-        "content": "Inquisit",
+        "content": "Data science (R, Python)",
         "link": ""
       }
     ]

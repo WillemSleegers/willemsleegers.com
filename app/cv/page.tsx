@@ -20,7 +20,7 @@ export default async function CVPage() {
       <p>
         I'm a Methodologist at Statistics Netherlands. Statistics Netherlands is the national statistical office of the Netherlands,
         responsible for collecting, processing, and publishing statistical information
-        about Dutch society. As a methodologist, I design and evaluate surveys, through desk research and user tests.
+        about Dutch society. As a methodologist, I design and evaluate surveys, through desk research, qualitative research, and empirical research.
       </p>
       <p>
         I maintain an affiliation with Tilburg University as an Affiliated Researcher. I continue to be involved in several
@@ -38,7 +38,7 @@ export default async function CVPage() {
         <tbody>
           {data.Employment?.default?.map((d, i) => (
             <tr key={"employment-" + i}>
-              <td className="whitespace-nowrap">{d.year}</td>
+              <td className="w-32 whitespace-nowrap">{d.year}</td>
               <td>{d.content}</td>
             </tr>
           ))}
@@ -50,7 +50,7 @@ export default async function CVPage() {
         <tbody>
           {data.Education?.default?.map((d, i) => (
             <tr key={"education-" + i}>
-              <td className="whitespace-nowrap">{d.year}</td>
+              <td className="w-32 whitespace-nowrap">{d.year}</td>
               <td>{d.content}</td>
             </tr>
           ))}
@@ -73,13 +73,6 @@ export default async function CVPage() {
         ))}
       </ul>
 
-      <h4>Software</h4>
-      <ul>
-        {data.Skills?.Software?.map((d, i) => (
-          <li key={"skills-software-" + i}>{d.content}</li>
-        ))}
-      </ul>
-
       <h4>Programming</h4>
       <ul>
         {data.Skills?.Programming?.map((d, i) => (
@@ -87,10 +80,10 @@ export default async function CVPage() {
         ))}
       </ul>
 
-      <h4>Survey platforms</h4>
+      <h4>Tools & platforms</h4>
       <ul>
-        {data.Skills?.["Survey platforms"]?.map((d, i) => (
-          <li key={"skills-survey-" + i}>{d.content}</li>
+        {data.Skills?.["Tools & platforms"]?.map((d, i) => (
+          <li key={"skills-tools-" + i}>{d.content}</li>
         ))}
       </ul>
 
@@ -180,7 +173,7 @@ export default async function CVPage() {
         <tbody>
           {data.Teaching?.Courses?.map((d, i) => (
             <tr key={"teaching-courses-" + i}>
-              <td className="whitespace-nowrap">{d.year}</td>
+              <td className="w-32 whitespace-nowrap">{d.year}</td>
               <td>{d.content}</td>
             </tr>
           ))}
@@ -192,7 +185,7 @@ export default async function CVPage() {
         <tbody>
           {data.Teaching?.Seminars?.map((d, i) => (
             <tr key={"teaching-seminars-" + i}>
-              <td className="whitespace-nowrap">{d.year}</td>
+              <td className="w-32 whitespace-nowrap">{d.year}</td>
               <td>{d.content}</td>
             </tr>
           ))}
@@ -204,7 +197,7 @@ export default async function CVPage() {
         <tbody>
           {data.Teaching?.["Individual lectures"]?.map((d, i) => (
             <tr key={"teaching-lectures-" + i}>
-              <td className="whitespace-nowrap">{d.year}</td>
+              <td className="w-32 whitespace-nowrap">{d.year}</td>
               <td>{d.content}</td>
             </tr>
           ))}
@@ -216,7 +209,7 @@ export default async function CVPage() {
         <tbody>
           {data.Teaching?.Supervision?.map((d, i) => (
             <tr key={"teaching-supervision-" + i}>
-              <td className="whitespace-nowrap">{d.year}</td>
+              <td className="w-32 whitespace-nowrap">{d.year}</td>
               <td>{d.content}</td>
             </tr>
           ))}
@@ -228,7 +221,7 @@ export default async function CVPage() {
         <tbody>
           {data.Teaching?.Coordination?.map((d, i) => (
             <tr key={"teaching-coordination-" + i}>
-              <td className="whitespace-nowrap">{d.year}</td>
+              <td className="w-32 whitespace-nowrap">{d.year}</td>
               <td>{d.content}</td>
             </tr>
           ))}
@@ -240,7 +233,7 @@ export default async function CVPage() {
         <tbody>
           {data.Teaching?.Other?.map((d, i) => (
             <tr key={"teaching-other-" + i}>
-              <td className="whitespace-nowrap">{d.year}</td>
+              <td className="w-32 whitespace-nowrap">{d.year}</td>
               <td>{d.content}</td>
             </tr>
           ))}
