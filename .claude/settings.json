@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm outdated *)",
-      "Bash(npm list *)"
+      "Bash(npm list *)",
+      "Bash(git diff *)"
     ]
   }
 }
