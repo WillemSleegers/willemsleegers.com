@@ -1,3 +1,5 @@
+import { slug } from "github-slugger"
+
 import { Tag } from "@/components/post/tag"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { TagCounts } from "@/lib/types"
@@ -22,7 +24,7 @@ export function TagSidebar({
         <h3 className="font-bold text-xl">Tags</h3>
         <div className="flex flex-wrap gap-2">
           {sortedTags.map((tag) => (
-            <Tag tag={tag} key={tag} count={tags[tag]} current={currentTag === tag} />
+            <Tag tag={tag} key={tag} count={tags[tag]} current={currentTag === slug(tag)} />
           ))}
         </div>
       </div>
@@ -36,7 +38,7 @@ export function TagSidebar({
       </CardHeader>
       <CardContent className="flex flex-wrap gap-2">
         {sortedTags.map((tag) => (
-          <Tag tag={tag} key={tag} count={tags[tag]} current={currentTag === tag} />
+          <Tag tag={tag} key={tag} count={tags[tag]} current={currentTag === slug(tag)} />
         ))}
       </CardContent>
     </Card>

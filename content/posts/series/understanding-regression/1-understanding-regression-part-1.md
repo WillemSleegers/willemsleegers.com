@@ -2,8 +2,8 @@
 title: 'Understanding Regression (Part 1): Getting Started'
 description: >-
   This is the first post in a series on understanding regression. In this first
-  post I focus on what the main question is that we should be asking when we
-  think we should use regression.
+  post I focus on what the main question is that we should be asking when using
+  regression.
 date: 2025-01-15T00:00:00.000Z
 categories:
   - statistics
@@ -11,7 +11,6 @@ categories:
   - regression
 code-fold: true
 toc: true
-draft: true
 ---
 
 
@@ -42,25 +41,24 @@ update_geom_defaults(
 ## Introduction
 
 I’m a behavioral scientist with several scientific publications to my
-name in which I’ve used statistical tools like regression to answer
-questions. Yet, despite my experience, I don’t feel like I *really*
-understand regression. I know *how* to use it—I can run models and
-report the results. But there are times when I’m just running code
+name in which I’ve used statistical tools like regression. Yet, despite
+my experience with this statistical technique, I don’t feel like I
+*really* understand regression. I know *how* to use it—I can run models
+and report the results-but there are times when I’m just running code
 because I’ve been told that’s how you do it. When things get
 complicated, and sometimes not even that complicated, I find myself
 relying almost entirely on conventions rather than on my own
 understanding.
 
 You might feel the same way. Regression is often taught as a black box:
-you run the code or click the buttons and copy the output. The focus is
-on performing statistics rather than on building a conceptual
-understanding.
-
-Some teaching takes a more mechanical approach. You’re given formulas to
-memorize or asked to calculate statistics by hand. I can see the appeal,
-since working through the steps yourself can build intuition. But
-formulas rarely help me understand something, and calculating things by
-hand only takes you so far.
+you run the code or click the buttons and copy the output. The focus in
+many courses is on performing statistics rather than on building a
+conceptual understanding. I’ve also noticed a lot of statistical
+teaching takes a more mechanical approach. You’re given formulas to
+memorize or asked to calculate statistics by hand. I can see the appeal
+of this approach, since working through the steps yourself can build
+intuition, but formulas rarely help me understand something, and
+calculating things by hand only takes you so far.
 
 What I need, and what I suspect many others need, is an approach that is
 more about creating a *conceptual* understanding that makes regression
@@ -113,7 +111,7 @@ ggplot(data, aes(x = height)) +
 ![](1-understanding-regression-part-1_files/figure-commonmark/histogram-1.svg)
 
 Let’s immediately run a regression so we have some concrete numbers to
-examine. The simplest model we can run is one in which we regress
+look at. The simplest model we can run is one in which we regress
 heights onto… nothing; this is called an **intercept-only model**.
 
 <details open class="code-fold">
@@ -156,7 +154,7 @@ As you can see in the output, we get an estimate of 154.6 cm and a
 standard error of 0.41 cm.
 
 Here’s where I want to pause and ask ourselves the question, why do we
-actually use these statistical tools? Why use regression?
+actually use these statistical tools? Why do we use regression?
 
 ## Why use regression?
 
@@ -177,17 +175,23 @@ researchers reporting coefficients, standard errors, and confidence
 intervals. Prediction is less popular (authors rarely report prediction
 intervals), but is also important.
 
-I want to take a perspective that encompasses all three of these goals.
 I’m looking for a way of thinking that makes it easier to understand how
-regression can be used for each of those goals.
-
-I think that way of thinking comes to a single question:
+regression can be used for each of those goals and I think it comes down
+to the following question:
 
 **What distribution might have generated this data?**
 
+Instead of starting with a procedure — run a model, get an estimate —
+you start by imagining how the data came to be. Some process generated
+these numbers. That process had some underlying shape: values that were
+more likely, values that were less likely. A distribution is a way of
+describing that shape formally. You may already be familiar with some:
+the normal distribution, the Poisson distribution, or perhaps the
+binomial distribution.
+
 For our height data, we can propose that heights follow a normal
-distribution—a bell-shaped curve defined by two parameters: μ (the mean)
-and σ (the standard deviation).
+distribution. This is a bell-shaped curve defined by two parameters: μ
+(the mean) and σ (the standard deviation).
 
 These two parameters give us everything we need for estimation, testing,
 and prediction:
@@ -262,8 +266,8 @@ up our understanding gradually.
 
 ## Summary
 
-This post introduces the core perspective that will guide this entire
-series: **regression is about choosing and fitting distributions to
+This post introduces the core perspective to hopefully have regression
+make sense: **regression is about choosing and fitting distributions to
 data.**
 
 When you run a regression model, you’re proposing that your data follows

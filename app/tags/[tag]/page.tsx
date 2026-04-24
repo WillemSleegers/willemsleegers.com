@@ -5,7 +5,6 @@ import { TagSidebar } from "@/components/post/tag-sidebar"
 import { PageHeader } from "@/components/layout/page-header"
 import { LAYOUT_CLASSES } from "@/lib/constants"
 import { getAllTags, getPostsByTagSlug } from "@/lib/posts"
-
 import { posts } from "#site/content"
 
 interface TagPageProps {
@@ -33,10 +32,9 @@ export default async function TagPage(props: TagPageProps) {
 
   return (
     <div className={LAYOUT_CLASSES.CONTAINER}>
-      <PageHeader title={title} className="capitalize" />
+      <PageHeader title="Blog" className="capitalize" />
       <div className="grid grid-cols-12 gap-6 mt-8">
         <div className={LAYOUT_CLASSES.GRID_MAIN}>
-          <hr />
           {displayPosts?.length > 0 ? (
             <ul className="flex flex-col space-y-(--fluid-ml)">
               {displayPosts.map((post) => {
