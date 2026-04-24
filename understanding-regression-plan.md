@@ -38,6 +38,8 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 - Use "**parsimonious choice**" or "**reasonable choice**" not "assumption" (we're making pragmatic modeling decisions based on what we know)
 - Emphasize distributions as **pragmatic tools** for modeling, not claims about reality
 - Focus on "**fewest additional claims**" rather than "fewest assumptions"
+- Avoid implying there is a "**true distribution**" or "**true parameters**" out there — use "**the model's parameters**" or "**the parameters of the model we've proposed**" instead. μ and σ are fixed within our model, not fixed features of the world.
+- **Potential meta-post**: The philosophical stance (distributions as pragmatic tools, no objective truth claim) could be explored explicitly in a reflective/meta post about the series' perspective.
 
 **Tone and Style Guidelines**:
 
