@@ -34,15 +34,14 @@ When we run a model like `lm(height ~ 1)`, we're saying that heights follow a no
 
 ## The ubiquity of the normal distribution
 
-Many natural phenomena follow an approximately normal distribution: heights (of adults), blood pressure, test scores. This is because outcomes that are influenced by many small, independent factors tend to look bell-shaped when those factors add up. Heights, for example, are shaped by many genes and environmental influences, each contributing a small amount.
+Many natural phenomena follow an approximately normal distribution, such as heights (of adults), blood pressure, or test scores. This is because outcomes that are influenced by many small, independent factors tend to look bell-shaped when those factors add up. Heights, for example, are shaped by many genes and environmental influences, each contributing a small amount.
 
 We can use a simple simulation to demonstrate that a normal distribution emerges when many small effects add up. Imagine a variable that is the sum of 20 small, independent effects. Each effect is a random number, drawn uniformly between -1 and 1. On their own, these individual effects look nothing like a normal distribution. They come from a uniform (flat) distribution. But when we add up 20 of them and repeat this 1000 times, the result looks like a normal distribution:
 
 ```{r}
 #| label: fig-small-effects
 #| fig-cap: "Summing many small effects produces a normal distribution"
-
-set.seed(42)
+set.seed(61941)
 
 n_simulations <- 1000
 
@@ -70,14 +69,13 @@ There's another attractive property of the normal distribution that makes it sen
 
 ## A parsimonious distribution
 
-The normal distribution is defined by just two parameters: a mean (μ) and a standard deviation (σ). It describes a center and some spread, and nothing more. It doesn't claim the data is skewed, or that there are multiple groups, or that there are hard boundaries. It commits to the minimum structure needed to describe a distribution.
+The normal distribution is defined by just two parameters: a mean (μ) and a standard deviation (σ), describing a center and some spread. It doesn't claim the data is skewed, or that there are multiple groups, or that there are hard boundaries. It commits to a particular, minimal shape.
 
 To see why that matters, consider three distributions that all have a mean of 155 and a standard deviation of 8:
 
 ```{r}
 #| label: fig-distributions
 #| fig-cap: "Three distributions, all with mean = 155 and SD = 8"
-
 x <- seq(120, 190, length.out = 500)
 
 distributions <- bind_rows(
@@ -119,7 +117,7 @@ All three distributions agree on the same two facts: the mean is 155 and the sta
 - The **bimodal** distribution claims there are two distinct clusters
 - The **normal** distribution claims a single most common value and variation around that single value
 
-This is the key observation. The skewed and bimodal distributions are both *adding* claims on top of the mean and SD. One claims the data is asymmetric, the other claims there are multiple groups. These are additional structural commitments that would need evidence to justify.
+This is the key observation. The skewed and bimodal distributions are both *adding* claims on top of the mean and SD. One claims the data is asymmetric, the other claims there are multiple groups. These are additional structural commitments that one would need evidence for to justify.
 
 The normal distribution doesn't add any of that. Among all distributions with the same mean and variance, it's the one that adds the least structure.^[There's a formal way to express this. In information theory, the **maximum entropy distribution** for a given set of constraints is the distribution that is the most spread out while still satisfying those constraints. Entropy measures how much uncertainty a distribution contains: high entropy means the distribution is as noncommittal as possible. When the only constraints are a mean and a variance, the maximum entropy distribution is the normal distribution.] It commits to a center and some spread, nothing more.
 
@@ -134,7 +132,6 @@ Let's return to our height data and see how well the normal distribution fits.
 ```{r}
 #| label: fig-histogram-with-normal
 #| fig-cap: "Heights with normal distribution overlay"
-
 data <- read_csv("Howell1.csv")
 data <- filter(data, age >= 18)
 
@@ -161,22 +158,24 @@ The dashed line shows a normal distribution with mean `r round(sample_mean, 1)` 
 
 Does it fit perfectly? No. You can see places where the histogram bars don't quite match the curve. But look at what it does capture: the data is roughly symmetric, peaked near the center, and tapers off at the extremes. That's exactly what we'd expect from an outcome shaped by many small additive effects.
 
-This is also how you'd spot a problem. If the data were clearly skewed or had two peaks, the mismatch would be obvious, and we'd want to reconsider our distributional choice. We'll explore how to formally check model fit later in the series.
+This is also how you'd spot a problem. If the data were clearly skewed or had two peaks, the mismatch would be obvious, and we'd want to reconsider our distributional choice or model (later we cover adding predictors to the model that can account for this).
 
 But often you don't even need to look at the data. Sometimes prior knowledge about the outcome is enough to rule the normal distribution out before you even see it.
 
 ## When the normal distribution doesn't apply
 
-The clearest case is when the outcome has hard boundaries. If you're measuring reaction times, values can't be negative, so there's a floor at zero. If you're measuring proportions, values are bounded between 0 and 1. The normal distribution extends infinitely in both directions, so it doesn't respect these constraints. For bounded or strictly positive outcomes, other distributions (like the log-normal or beta distribution) are better choices.
+The clearest case is when the outcome is skewed due to hard boundaries. If you're measuring reaction times, values are often small and hardcapped at 0 since reaction times can't be negative, producing a skewed distribution. If you're measuring proportions, values are bounded between 0 and 1. The normal distribution extends infinitely in both directions, so it doesn't respect these constraints. For bounded or strictly positive outcomes, other distributions like the log-normal or beta distribution are better choices.
 
 Similarly, if the outcome is a count (number of errors, number of children), it can only take whole numbers. A normal distribution is continuous and can take any value, including fractions and negatives. Count data calls for distributions like the Poisson or negative binomial.
 
-The point isn't that you need to get the distribution exactly right. It's that when you know something about the structure of your data (hard boundaries, discrete values, strong skew), you should use that knowledge. The normal distribution is often the right choice for continuous, unbounded outcomes. But when the data has structure that the normal can't capture, use a distribution that reflects what you know.
+The same logic applies to Likert scales (say, 1–7): values are bounded and discrete. The normal distribution is continuous and unbounded, so it doesn't technically fit. Ordinal models are a better choice.
+
+When you know something about the structure of your data (hard boundaries, discrete values, strong skew), you should use that knowledge. The normal distribution is often the right choice for continuous, unbounded outcomes. But when the data has structure that the normal can't capture, use a distribution that reflects what you know.
 
 We'll return to alternative distributions later in the series.
 
 ## Summary
 
-Why the normal distribution? For many things we measure, the normal distribution is an accurate description of the data. It arises whenever many small effects add up, which is the case for many outcomes in the real world. It's also parsimonious: defined by just two parameters (μ and σ), it captures a center and some spread without adding claims about asymmetry, multiple groups, or hard boundaries.
+In Part 1, the core question was: what distribution might have generated this data? This post made the case for why the normal distribution is often the right answer. For many things we measure, the normal distribution is an accurate description of the data. It arises whenever many small effects add up, which is the case for many outcomes in the real world. It's also parsimonious: defined by just two parameters (μ and σ), it captures a center and some spread without adding claims about asymmetry, multiple groups, or hard boundaries.
 
 But how do we estimate μ and σ from our sample? That's what we'll tackle in Part 3.
