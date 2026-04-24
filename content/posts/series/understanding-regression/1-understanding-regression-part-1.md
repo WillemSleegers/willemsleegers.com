@@ -4,7 +4,7 @@ description: >-
   This is the first post in a series on understanding regression. In this first
   post I focus on what the main question is that we should be asking when using
   regression.
-date: 2025-01-15T00:00:00.000Z
+date: 2025-04-24T00:00:00.000Z
 categories:
   - statistics
   - tutorial
