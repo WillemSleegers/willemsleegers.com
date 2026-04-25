@@ -39,6 +39,7 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 - Emphasize distributions as **pragmatic tools** for modeling, not claims about reality
 - Focus on "**fewest additional claims**" rather than "fewest assumptions"
 - Avoid implying there is a "**true distribution**" or "**true parameters**" out there — use "**the model's parameters**" or "**the parameters of the model we've proposed**" instead. μ and σ are fixed within our model, not fixed features of the world.
+- Avoid "**true mean**", "**true value**", "**true σ**" in any context — in simulations, use "the value we used to generate the data" or "μ in our simulation"; in inference, use "if μ were 0" rather than "if the true mean were 0".
 - **Potential meta-post**: The philosophical stance (distributions as pragmatic tools, no objective truth claim) could be explored explicitly in a reflective/meta post about the series' perspective.
 
 **Tone and Style Guidelines**:
@@ -225,15 +226,17 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 
 - **Recap**: Parts 4 and 5 — we have an estimate with SE, but the SE is uncertain because σ is estimated. The next column in the lm() output is the t value.
 - **What question is the t-value answering?**: Is the estimate compatible with some reference value (by default, zero)?
-  - For heights, testing against zero is silly, but the same machinery tests whether predictor effects are zero
-- **Measuring distance in the right units**: t = (Estimate - 0) / SE
-  - Explicitly show the subtraction of 0 in the formula
-  - Walk through the intuition: if the true mean were 0, the SE tells us how much estimates bounce around. Getting 154.6 when estimates only move ~0.41 cm is an enormous discrepancy.
+  - Show the test against zero first since that's what lm() reports
+  - Acknowledge it's a silly question for heights, then show a more meaningful test: e.g. "is the mean consistent with 155 cm?" → t = (154.6 - 155) / 0.41 ≈ -1
+  - This sets up a genuinely interpretable t-value alongside the trivial one
+- **Measuring distance in the right units**: t = (Estimate - reference) / SE
+  - Walk through the intuition: if μ were 0 in our model, the SE tells us how much estimates bounce around. Getting 154.6 when estimates only move ~0.41 cm is an enormous discrepancy.
   - Signal-to-noise ratio framing
+  - Avoid "true mean" language — use "if μ were 0" or "supposing μ = 0"
 - **What t-values would we expect?**: Simulation under the null
   - Draw many samples from N(0, σ), compute t for each
   - Distribution clusters around 0, rarely beyond ±3
-  - Our observed t-value (~377) is off the charts
+  - Our observed t-value (~377) is off the charts; the t ≈ -1 for the 155 cm test is well within range
 - **Why the t-distribution?**: The distribution of t-values has heavier tails than the normal
   - Because the denominator uses the sample SD (which varies from sample to sample, as we saw in Part 5)
   - Simulation comparing known σ vs estimated σ at n = 10 — shows heavier tails
