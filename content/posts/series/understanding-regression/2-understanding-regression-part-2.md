@@ -4,14 +4,13 @@ description: >-
   In Part 1, I proposed that regression is about choosing and fitting
   distributions to data. In this post, I explain why the normal distribution is
   often the right choice.
-date: 2025-01-16T00:00:00.000Z
+date: 2026-04-25
 categories:
   - statistics
   - tutorial
   - regression
 code-fold: true
 toc: true
-draft: true
 ---
 
 

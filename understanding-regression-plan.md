@@ -163,28 +163,28 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 **Content** (ACTUAL):
 
 - **Recap**: In Part 3 we estimated μ and σ. But these are based on one sample of 352 people. How much would they vary with a different sample?
-- **One sample, many possibilities**: Simulation — draw 1000 samples from N(μ, σ), calculate the mean of each
-  - Histogram of sample means, clustered around the true mean
-  - Name it: the **sampling distribution**
-  - Explain why it's normal: same principle from Part 2 (adding independent things → normal). The sample mean is a sum of independent observations divided by n. CLT in footnote.
+- **One sample, many possibilities**: Open by naming both estimates (μ and σ), explain we focus on μ because lm() reports its SE — σ's uncertainty not reported at all (Part 5). Simulate mean across 1000 samples.
+  - Histogram of sample means, clustered around μ
+  - Name it: the **sampling distribution of the mean**; note any statistic has its own sampling distribution
+  - Explain why it's normal: CLT in footnote
 - **What affects uncertainty?**: Two factors
   - Sample size: sampling distributions at n = 10, 50, 352 (faceted plot)
   - Data variability: sampling distributions at σ = 4, 8, 16 (faceted plot)
 - **The standard error**:
+  - SE = spread of any sampling distribution; in this case tells us how much μ's estimate varies
   - Measure SE from simulations (SD of sample means at each n)
   - Plot simulated SEs against σ/√n formula — they match
-  - SE is the SD of the sampling distribution
-  - Because the sampling distribution is normal, SE fully characterizes it (along with the mean μ)
-  - √n derivation in footnote (variance addition → σ²/n → take square root)
-  - Diminishing returns: doubling n only reduces SE by factor √2
-  - For our data: SE ≈ 0.41 cm, tiny relative to σ (7.7 cm)
-- **Back to lm()**: The "Std. Error" column is exactly this
-- **What about σ?**: σ also has uncertainty, but standard practice doesn't report it. Partly convention, partly because μ is usually the research question. But σ matters for prediction.
-- **Summary**: Sampling distribution describes estimate variability, SE measures its spread, lm() reports it
+  - Diminishing returns: early observations do the heavy lifting
+  - √n derivation in footnote
+  - Note: σ in the formula is our sample SD — an approximation; thread picked up in Part 5
+  - For our data: SE of μ ≈ 0.41 cm, small relative to σ (7.7 cm)
+- **Back to lm()**: The "Std. Error" column is the SD of the sampling distribution of the intercept — our estimate of μ
+- **What about σ?**: σ is estimated from the same sample and also has uncertainty — Part 5
+- **Summary**: Sampling distribution of the mean describes μ's variability, SE measures its spread, lm() reports it for the intercept
 
 **Dataset**: !Kung San heights + simulations
-**Status**: Completed, ~245 lines
-**Note**: Part 4 now bridges to Part 5 (σ's uncertainty).
+**Status**: Completed
+**File**: `content/posts/series/understanding-regression/4-understanding-regression-part-4.qmd`
 
 ---
 
@@ -206,13 +206,14 @@ Complete redesign of the Understanding Regression blog post series to teach stat
   - Skew is most visible at small n, fades with large n
 - **Why this matters**: The SE uses σ. Since we estimate σ, the SE itself is uncertain.
   - If σ's estimate is too low → SE is too low → we underestimate uncertainty about μ
-  - If σ's estimate is too high → SE is too high → we overestimate uncertainty about μ
   - The "ruler" for measuring uncertainty is itself imprecise
-- **Back to lm()**: The residual standard error has no "Std. Error" next to it — lm() doesn't report σ's uncertainty
+  - lm() doesn't report σ's SE: partly convention (σ is a nuisance parameter), partly because the t-distribution handles σ's uncertainty implicitly — its heavier tails absorb the extra uncertainty
+- **Back to lm()**: The residual standard error has no "Std. Error" next to it
 - **Summary**: Bridge to Part 6 — dividing the estimate by the SE will produce a ratio whose distribution is affected by σ's uncertainty
 
 **Dataset**: !Kung San heights + simulations
-**Length estimate**: ~150 lines
+**Status**: In progress
+**File**: `content/posts/series/understanding-regression/5-understanding-regression-part-5.qmd`
 
 ---
 

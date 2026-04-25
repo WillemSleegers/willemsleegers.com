@@ -1,7 +1,7 @@
 ---
 title: "Understanding Regression (Part 2): Why the Normal Distribution?"
 description: "In Part 1, I proposed that regression is about choosing and fitting distributions to data. In this post, I explain why the normal distribution is often the right choice."
-date: 2025-01-16
+date: 2026-04-25
 categories:
   - statistics
   - tutorial

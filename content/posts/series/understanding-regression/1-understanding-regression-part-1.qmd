@@ -1,7 +1,7 @@
 ---
 title: "Understanding Regression (Part 1): Getting Started"
 description: "This is the first post in a series on understanding regression. In this first post I focus on what the main question is that we should be asking when using regression."
-date: 2025-04-24
+date: 2026-04-24
 categories:
   - statistics
   - tutorial

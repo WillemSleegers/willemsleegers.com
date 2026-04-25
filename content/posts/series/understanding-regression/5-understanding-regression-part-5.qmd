@@ -198,6 +198,8 @@ Think about it this way. In Part 4, we said the SE tells us how much the sample 
 
 With large samples, this barely matters. Our estimate of σ is precise (SE(σ) = `r round(se_exact(sample_sd, n), 2)` cm), so the SE we compute for μ is reliable. But with small samples, where σ's estimate can be substantially off, the SE we compute might be noticeably too small or too large. The ruler we're measuring uncertainty with is itself imprecise.
 
+So why doesn't `lm()` report a standard error for σ? Partly convention: in most research questions, σ is a nuisance parameter, something you need to estimate in order to do inference about μ, but not a quantity researchers typically ask about directly. But there's also a deeper reason. The frequentist framework handles σ's uncertainty *implicitly*. Rather than reporting it, `lm()` uses the t-distribution instead of the normal when computing p-values and confidence intervals for μ. The t-distribution's heavier tails absorb exactly the extra uncertainty that comes from estimating σ rather than knowing it. You never see σ's uncertainty in the output, but it's baked into the distribution used for inference. That's what Part 6 is about.
+
 ## Summary
 
 Both parameters of our model, μ and σ, are estimated from the sample and both have uncertainty. We explored μ's uncertainty in Part 4; now we've seen σ's. The mean's sampling distribution is normal and symmetric. The SD's sampling distribution follows a chi-squared-related distribution that is skewed, especially at small sample sizes. Both become more precise with more data.
