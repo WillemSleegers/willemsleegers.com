@@ -187,7 +187,9 @@ While we see the standard error for the intercept, we don't see a standard error
 
 So why is that not included in the output of `lm()`?
 
-The reason is that the frequentist framework handles σ's uncertainty *implicitly*. Rather than reporting σ's uncertainty explicitly, `lm()` uses the t-distribution instead of the normal when computing p-values and confidence intervals for μ. The t-distribution's heavier tails absorb exactly the extra uncertainty that comes from estimating σ rather than knowing it. You never see σ's uncertainty in the output, but it's baked into the distribution used for inference.
+The reason is that the frequentist framework [what is the frequentist framework? We haven't explained this at all. And is this truly something that applies to the frequentist framework? my understanding of frequentism is that it is about using long-running probabilities or something like that (as in, that is the crucial concept in it)] handles σ's uncertainty *implicitly*. Rather than reporting σ's uncertainty explicitly, `lm()` uses the t-distribution instead of the normal when computing p-values and confidence intervals for μ. The t-distribution's heavier tails absorb exactly the extra uncertainty that comes from estimating σ rather than knowing it. You never see σ's uncertainty in the output, but it's baked into the distribution used for inference.
+
+[at this point we have covered the estimation goal. Do we make it sufficiently clear we've done that?]
 
 ## Summary
 

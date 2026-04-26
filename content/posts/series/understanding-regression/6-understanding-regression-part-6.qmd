@@ -1,7 +1,7 @@
 ---
 title: "Understanding Regression (Part 6): The t-Value"
-description: "We know the estimate and its standard error. The next column in the lm() output is the t value. This post explains what question the t-value answers, why we compute it, and why it follows a t-distribution."
-date: 2025-01-20
+description: "Parts 4 and 5 completed the estimation goal. Here we turn to the second goal from Part 1 — hypothesis testing. We introduce the t-value as a measure of how compatible an estimate is with a specific reference value, and explain why it follows the t-distribution."
+date: 2025-01-21
 categories:
   - statistics
   - tutorial
@@ -16,7 +16,6 @@ draft: true
 #| message: false
 library(tidyverse)
 
-# Theme settings
 primary <- "#16a34a"
 
 theme_set(theme_minimal(base_size = 16))
@@ -28,9 +27,9 @@ update_geom_defaults(
 
 ## Recap
 
-In Part 4, we learned that our estimate of μ has uncertainty, measured by the standard error (SE = σ / √n). In Part 5, we saw that σ itself is uncertain: it varies from sample to sample, and that variation feeds directly into the SE. So the ruler we use to measure uncertainty is itself imprecise.
+Parts 4 and 5 worked through the first two columns of the `lm()` output: the estimate of μ and its standard error. Those posts addressed the estimation goal from Part 1, including quantifying uncertainty. The SE tells us how much our estimate would vary from sample to sample. Part 5 established that σ is uncertain too.
 
-The `lm()` output has two more columns we haven't explained: t value and Pr(>|t|). In this post, we'll focus on the t value.
+Now we move to the second goal: hypothesis testing. 
 
 ```{r}
 #| label: data
@@ -40,174 +39,146 @@ data <- filter(data, age >= 18)
 sample_mean <- mean(data$height)
 sample_sd <- sd(data$height)
 n <- nrow(data)
+se <- sample_sd / sqrt(n)
 
-model <- lm(height ~ 1, data = data)
-model_summary <- summary(model)
-
-estimate <- coef(model)[[1]]
-se <- model_summary$coefficients[, "Std. Error"]
-t_val <- model_summary$coefficients[, "t value"]
+t_vs_0 <- sample_mean / se
+t_vs_155 <- (sample_mean - 155) / se
 ```
 
-## What question is the t-value answering?
+## Hypothesis testing
 
-We have an estimate (`r round(estimate, 2)` cm) and we know how uncertain it is (SE = `r round(se, 2)` cm). Now what? What do we do with these numbers?
+Having an estimate and its uncertainty, we can now ask a different kind of question: is our estimate consistent with some specific value?
 
-One thing we can do is evaluate whether the estimate is compatible with some specific value. For instance: is the mean height compatible with zero?
+This is what hypothesis testing does. We specify a value we want to compare our estimate against — the **reference value** — and ask how compatible our estimate is with it. The claim that the parameter equals the reference value is called the **null hypothesis**.
 
-For heights, this is a silly question. Obviously the mean height isn't zero. But the same machinery will later let us ask much more interesting questions, like "does height depend on sex?" or "does this treatment have an effect?" In those cases, asking "is this coefficient compatible with zero?" is exactly the question we care about. So let's understand how it works now, even though our example makes the answer obvious.
+You can choose any reference value that makes sense for your question. A common choice is 0. In many situations, 0 serves as a natural baseline: it represents the absence of an effect, or nothing going on. Testing whether an estimate is consistent with zero is a way of asking whether there is anything worth explaining. `lm()` uses 0 as the reference value for every coefficient it reports.
 
-## Measuring distance in the right units
+## The t-value
 
-Our estimate is `r round(estimate, 2)` cm. How far is that from zero? In absolute terms, `r round(estimate, 2)` cm. But that number alone doesn't tell us whether the estimate is *surprisingly* far from zero. It depends on how much uncertainty there is.
+The most direct way to assess compatibility is to look at how far our estimate sits from the reference value. A small gap suggests the data are consistent with the null hypothesis; a large one suggests they're not. 
 
-To see why, think about what the SE means. It tells us how much the sample mean bounces around from study to study. Our SE is `r round(se, 2)` cm. So if we repeated this study many times, most sample means would land within about `r round(se, 2)` cm of μ.
+Our estimate of μ is `r round(sample_mean, 2)` cm. Suppose we test against a reference of 155 cm, a plausible average adult height. The raw distance is `r round(sample_mean, 2)` − 155 = `r round(sample_mean - 155, 2)` cm. But that number alone doesn't tell us whether the gap is large or small. It depends on how much our estimate typically varies from sample to sample. A gap of `r round(abs(sample_mean - 155), 2)` cm is unremarkable if estimates bounce around by several centimeters; it would be substantial if estimates are usually stable to within a few tenths.
 
-Now imagine the true mean *were* zero. Then most sample means would land within about `r round(se, 2)` cm of zero. Getting an estimate of `r round(estimate, 2)` would mean the sample mean landed `r round(estimate, 2)` cm away from where we'd expect it, when it typically only moves about `r round(se, 2)` cm. That's an enormous discrepancy.
+The SE tells us exactly how much our estimate typically varies: `r round(se, 2)` cm. Dividing the distance by the SE puts the gap in context:
 
-We can express that discrepancy precisely by measuring the distance in standard errors:
+$$t = \frac{\text{Estimate} - \text{reference}}{\text{SE}} = \frac{`r round(sample_mean, 2)` - 155}{`r round(se, 2)`} \approx `r round(t_vs_155, 2)`$$
 
-$$t = \frac{\text{Estimate} - 0}{\text{SE}} = \frac{`r round(estimate, 2)` - 0}{`r round(se, 2)`} \approx `r round(t_val, 1)`$$
+Our estimate sits about `r round(abs(t_vs_155), 1)` standard error below 155 cm.
 
-About `r round(t_val, 0)` standard errors from zero. That's the t-value.
+As mentioned before, `lm()` defaults to a reference value of 0:
 
-Notice that we're explicitly subtracting zero in the numerator. The general formula is:
+$$t = \frac{`r round(sample_mean, 2)` - 0}{`r round(se, 2)`} \approx `r round(t_vs_0, 0)`$$
 
-$$t = \frac{\text{Estimate} - \text{reference value}}{\text{SE}}$$
+Writing the subtraction of 0 explicitly might seem redundant as it doesn't change the arithmetic (`r round(sample_mean, 2)` - 0 is just `r round(sample_mean, 2)`), but it's good to repeat the subtraction in order to remind yourself that the reference value is always there. Our estimate is about `r round(t_vs_0, 0)` standard errors away from 0 (which is quite substantial, as we'll see later).
 
-The `lm()` output always uses 0 as the reference value. For our intercept-only model, this asks "is the mean height different from zero?" Later, when we add predictors, it will ask "is this predictor's effect different from zero?", which is a much more interesting question.
+## t-values have a distribution, too
 
-You can also think of the t-value as a signal-to-noise ratio. The numerator is the "signal": how far the estimate is from the reference value. The denominator is the "noise": how much the estimate bounces around due to sampling variability. A large t-value means the signal is large relative to the noise.
+Like μ and σ before it, the t-value is a statistic computed from a sample, so it has a sampling distribution. In Parts 4 and 5 we explored those distributions by simulating many samples and watching how each statistic varied. The same approach works here — and understanding what distribution t-values follow is what will allow us to compute a p-value in Part 7.
 
-## What t-values would we expect?
+You might expect the sampling distribution of the t-value to be normal, just as the mean's was. But it isn't. The SE uses an estimated σ, and that estimate varies from sample to sample (as we saw in Part 5). If a sample happens to produce an unusually small SD, the SE is too small and the t-value ends up further from zero than the gap warrants. If the SD comes out large, the SE is too large and the t-value is pulled toward zero. To make this concrete: say a sample mean sits 5 cm from the reference, with n = 10. If that sample happened to produce a small SD of 4 cm, the SE is only `r round(4 / sqrt(10), 1)` cm and t = `r round(5 / (4 / sqrt(10)), 1)` — larger than the data warrant. If instead the SD came out large at 12 cm, the SE inflates to `r round(12 / sqrt(10), 1)` cm and t shrinks to `r round(5 / (12 / sqrt(10)), 1)`. This extra variability in the SE produces a distribution with heavier tails than the normal.
 
-A t-value of `r round(t_val, 0)` seems huge. But to say it's huge with any precision, we need a reference: what do t-values typically look like when the true mean actually *is* zero?
-
-We can find out with a simulation. Let's draw many samples from a distribution where μ is 0, compute the t-value for each sample, and see what distribution we get.
-
-```{r}
-#| label: fig-t-null
-#| fig-cap: "Distribution of t-values when the true mean is zero"
-
-set.seed(42)
-
-sigma_true <- sample_sd
-n_sim <- 1000
-
-t_null <- replicate(n_sim, {
-  x <- rnorm(n, mean = 0, sd = sigma_true)
-  mean(x) / (sd(x) / sqrt(n))
-})
-
-ggplot(tibble(t = t_null), aes(x = t)) +
-  geom_histogram(aes(y = after_stat(density)), binwidth = 0.3) +
-  stat_function(
-    fun = dt, args = list(df = n - 1),
-    linewidth = 1,
-    linetype = "dashed"
-  ) +
-  labs(
-    x = "t-value",
-    y = "Density"
-  ) +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
-```
-
-When the true mean is zero, t-values cluster around zero and rarely stray beyond ±3. The dashed line is the theoretical **t-distribution** with `r n - 1` degrees of freedom, and it matches the simulation well.
-
-Now think about our observed t-value of `r round(t_val, 0)`. It's so far from this distribution that it wouldn't even fit on the plot. That's our first hint that the true mean is not zero. We'll make this precise in Part 7, when we discuss the p-value.
-
-## Why the t-distribution?
-
-You might notice that the distribution of t-values looks a lot like a standard normal distribution. With our sample size of `r n`, the two are in fact nearly indistinguishable. But with small samples, the t-distribution is noticeably wider. It has heavier tails, meaning extreme values show up more often than the normal distribution predicts.
-
-Why? Because the denominator of the t-value uses the *sample* standard deviation, which itself varies from sample to sample. Sometimes the sample SD underestimates the true σ, making the denominator too small and inflating the t-value. Sometimes it overestimates, shrinking the t-value. This extra source of variability widens the distribution.
-
-We can see this clearly with a small sample size. Let's repeat the simulation at n = 10 and compare two scenarios: one where we use the true σ in the denominator (eliminating the extra variability) and one where we use the sample SD (as we do in practice):
+We can see this directly by comparing t-values computed with a fixed σ versus an estimated one:
 
 ```{r}
 #| label: fig-known-vs-estimated
-#| fig-cap: "With small samples, estimating σ produces heavier tails"
-
+#| fig-cap: "T-values computed with a fixed σ follow the standard normal; with estimated σ, the tails are heavier. Small samples (n = 10) make the difference visible."
 set.seed(42)
 
+n_simulations <- 1000
 n_small <- 10
 
-known_sigma <- replicate(n_sim, {
-  x <- rnorm(n_small, mean = 0, sd = sigma_true)
-  mean(x) / (sigma_true / sqrt(n_small))
-})
+compare_t <- bind_rows(
+  tibble(
+    t = replicate(n_simulations, {
+      sim <- rnorm(n_small, mean = 0, sd = sample_sd)
+      mean(sim) / (sample_sd / sqrt(n_small))
+    }),
+    sigma = "Fixed σ"
+  ),
+  tibble(
+    t = replicate(n_simulations, {
+      sim <- rnorm(n_small, mean = 0, sd = sample_sd)
+      mean(sim) / (sd(sim) / sqrt(n_small))
+    }),
+    sigma = "Estimated σ"
+  )
+) |>
+  mutate(sigma = factor(sigma, levels = c("Fixed σ", "Estimated σ")))
 
-estimated_sigma <- replicate(n_sim, {
-  x <- rnorm(n_small, mean = 0, sd = sigma_true)
-  mean(x) / (sd(x) / sqrt(n_small))
-})
+overlay <- bind_rows(
+  tibble(
+    x = seq(-8, 8, length.out = 500),
+    density = dnorm(x),
+    sigma = "Fixed σ"
+  ),
+  tibble(
+    x = seq(-8, 8, length.out = 500),
+    density = dt(x, df = n_small - 1),
+    sigma = "Estimated σ"
+  )
+) |>
+  mutate(sigma = factor(sigma, levels = c("Fixed σ", "Estimated σ")))
 
-comparison <- bind_rows(
-  tibble(value = known_sigma, type = "Using true σ"),
-  tibble(value = estimated_sigma, type = "Using sample SD")
-)
-
-ggplot(comparison, aes(x = value)) +
-  geom_histogram(aes(y = after_stat(density)), binwidth = 0.3) +
-  stat_function(
-    fun = dnorm,
-    linewidth = 1,
-    linetype = "dashed"
+ggplot(compare_t, aes(x = t)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 0.5) +
+  geom_line(
+    data = overlay,
+    aes(x = x, y = density),
+    linetype = "dashed",
+    linewidth = 0.8
   ) +
-  facet_wrap(~type, ncol = 1) +
-  coord_cartesian(xlim = c(-6, 6)) +
-  labs(
-    x = "Standardized value",
-    y = "Density"
-  ) +
+  facet_wrap(~sigma, ncol = 1) +
+  coord_cartesian(xlim = c(-8, 8)) +
+  labs(x = "t value", y = "Density") +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 ```
 
-With the true σ (top panel), the distribution matches the standard normal perfectly (dashed line). With the sample SD (bottom panel), the tails are heavier. Extreme values pop up more often because sometimes the sample SD happens to be too small, inflating the ratio.
+With a fixed σ, the simulated t-values match the standard normal (dashed curve, top panel). With estimated σ, the tails are noticeably heavier (bottom panel). The dashed curve there is the **t-distribution**, and it fits the simulated values well.
 
-This connects directly to what we saw in Part 5: σ has its own uncertainty, and that uncertainty feeds into the SE. The t-distribution exists because of that uncertainty. When σ's estimate is imprecise (small n), the t-distribution is wide. When σ's estimate is reliable (large n), the t-distribution narrows to match the normal.
+The t-distribution was derived for exactly this purpose: to describe the distribution of t-values when σ is estimated rather than known.^[It was first published in 1908 by William Gosset, who wrote under the pseudonym "Student" — which is why it's often called Student's t-distribution.]
+
+Like any distribution, the t-distribution has parameters. In its general form it has three: a location parameter (μ), a scale parameter (σ), and degrees of freedom (ν):
+
+$$f(t \mid \mu, \sigma, \nu) = \frac{\Gamma\!\left(\frac{\nu+1}{2}\right)}{\sqrt{\nu\pi}\;\Gamma\!\left(\frac{\nu}{2}\right)\sigma} \left(1 + \frac{1}{\nu}\left(\frac{t - \mu}{\sigma}\right)^2\right)^{-\frac{\nu+1}{2}}$$
+
+I won't pretend this formula is enlightening on its own, but it does show the three parameters clearly: a location parameter (μ), a scale parameter (σ), and degrees of freedom (ν). Computing the t-value has already fixed two of them: subtracting the reference value centers the distribution at zero (μ = 0), and dividing by the SE puts it on a scale of one (σ = 1). This leaves a single free parameter: degrees of freedom.
+
+## Degrees of freedom
+
+You've likely seen the term **degrees of freedom** before — it appears at the bottom of every `lm()` summary as "residual degrees of freedom." If you're like me, this is one of those terms where you might have an inkling of what it means, but that's as close as it gets. So let's try and get a better understanding of it now.
+
+In this context, degrees of freedom is just a name for the n − 1 that comes out of estimating σ. To estimate σ, we compute deviations of each observation from μ — which we don't know. So we use the sample mean instead. That substitution introduces a bias: the sample mean always sits at the center of the observed data, so deviations from it are systematically smaller than deviations from μ would be. Dividing by n − 1 rather than n corrects for that bias — I go into this in detail in [a separate post on why we divide by n − 1 to calculate the variance of a sample](../../individual/4-why-divide-by-n-1/4-why-divide-by-n-1.qmd). The n − 1 that comes out of that correction is the degrees of freedom.^[There is a more general explanation of the name: 'degrees of freedom' describes how many values in a set are free to vary. Because we compute deviations from the sample mean, those deviations must sum to exactly zero — if you know n − 1 of them, the last one is fully determined. So only n − 1 deviations are free to take any value; the final one is fixed. That's where the name comes from, and it's a general concept that appears throughout statistics wherever estimation introduces a dependency like this. I personally find that this explanation rarely serves as a useful one, which is why I've relegated it to a footnote.]
+
+For our data, df = n − 1 = `r n - 1`. The t-distribution was derived specifically for the t-value as we've defined it — (estimate − reference) / SE — where the SE uses the bias-corrected sample SD. So df = n − 1 in the t-distribution isn't a separate fact: it comes directly from the same n − 1 in the sample SD.
+
+What df controls is how precisely σ was estimated. With few observations, the sample SD is imprecise (as we saw in Part 5), making the SE variable and the t-distribution's tails heavier. With more observations, σ is estimated more reliably, the SE stabilizes, and the t-distribution converges toward the standard normal:
 
 ```{r}
-#| label: fig-convergence
-#| fig-cap: "The t-distribution converges to the standard normal as sample size grows"
-
+#| label: fig-t-convergence
+#| fig-cap: "The t-distribution converges to the standard normal as degrees of freedom increase"
 x_range <- seq(-5, 5, length.out = 500)
 
 convergence <- bind_rows(
-  tibble(
-    x = x_range,
-    density = dt(x_range, df = 9),
-    label = "n = 10"
-  ),
-  tibble(
-    x = x_range,
-    density = dt(x_range, df = 29),
-    label = "n = 30"
-  ),
-  tibble(
-    x = x_range,
-    density = dt(x_range, df = 351),
-    label = "n = 352"
-  ),
-  tibble(
-    x = x_range,
-    density = dnorm(x_range),
-    label = "Standard normal"
-  )
+  tibble(x = x_range, density = dt(x_range, df = 9), label = "n = 10"),
+  tibble(x = x_range, density = dt(x_range, df = 29), label = "n = 30"),
+  tibble(x = x_range, density = dt(x_range, df = 351), label = "n = 352"),
+  tibble(x = x_range, density = dnorm(x_range), label = "Normal")
 ) |>
   mutate(
-    label = factor(
-      label,
-      levels = c("n = 10", "n = 30", "n = 352", "Standard normal")
-    )
+    label = factor(label, levels = c("n = 10", "n = 30", "n = 352", "Normal"))
   )
 
 ggplot(convergence, aes(x = x, y = density, color = label, linetype = label)) +
   geom_line(linewidth = 1) +
-  scale_linetype_manual(
-    values = c("solid", "solid", "solid", "dashed")
+  scale_color_manual(
+    values = c(
+      scales::alpha("black", 0.35),
+      scales::alpha("black", 0.6),
+      "black",
+      primary
+    )
   ) +
+  scale_linetype_manual(values = c("solid", "solid", "solid", "dashed")) +
   labs(
     x = "Value",
     y = "Density",
@@ -217,27 +188,26 @@ ggplot(convergence, aes(x = x, y = density, color = label, linetype = label)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 ```
 
-At n = 10, the t-distribution is visibly wider than the standard normal, with more probability in the tails. By n = 30, the difference is already subtle. At n = 352 (our sample size), the two are nearly indistinguishable.
-
-The t-distribution has one parameter: the **degrees of freedom** (df), which equals n − 1 for our intercept-only model.^[Why n − 1 rather than n? Because we estimate one parameter (the mean) from the data before computing the SD, which "uses up" one degree of freedom. This is the same reason the sample SD divides by n − 1 rather than n.]
+At n = 10 (df = 9), the tails are clearly heavier than the normal. By n = 352 (df = 351), the two are nearly indistinguishable.
 
 ## Back to lm()
 
-Let's return to the `lm()` output:
-
 ```{r}
 #| label: model
+model <- lm(height ~ 1, data = data)
 summary(model)
 ```
 
-The t value column shows `r round(t_val, 2)`. That's the estimate (`r round(estimate, 2)`) minus zero, divided by its standard error (`r round(se, 2)`): how many standard errors the estimate is from zero. With `r n` observations and `r n - 1` degrees of freedom, the t-distribution is virtually identical to the standard normal, so the distinction barely matters for our data.
+The t value column shows `r round(coef(summary(model))["(Intercept)", "t value"], 1)`. That's the estimate minus the reference value of 0, divided by the SE:
 
-But `lm()` uses the t-distribution regardless of sample size, ensuring correct results whether you have 10 observations or 10,000.
+$$t = \frac{`r round(sample_mean, 2)` - 0}{`r round(se, 2)`} \approx `r round(t_vs_0, 0)`$$
+
+Every t-value in the output is a distance from zero, measured in units of the SE. The residual degrees of freedom in the last line of the output — `r n - 1` — is the df = n − 1 we just discussed: the same n − 1 from the sample SD.
 
 ## Summary
 
-The t-value answers a specific question: how far is our estimate from zero, measured in standard errors? It's the ratio of signal (the distance from the reference value) to noise (the SE).
+Hypothesis testing asks whether an estimate is consistent with a specific reference value. The claim that the parameter equals that value is the null hypothesis. The t-value measures that consistency: it's the distance between the estimate and the reference, divided by the SE, so the distance is expressed in units of natural sampling variability.
 
-To judge whether a t-value is "big," we need a reference distribution: what t-values would we see if the true value *were* zero? That reference is the **t-distribution**. It's wider than the normal distribution because we estimate σ from the data rather than knowing it, and that extra uncertainty makes extreme values more likely. With large samples, the difference vanishes.
+The t-distribution, rather than the normal, is used because σ is estimated. Estimating σ introduces variability into the SE, producing heavier tails. Degrees of freedom (df = n − 1) reflect how precisely σ was estimated; with more data, the t-distribution converges to the normal.
 
-Our t-value of ~`r round(t_val, 0)` is enormous, far beyond what we'd see if the true mean were zero. But we haven't made this precise yet. How do we quantify exactly how surprising a t-value is? That's the p-value, which we'll tackle in Part 7.
+In Part 7, we'll use the t-distribution to answer one final question: given a t-value this large, how often would we expect one this extreme if the reference value were the parameter?
