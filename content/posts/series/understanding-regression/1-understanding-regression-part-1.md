@@ -2,7 +2,7 @@
 title: 'Understanding Regression (Part 1): Getting Started'
 description: >-
   This is the first post in a series on understanding regression. In this first
-  post I focus on what the main question is that we should be asking when using
+  post we focus on what the main question is that we should be asking when using
   regression.
 date: 2026-04-24T00:00:00.000Z
 categories:
@@ -16,7 +16,7 @@ toc: true
 
 - [Introduction](#introduction)
 - [An example](#an-example)
-- [Why use regression?](#why-use-regression)
+- [What regression is for](#what-regression-is-for)
 - [What’s ahead](#whats-ahead)
 - [Summary](#summary)
 
@@ -41,24 +41,26 @@ update_geom_defaults(
 ## Introduction
 
 I’m a behavioral scientist with several scientific publications to my
-name in which I’ve used statistical tools like regression. Yet, despite
-my experience with this statistical technique, I don’t feel like I
-*really* understand regression. I know *how* to use it in that I can run
-models and report the results, but there are times when I’m just running
-code because I’ve been told that’s how you do it. When things get
-complicated, and sometimes not even that complicated, I find myself
-relying almost entirely on conventions rather than on my own
-understanding.
+name. These are mostly publications in the field of the social sciences,
+where statistical tests are commonly used to answer research questions.
+Regression is one of the most common tools in that field, and I’ve
+relied on it throughout my own research. Yet, despite all that
+experience, I don’t feel like I *really* understand regression. I know
+*how* to use it in that I can run models and report the results, but
+there are times when I’m just running code because I’ve been told that’s
+how you do it. When things get complicated, and sometimes not even that
+complicated, I find myself relying almost entirely on conventions rather
+than on my own understanding.
 
 You might feel the same way. Regression is often taught as a black box:
 you run the code or click the buttons and copy the output. The focus in
 many courses is on performing statistics rather than on building a
-conceptual understanding. I’ve also noticed a lot of statistical
-teaching taking a more mechanical approach. You’re given formulas to
-memorize or asked to calculate statistics by hand. I can see the appeal
-of this approach, since working through the steps yourself can build
-intuition, but formulas rarely help me understand something, and
-calculating things by hand only takes you so far.
+conceptual understanding. I’ve also noticed that statistical teaching
+often takes a mechanical approach. You’re given formulas to memorize or
+asked to calculate statistics by hand. I can see the appeal of this
+approach, since working through the steps yourself can build intuition,
+but formulas rarely help me understand something, and calculating things
+by hand only takes you so far.
 
 What I need, and what I suspect many others need, is an approach that is
 more about creating a *conceptual* understanding that makes regression
@@ -110,9 +112,9 @@ ggplot(data, aes(x = height)) +
 
 ![](1-understanding-regression-part-1_files/figure-commonmark/histogram-1.svg)
 
-Let’s immediately run a regression so we have some numbers to look at.
-In these first posts, we’ll try to figure out where these numbers come
-from.
+Let’s run a regression right away. The output gives us several numbers,
+and understanding each of them will be the focus of the posts that
+follow
 
 The simplest model we can run is one in which we regress heights onto…
 nothing; this is called an **intercept-only model**.
@@ -158,7 +160,7 @@ error of 0.41 cm, a t-value of 374.6, and a p-value of 0e+00.
 
 But what do these numbers mean? Why do we actually want these numbers?
 
-## Why use regression?
+## What regression is for
 
 When we run a regression model, we’re typically interested in one or
 more of the following goals:
@@ -169,13 +171,14 @@ more of the following goals:
     (like zero)?
 3.  **Prediction**: What would we expect to observe in new data?
 
-In the behavioral science literature I’m familiar with, testing is by
-far the most common goal. Researchers want to know whether an effect is
+In the social science literature I’m familiar with, testing is by far
+the most common goal. Researchers want to know whether an effect is
 “significant”, which means running a model and checking whether the
 estimate is compatible with zero. Estimation is also common, with
 researchers reporting coefficients, standard errors, and confidence
-intervals. Prediction is less popular (authors rarely report prediction
-intervals), but is also important.
+intervals. Prediction is less popular in my field (authors rarely report
+prediction intervals), but I think it deserves more attention than it
+typically gets.
 
 In order to understand regression, I think we need a way of thinking
 that makes it easier to understand how regression can be used for each
@@ -206,8 +209,8 @@ and prediction:
   distribution, which we can use to predict what heights we’d expect in
   new individuals
 
-Here are the heights again, but now with a normal distribution on top of
-the histogram.
+Here are the heights again, but now with a normal distribution laid on
+top of the histogram.
 
 <details class="code-fold">
 <summary>Code</summary>
@@ -237,11 +240,13 @@ ggplot(data, aes(x = height)) +
 overlay](1-understanding-regression-part-1_files/figure-commonmark/distribution-1.svg)
 
 The dashed line is the normal distribution we’re proposing heights are
-drawn from. As we’ll see, this is what `lm()` estimates.
+drawn from. As we’ll see, `lm()` estimates exactly this distribution.
+Its two parameters, μ and σ, are what give us the estimates,
+uncertainty, and predictions we’re after.
 
 ## What’s ahead
 
-In this series, I’m going to build up an understanding of regression
+In this series, we’re going to build up an understanding of regression
 from this foundation. The core question will always be: **What
 distribution might have generated this data?**
 
