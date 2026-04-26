@@ -5,14 +5,13 @@ description: >-
   estimate its parameters μ and σ from our sample. This post shows that lm()
   does exactly this: the intercept estimates μ (the mean) and the residual
   standard error estimates σ.
-date: 2025-01-17T00:00:00.000Z
+date: 2026-04-26T00:00:00.000Z
 categories:
   - statistics
   - tutorial
   - regression
 code-fold: true
 toc: true
-draft: true
 ---
 
 
@@ -21,8 +20,7 @@ draft: true
 - [What lm() is doing](#what-lm-is-doing)
 - [Visualizing the estimated
   distribution](#visualizing-the-estimated-distribution)
-- [What we’ve accomplished](#what-weve-accomplished)
-- [What comes next](#what-comes-next)
+- [Summary](#summary)
 
 <details class="code-fold">
 <summary>Code</summary>
@@ -44,11 +42,11 @@ update_geom_defaults(
 
 ## Recap
 
-In Part 2, I argued that the normal distribution is often the correct
-distribution for outcomes like heights, which are shaped by many small
-additive effects. It’s also parsimonious: defined by just two
-parameters, it captures a center and some spread without adding claims
-about skewness, multiple groups, or hard boundaries.
+In Part 2, we argued that the normal distribution is often a sensible
+choice for outcomes like heights, because adult heights are the result
+of many small additive effects which produce a normal distribution. This
+distribution is also a parsimonious choice; it is defined by just two
+parameters.
 
 Now we need to estimate those two parameters from our data.
 
@@ -56,14 +54,23 @@ Now we need to estimate those two parameters from our data.
 
 The normal distribution is defined by two parameters:
 
-- **μ (mu)**: the mean, where the center of the distribution is
-- **σ (sigma)**: the standard deviation, how spread out the distribution
-  is
+- **μ (mu)**: where the distribution is centered
+- **σ (sigma)**: how spread out the distribution is
 
-If we can estimate these from our sample, we’ve characterized the entire
-distribution. The sample mean estimates μ and the sample standard
-deviation estimates σ. Let me calculate these using the same height data
-we’ve been working with:
+By definition, μ is the mean of the distribution and σ is its standard
+deviation, so we estimate them with the mean and standard deviation of
+our sample. These are not the same thing, though — the sample mean and
+sample standard deviation are estimates of μ and σ, our best guess at
+the model’s parameters based on the data we have. The distinction
+matters: within the model we’ve proposed, μ and σ are fixed values we’re
+trying to pin down. Our sample mean and sample standard deviation are
+estimates that depend on which 352 people happened to be measured. A
+different sample would give slightly different numbers. The Greek
+letters are a reminder that what we really care about is the parameters
+of our model, not the specific numbers from this particular sample.
+
+Let’s calculate our estimates using the height data we’ve been working
+with:
 
 <details class="code-fold">
 <summary>Code</summary>
@@ -123,14 +130,28 @@ Compare these to what we calculated:
 - Intercept (154.6) = Sample mean (154.6)
 - Residual SE (7.74) = Sample SD (7.74)
 
-They’re identical. When there are no predictors, the residual standard
-error is the same as the sample standard deviation.
+They’re identical. When there are no predictors, the intercept equals
+the sample mean and the residual standard error equals the sample
+standard deviation.
 
-**This is what `lm(height ~ 1)` is doing**: it’s estimating the
-parameters of a normal distribution.
+`lm()` doesn’t call them the mean and standard deviation — it calls them
+the *intercept* and the *residual standard error*. Those names will make
+more sense when we add predictors, but for now the intercept is simply
+our estimate of μ and the residual standard error is our estimate of σ.
 
-- The intercept estimates μ (the mean)
-- The residual standard error estimates σ (the standard deviation)
+The name *residual standard error* comes from how it’s computed. A
+**residual** is the difference between an observed value and the model’s
+prediction. For our intercept-only model, the model’s prediction is the
+mean, so each residual is just a height minus the mean. The residual
+standard error then squares those residuals, sums them, divides by n −
+1, and takes the square root. That’s exactly how the sample standard
+deviation is calculated: take each value, subtract the mean, square the
+differences, sum them, divide by n − 1, and take the square root.
+They’re the same computation.
+
+So `lm()` isn’t doing anything exotic. The intercept is the sample mean
+(our estimate of μ) and the residual standard error is the sample
+standard deviation (our estimate of σ).
 
 ## Visualizing the estimated distribution
 
@@ -146,7 +167,7 @@ ggplot(data, aes(x = height)) +
   stat_function(
     fun = dnorm,
     args = list(mean = sample_mean, sd = sample_sd),
-    linewidth = 1,
+    linewidth = 0.75,
     color = "black",
     linetype = "dashed"
   ) +
@@ -167,27 +188,19 @@ Figure 1: Heights with normal distribution using estimated parameters
 
 </div>
 
-This is our model: heights follow a normal distribution with mean 154.6
-cm and standard deviation 7.7 cm.
+This is what our regression model produces: a fully specified
+distribution. We chose the normal distribution in Part 2, and now we’ve
+pinned down its parameters using our data. We know where the
+distribution is centered and how spread out it is. What we don’t yet
+know is how much to trust those estimates.
 
-## What we’ve accomplished
+## Summary
 
-We started with a question: what distribution describes heights?
-
-We proposed an answer: the normal distribution.
-
-Now we’ve estimated that distribution’s parameters from our sample: - μ
-≈ 154.6 cm - σ ≈ 7.7 cm
-
-When we run `lm(height ~ 1)`, we’re estimating these same parameters.
-The regression output gives us both values, along with additional
-information (like uncertainty about our estimates, which we’ll explore
-later).
-
-## What comes next
+We started with a question: what distribution might have generated our
+height data? We proposed the normal distribution, and now we’ve
+estimated its parameters from our sample: μ ≈ 154.6 cm and σ ≈ 7.7 cm.
 
 But these estimates are based on just one sample of 352 people. If we’d
 measured a different group, we’d get different numbers. How much would
-they vary? How certain can we be about our estimates?
-
-That’s what we’ll tackle in Part 4.
+they vary? How certain can we be about our estimates? That’s what we’ll
+tackle in Part 4.

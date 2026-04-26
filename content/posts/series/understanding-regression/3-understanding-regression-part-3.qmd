@@ -1,14 +1,13 @@
 ---
 title: "Understanding Regression (Part 3): Estimating Parameters"
 description: "We've chosen the normal distribution to describe heights. Now we need to estimate its parameters μ and σ from our sample. This post shows that lm() does exactly this: the intercept estimates μ (the mean) and the residual standard error estimates σ."
-date: 2025-04-24
+date: 2026-04-26
 categories:
   - statistics
   - tutorial
   - regression
 code-fold: true
 toc: true
-draft: true
 ---
 
 ```{r}
@@ -28,7 +27,7 @@ update_geom_defaults(
 
 ## Recap
 
-In Part 2, I argued that the normal distribution is often a sensible choice for outcomes like heights, because adult heights are the result of many small additive effects which produce a normal distribution. This distribution is also a parsimonious choice; it is defined by just two parameters.
+In Part 2, we argued that the normal distribution is often a sensible choice for outcomes like heights, because adult heights are the result of many small additive effects which produce a normal distribution. This distribution is also a parsimonious choice; it is defined by just two parameters.
 
 Now we need to estimate those two parameters from our data.
 
@@ -81,7 +80,7 @@ They're identical. When there are no predictors, the intercept equals the sample
 
 `lm()` doesn't call them the mean and standard deviation — it calls them the *intercept* and the *residual standard error*. Those names will make more sense when we add predictors, but for now the intercept is simply our estimate of μ and the residual standard error is our estimate of σ. 
 
-The name *residual standard error* comes from how it's computed. A **residual** is the difference between an observed value and the model's prediction. For our intercept-only model, the estimate is the mean, so each residual is just a height minus the mean. The residual standard error then squares those residuals, sums them, divides by n − 1, and takes the square root. That's exactly how the sample standard deviation is calculated: take each value, subtract the mean, square the differences, sum them, divide by n − 1, and take the square root. They're the same computation.
+The name *residual standard error* comes from how it's computed. A **residual** is the difference between an observed value and the model's prediction. For our intercept-only model, the model's prediction is the mean, so each residual is just a height minus the mean. The residual standard error then squares those residuals, sums them, divides by n − 1, and takes the square root. That's exactly how the sample standard deviation is calculated: take each value, subtract the mean, square the differences, sum them, divide by n − 1, and take the square root. They're the same computation.
 
 So `lm()` isn't doing anything exotic. The intercept is the sample mean (our estimate of μ) and the residual standard error is the sample standard deviation (our estimate of σ). 
 
@@ -97,7 +96,7 @@ ggplot(data, aes(x = height)) +
   stat_function(
     fun = dnorm,
     args = list(mean = sample_mean, sd = sample_sd),
-    linewidth = 1,
+    linewidth = 0.75,
     color = "black",
     linetype = "dashed"
   ) +
