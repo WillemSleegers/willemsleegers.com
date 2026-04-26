@@ -187,12 +187,10 @@ While we see the standard error for the intercept, we don't see a standard error
 
 So why is that not included in the output of `lm()`?
 
-The reason is that the frequentist framework [what is the frequentist framework? We haven't explained this at all. And is this truly something that applies to the frequentist framework? my understanding of frequentism is that it is about using long-running probabilities or something like that (as in, that is the crucial concept in it)] handles σ's uncertainty *implicitly*. Rather than reporting σ's uncertainty explicitly, `lm()` uses the t-distribution instead of the normal when computing p-values and confidence intervals for μ. The t-distribution's heavier tails absorb exactly the extra uncertainty that comes from estimating σ rather than knowing it. You never see σ's uncertainty in the output, but it's baked into the distribution used for inference.
-
-[at this point we have covered the estimation goal. Do we make it sufficiently clear we've done that?]
+The reason is that `lm()` handles σ's uncertainty *implicitly*. Rather than reporting it explicitly, `lm()` uses the t-distribution instead of the normal when computing p-values and confidence intervals for μ. The t-distribution's heavier tails absorb exactly the extra uncertainty that comes from estimating σ rather than knowing it. You never see σ's uncertainty in the output, but it's baked into the distribution used for inference.
 
 ## Summary
 
 Both parameters of our model, μ and σ, are estimated from the sample and both have uncertainty. We explored μ's uncertainty in Part 4; now we've seen σ's. The mean's sampling distribution is normal and symmetric. The SD's sampling distribution follows a chi-squared-related distribution that is skewed, especially at small sample sizes. Both become more precise with more data.
 
-In Part 6, we'll see how σ's uncertainty shapes the inference we draw about μ.
+That completes the estimation goal from Part 1: we have estimates of both parameters and a way to quantify the uncertainty in each. In Part 6, we turn to the second goal — hypothesis testing.
