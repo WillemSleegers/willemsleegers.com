@@ -1,16 +1,17 @@
 ---
 title: 'Understanding Regression (Part 2): Why the Normal Distribution?'
 description: >-
-  In Part 1, I proposed that regression is about choosing and fitting
-  distributions to data. In this post, I explain why the normal distribution is
+  In Part 1, we proposed that regression is about choosing and fitting
+  distributions to data. In this post, we explain why the normal distribution is
   often the right choice.
-date: 2026-04-25
+date: 2026-04-25T00:00:00.000Z
 categories:
   - statistics
   - tutorial
   - regression
 code-fold: true
 toc: true
+draft: true
 ---
 
 
@@ -43,7 +44,7 @@ update_geom_defaults(
 
 ## Recap
 
-In Part 1, I introduced the core question to help us understand
+In Part 1, we introduced the core question to help us understand
 regression: **What distribution might have generated the data?**
 
 When we run a model like `lm(height ~ 1)`, we’re saying that heights
@@ -52,8 +53,8 @@ But this raises a question: why pick the normal distribution?
 
 ## The ubiquity of the normal distribution
 
-Many natural phenomena follow an approximately normal distribution:
-heights (of adults), blood pressure, test scores. This is because
+Many natural phenomena follow an approximately normal distribution, such
+as heights (of adults), blood pressure, or test scores. This is because
 outcomes that are influenced by many small, independent factors tend to
 look bell-shaped when those factors add up. Heights, for example, are
 shaped by many genes and environmental influences, each contributing a
@@ -71,7 +72,7 @@ the result looks like a normal distribution:
 <summary>Code</summary>
 
 ``` r
-set.seed(42)
+set.seed(61941)
 
 n_simulations <- 1000
 
@@ -116,13 +117,12 @@ makes it sensible to use: it’s parsimonious.
 ## A parsimonious distribution
 
 The normal distribution is defined by just two parameters: a mean (μ)
-and a standard deviation (σ). It describes a center and some spread, and
-nothing more. It doesn’t claim the data is skewed, or that there are
-multiple groups, or that there are hard boundaries. It commits to the
-minimum structure needed to describe a distribution.
+and a standard deviation (σ), describing a center and some spread. It
+doesn’t claim the data is skewed, or that there are multiple groups, or
+that there are hard boundaries. It commits to a particular, minimal
+shape.
 
-To see why that matters, consider three distributions that all have a
-mean of 155 and a standard deviation of 8:
+To see why that matters, consider the following three distributions:
 
 <details class="code-fold">
 <summary>Code</summary>
@@ -186,29 +186,17 @@ distribution makes different claims:
 This is the key observation. The skewed and bimodal distributions are
 both *adding* claims on top of the mean and SD. One claims the data is
 asymmetric, the other claims there are multiple groups. These are
-additional structural commitments that would need evidence to justify.
-
-The normal distribution doesn’t add any of that. Among all distributions
-with the same mean and variance, it’s the one that adds the least
-structure.[^1] It commits to a center and some spread, nothing more.
-
-Part of what makes the normal distribution uncommitted is that it
-doesn’t claim any boundaries. Its tails extend infinitely in both
-directions, with values becoming less and less likely as you move away
-from the center. You might object: heights can’t be negative, so doesn’t
-the normal distribution get that wrong? Technically yes, but a normal
-distribution with mean 155 and SD 8 assigns essentially zero probability
-to negative values. The boundary exists in reality, but it’s so far from
-where the data lives that we can ignore it. We’ll see later that
-boundaries can become relevant, in which case we need a different
-distribution.
+additional structural commitments that one would need evidence for to
+justify. The normal distribution doesn’t add any of that. Among all
+distributions with the same mean and variance, it’s the one that makes
+the fewest additional claims.[^1]
 
 So the normal distribution has two things going for it: it’s often
 genuinely the right distribution for the data, and it makes the fewest
-structural claims beyond a mean and standard deviation. If we later find
-evidence that a different distribution would make more sense, we can
-update our model. But until then, the normal distribution is a strong
-starting point.
+claims beyond a mean and standard deviation. If we later find evidence
+that a different distribution would make more sense, we can update our
+model. But until then, the normal distribution is a strong starting
+point.
 
 ## Applying this to our heights
 
@@ -262,41 +250,57 @@ small additive effects.
 
 This is also how you’d spot a problem. If the data were clearly skewed
 or had two peaks, the mismatch would be obvious, and we’d want to
-reconsider our distributional choice. We’ll explore how to formally
-check model fit later in the series.
+reconsider our distributional choice or model (later we cover adding
+predictors to the model that can account for this).
 
-But often you don’t even need to look at the data. Sometimes prior
-knowledge about the outcome is enough to rule the normal distribution
-out before you even see it.
+But often you don’t even need to look at the data. Prior knowledge about
+the outcome can often guide your distributional choice before you even
+look at the data.
 
 ## When the normal distribution doesn’t apply
 
-The clearest case is when the outcome has hard boundaries. If you’re
-measuring reaction times, values can’t be negative, so there’s a floor
-at zero. If you’re measuring proportions, values are bounded between 0
-and 1. The normal distribution extends infinitely in both directions, so
-it doesn’t respect these constraints. For bounded or strictly positive
-outcomes, other distributions (like the log-normal or beta distribution)
-are better choices.
+Our height data is actually a good example of where this question comes
+up. The normal distribution has tails that extend infinitely in both
+directions, but heights can’t be negative, so technically the normal
+distribution gets that wrong. But for adult heights, the data is so far
+from zero that a normal distribution assigns essentially zero
+probability to negative values. The boundary exists in reality, but it’s
+so far from where the data lives that it doesn’t affect the fit.
+
+That changes when the boundary is close to where the data actually
+falls. Reaction times are a clear example: values are often small and
+hardcapped at 0, producing a skewed distribution. Or in the case of
+proportions, values are bounded between 0 and 1. The normal distribution
+extends infinitely in both directions, so it doesn’t respect these
+constraints. For bounded or strictly positive outcomes, other
+distributions like the log-normal or beta distribution are better
+choices.
 
 Similarly, if the outcome is a count (number of errors, number of
 children), it can only take whole numbers. A normal distribution is
 continuous and can take any value, including fractions and negatives.
-Count data calls for distributions like the Poisson or negative
-binomial.
+Count data typically calls for distributions like the Poisson or
+negative binomial.
 
-The point isn’t that you need to get the distribution exactly right.
-It’s that when you know something about the structure of your data (hard
-boundaries, discrete values, strong skew), you should use that
-knowledge. The normal distribution is often the right choice for
-continuous, unbounded outcomes. But when the data has structure that the
-normal can’t capture, use a distribution that reflects what you know.
+The same logic applies to Likert scales (e.g., 5-7 values ranging from
+‘Strongly disagree’ to ‘Strongly agree’): these values are bounded and
+discrete. The normal distribution is continuous and unbounded, so it
+doesn’t technically fit. Ordinal models tend to be a better fit.
+
+Generally speaking, when you know something about the structure of your
+data (hard boundaries, discrete values, strong skew), you should use
+that knowledge. The normal distribution is often a reasonable choice for
+continuous outcomes where the boundaries are far from the data. But when
+the data has structure that the normal can’t capture, use a distribution
+that reflects what you know.
 
 We’ll return to alternative distributions later in the series.
 
 ## Summary
 
-Why the normal distribution? For many things we measure, the normal
+In Part 1, the core question was: what distribution might have generated
+this data? This post made the case for why the normal distribution is
+often the right answer. For many things we measure, the normal
 distribution is an accurate description of the data. It arises whenever
 many small effects add up, which is the case for many outcomes in the
 real world. It’s also parsimonious: defined by just two parameters (μ
