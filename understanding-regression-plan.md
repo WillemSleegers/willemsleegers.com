@@ -53,202 +53,207 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 
 ## Proposed Series Structure
 
-### Part 1: The Modeling Question (IN PROGRESS)
+### Part 1: Getting Started (COMPLETED)
 
 **Goal**: Reframe statistical modeling as understanding distributions, not summarizing data
 
 **Content** (ACTUAL):
 
 - **Introduction**: Simple and personal
-  - "This is the first blog post on a series of blog posts about understanding regression."
-  - Personal confession: "I'm a behavioral scientist, and to be honest, I don't really feel like I understand regression"
+  - Personal confession: "I'm a behavioral scientist... I don't feel like I *really* understand regression"
   - Problem: regression taught as black box, focus on mechanics not concepts
   - Goal: build conceptual understanding
-  - Avoids assuming reader is behavioral scientist, but clarifies author's perspective
 - **Example with real data**: !Kung San heights (adults 18+) from McElreath's Statistical Rethinking
-  - Explains why using examples: "To build this conceptual understanding, I'll work through examples using real data"
-  - Run familiar `lm(height ~ 1)` model (explains what intercept-only model is first)
-  - Pause to ask: What do these numbers mean? What perspective is useful?
+  - Histogram of heights
+  - Run `lm(height ~ 1)` (explains what intercept-only model is first)
+  - Pause to ask: What do these numbers mean? Why do we want them?
+- **Why use regression?**: Three goals
+  1. **Estimation**: What are the parameters and how uncertain are we?
+  2. **Testing**: Is a parameter compatible with some reference value (like zero)?
+  3. **Prediction**: What would we expect in new data?
+  - Notes testing is most common in behavioral science; prediction least common
 - **The core question**: "What distribution might have generated this data?"
-  - Explains distributions as pragmatic tools, not biological claims
-  - "Given what we know about heights... the normal distribution is a reasonable, parsimonious choice"
-  - Bridge to concrete applications: estimation, uncertainty, prediction, model checking
-- **Roadmap**: 5 steps listed
-  1. Choose a distribution (parsimonious choice given what we know)
-  2. Estimate parameters
-  3. Quantify uncertainty
-  4. Check the model
-  5. Add predictors (not "extend to regression" - intercept-only IS regression)
+  - Distributions as formal description of shape (more/less likely values)
+  - Proposes normal distribution for heights (μ and σ)
+  - Maps parameters to goals: μ for estimation, (estimate + uncertainty) for testing, (μ + σ) for prediction
 - **Preview**: Histogram with normal distribution overlay
   - Connection: `lm()` estimates μ (intercept) and σ (residual SE)
-  - Key: we're proposing a distribution and estimating its parameters
-- **Summary**: Distribution perspective provides unified framework
-  - Brief mention of hypothesis testing
+- **Roadmap**: 6 steps listed
+  1. Choose a distribution
+  2. Estimate parameters
+  3. Quantify uncertainty
+  4. Test hypotheses
+  5. Make predictions
+  6. Add predictors
+- **Summary**: Regression is about choosing and fitting distributions; parameters support estimation, uncertainty, testing, and prediction
 
 **Dataset**: !Kung San heights from Howell1.csv (n=352 adults)
-**Status**: File at `/Users/willem/GitHub/willemsleegers.com/content/posts/1-understanding-regression-part-1/1-understanding-regression-part-1.qmd` - still being edited
+**Status**: Completed (published)
+**File**: `content/posts/series/understanding-regression/1-understanding-regression-part-1.qmd`
 
 ---
 
-### Part 2: Why the Normal Distribution? (IN PROGRESS)
+### Part 2: Why the Normal Distribution? (DRAFT)
 
 **Goal**: Introduce the normal distribution as a pragmatic, parsimonious choice for modeling heights
 
 **Content** (ACTUAL):
 
-- **Recap**: Core question from Part 1 (what distribution might have generated this data?), question: why normal?
+- **Recap**: Core question from Part 1, why normal?
 - **The ubiquity of the normal distribution**: General, data-independent section
-  - Normal shows up everywhere: heights, blood pressure, measurement errors, test scores
-  - Many small independent factors adding up → bell-shaped
-  - First argument: it's a sensible default for continuous data
-  - But "it shows up a lot" isn't fully satisfying — can we do better?
-- **What do we actually know?**: Set up the constraints (general, not heights-specific)
-  - We know two things: there's a mean (μ) and a standard deviation (σ)
-  - We don't have theoretical reasons to claim a specific shape, multiple groups, or tail behavior
-  - Question: given just a mean and SD, what distribution should we choose?
-- **Many distributions, same facts**: KEY VISUALIZATION
-  - Show four distributions (normal, skewed/gamma, bimodal/mixture, uniform) all with mean = 155 and SD = 8
-  - Each non-normal distribution is making additional claims beyond mean/SD (asymmetry, two groups, hard boundaries)
-  - The normal distribution adds nothing extra
-- **The most parsimonious choice**: Parsimony argument (the bulk of the post)
-  - The normal adds the least structure beyond mean and variance
-  - Maximum entropy argument relegated to footnote
-  - Walk through each alternative: skewed (claims asymmetry), bimodal (claims two groups)
+  - Normal shows up everywhere: heights, blood pressure, test scores
+  - Simulation: sum of 20 small uniform effects → bell-shaped (demonstrates CLT)
+  - First argument: sensible default when many small additive factors at play
+- **A parsimonious distribution**: Parsimony argument (the bulk of the post)
+  - Defined by just two parameters: μ (center) and σ (spread)
+  - No claims about skew, multiple groups, or hard boundaries
+  - KEY VISUALIZATION: Three distributions all with mean = 155 and SD = 8 (normal, skewed/gamma, bimodal/mixture — no uniform)
+    - Skewed claims asymmetry and a hard lower bound
+    - Bimodal claims two distinct clusters
+    - Normal adds nothing beyond mean and spread
+  - Maximum entropy argument in footnote
   - The normal says: "I know the mean and the spread. I'm not going to pretend I know anything else."
-  - Parsimony = not just simplicity, but adding nothing beyond what we know
-  - Personal note: "I find this a genuinely compelling reason"
-- **Applying this to our heights**: NOW bring in the data (load + overlay)
-  - Overlay normal distribution on histogram
-  - Honest assessment: not perfect, but captures the general pattern
-  - If it clearly didn't fit, we'd reconsider — formal model checking comes later
-- **Summary**: Two reasons (ubiquity + parsimony), defined by two parameters, bridge to Part 3 (how to estimate μ and σ)
+  - Note on infinite tails: technically heights can't be negative, but normal assigns essentially zero probability there
+- **Applying this to our heights**: Load data + overlay normal on histogram
+  - Honest assessment: not perfect but captures general pattern
+  - How you'd spot a problem: if clearly skewed or bimodal, you'd reconsider
+  - Sometimes prior knowledge alone rules out normal before looking at data
+- **When the normal distribution doesn't apply**:
+  - Bounded/skewed outcomes (reaction times, proportions) → log-normal, beta
+  - Count data → Poisson, negative binomial
+  - Likert scales → ordinal models
+  - Preview: will return to alternative distributions later
+- **Summary**: Two reasons (ubiquity + parsimony); defined by two parameters; bridge to Part 3 (estimating μ and σ)
 
 **Dataset**: !Kung San heights from Howell1.csv
-**Status**: File at `/Users/willem/GitHub/willemsleegers.com/content/posts/2-understanding-regression-part-2/2-understanding-regression-part-2.qmd` - still being edited
-**Length**: ~167 lines
+**Status**: Draft (in progress)
+**File**: `content/posts/series/understanding-regression/2-understanding-regression-part-2.qmd`
+**Length**: ~182 lines
 
 ---
 
-### Part 3: Estimating Distribution Parameters (COMPLETED)
+### Part 3: Estimating Parameters (DRAFT)
 
 **Goal**: Show that lm() estimates the normal distribution's parameters μ and σ
 
 **Content** (ACTUAL):
 
-- **Recap**: Normal distribution is parsimonious choice, now need to estimate parameters
-- **The normal distribution's parameters**: μ (mean) and σ (standard deviation)
-- **Natural estimators**: Sample mean and sample SD
+- **Recap**: Normal distribution is parsimonious choice; now need to estimate its parameters from data
+- **Estimating the parameters**: μ = mean of distribution, σ = standard deviation
+  - Sample mean and sample SD are our estimates
+  - Distinction: Greek letters (μ, σ) are the model's parameters; sample statistics are estimates that depend on which people were measured
 - **What lm() is doing**:
   - Calculate sample mean and SD
-  - Run lm(height ~ 1) and show output
-  - Compare: intercept = sample mean, residual SE = sample SD
-  - "lm() is estimating the parameters of a normal distribution"
+  - Run `lm(height ~ 1)` and show output
+  - Compare: intercept = sample mean, residual SE = sample SD (they're identical)
+  - Explains the name "residual standard error": residuals are heights minus mean; squaring, summing, dividing by n−1, and taking square root = the sample SD computation
+  - lm() uses different names ("intercept", "residual standard error") that will make more sense when predictors are added
 - **Visualizing the estimated distribution**: Histogram with normal distribution overlay using estimated parameters
-- **What we've accomplished**: We proposed normal distribution and estimated μ and σ
-- **Questions this raises**: Preview future posts
-  1. How certain are we about these estimates?
-  2. What can we do with this model?
-  3. Does the model actually fit?
-- **Key insight**: When you run lm(), you're estimating distribution parameters (intercept = μ, residual SE = σ)
+- **Summary**: Proposed normal distribution, estimated μ ≈ 154.6 cm and σ ≈ 7.7 cm; bridge to Part 4 (uncertainty — estimates vary across samples)
 
 **Dataset**: !Kung San heights from Howell1.csv
-**Status**: File at `/Users/willem/GitHub/willemsleegers.com/content/posts/3-understanding-regression-part-3/3-understanding-regression-part-3.qmd` - completed, ~130 lines
-**Length**: ~130 lines (significantly shorter than planned)
+**Status**: Draft (completed)
+**File**: `content/posts/series/understanding-regression/3-understanding-regression-part-3.qmd`
+**Length**: ~118 lines
 
 ---
 
-### Part 4: Uncertainty and the Standard Error (COMPLETED)
+### Part 4: Uncertainty and the Standard Error (DRAFT)
 
 **Goal**: Understanding parameter uncertainty through the sampling distribution
 
 **Content** (ACTUAL):
 
-- **Recap**: In Part 3 we estimated μ and σ. But these are based on one sample of 352 people. How much would they vary with a different sample?
-- **One sample, many possibilities**: Open by naming both estimates (μ and σ), explain we focus on μ because lm() reports its SE — σ's uncertainty not reported at all (Part 5). Simulate mean across 1000 samples.
+- **Recap**: In Part 3 we estimated μ and σ. These are based on one sample — a different group would give different numbers. Focus on μ because lm() reports its SE; σ's uncertainty not reported at all (Part 5).
+- **One sample, many possibilities**: Simulate mean across 1000 samples
   - Histogram of sample means, clustered around μ
-  - Name it: the **sampling distribution of the mean**; note any statistic has its own sampling distribution
-  - Explain why it's normal: CLT in footnote
+  - Name it: the **sampling distribution of the mean**; any statistic has its own sampling distribution
+  - Explain why it's normal: CLT in footnote (exact for normal model; approximate via CLT for non-normal)
 - **What affects uncertainty?**: Two factors
-  - Sample size: sampling distributions at n = 10, 50, 352 (faceted plot)
-  - Data variability: sampling distributions at σ = 4, 8, 16 (faceted plot)
+  - Sample size: sampling distributions at n = 10, 50, 352 (faceted plot) — more data, tighter estimates
+  - Data variability: sampling distributions at σ = 4, 8, 16 (faceted plot) — more variable data, less precise mean
 - **The standard error**:
-  - SE = spread of any sampling distribution; in this case tells us how much μ's estimate varies
-  - Measure SE from simulations (SD of sample means at each n)
-  - Plot simulated SEs against σ/√n formula — they match
-  - Diminishing returns: early observations do the heavy lifting
-  - √n derivation in footnote
-  - Note: σ in the formula is our sample SD — an approximation; thread picked up in Part 5
-  - For our data: SE of μ ≈ 0.41 cm, small relative to σ (7.7 cm)
-- **Back to lm()**: The "Std. Error" column is the SD of the sampling distribution of the intercept — our estimate of μ
-- **What about σ?**: σ is estimated from the same sample and also has uncertainty — Part 5
-- **Summary**: Sampling distribution of the mean describes μ's variability, SE measures its spread, lm() reports it for the intercept
+  - SE = spread of the sampling distribution; measures how much μ's estimate varies
+  - Plot simulated SEs (SD of sample means) against σ/√n formula across many sample sizes — they match
+  - Diminishing returns: each new observation has less leverage to move the mean
+  - Variance derivation in footnote (variance adds linearly, SE is on square root scale)
+  - Using sample SD as stand-in for σ here
+  - For our heights: SE ≈ 0.41 cm, small relative to σ (7.7 cm)
+- **Back to lm()**: The "Std. Error" column = SE of the sampling distribution of the intercept
+- **What about σ?**: σ has uncertainty too — Part 5
+- **Summary**: SE of μ ≈ 0.41 cm; lm() reports this in "Std. Error" column; σ is next
 
 **Dataset**: !Kung San heights + simulations
-**Status**: Completed
+**Status**: Draft (completed)
 **File**: `content/posts/series/understanding-regression/4-understanding-regression-part-4.qmd`
 
 ---
 
-### Part 5: What About σ?
+### Part 5: What About σ? (DRAFT)
 
 **Goal**: Show that σ is also uncertain, setting up the t-distribution in Part 6
 
-**Content**:
+**Content** (ACTUAL):
 
-- **Recap**: In Part 4 we quantified μ's uncertainty with the SE = σ / √n. But the formula uses σ, which we also estimated.
+- **Recap**: In Part 4 we quantified μ's uncertainty; σ also has uncertainty since it feeds directly into calculating the SE for μ
 - **σ varies from sample to sample**: Simulation — draw 1000 samples, calculate SD of each
-  - Histogram of sample SDs, clustered around the true SD
+  - Histogram of sample SDs, clustered around σ
   - Parallel to Part 4's simulation for the mean
 - **Different sample sizes**: Sampling distributions of σ at n = 10, 50, 352
-  - At n = 10, σ's estimate is very imprecise
+  - At n = 10, σ's estimate is all over the place
   - At n = 352, fairly precise
 - **A different shape**: σ's sampling distribution is skewed (right tail), unlike μ's symmetric normal
-  - SD can't go below zero but can be arbitrarily large
-  - Skew is most visible at small n, fades with large n
-- **Why this matters**: The SE uses σ. Since we estimate σ, the SE itself is uncertain.
-  - If σ's estimate is too low → SE is too low → we underestimate uncertainty about μ
-  - The "ruler" for measuring uncertainty is itself imprecise
-  - lm() doesn't report σ's SE: partly convention (σ is a nuisance parameter), partly because the t-distribution handles σ's uncertainty implicitly — its heavier tails absorb the extra uncertainty
-- **Back to lm()**: The residual standard error has no "Std. Error" next to it
-- **Summary**: Bridge to Part 6 — dividing the estimate by the SE will produce a ratio whose distribution is affected by σ's uncertainty
+  - SD can't go below zero but can be quite large; extreme observations pull it up, nothing pushes it below zero
+  - Distribution follows chi-squared-related distribution; footnote names it formally
+  - Skew fades with larger n (same CLT principle)
+- **How uncertain is σ?**: Quantifying SE(σ)
+  - Plot simulated SE(σ) values (SD of sample SDs) against exact formula across many sample sizes
+  - Exact formula uses gamma function ratios: SE(σ) = σ√(1 − [2/(n−1)] · [Γ(n/2)/Γ((n−1)/2)]²)
+  - Matches simulations; reports SE(σ) ≈ 0.29 cm for our data
+- **Back to lm()**: Residual standard error has no "Std. Error" next to it
+  - lm() handles σ's uncertainty implicitly via the t-distribution (heavier tails absorb the extra uncertainty from estimating σ)
+- **Summary**: Both μ and σ have sampling distributions; σ's is skewed and chi-squared-related; lm() absorbs σ's uncertainty through the t-distribution; bridge to Part 6 (hypothesis testing)
 
 **Dataset**: !Kung San heights + simulations
-**Status**: In progress
+**Status**: Draft (completed)
 **File**: `content/posts/series/understanding-regression/5-understanding-regression-part-5.qmd`
 
 ---
 
-### Part 6: The t-Value and the t-Distribution
+### Part 6: The t-Value (DRAFT)
 
 **Goal**: Explain what the t-value in the lm() output means and why the t-distribution exists
 
-**Content**:
+**Content** (ACTUAL):
 
-- **Recap**: Parts 4 and 5 — we have an estimate with SE, but the SE is uncertain because σ is estimated. The next column in the lm() output is the t value.
-- **What question is the t-value answering?**: Is the estimate compatible with some reference value (by default, zero)?
-  - Show the test against zero first since that's what lm() reports
-  - Acknowledge it's a silly question for heights, then show a more meaningful test: e.g. "is the mean consistent with 155 cm?" → t = (154.6 - 155) / 0.41 ≈ -1
-  - This sets up a genuinely interpretable t-value alongside the trivial one
-- **Measuring distance in the right units**: t = (Estimate - reference) / SE
-  - Walk through the intuition: if μ were 0 in our model, the SE tells us how much estimates bounce around. Getting 154.6 when estimates only move ~0.41 cm is an enormous discrepancy.
-  - Signal-to-noise ratio framing
-  - Avoid "true mean" language — use "if μ were 0" or "supposing μ = 0"
-- **What t-values would we expect?**: Simulation under the null
-  - Draw many samples from N(0, σ), compute t for each
-  - Distribution clusters around 0, rarely beyond ±3
-  - Our observed t-value (~377) is off the charts; the t ≈ -1 for the 155 cm test is well within range
-- **Why the t-distribution?**: The distribution of t-values has heavier tails than the normal
-  - Because the denominator uses the sample SD (which varies from sample to sample, as we saw in Part 5)
-  - Simulation comparing known σ vs estimated σ at n = 10 — shows heavier tails
-  - Connects directly to Part 5's observation about σ's uncertainty
-- **Convergence**: The t-distribution converges to the standard normal as n grows
+- **Recap**: Parts 4 and 5 completed the estimation goal (estimate + SE for μ, uncertainty in σ). Part 6 turns to the second goal: hypothesis testing.
+- **Hypothesis testing**: Is our estimate consistent with some specific value?
+  - The claim that the parameter equals the reference value = the null hypothesis
+  - Any reference value can be used; lm() defaults to 0
+- **The t-value**: Distance from estimate to reference, in SE units
+  - Motivating example: test against 155 cm → t = (154.6 − 155) / 0.41 ≈ −0.98 (interpretable)
+  - lm() default test against 0 → t ≈ 377 (trivial for heights but shows the formula)
+  - Writing "Estimate − 0" explicitly reinforces that the reference is always there
+- **t-values have a distribution, too**: Simulation
+  - t-value is a statistic, so it has a sampling distribution
+  - Comparison plot at n = 5: fixed σ produces t-values matching standard normal; estimated σ produces heavier tails
+  - Reason: variable SE (from variable sample SD) pushes t-values out when SD is small, pulls them in when large
+  - The **t-distribution** describes exactly this; historical note in footnote (Gosset/"Student", 1908)
+  - In general form: location, scale, and degrees of freedom; computing t already fixes location = 0 and scale = 1, leaving df as the only free parameter
+- **Degrees of freedom**: Dedicated section
+  - df = n − 1 comes from the bias correction when estimating σ (sample mean is used in place of μ)
+  - Dividing by n − 1 corrects the bias; links to a separate post on why we divide by n − 1
+  - More general meaning in footnote (n − 1 deviations free to vary since deviations must sum to zero)
+  - df controls how precisely σ was estimated → with few observations, heavier tails; with more, converges to normal
+- **Convergence**: t-distribution converges to standard normal as n grows
   - Convergence plot at n = 10, 30, 352, and standard normal
-  - Degrees of freedom (df = n - 1) as the t-distribution's parameter
-- **Back to lm()**: The t value column
-- **Key insight**: The t-value standardizes the estimate relative to its uncertainty. The t-distribution (not the normal) is the right reference because we estimate σ rather than knowing it.
+- **Back to lm()**: t value column = (estimate − 0) / SE; residual df = n − 1 shown in output
+- **Summary**: t-value = distance from reference in SE units; t-distribution used (not normal) because σ is estimated; df = n − 1; bridge to Part 7 (p-value)
 
-**Dataset**: !Kung San heights + simulations
-**Length estimate**: ~250 lines
+**Dataset**: !Kung San heights + simulations (comparison simulation uses n = 5)
+**Status**: Draft (completed)
+**File**: `content/posts/series/understanding-regression/6-understanding-regression-part-6.qmd`
+**Length**: ~210 lines
 
 ---
 
