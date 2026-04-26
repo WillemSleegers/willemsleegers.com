@@ -43,9 +43,9 @@ update_geom_defaults(
 I’m a behavioral scientist with several scientific publications to my
 name in which I’ve used statistical tools like regression. Yet, despite
 my experience with this statistical technique, I don’t feel like I
-*really* understand regression. I know *how* to use it—I can run models
-and report the results-but there are times when I’m just running code
-because I’ve been told that’s how you do it. When things get
+*really* understand regression. I know *how* to use it in that I can run
+models and report the results, but there are times when I’m just running
+code because I’ve been told that’s how you do it. When things get
 complicated, and sometimes not even that complicated, I find myself
 relying almost entirely on conventions rather than on my own
 understanding.
@@ -54,7 +54,7 @@ You might feel the same way. Regression is often taught as a black box:
 you run the code or click the buttons and copy the output. The focus in
 many courses is on performing statistics rather than on building a
 conceptual understanding. I’ve also noticed a lot of statistical
-teaching takes a more mechanical approach. You’re given formulas to
+teaching taking a more mechanical approach. You’re given formulas to
 memorize or asked to calculate statistics by hand. I can see the appeal
 of this approach, since working through the steps yourself can build
 intuition, but formulas rarely help me understand something, and
@@ -110,9 +110,12 @@ ggplot(data, aes(x = height)) +
 
 ![](1-understanding-regression-part-1_files/figure-commonmark/histogram-1.svg)
 
-Let’s immediately run a regression so we have some concrete numbers to
-look at. The simplest model we can run is one in which we regress
-heights onto… nothing; this is called an **intercept-only model**.
+Let’s immediately run a regression so we have some numbers to look at.
+In these first posts, we’ll try to figure out where these numbers come
+from.
+
+The simplest model we can run is one in which we regress heights onto…
+nothing; this is called an **intercept-only model**.
 
 <details open class="code-fold">
 <summary>Code</summary>
@@ -150,11 +153,10 @@ summary(model)
 
     Residual standard error: 7.742 on 351 degrees of freedom
 
-As you can see in the output, we get an estimate of 154.6 cm and a
-standard error of 0.41 cm.
+As you can see in the output, we get an estimate of 154.6 cm, a standard
+error of 0.41 cm, a t-value of 374.6, and a p-value of 0e+00.
 
-Here’s where I want to pause and ask ourselves the question, why do we
-actually use these statistical tools? Why do we use regression?
+But what do these numbers mean? Why do we actually want these numbers?
 
 ## Why use regression?
 
@@ -175,9 +177,9 @@ researchers reporting coefficients, standard errors, and confidence
 intervals. Prediction is less popular (authors rarely report prediction
 intervals), but is also important.
 
-I’m looking for a way of thinking that makes it easier to understand how
-regression can be used for each of those goals and I think it comes down
-to the following question:
+In order to understand regression, I think we need a way of thinking
+that makes it easier to understand how regression can be used for each
+of those goals and I think it comes down to the following question:
 
 **What distribution might have generated this data?**
 
@@ -219,7 +221,7 @@ ggplot(data, aes(x = height)) +
   stat_function(
     fun = dnorm,
     args = list(mean = sample_mean, sd = sample_sd),
-    linewidth = 1,
+    linewidth = 0.75,
     color = "black",
     linetype = "dashed"
   ) +
@@ -235,11 +237,7 @@ ggplot(data, aes(x = height)) +
 overlay](1-understanding-regression-part-1_files/figure-commonmark/distribution-1.svg)
 
 The dashed line is the normal distribution we’re proposing heights are
-drawn from.
-
-Our `lm()` model estimated the parameters that define the distribution.
-The intercept (154.6) is our estimate of μ, and the residual standard
-error is our estimate of σ.
+drawn from. As we’ll see, this is what `lm()` estimates.
 
 ## What’s ahead
 
