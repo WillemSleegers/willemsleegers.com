@@ -1,14 +1,13 @@
 ---
 title: "Understanding Regression (Part 4): Uncertainty and the Standard Error"
 description: "Every estimate is based on a sample, and a different sample would give different results. This post builds intuition for what that means: simulating how much the sample mean would vary across studies and deriving the standard error formula."
-date: 2025-01-18
+date: 2026-04-27
 categories:
   - statistics
   - tutorial
   - regression
 code-fold: true
 toc: true
-draft: true
 ---
 
 ```{r}
@@ -30,7 +29,7 @@ update_geom_defaults(
 
 In Part 3, we estimated the parameters of a normal distribution for heights: μ (the mean) and σ (the standard deviation). We saw that `lm(height ~ 1)` does exactly this: the intercept estimates μ and the residual standard error estimates σ.
 
-But these estimates are based on a sample. If we'd measured a different group of !Kung San adults, we'd get slightly different numbers. This raises the next question: How certain can we be about our estimates?
+But these estimates are based on a sample, which raises the next question: How certain can we be about our estimates?
 
 ## One sample, many possibilities
 
@@ -47,7 +46,7 @@ Our estimate of μ is `r round(sample_mean, 1)` cm and our estimate of σ is `r 
 
 In this post we'll focus on μ because `lm()` reports uncertainty for its parameter estimates in the "Std. Error" column, and that's μ's uncertainty. σ's uncertainty is a different story, one that `lm()` doesn't report. We'll get to that in Part 5.
 
-To get a sense of how much μ varies, we can simulate it. We've proposed that heights follow a normal distribution with mean `r round(sample_mean, 1)` and standard deviation `r round(sample_sd, 1)`, so let's draw many samples from that distribution and see how much the mean moves around.
+To get a sense of how much μ varies, we can simulate it. We've proposed that heights follow a normal distribution with mean `r round(sample_mean, 1)` and standard deviation `r round(sample_sd, 1)`, so let's draw many samples from that distribution, each with a sample size matching ours, and see how much the mean moves around.
 
 ```{r}
 #| label: fig-sampling-simulation
@@ -210,15 +209,13 @@ ggplot(se_by_n, aes(x = n)) +
   )
 ```
 
-The dots are the standard errors measured from our simulations. The pattern is clear: the SE decreases as n increases, but with diminishing returns. Doubling the sample size doesn't halve the SE. To halve it, you'd need four times as many observations.
+The dots are the standard errors measured from our simulations. You can see that the SE decreases as n increases, but with diminishing returns. Doubling the sample size doesn't halve the SE. To halve it, you'd need four times as many observations.
 
 Why diminishing returns? Think about how much each new observation can actually change your estimate of the mean. With just 1 observation, a 2nd one can shift the sample mean by half the distance between them — it has a lot of influence. With 100 observations, the 101st can only nudge the mean by 1/101 of the distance between the current estimate and the new value. Each additional observation has less and less leverage to move the estimate, which is why the early observations do the heavy lifting and the relationship is curved rather than linear.^[The exact shape of the curve comes from how uncertainty combines mathematically. Each observation has variance σ². The variance of the sum of n independent observations is n·σ², and the mean is the sum divided by n, so its variance is σ²/n. The standard error is the square root of this: √(σ²/n) = σ/√n. Variance adds linearly with n, but the SE is on the square root scale, which is why n times more data gives only √n times less uncertainty.]
 
-The dashed line in the plot shows the formula that captures the relationship between sigma and sample size: SE = σ / √n. We're using our sample SD as a stand-in for σ here.
+The dashed line in the plot can be described with a formula that captures the relationship between sigma and sample size: SE = σ / √n. We're using our sample SD as a stand-in for σ here.
 
 For our heights: SE = `r round(sample_sd, 1)` / √`r n` = `r round(sample_sd / sqrt(n), 2)` cm.
-
-That's tiny relative to σ (`r round(sample_sd, 1)` cm). We're quite certain about the mean, even though individual heights vary a lot. This is because we have a reasonably large sample.
 
 ## Back to lm()
 
@@ -242,6 +239,4 @@ How much does σ vary? And does it matter? That's what we'll explore in Part 5.
 
 Our estimates of μ and σ are based on one sample. A different sample would give different estimates. The **sampling distribution of the mean** describes how much the estimate of μ would vary, and its **standard error** measures its spread.
 
-For our heights data, the SE of μ is `r round(sample_sd / sqrt(n), 2)` cm, small relative to σ (`r round(sample_sd, 1)` cm). The `lm()` output reports this in the "Std. Error" column of the intercept.
-
-But we've only explored uncertainty in one of our two parameters. What about σ? That's next.
+For our heights data, the SE of μ is `r round(sample_sd / sqrt(n), 2)` cm. The `lm()` output reports this in the "Std. Error" column of the intercept.
