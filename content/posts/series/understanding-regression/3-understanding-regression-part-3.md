@@ -59,7 +59,7 @@ The normal distribution is defined by two parameters:
 
 By definition, μ is the mean of the distribution and σ is its standard
 deviation, so we estimate them with the mean and standard deviation of
-our sample. These are not the same thing, though — the sample mean and
+our sample. These are not the same thing, though. The sample mean and
 sample standard deviation are estimates of μ and σ, our best guess at
 the model’s parameters based on the data we have. The distinction
 matters: within the model we’ve proposed, μ and σ are fixed values we’re
@@ -155,7 +155,7 @@ standard deviation (our estimate of σ).
 
 ## Visualizing the estimated distribution
 
-Let me overlay the distribution with our estimated parameters on the
+Let’s overlay the distribution with our estimated parameters on the
 histogram:
 
 <details class="code-fold">
@@ -198,7 +198,7 @@ know is how much to trust those estimates.
 
 We started with a question: what distribution might have generated our
 height data? We proposed the normal distribution, and now we’ve
-estimated its parameters from our sample: μ ≈ 154.6 cm and σ ≈ 7.7 cm.
+estimated its parameters from our sample: μ = 154.6 cm and σ = 7.7 cm.
 
 But these estimates are based on just one sample of 352 people. If we’d
 measured a different group, we’d get different numbers. How much would

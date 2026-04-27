@@ -38,7 +38,7 @@ The normal distribution is defined by two parameters:
 - **μ (mu)**: where the distribution is centered
 - **σ (sigma)**: how spread out the distribution is
 
-By definition, μ is the mean of the distribution and σ is its standard deviation, so we estimate them with the mean and standard deviation of our sample. These are not the same thing, though — the sample mean and sample standard deviation are estimates of μ and σ, our best guess at the model's parameters based on the data we have. The distinction matters: within the model we've proposed, μ and σ are fixed values we're trying to pin down. Our sample mean and sample standard deviation are estimates that depend on which 352 people happened to be measured. A different sample would give slightly different numbers. The Greek letters are a reminder that what we really care about is the parameters of our model, not the specific numbers from this particular sample.
+By definition, μ is the mean of the distribution and σ is its standard deviation, so we estimate them with the mean and standard deviation of our sample. These are not the same thing, though. The sample mean and sample standard deviation are estimates of μ and σ, our best guess at the model's parameters based on the data we have. The distinction matters: within the model we've proposed, μ and σ are fixed values we're trying to pin down. Our sample mean and sample standard deviation are estimates that depend on which 352 people happened to be measured. A different sample would give slightly different numbers. The Greek letters are a reminder that what we really care about is the parameters of our model, not the specific numbers from this particular sample.
 
 Let's calculate our estimates using the height data we've been working with:
 
@@ -86,7 +86,7 @@ So `lm()` isn't doing anything exotic. The intercept is the sample mean (our est
 
 ## Visualizing the estimated distribution
 
-Let me overlay the distribution with our estimated parameters on the histogram:
+Let's overlay the distribution with our estimated parameters on the histogram:
 
 ```{r}
 #| label: fig-estimated-distribution
@@ -111,6 +111,6 @@ This is what our regression model produces: a fully specified distribution. We c
 
 ## Summary
 
-We started with a question: what distribution might have generated our height data? We proposed the normal distribution, and now we've estimated its parameters from our sample: μ ≈ `r round(sample_mean, 1)` cm and σ ≈ `r round(sample_sd, 1)` cm.
+We started with a question: what distribution might have generated our height data? We proposed the normal distribution, and now we've estimated its parameters from our sample: μ = `r round(sample_mean, 1)` cm and σ = `r round(sample_sd, 1)` cm.
 
 But these estimates are based on just one sample of 352 people. If we'd measured a different group, we'd get different numbers. How much would they vary? How certain can we be about our estimates? That's what we'll tackle in Part 4.
