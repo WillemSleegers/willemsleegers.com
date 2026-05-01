@@ -1,6 +1,6 @@
 ---
 title: "Understanding Regression (Part 7): The p-Value"
-description: "We have a t-value and know it follows a t-distribution. In this post, we use that distribution to ask how likely our t-value would be if the null hypothesis were true — and that probability is the p-value."
+description: "We have a t-value and know it follows a t-distribution. In this post, we introduce hypothesis testing and the null hypothesis, and show how the t-distribution serves as a reference for evaluating whether our estimate is compatible with a specific claim — that probability is the p-value."
 date: 2026-04-28
 categories:
   - statistics
@@ -27,7 +27,7 @@ update_geom_defaults(
 
 ## Recap
 
-Part 6 introduced the t-value: the distance between our estimate and a reference value, expressed in units of the SE. We also saw that t-values follow the t-distribution rather than the normal, because using an estimated σ adds variability to the SE and produces heavier tails. The last column in the `lm()` output is `Pr(>|t|)`. [this feels disconnected from the previous sentence] This post is about what that number means.
+Part 6 introduced the t-value: the distance between our estimate and a reference value, expressed in units of the SE. We also saw that t-values follow the t-distribution rather than the normal, because using an estimated σ adds variability to the SE and produces heavier tails. In this post, we use that distribution to make sense of the last column in `lm()` output — `Pr(>|t|)` — and explain what that number means.
 
 ```{r}
 #| label: data
@@ -43,23 +43,29 @@ t_vs_155 <- (sample_mean - 155) / se
 t_vs_0 <- sample_mean / se
 ```
 
-## How likely is our t-value?
+## The logic of the p-value
 
-We have an estimate and a t-value. The t-value tells us how far our estimate sits from a reference value, in SE units. But knowing the distance doesn't yet tell us whether that distance is large or small in any absolute sense. Is a t-value of 1 surprising? What about 3?
+Part 6 left us with a t-value: a number expressing how far our estimate sits from a reference value in units of the SE. [insert we also covered its distribution, the t-distribution]. But how do we go from here to something called the p-value? 
 
-To answer that, we need to know what t-values we'd typically see if the null hypothesis were true — that is, if the reference value actually were the parameter. That distribution is what we can compare our observed t-value against.
+We want to be able to say that our estimate is some kind of meaningful value. That it is a signal, not noise. Usually we want to assert that the estimate we observed is not just the result of random sampling (i.e., is larger than 0) or that it is larger than some kind of value. The former is by far the most popular.
 
-Let's start with the following test: does the average height equal 155 cm? Our estimated mean is `r round(sample_mean, 2)` cm, and testing against 155 cm gives:
+Our logic here becomes that in order to assert that our estimate is some kind of meaningful value, we will assume that some other model is true
+
+The question is about compatibility. We have an estimate of μ — a value computed from our data — and we want to evaluate whether it is consistent with a specific claim. Is a mean height of `r round(sample_mean, 2)` cm consistent with the claim that the mean is 155 cm? Is it consistent with the claim that the mean is 0? These are different questions with different answers, and each one is a **hypothesis test**.
+
+A hypothesis is a specific claim about a parameter. "The mean height is 155 cm" is a hypothesis. "This predictor has no effect" is a hypothesis. What makes hypothesis testing useful is that it gives us a principled way to assess whether our data are consistent with a given claim — not just a vague sense of closeness, but a quantified statement.
+
+The specific claim we are evaluating is called the **null hypothesis**. The word "null" reflects that these claims often represent a baseline or default — something like "no effect" or "no difference." But the null hypothesis can be any specific value. What matters is that it is precise: a single number for μ.
+
+Precision matters because it lets us go further than just using the reference value as a point to subtract from. If we assume the null hypothesis — that μ is 155 cm — our model now has both parameters specified: μ set to the null value and σ as our estimated standard deviation. With both parameters fixed, we already know from Part 6 what t-values look like: they follow the t-distribution. And because the null value is already subtracted in the numerator of t, the distribution is centered at 0 regardless of what the null value is. That is the **null distribution** — it is simply the t-distribution applied to the null model.
+
+With the null distribution, we can ask where our observed t-value falls within it. If it sits near the center, our estimate is consistent with the null model. If it falls far in the tail, the null model does a poor job of explaining what we observed, and we have reason to doubt it. The proportion of the null distribution that falls at least as far from zero as our t-value is the **p-value**.
+
+To see this in action, consider testing whether the mean height equals 155 cm. Our estimated mean is `r round(sample_mean, 2)` cm, giving:
 
 $$t = \frac{`r round(sample_mean, 2)` - 155}{`r round(se, 2)`} \approx `r round(t_vs_155, 2)`$$
 
-Our estimated mean of `r round(sample_mean, 2)` cm produces a t-value of `r round(t_vs_155, 2)`. Now the question is: if the parameter *were* 155, how often would we expect a t-value at least that far from zero?
-
-[i feel like we should maybe start with a section explaining the logic first, without a specific example]
-
-## The null distribution
-
-We can simulate this directly [we can simulate what directly? I generally don't like continuing from the title as if everybody read the title, at least I don't]. If the parameter were 155, we'd be drawing samples from N(155, σ) [we have not used this notation so far, not consistently at least]. For each simulated sample, we compute t the same way we always do: subtract the reference value and divide by the SE. Repeat this many times to build up the distribution of t-values we'd expect under the null.
+We can verify this by simulation — drawing samples with μ = 155 cm and our estimated standard deviation, computing a t-value from each, and checking whether the result matches the t-distribution.
 
 ```{r}
 #| label: fig-null-distribution
@@ -114,13 +120,19 @@ ggplot() +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 ```
 
-The histogram shows the simulated t-values; the dashed curve is the t-distribution with df = `r n - 1`.
+The simulation confirms it: the histogram of t-values from the null model follows the t-distribution closely. The vertical line marks our observed t-value of `r round(t_vs_155, 2)`, which sits well within the bulk of the distribution. The shaded regions mark the proportion falling at least as far from zero in both directions.
 
-The vertical line marks our observed t-value of `r round(t_vs_155, 2)`. Values like that don't look unusual at all; the null distribution produces them regularly. The shaded regions show the proportion of simulated t-values as extreme or more extreme than ours — in both directions, since a t-value of +`r round(abs(t_vs_155), 2)` would be equally surprising as −`r round(abs(t_vs_155), 2)`.
+In our simulation, `r round(p_value_sim * 100, 1)`% of t-values fell at least as far from zero as ours. Computing the same probability analytically from the t-distribution formula gives p = `r round(p_value_exact, 3)`. We fail to reject the null: our estimate is consistent with the null model.
 
-That shaded proportion is the **p-value**. In our simulation, `r round(p_value_sim * 100, 1)`% of t-values fell at least as far from zero as ours did. Using the t-distribution directly [unclear what this means, you mean calculating it from the formula, rather than using simulation] gives p = `r round(p_value_exact, 3)`. Our data are quite compatible with a mean of 155 cm [dangerous phrasing. We should stick close to the meaning of the p-value and signifance logic, we fail to reject the null. We dont want to say this means the null is probably true].
+Getting the interpretation right, though, requires thinking carefully about what exactly we're claiming. It's subtler than it first appears.
 
-The two-sided framing is why `lm()` reports `Pr(>|t|)`: it's the probability of |t| being at least this large, not just the probability of a t-value this negative [unclear phrasing, I think. 'this negative'].
+A few things are worth spelling out carefully.
+
+**"At least as extreme" rather than "exactly this value."** A continuous distribution assigns probability zero to any single point, so asking "how likely is t = 1.47 exactly?" isn't a useful question. Instead we ask about tail areas: what proportion of the null distribution falls as far from zero as our t-value, or farther? That's the shaded region under the null distribution curve.
+
+**Both tails count.** A large positive t-value means our estimate is far above the null value; a large negative t-value means it's far below. If we're asking whether the parameter equals some specific value and have no prior reason to prefer one direction over the other, both kinds of deviation are equally informative about whether the null is wrong. This is a two-sided test — the direction doesn't matter, the magnitude does. That's why `lm()` reports `Pr(>|t|)`: the probability that the absolute t-value exceeds what we observed.
+
+**The p-value is a probability under an assumed model.** It answers the question: how compatible are our data with the null model? It does not answer: how likely is the null model to be correct? Those are different questions. A small p-value means our data are not well explained by the null model — not that the null is certainly wrong, and not that the effect is large or practically important. We'll explore those distinctions in Part 8.
 
 ## Back to lm()
 
@@ -138,26 +150,11 @@ A t-value of `r round(t_vs_0, 0)` is `r round(t_vs_0, 0)` standard errors from z
 
 This result isn't scientifically interesting. Of course the average adult height isn't zero. The t-value of `r round(t_vs_0, 0)` is enormous and obvious. When we add predictors in later posts, the default null hypothesis shifts to "this predictor has no effect", which is a more interesting question.
 
-## What the p-value is and isn't
-
-The p-value is frequently misread, so it's worth being precise.
-
-**It is**: the probability of observing a t-value at least as extreme as ours, given that the null hypothesis is true. It measures how compatible our data are with the null.
-
-**It is not** the probability that the null is true. A p-value of `r round(p_value_exact, 2)` from our test against 155 doesn't mean there's a `r round(p_value_exact * 100, 0)`% chance that the mean equals 155. The p-value is a statement about data under an assumed model, not about the model itself.
-
-**It is not** a measure of effect size. With a large enough sample, even a mean of 154.99 cm would produce a very small p-value when tested against 155. The p-value reflects the ratio of the signal to the noise; it doesn't tell you how big the signal is.
-
-**It is not** a measure of practical importance. A small p-value means the data are hard to explain under the null — not that the effect matters in practice.
-
-[perhaps this section is worth its own post, with simulations demonstrating each of these points]
-
-[I guess we will also need a post about treating 5% as significant. this post would be about managing false positives and stuff, about the logic of the decision rule. We don't need to get into this in this post, I think.]
 
 ## Summary
 
-The p-value is the probability of seeing a t-value at least as extreme as ours if the null hypothesis were true. We build that null distribution by simulating what t-values would look like under the null, and it turns out to be the t-distribution with n − 1 degrees of freedom — heavier-tailed than the normal, because σ is estimated.
+The p-value is the proportion of the null distribution that falls at least as far from zero as our observed t-value. The null distribution is the t-distribution for the null model — the same t-distribution we derived in Part 6, now applied to the assumed parameter rather than our estimate.
 
-For heights tested against 155 cm, p ≈ `r round(p_value_exact, 2)`: our data are compatible with a mean of 155. Tested against 0 — `lm()`'s default — the p-value is essentially zero, because no one believed the mean height was zero to begin with.
+For heights tested against 155 cm, p ≈ `r round(p_value_exact, 2)`: we fail to reject the null. Tested against 0 — `lm()`'s default — the p-value is essentially zero, because no one believed the mean height was zero to begin with.
 
-In Part 8, we'll turn to the third goal from Part 1: prediction.
+In Part 8, we'll look at what the p-value is not: it's frequently misread as a probability that the null model is correct, a measure of effect size, or a measure of practical importance. None of those are right, and the distinctions matter.
