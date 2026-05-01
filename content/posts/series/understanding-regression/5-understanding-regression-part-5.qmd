@@ -1,7 +1,7 @@
 ---
 title: "Understanding Regression (Part 5): What About σ?"
 description: "Like μ, σ is estimated from a sample and has its own uncertainty. In this post, we look at σ's sampling distribution, explain why its uncertainty matters for inference about μ, and why lm() doesn't report it."
-date: 2025-01-19
+date: 2026-04-27
 categories:
   - statistics
   - tutorial
@@ -24,14 +24,7 @@ update_geom_defaults(
   "histogram",
   aes(fill = primary, color = "white")
 )
-```
 
-## Recap
-
-In Part 4, we explored the uncertainty of our estimate of μ. We simulated its sampling distribution — how much the sample mean would vary across studies — and quantified that variation with the standard error. We also saw that `lm()` reports this directly in the "Std. Error" column of the intercept.
-
-```{r}
-#| label: data
 data <- read_csv("Howell1.csv")
 data <- filter(data, age >= 18)
 
@@ -40,9 +33,13 @@ sample_sd <- sd(data$height)
 n <- nrow(data)
 ```
 
+## Recap
+
+In Part 4, we explored the uncertainty of our estimate of μ. We simulated its sampling distribution — how much the sample mean would vary across studies — and quantified that variation with the standard error. We also saw that `lm()` reports this directly in the "Std. Error" column of the intercept.
+
 ## The uncertainty of σ
 
-Like μ, σ is estimated from our sample, and a different sample would give a different estimate. This uncertainty about the estimate matters since σ feeds directly into calculating the SE for μ. If our estimate of σ is off, our measure of uncertainty about μ is off too. 
+Like μ, σ is estimated from our sample, and a different sample would give a different estimate. This uncertainty matters because SE(μ) = σ / √n — σ is an input to the formula, so if our estimate of σ is off, our measure of uncertainty about μ is off too.
 
 We can explore σ's uncertainty the same way we explored μ's by simulating its sampling distribution.
 
@@ -81,7 +78,8 @@ The variation is modest at n = `r n`, but what about smaller samples?
 #| fig-cap: "Sampling distributions of σ at different sample sizes"
 set.seed(42)
 
-sample_sizes <- c(10, 50, 352)
+sample_sizes <- c(5, 50, 352)
+n_simulations <- 10000
 
 sd_distributions <- map_dfr(sample_sizes, function(size) {
   sds <- replicate(n_simulations, {
@@ -110,23 +108,19 @@ ggplot(sd_distributions, aes(x = sample_sd_sim)) +
   theme(legend.position = "none")
 ```
 
-At n = 10, the sample SD is all over the place. Some samples produce SDs below 4, others above 12, even though we're drawing from a distribution with σ = `r round(sample_sd, 1)`. At n = 50, the spread narrows considerably. At n = 352 (our actual sample), we're fairly precise.
+At n = 5, the sample SD is all over the place. Some samples produce SDs below 4, others above 12, even though we're drawing from a distribution with σ = `r round(sample_sd, 1)`. At n = 50, the spread narrows considerably. At n = 352 (our actual sample), we're fairly precise.
 
 ## A different shape
 
-Compare these distributions to the sampling distribution of the mean from Part 4. The mean's sampling distribution was symmetric: a normal distribution centered on μ. The SD's sampling distribution looks different. It's slightly **skewed**, with the right tail extending further than the left. This is especially visible at n = 10.
+The SD's sampling distribution has a different shape from the mean's. The mean's sampling distribution was a normal distribution centered on μ — symmetric, unbounded in both directions. The SD can't follow the same pattern because it's bounded below by zero. That means the distribution is right-skewed, at least at smaller sample sizes. You can see this in the graph above. At n = 5, there's a right skew, but at n = 352 it looks normal.
 
-The skewness makes sense. The SD can't go below zero, but it can, in principle, be quite large. With small samples, a single extreme observation can pull the SD way up, producing occasional large estimates. There's no equivalent mechanism to push it far below zero. The result is a distribution that's bunched up on the left and stretched out on the right.
-
-This distribution has a name. The sampling distribution of the sample *variance* (σ²) follows a **chi-squared distribution**, scaled by σ². Since the SD is the square root of the variance, its sampling distribution is a close relative.^[More precisely, (n − 1)s² / σ² follows a chi-squared distribution with n − 1 degrees of freedom. The sample SD follows a scaled **chi distribution**, which is the square root of the chi-squared.] The key properties match what we see: bounded below by zero, skewed to the right, and becoming more symmetric as n grows.
-
-With larger samples, the skew fades. At n = 352, the distribution is nearly symmetric. But at small sample sizes, the asymmetry is real and has consequences. This convergence is the same principle we saw in Part 4: with more data, sampling distributions tend toward normality. The chi-squared distribution is no exception.^[The Central Limit Theorem again.]
+This distribution has a name. The sampling distribution of the sample *variance* (σ²) follows a **chi-squared distribution**, scaled by σ². You may have come across this distribution before — it's the same one that shows up in chi-squared tests. Since the SD is the square root of the variance, its sampling distribution is a close relative — the **chi distribution**, which is just the square root of a chi-squared.^[More precisely, (n − 1)s² / σ² follows a chi-squared distribution with n − 1 degrees of freedom. The sample SD follows a scaled chi distribution, which is the square root of the chi-squared.] With larger samples, the distribution becomes more symmetric and converges toward normality, just as we saw with the mean in Part 4.^[The Central Limit Theorem again.]
 
 ## How uncertain is σ?
 
 In Part 4, we quantified μ's uncertainty with the standard error: the SD of the sampling distribution, which turned out to be σ / √n. Can we do the same for σ?
 
-Yes. Let's measure the SD of our simulated sample SDs at different sample sizes, just as we did for the mean in Part 4.
+Yes, we can. Let's measure the SD of our simulated sample SDs at different sample sizes, just as we did for the mean in Part 4.
 
 ```{r}
 #| label: fig-se-sigma
@@ -165,13 +159,15 @@ ggplot(se_sigma_by_n, aes(x = n)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 ```
 
-The dots are the standard errors measured from our simulations (the SD of the sample SDs at each sample size). The dashed line is the exact formula:
+The dots are the standard errors measured from our simulations (the SD of the sample SDs at each sample size). The dashed line can be captured by a formula, but it's quite a complicated one and I don't think you need to understand it.[^se-formula] What matters is that it matches our simulations and that we can use it to calculate the standard error of σ exactly.
 
-$$SE(\sigma) = \sigma \sqrt{1 - \frac{2}{n-1} \left[\frac{\Gamma(n/2)}{\Gamma((n-1)/2)}\right]^2}$$
+[^se-formula]: If you're curious, the formula is:
 
-where Γ is the **gamma function**.^[The formula comes from the fact that the sample variance follows a scaled chi-squared distribution. The gamma function ratios describe the exact mean and variance of the resulting chi distribution (the distribution of the sample SD). Unlike SE(μ) = σ / √n, this doesn't simplify to anything tidy.] I won't pretend this formula is helpful, it's gibberish to me, but what matters is that it matches our simulations and that we can use it to calculate the standard error of sigma exactly. 
+    $$SE(\sigma) = \sigma \sqrt{1 - \frac{2}{n-1} \left[\frac{\Gamma(n/2)}{\Gamma((n-1)/2)}\right]^2}$$
 
-For our data: SE(σ) = `r round(se_exact(sample_sd, n), 2)` cm.
+    where Γ is the gamma function.
+
+For our data: SE(σ) = `r round(se_exact(sample_sd, n), 2)` cm — small relative to σ (`r round(sample_sd, 1)` cm), so our estimate of the spread is quite precise.
 
 ## Back to lm()
 
@@ -183,14 +179,16 @@ model <- lm(height ~ 1, data = data)
 summary(model)
 ```
 
-While we see the standard error for the intercept, we don't see a standard error for the residual standard error. At first glance that's not surprising — why would you need a standard error of a standard error? But as we've discussed, the residual standard error is our estimate of σ, which carries its own uncertainty. This uncertainty matters because it feeds into the uncertainty of other estimates, like our estimate of μ. When we estimate σ rather than knowing it, we introduce extra uncertainty into the SE itself.
+While we see the standard error for the intercept, we don't see a standard error for σ (the residual standard error). This might be odd, given that we've now covered that it also carries its own uncertainty and that this uncertainty feeds into the uncertainty of other estimates, like our estimate of μ.
 
-So why is that not included in the output of `lm()`?
+So why is it not included in the output of `lm()`?
 
-The reason is that `lm()` handles σ's uncertainty *implicitly*. Rather than reporting it explicitly, `lm()` uses the t-distribution instead of the normal when computing p-values and confidence intervals for μ. The t-distribution's heavier tails absorb exactly the extra uncertainty that comes from estimating σ rather than knowing it. You never see σ's uncertainty in the output, but it's baked into the distribution used for inference.
+The reason is that `lm()` handles σ's uncertainty implicitly. Rather than reporting it explicitly, `lm()` uses the t-distribution instead of the normal when computing p-values and confidence intervals for μ. The t-distribution is a distribution with heavier tails that absorb exactly the extra uncertainty that comes from estimating σ rather than knowing it. You never see σ's uncertainty in the output, but it's baked into the distribution used for inference. We'll cover this in greater depth in the next post.
+
+## The estimation goal
+
+That covers the estimation side of `lm()`'s output: we have estimates of both μ and σ, and we understand the uncertainty behind each. In Part 6, we turn to the next goal: testing.
 
 ## Summary
 
 Both parameters of our model, μ and σ, are estimated from the sample and both have uncertainty. We explored μ's uncertainty in Part 4; now we've seen σ's. The mean's sampling distribution is normal and symmetric. The SD's sampling distribution follows a chi-squared-related distribution that is skewed, especially at small sample sizes. Both become more precise with more data.
-
-That completes the estimation goal from Part 1: we have estimates of both parameters and a way to quantify the uncertainty in each. In Part 6, we turn to the second goal — hypothesis testing.
