@@ -265,7 +265,7 @@ Complete redesign of the Understanding Regression blog post series to teach stat
 
 - **Recap**: We have a t-value and know it follows a t-distribution. The last column in the lm() output is Pr(>|t|). What is this?
 - **The question hypothesis testing asks**: If the true parameter were zero, how surprising would our observed t-value be?
-  - This is a specific, narrow question. Not "is the mean zero?" but "if the mean WERE zero, would we see data like ours?"
+  - This is a specific, narrow question. Not "is the mean zero?" but "if the mean WERE zero, would we see data like ours?" 
 - **Simulation**: Build the null distribution
   - Draw many samples from N(0, σ), compute t for each
   - This gives the distribution of t-values we'd expect if the null were true
