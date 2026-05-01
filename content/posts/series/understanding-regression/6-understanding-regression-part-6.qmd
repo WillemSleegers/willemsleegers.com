@@ -75,17 +75,17 @@ Writing the subtraction of 0 explicitly might seem redundant as it doesn't chang
 
 Like μ and σ before it, the t-value is a statistic computed from a sample, so it has a sampling distribution. In Parts 4 and 5 we explored those distributions by simulating many samples and watching how each statistic varied. The same approach works here — and understanding what distribution t-values follow is what will allow us to compute a p-value in Part 7.
 
-You might expect the sampling distribution of the t-value to be normal, just as the mean's was. But it isn't. The SE uses an estimated σ, and that estimate varies from sample to sample (as we saw in Part 5). If a sample happens to produce an unusually small SD, the SE is too small and the t-value ends up further from zero than the gap warrants. If the SD comes out large, the SE is too large and the t-value is pulled toward zero. To make this concrete: say a sample mean sits 5 cm from the reference, with n = 10. If that sample happened to produce a small SD of 4 cm, the SE is only `r round(4 / sqrt(10), 1)` cm and t = `r round(5 / (4 / sqrt(10)), 1)` — larger than the data warrant. If instead the SD came out large at 12 cm, the SE inflates to `r round(12 / sqrt(10), 1)` cm and t shrinks to `r round(5 / (12 / sqrt(10)), 1)`. This extra variability in the SE produces a distribution with heavier tails than the normal.
+You might expect the sampling distribution of the t-value to be normal, just as the mean's was. But it isn't. The SE uses an estimated σ, and that estimate varies from sample to sample (as we saw in Part 5). If a sample happens to produce an unusually small SD, the SE is too small and the t-value ends up further from zero than the gap warrants. If the SD comes out large, the SE is too large and the t-value is pulled toward zero. To make this concrete: say a sample mean sits 5 cm from the reference, with n = 5. If that sample happened to produce a small SD of 4 cm, the SE is only `r round(4 / sqrt(5), 1)` cm and t = `r round(5 / (4 / sqrt(5)), 1)` — larger than the data warrant. If instead the SD came out large at 12 cm, the SE inflates to `r round(12 / sqrt(5), 1)` cm and t shrinks to `r round(5 / (12 / sqrt(5)), 1)`. This extra variability in the SE produces a distribution with heavier tails than the normal.
 
 We can see this directly by comparing t-values computed with a fixed σ versus an estimated one:
 
 ```{r}
 #| label: fig-known-vs-estimated
-#| fig-cap: "T-values computed with a fixed σ follow the standard normal; with estimated σ, the tails are heavier. Small samples (n = 10) make the difference visible."
+#| fig-cap: "T-values computed with a fixed σ follow the standard normal; with estimated σ, the tails are heavier. Small samples (n = 5) make the difference visible."
 set.seed(42)
 
 n_simulations <- 1000
-n_small <- 10
+n_small <- 5
 
 compare_t <- bind_rows(
   tibble(
@@ -137,11 +137,7 @@ With a fixed σ, the simulated t-values match the standard normal (dashed curve,
 
 The t-distribution was derived for exactly this purpose: to describe the distribution of t-values when σ is estimated rather than known.^[It was first published in 1908 by William Gosset, who wrote under the pseudonym "Student" — which is why it's often called Student's t-distribution.]
 
-Like any distribution, the t-distribution has parameters. In its general form it has three: a location parameter (μ), a scale parameter (σ), and degrees of freedom (ν):
-
-$$f(t \mid \mu, \sigma, \nu) = \frac{\Gamma\!\left(\frac{\nu+1}{2}\right)}{\sqrt{\nu\pi}\;\Gamma\!\left(\frac{\nu}{2}\right)\sigma} \left(1 + \frac{1}{\nu}\left(\frac{t - \mu}{\sigma}\right)^2\right)^{-\frac{\nu+1}{2}}$$
-
-I won't pretend this formula is enlightening on its own, but it does show the three parameters clearly: a location parameter (μ), a scale parameter (σ), and degrees of freedom (ν). Computing the t-value has already fixed two of them: subtracting the reference value centers the distribution at zero (μ = 0), and dividing by the SE puts it on a scale of one (σ = 1). This leaves a single free parameter: degrees of freedom.
+Like any distribution, the t-distribution has parameters. In its general form it has three: a location parameter (μ), a scale parameter (σ), and degrees of freedom (ν). Computing the t-value has already fixed two of them: subtracting the reference value centers the distribution at zero (μ = 0), and dividing by the SE puts it on a scale of one (σ = 1). This leaves a single free parameter: degrees of freedom.
 
 ## Degrees of freedom
 
